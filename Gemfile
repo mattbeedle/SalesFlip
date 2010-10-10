@@ -57,7 +57,6 @@ group :test do
   gem 'launchy'
   gem 'machinist_mongo', :require => 'machinist/mongoid'
   gem 'autotest-rails', :require => 'autotest/rails'
-  gem 'redgreen'
   gem 'fakeweb'
   gem 'mocha'
   gem 'faker'
