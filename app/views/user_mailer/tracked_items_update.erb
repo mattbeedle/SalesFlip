@@ -8,7 +8,7 @@
       <% if activity.subject.attachments.count > 0 %>
         Attachments:
         <% activity.subject.attachments.each do |attachment| %>
-          <%= attachment.attachment_filename -%>: <%= attachment_url(attachment) -%>
+          <%= attachment.attachment_filename -%>: <%= attachment.attachment.url -%>
         <% end %>
       <% end %>
     <% end %>

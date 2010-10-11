@@ -22,4 +22,4 @@
       = comment.text
       .attachments
         - comment.attachments.each do |attachment|
-          = link_to attachment.attachment_filename, attachment
+          = link_to attachment.attachment_filename, attachment.attachment.url
