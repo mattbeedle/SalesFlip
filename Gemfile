@@ -1,14 +1,12 @@
 source :gemcutter
 
-#gem 'rails',                :git => 'git://github.com/rails/rails.git', :branch => '3-0-stable'
-gem 'rails'
+gem 'rails', '3.0.0'
 
 gem 'sqlite3-ruby',         :require => 'sqlite3'
 
 gem 'haml'
 gem 'inherited_resources'
 gem 'warden'
-#gem 'devise',               :git => 'git://github.com/plataformatec/devise.git'
 gem 'devise'
 #gem 'mongoid', :git => 'http://github.com/durran/mongoid.git'
 gem 'mongoid',              :git => 'git://github.com/mattbeedle/mongoid.git', :branch => 'development'
@@ -19,7 +17,6 @@ gem 'compass'#,              :git => 'git://github.com/chriseppstein/compass.git
 gem 'uuid'
 gem 'has_scope'
 gem 'navvy'
-#gem 'whenever'
 gem 'chronic'
 gem 'mail'
 gem 'beanstalk-client'
@@ -45,6 +42,7 @@ end
 
 group :development do
   gem 'wirble'
+  gem 'heroku'
 end
 
 group :test do

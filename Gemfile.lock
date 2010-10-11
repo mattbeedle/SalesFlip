@@ -128,6 +128,10 @@ GEM
     haml (3.0.21)
     has_constant (0.2.9)
     has_scope (0.5.0)
+    heroku (1.10.14)
+      json_pure (>= 1.2.0, < 1.5.0)
+      launchy (~> 0.3.2)
+      rest-client (>= 1.4.0, < 1.7.0)
     hoe (2.6.2)
       rake (>= 0.8.7)
       rubyforge (>= 2.0.4)
@@ -185,6 +189,8 @@ GEM
       thor (~> 0.14.0)
     rake (0.8.7)
     responders (0.6.2)
+    rest-client (1.6.1)
+      mime-types (>= 1.16)
     riddle (1.1.0)
     rsolr (0.12.1)
       builder (>= 2.1.2)
@@ -252,6 +258,7 @@ DEPENDENCIES
   has_constant
   has_scope
   hassle!
+  heroku
   inherited_resources
   launchy
   machinist_mongo
@@ -264,7 +271,7 @@ DEPENDENCIES
   navvy
   pickle
   pickle-mongoid
-  rails
+  rails (= 3.0.0)
   remail!
   riddle
   salesflip-lead_notifications
