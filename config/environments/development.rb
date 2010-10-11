@@ -20,6 +20,9 @@ Salesflip::Application.configure do
   config.action_mailer.default_url_options = { :host => 'salesflip.local' }
 
   config.active_support.deprecation = :log
+  
+  config.middleware.use Rack::GridFS, :hostname => 'localhost',
+    :port => 27017, :database => 'salesflip_development', :prefix => 'uploads'
 end
 
 Sunspot.config.solr.url = 'http://localhost:8982/solr'

@@ -42,10 +42,25 @@ Salesflip::Application.configure do
 
   config.active_support.deprecation = :log
 
+  config.middleware.use Rack::GridFS, :hostname => 'swan.mongohq.com', :port => 27035,
+    :database => 'salesflip', :prefix => 'uploads', :user => ENV['MONGODB_USER'],
+    :password => ENV['MONGODB_PASSWORD']
+
   config.after_initialize do
     require 'sunspot/rails'
     Sunspot.config.solr.url = ENV['WEBSOLR_URL']
   end
+
+  require 'heroku/autoscale'
+  config.middleware.use Heroku::Autoscale,
+    :username  => ENV["HEROKU_USERNAME"],
+    :password  => ENV["HEROKU_PASSWORD"],
+    :app_name  => ENV["HEROKU_APP_NAME"],
+    :min_dynos => 1,
+    :max_dynos => 20,
+    :queue_wait_low  => 100,  # milliseconds
+    :queue_wait_high => 2000, # milliseconds
+    :min_frequency   => 10    # seconds
 
   config.action_mailer.delivery_method = :remail
   config.action_mailer.remail_settings = {
