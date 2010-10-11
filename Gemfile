@@ -13,7 +13,7 @@ gem 'mongoid',              :git => 'git://github.com/mattbeedle/mongoid.git', :
 gem 'mongo'
 gem 'bson'
 gem 'bson_ext'
-gem 'compass'#,              :git => 'git://github.com/chriseppstein/compass.git'
+gem 'compass'#,             :git => 'git://github.com/chriseppstein/compass.git'
 gem 'uuid'
 gem 'has_scope'
 gem 'navvy'
@@ -32,6 +32,7 @@ gem 'sunspot',              :require => 'sunspot'
 gem 'sunspot_rails'
 gem 'sunspot_mongoid',      :git => 'git://github.com/jugyo/sunspot_mongoid.git'
 gem 'remail',               :git => 'git://github.com/maccman/remail.git'
+gem 'rack-gridfs',          :require => 'rack/gridfs', :git => 'git://github.com/mattbeedle/rack-gridfs.git'
 
 # Plugins
 gem 'salesflip-lead_notifications', :require => 'lead_notifications'

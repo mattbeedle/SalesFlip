@@ -47,6 +47,15 @@ GIT
       tzinfo (~> 0.3.22)
       will_paginate (~> 3.0.pre)
 
+GIT
+  remote: git://github.com/mattbeedle/rack-gridfs.git
+  revision: 98010f7dd10659b2f4d4ce2f7db962c99314a336
+  specs:
+    rack-gridfs (0.2.0)
+      activesupport (>= 3.0.0)
+      mongo (>= 1.0.8)
+      rack
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -271,6 +280,7 @@ DEPENDENCIES
   navvy
   pickle
   pickle-mongoid
+  rack-gridfs!
   rails (= 3.0.0)
   remail!
   riddle
