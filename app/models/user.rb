@@ -25,7 +25,7 @@ class User
   belongs_to_related :company
 
   before_validation :set_api_key, :create_company, :on => :create
-  after_create :update_invitation, :add_user_to_postfix
+  after_create :update_invitation#, :add_user_to_postfix
 
   validates_presence_of :company
 
