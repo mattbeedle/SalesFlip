@@ -3,11 +3,6 @@ Feature: Manage leads
   A user
   wants manage leads
 
-  Scenario: Creating a lead via XML
-    Given I am registered and logged in as annika
-    When I POST attributes for lead: "erich" to the leads page
-    Then 1 leads should exist with assignee_id: nil
-
   Scenario: Accepting a lead
     Given I am registered and logged in as annika
     And a lead: "erich" exists with user: annika

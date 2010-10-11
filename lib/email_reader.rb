@@ -32,7 +32,7 @@ protected
     if subject = Mail.new(get_email_content(email)).subject
       subject
     else
-      (email.charset ? Iconv.iconv('utf-8', 'iso-8859-1', email.subject) : email.subject)
+      (email.charset ? Iconv.iconv('utf-8', 'iso-8859-1', email.subject).first : email.subject)
     end
   end
 
@@ -43,7 +43,7 @@ protected
 
   def self.get_email_content( email )
     if email.content_type.match(/text\/plain/)
-      return Iconv.iconv('utf-8', 'iso-8859-1', email.body.to_s)
+      return Iconv.iconv('utf-8', 'iso-8859-1', email.body.to_s).first
     else
       email.parts.each do |part|
         return get_email_content(part)
@@ -54,7 +54,7 @@ protected
   def self.add_attachments( comment, email )
     email.attachments.each do |attachment|
       file = File.open("tmp/#{attachment.filename}", 'w+') do |f|
-        f.write attachment.read
+        f.write attachment.read.force_encoding('utf-8')
       end
       comment.attachments << Attachment.new(:attachment => File.open("tmp/#{attachment.filename}"))
     end

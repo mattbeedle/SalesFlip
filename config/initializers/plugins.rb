@@ -1,1 +1,1 @@
-require 'lib/salesflip'
+require "#{Rails.root}/lib/salesflip"

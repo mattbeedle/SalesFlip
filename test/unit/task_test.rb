@@ -472,7 +472,7 @@ class TaskTest < ActiveSupport::TestCase
       should 'attempt to use chronic' do
         time = Chronic.parse('next tuesday')
         @task.due_at = 'next tuesday'
-        assert time.to_i, @task.due_at.to_i
+        assert_equal time.to_i, @task.due_at.to_i
       end
 
       should 'set due_at to specified time, if an actual time is specified' do

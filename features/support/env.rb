@@ -56,7 +56,7 @@ if defined?(ActiveRecord::Base)
   end
 end
 
-require 'test/blueprints'
+require "#{Rails.root.to_s}/test/blueprints"
 
 Before do
   Mongoid.database.collections.each do |collection|

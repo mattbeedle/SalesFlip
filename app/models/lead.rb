@@ -69,6 +69,11 @@ class Lead
     text :first_name, :last_name, :email, :phone, :notes, :company, :alternative_email, :mobile,
       :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing
   end
+  
+  def self.with_status( statuses )
+    statuses = statuses.lines if statuses.respond_to?(:lines)
+    where(:status.in => statuses.map { |status| Lead.statuses.index(status) })
+  end
 
   def self.exportable_fields
     fields.map(&:first).sort.delete_if do |f|
