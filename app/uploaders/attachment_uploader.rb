@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+# globally configured in config/initializers/carrierwave.rb
 class AttachmentUploader < CarrierWave::Uploader::Base
 
   # Include RMagick or ImageScience support
@@ -7,9 +8,9 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   #     include CarrierWave::ImageScience
 
   # Choose what kind of storage to use for this uploader
-  storage :grid_fs
+  # storage :grid_fs
 
-  grid_fs_access_url  '/image/show'
+  # grid_fs_access_url  '/uploads'
   #     storage :s3
 
   # Override the directory where uploaded files will be stored
