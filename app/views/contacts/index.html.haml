@@ -5,24 +5,7 @@
   = render :partial => 'contacts/contact', :collection => @contacts
   = will_paginate @contacts
 - content_for :sidebar do
-  .gold.box
-    %h3= t(:filter)
-    = form_tag '', :method => :get do
-      %label{ :for => 'name_like' }= t(:name_like)
-      = text_field_tag :name_like, params[:name_like]
-      .clear
-      %ul.checks.stacked
-        %li
-          = check_box_tag :unassigned, true, params[:unassigned]
-          %label{ :for => 'unassigned' }= t(:unassigned)
-        %li
-          = check_box_tag :assigned_to, current_user.id, params[:assigned_to]
-          %label{ :for => 'assigned_to' }= t(:assigned_to_me)
-      .clear
-      .stacked
-        %label{ :for => 'source_is' }= t(:source_is)
-        = select_tag :source_is, options_for_select(Contact.sources.sort, params[:source_is]), :include_blank => true
-      .clear= submit_tag t(:filter), :id => 'filter'
+  = render :partial => "shared/index_filter", :locals => { :collection => Contact.sources.sort, :selector => :source_is}
   .gold.box
     %h3= t(:data_actions)
     %ul.plain

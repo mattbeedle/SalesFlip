@@ -6,23 +6,7 @@
   = render :partial => @accounts
   = will_paginate @accounts
 - content_for :sidebar do
-  .gold.box
-    %h3= t(:filter)
-    = form_tag '', :method => :get do
-      %label{ :for => 'name_like' }= t(:name_like)
-      = text_field_tag :name_like, params[:name_like]
-      %ul.checks.stacked
-        %li
-          = check_box_tag :unassigned, true, params[:unassigned]
-          %label{ :for => 'unassigned' }= t(:unassigned)
-        %li
-          = check_box_tag :assigned_to, current_user.id, params[:assigned_to]
-          %label{ :for => 'assigned_to' }= t(:assigned_to_me)
-      .clear
-      .stacked
-        %label{ :for => 'account_type_is' }= t(:account_type)
-        = select_tag :account_type_is, options_for_select(Account.account_types, params[:account_type_is]), :include_blank => true
-      .clear= submit_tag t(:filter), :id => 'filter'
+  = render :partial => "shared/index_filter", :locals => { :collection => Account.account_types, :selector => :account_type_is}
   .gold.box
     %h3= t(:data_actions)
     %ul.plain
