@@ -37,20 +37,14 @@
       = show_attribute(@account, 'shipping_address')
       = show_attribute(@account, 'website', link_to(t(:visit_website), @account.website)) if @account.website
 
-  #recent_activity.box.ice
-    %h3= t('recent_activity_for', :name => @account.full_name )
-    = render :partial => 'shared/activity_for', :collection => @account.related_activities.limit(6), :as => :activity
-
-  .box.gold
-    %h3= t(:contacts)
-    - if @account.contacts.any?
-      %dl
-        - @account.contacts.each do |contact|
-          %li= link_to contact.full_name, contact
-
   - if @account.children.any?
     .box.gold
-      %h2= t(:sub_accounts)
+      %h3= t(:sub_accounts)
       %ul
         - @account.children.each do |child|
           %li= link_to child.name, child
+  #recent_activity.box.ice
+    %h3= t('recent_activity_for', :name => @account.full_name )
+    = render :partial => 'shared/activity_for', :collection => @account.related_activities.limit(6), :as => :activity
+    
+  
