@@ -1,7 +1,9 @@
-- if @parent_account
-  %h2= t('sub_account', :account => @parent_account.name)
-- else
-  %h2.title= t('add_account')
+.title
+  %h2
+    - if @parent_account
+      = t('add_sub_account_for', :account => @parent_account.name)
+    - else
+      = t('add_account')
 = simple_form_for @account do |form|
   = render :partial => 'form', :locals => { :form => form }
   - if @parent_account

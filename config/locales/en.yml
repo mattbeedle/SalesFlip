@@ -20,8 +20,10 @@ en:
   logout: Logout
   recycle_bin_empty: Recycle Bin
   recycle_bin: "Recycle Bin (%{count})"
+  use: Use
   users: Users
   invitations: Invitations
+  yes_use: "Yes, use"
 
   #--------------------------------------------------------------
   # Time
@@ -143,13 +145,16 @@ en:
   delete_account: Delete Account
   edit_account: Edit Account
   add_sub_account: Add Sub-Account
-  sub_account: Add Sub-Account for %{account}
+  add_sub_account_for: "Add Sub-Account for %{account}"
+  sub_account: Sub-Account
+  sub_accounts: Sub-Accounts
   permissions:
   - Public
   - Shared
   - Private
-  create_new_account: No, Create New Account
+  create_new_account: "No, Create New Account"
   account_may_exist: This account may already exist
+  use_existing_account: Would you like to use an existing account instead?
 
   #--------------------------------------------------------------
   # Search
