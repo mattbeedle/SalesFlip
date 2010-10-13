@@ -20,6 +20,28 @@ class ContactTest < ActiveSupport::TestCase
       end
     end
 
+    context 'assigned_to' do
+      setup do
+        @user = User.make
+        @contact = Contact.make(:florian, :assignee => @user)
+        @contact2 = Contact.make(:steven)
+      end
+
+      should 'return contacts assigned to the specified user' do
+        assert Contact.assigned_to(@user.id).include?(@contact)
+        assert_equal 1, Contact.assigned_to(@user.id).count
+      end
+
+      should 'return contacts created by the specified user, but not assigned to anyone' do
+        assert Contact.assigned_to(@contact2.user.id).include?(@contact2)
+        assert_equal 1, Contact.assigned_to(@contact2.user.id).count
+      end
+
+      should 'work with a string arguement' do
+        assert_equal 1, Contact.assigned_to(@contact2.user.id.to_s).count
+      end
+    end
+
     context 'create_for' do
       setup do
         @account = Account.make(:careermee)
@@ -80,6 +102,19 @@ class ContactTest < ActiveSupport::TestCase
         assert_equal 1, Contact.for_company(@contact.user.company).count
         assert_equal @contact2, Contact.for_company(@contact2.user.company).first
         assert_equal 1, Contact.for_company(@contact2.user.company).count
+      end
+    end
+
+    context 'name_like' do
+      setup do
+        @contact = Contact.make :first_name => 'Matt', :last_name => 'Beedle'
+        @contact2 = Contact.make :first_name => 'Benjamin', :last_name => 'Pochhammer'
+      end
+
+      should 'only return contacts whos first or last name match the supplied string' do
+        assert_equal [@contact], Contact.name_like('Mat').to_a
+        assert_equal [@contact2], Contact.name_like('Pochh').to_a
+        assert_equal [@contact], Contact.name_like('Matt Bee').to_a
       end
     end
   end

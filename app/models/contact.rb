@@ -11,6 +11,7 @@ class Contact
 
   field :first_name
   field :last_name
+  field :full_name
   field :access,              :type => Integer
   field :title,               :type => Integer
   field :salutation,          :type => Integer
@@ -40,6 +41,7 @@ class Contact
   validates_uniqueness_of :email, :allow_blank => true
 
   before_create :set_identifier
+  before_save   :set_full_name
 
   has_constant :accesses, lambda { I18n.t('access_levels') }
   has_constant :titles, lambda { I18n.t('titles') }
@@ -56,11 +58,18 @@ class Contact
   has_many_related :leads, :dependent => :destroy
   has_many_related :emails, :as => :commentable, :dependent => :delete_all
 
-  named_scope :for_company, lambda { |company| { :where => { :user_id.in => company.users.map(&:id) } } }
+  named_scope :for_company, lambda { |company| {
+    :where => { :user_id.in => company.users.map(&:id) } } }
+  named_scope :name_like, lambda { |name| { :where => { :full_name => /#{name}/i } } }
 
   searchable do
     text :first_name, :last_name, :department, :email, :alt_email, :phone, :mobile,
       :fax, :website, :linked_in, :facebook, :twitter, :xing, :address
+  end
+
+  def self.assigned_to( user_id )
+    user_id = BSON::ObjectId.from_string(user_id) if user_id.is_a?(String)
+    any_of({ :assignee_id => user_id }, { :user_id => user_id, :assignee_id => nil })
   end
 
   def self.exportable_fields
@@ -103,5 +112,9 @@ class Contact
 protected
   def set_identifier
     self.identifier = Identifier.next_contact
+  end
+
+  def set_full_name
+    write_attribute :full_name, "#{first_name} #{last_name}"
   end
 end

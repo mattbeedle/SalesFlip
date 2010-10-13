@@ -289,6 +289,34 @@ div.item, dl.item dd
       :border-top 1px solid #{!gold - 50}
       :background = !gold
       :margin-bottom 20px
+      h3
+        color: $gold - 90
+      input[type="submit"]
+        border-color: #b9bca0
+        +shiny-button(#fff, #fcfcc3, #b9bca0)
+        color: #000
+        +letterpress
+      &#filter
+        .check
+          clear: both
+          padding-left: 20%
+          input
+            width: 13px
+        label.left, input
+          float: left
+          clear: none
+        label.left
+          width: 20%
+          padding-top: 4px
+        .name input
+          width: 75%
+        .source select
+          width: 50%
+          float: left
+        input[type="submit"]
+          float: left
+          margin-left: 2%
+          width: 24%
     &.ice
       :border-bottom 1px solid #fff
       :border-top 1px solid #{!ice - 50}

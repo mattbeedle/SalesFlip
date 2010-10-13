@@ -57,6 +57,11 @@ en:
   # UI
   #--------------------------------------------------------------
   assigned: Assigned
+  unassigned: Unassigned
+  account_type: Account Type
+  assigned_to_me: Assigned to me
+  name_like: Name
+  source_is: Source
   back: Back
   cancel: Cancel
   configuration: Configuration

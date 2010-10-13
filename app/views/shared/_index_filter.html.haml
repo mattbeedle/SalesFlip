@@ -1,0 +1,17 @@
+#filter.gold.box
+  %h3= t(:filter)
+  = form_tag '', :method => :get do
+    .name
+      %label.left{ :for => 'name_like' }= t(:name_like)
+      = text_field_tag :name_like, params[:name_like]
+    .clear
+    .check.first
+      = check_box_tag :unassigned, true, params[:unassigned]
+      %label{ :for => 'unassigned' }= t(:unassigned)
+    .check
+      = check_box_tag :assigned_to, current_user.id, params[:assigned_to]
+      %label{ :for => 'assigned_to' }= t(:assigned_to_me)
+    .source
+      %label.left{ :for => 'source_is' }= t(:source_is)
+      = select_tag selector, options_for_select(collection, params[selector]), :include_blank => true
+      = submit_tag t(:filter), :id => 'filter'

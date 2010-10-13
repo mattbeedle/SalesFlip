@@ -3,6 +3,42 @@ Feature: Manage accounts
   A User
   wants to manage accounts
 
+  Scenario: Filtering Accounts by owner
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And account: "careermee" exists with user: Annika
+    And account: "world_dating" exists with user: Benny
+    And I am on the accounts page
+    When I check "Assigned to me"
+    And I press "filter"
+    Then I should be on the accounts page
+    And I should see "CareerMee"
+    And I should not see "World Dating"
+
+  Scenario: Filtering Accounts by Account Type
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And account: "careermee" exists with user: Annika, account_type: "Investor"
+    And account: "world_dating" exists with user: Annika, account_type: "Competitor"
+    And I am on the accounts page
+    When I select "Investor" from "account_type_is"
+    And I press "filter"
+    Then I should be on the accounts page
+    And I should see "CareerMee"
+    And I should not see "World Dating"
+
+  Scenario: Filtering Accounts by Name
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And account: "careermee" exists with user: Annika
+    And account: "world_dating" exists with user: Annika
+    And I am on the accounts page
+    When I fill in "name_like" with "World"
+    And I press "filter"
+    Then I should be on the accounts page
+    And I should see "World Dating"
+    And I should not see "CareerMee"
+
   Scenario: Creating an account
     Given I am registered and logged in as annika
     And I am on the accounts page

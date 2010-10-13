@@ -22,6 +22,36 @@ class AccountTest < ActiveSupport::TestCase
       end
     end
 
+    context 'assigned_to' do
+      setup do
+        @careermee = Account.make(:careermee)
+        @world_dating = Account.make(:world_dating)
+        @mystery_account = Account.make(:assignee => @careermee.user)
+      end
+
+      should 'return accounts which are assigned to the supplied user' do
+        assert Account.assigned_to(@careermee.user.id).include?(@mystery_account)
+      end
+
+      should 'return accounts which were created by the supplied user, and are not assigned' do
+        assert Account.assigned_to(@careermee.user.id).include?(@careermee)
+      end
+
+      should 'not return accounts which were created by the supplied user, but are assigned to someone else' do
+        assert !Account.assigned_to(@mystery_account.user.id).include?(@mystery_account)
+      end
+
+      should 'not return accounts that have nothing to do with the supplied user' do
+        accounts = Account.assigned_to(@mystery_account.user.id)
+        assert !accounts.include?(@careermee)
+        assert !accounts.include?(@world_dating)
+      end
+
+      should 'still work with a string arguement' do
+        assert Account.assigned_to(@careermee.user.id.to_s).include?(@mystery_account)
+      end
+    end
+
     context 'find_or_create_for' do
       setup do
         @lead = Lead.make(:erich)
@@ -121,6 +151,18 @@ class AccountTest < ActiveSupport::TestCase
         assert_equal 1, Account.for_company(@account.user.company).count
         assert_equal @account2, Account.for_company(@account2.user.company).first
         assert_equal 1, Account.for_company(@account2.user.company).count
+      end
+    end
+
+    context 'name_like' do
+      setup do
+        @careermee = Account.make(:careermee)
+        @world_dating = Account.make(:world_dating)
+      end
+
+      should 'only return accounts with a name like the one specified' do
+        assert_equal [@careermee], Account.name_like('CareerMee').to_a
+        assert_equal [@world_dating], Account.name_like('World').to_a
       end
     end
   end
