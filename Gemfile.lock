@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/jnicklas/carrierwave.git
-  revision: 26d8567309a46ea78872d902502a812563a5809b
+  revision: c6d17f2f455f9817fde31fee40625a7fcbcbf877
   specs:
     carrierwave (0.5.0)
       activesupport (~> 3.0)
@@ -127,6 +127,7 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     escape (0.0.4)
+    eventmachine (0.12.10)
     faker (0.3.1)
     fakeweb (1.3.0)
     ffi (0.6.3)
@@ -141,6 +142,10 @@ GEM
       json_pure (>= 1.2.0, < 1.5.0)
       launchy (~> 0.3.2)
       rest-client (>= 1.4.0, < 1.7.0)
+    heroku-autoscale (0.2.2)
+      eventmachine
+      heroku (~> 1.9)
+      rack (~> 1.0)
     hoe (2.6.2)
       rake (>= 0.8.7)
       rubyforge (>= 2.0.4)
@@ -216,7 +221,7 @@ GEM
     rubyforge (2.0.4)
       json_pure (>= 1.1.7)
     rubyzip (0.9.4)
-    salesflip-lead_notifications (0.0.4)
+    salesflip-lead_notifications (0.0.6)
     selenium-webdriver (0.0.29)
       childprocess (>= 0.0.7)
       ffi (~> 0.6.3)
@@ -268,6 +273,7 @@ DEPENDENCIES
   has_scope
   hassle!
   heroku
+  heroku-autoscale
   inherited_resources
   launchy
   machinist_mongo
