@@ -25,11 +25,11 @@ class Account
 
   belongs_to_related :user
   belongs_to_related :assignee, :class_name => 'User'
-  has_many_related :contacts, :dependent => :nullify
-  has_many_related :tasks, :as => :asset
-  has_many_related :comments, :as => :commentable
+  has_many_related   :contacts, :dependent => :nullify
+  has_many_related   :tasks, :as => :asset
+  has_many_related   :comments, :as => :commentable
   belongs_to_related :parent, :class_name => 'Account'
-  has_many_related :children, :class_name => 'Account', :foreign_key => 'parent_id'
+  has_many_related   :children, :class_name => 'Account', :foreign_key => 'parent_id'
 
   validates_presence_of :user, :name
 
