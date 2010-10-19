@@ -15,6 +15,7 @@ en:
   account: Account
   accounts: Accounts
   contacts: Contacts
+  opportunities: Opportunities
   profile: Profile
   login: Login
   logout: Logout
@@ -178,6 +179,22 @@ en:
     - Commented
     - Deleted
     - Restored
+    
+  #--------------------------------------------------------------
+  # Opportunities
+  #--------------------------------------------------------------
+  opportunity_stages:
+    - prospecting
+    - analysis
+    - presentation
+    - negotiation
+    - final review
+    - closed/won
+    - closed/lost
+  opportunity_outline: "%{amount} with %{discount} discount and %{probability} probability | expected to close %{close_on}"
+  add_opportunity: Add Opportunity
+  select_contact: Select Contact
+  opportunity: Opportunity
 
   my_profile: My Profile
   recent_items: Recent Items

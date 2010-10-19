@@ -7,7 +7,7 @@ class UserTest < ActiveSupport::TestCase
     should_belong_to :company
     should_have_instance_methods :company_name=, :company_name
     should_have_many :invitations, :leads, :comments, :tasks, :accounts, :contacts, :activities,
-      :searches
+      :searches, :opportunities, :assigned_opportunities
 
     context 'send_tracked_items_mail' do
       setup do

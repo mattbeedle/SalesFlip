@@ -61,5 +61,5 @@ group :test do
   gem 'faker'
   gem 'shoulda'
   gem 'database_cleaner'
-  gem 'heroku-autoscale', :require => 'heroku/autoscale'
+  gem 'mbeedle-heroku-autoscale', :require => 'heroku/autoscale'
 end

@@ -20,6 +20,9 @@ class User
   has_many_related  :activities
   has_many_related  :searches
   has_many_related  :invitations, :as => :inviter, :dependent => :destroy
+  has_many_related  :opportunities
+  has_many_related  :assigned_opportunities, :foreign_key => 'assignee_id',
+    :class_name => 'Opportunity'
   has_one_related   :invitation, :as => :invited
 
   belongs_to_related :company

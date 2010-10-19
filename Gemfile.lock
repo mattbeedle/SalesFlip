@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/jnicklas/carrierwave.git
-  revision: c6d17f2f455f9817fde31fee40625a7fcbcbf877
+  revision: 6ef28f9d8e373e2464a4e9ebcc90617062cda5f5
   specs:
     carrierwave (0.5.0)
       activesupport (~> 3.0)
@@ -93,8 +93,8 @@ GEM
       ZenTest
     bcrypt-ruby (2.1.2)
     beanstalk-client (1.1.0)
-    bson (1.1)
-    bson_ext (1.1)
+    bson (1.1.1)
+    bson_ext (1.1.1)
     builder (2.1.2)
     capybara (0.3.9)
       culerity (>= 0.2.4)
@@ -103,7 +103,7 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       selenium-webdriver (>= 0.0.3)
-    childprocess (0.0.7)
+    childprocess (0.1.3)
       ffi (~> 0.6.3)
     chronic (0.2.3)
       hoe (>= 1.2.1)
@@ -132,7 +132,7 @@ GEM
     fakeweb (1.3.0)
     ffi (0.6.3)
       rake (>= 0.8.7)
-    gherkin (2.2.8)
+    gherkin (2.2.9)
       json (~> 1.4.6)
       term-ansicolor (~> 1.0.5)
     haml (3.0.21)
@@ -142,10 +142,6 @@ GEM
       json_pure (>= 1.2.0, < 1.5.0)
       launchy (~> 0.3.2)
       rest-client (>= 1.4.0, < 1.7.0)
-    heroku-autoscale (0.2.2)
-      eventmachine
-      heroku (~> 1.9)
-      rack (~> 1.0)
     hoe (2.6.2)
       rake (>= 0.8.7)
       rubyforge (>= 2.0.4)
@@ -166,6 +162,10 @@ GEM
       activesupport (>= 2.3.6)
       mime-types
       treetop (>= 1.4.5)
+    mbeedle-heroku-autoscale (0.2.4)
+      eventmachine
+      heroku (>= 1.10)
+      rack (~> 1.0)
     memcached (1)
     mime-types (1.16)
     mocha (0.9.8)
@@ -273,11 +273,11 @@ DEPENDENCIES
   has_scope
   hassle!
   heroku
-  heroku-autoscale
   inherited_resources
   launchy
   machinist_mongo
   mail
+  mbeedle-heroku-autoscale
   memcached
   mocha
   mongo

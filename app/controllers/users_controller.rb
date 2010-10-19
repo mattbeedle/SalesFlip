@@ -1,8 +1,8 @@
 class UsersController < InheritedResources::Base
-  skip_before_filter :authenticate_user!, :only => [:new, :create]
+  skip_before_filter :authenticate_user!, :only => [ :new, :create ]
   skip_before_filter :log_viewed_item
-  before_filter :invitation, :only => [:new, :create]
-  before_filter :freelancer_redirect, :only => [:index]
+  before_filter :invitation, :only => [ :new, :create ]
+  before_filter :freelancer_redirect, :only => [ :index ]
 
   def create
     create! do |success, failure|

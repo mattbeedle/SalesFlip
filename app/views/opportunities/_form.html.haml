@@ -1,0 +1,23 @@
+%fieldset
+  .75.a= form.input :title
+  .25.z= form.input :stage, :collection => Opportunity.stages
+  .clear
+  .25.a= form.input :close_on, :as => :date, :start_year => Time.now.year, :start_month => Time.now.month, :start_day => Time.now.day
+  .25= form.input :probability
+  .25= form.input :amount
+  .25.z= form.input :discount
+  .clear
+  .75.a= form.input :contact_id, :collection => Contact.for_company(current_user.company).permitted_for(current_user).sort_by(&:name).map { |c| [c.name, c.id] }
+  .25.z= form.input :assignee_id, :collection => current_user.company.users.sort_by(&:email).map { |u| [u.email, u.id] }
+  .clear
+  .50.a= form.input :attachment, :as => :file
+  .clear
+- if !defined?(permissions) || (defined?(permissions) && permissions == true)
+  %h3= t('simple_form.labels.permissions')
+  %fieldset
+    = render :partial => 'shared/permissions_form', :locals => { :form => form, :p1 => '25 a', :p2 => '25' }
+- if !defined?(buttons) || (defined?(buttons) && buttons == true)
+  .act.pad
+    = form.button :submit
+    = t(:or)
+    = link_to t(:cancel), :back

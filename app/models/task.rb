@@ -6,6 +6,7 @@ class Task
   include Permission
   include Mongoid::Rails::MultiParameterAttributes
   include Activities
+  include Assignable
 
   field :name
   field :due_at,          :type => Time
@@ -18,7 +19,6 @@ class Task
 
   belongs_to_related :user
   belongs_to_related :asset, :polymorphic => true
-  belongs_to_related :assignee, :class_name => 'User'
   belongs_to_related :completed_by, :class_name => 'User'
 
   has_many_related :activities, :as => :subject, :dependent => :destroy
@@ -28,7 +28,7 @@ class Task
   before_create :set_recently_created
   before_update :log_reassignment
   before_save   :log_recently_changed
-  after_create  :assign_unassigned_lead, :assign_unassigned_lead
+  after_create  :assign_unassigned_asset
   after_update  :log_update
   after_save    :notify_assignee
 
@@ -187,8 +187,8 @@ protected
     @recently_changed = changed
   end
 
-  def assign_unassigned_lead
-    if asset and asset.is_a?(Lead) and asset.assignee.blank?
+  def assign_unassigned_asset
+    if asset && (asset.is_a?(Lead) || asset.is_a?(Opportunity)) && asset.assignee.blank?
       asset.update_attributes :assignee => self.user
     end
   end

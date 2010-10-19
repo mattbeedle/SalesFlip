@@ -1,0 +1,4 @@
+%h2.title= t(:add_opportunity)
+= simple_form_for @opportunity, :html => { :multipart => true } do |form|
+  = render :partial => 'form', :locals => { :form => form }
+  = hidden_field_tag :return_to, params[:return_to] if params[:return_to]

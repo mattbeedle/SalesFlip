@@ -61,9 +61,9 @@
 .clear
 
 .act.pad
-  = form.submit t('update_lead'), :id => "lead_submit"
-  = t('or')
-  = link_to t('back'), :back
+  = form.submit t(:update_lead), :id => 'lead_submit'
+  = t(:or)
+  = link_to t(:back), :back
 
 // Eliminates style flicker, but makes Matt very, very sad
 =# javascript_tag "new Base().initialize;"

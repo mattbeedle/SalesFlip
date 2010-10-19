@@ -1,0 +1,12 @@
+.title
+  %h2= @opportunity.title
+    
+= render :partial => 'tasks/add_task', :locals => { :object => @opportunity }
+
+= render :partial => 'comments/comments', :locals => { :object => @opportunity }
+
+%h3 Contact
+- if @opportunity.contact.blank?
+  = link_to t(:select_contact), [:edit, @opportunity]
+- else
+  = link_to @opportunity.contact.name, @opportunity.contact

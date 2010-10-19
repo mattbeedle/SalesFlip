@@ -8,6 +8,7 @@ class Lead
   include Trackable
   include Activities
   include Sunspot::Mongoid
+  include Assignable
 
   field :first_name
   field :last_name
@@ -44,7 +45,6 @@ class Lead
   attr_accessor :do_not_notify
 
   belongs_to_related  :user
-  belongs_to_related  :assignee, :class_name => 'User'
   belongs_to_related  :contact
   has_many_related    :comments, :as => :commentable, :dependent => :delete_all
   has_many_related    :tasks, :as => :asset, :dependent => :delete_all
@@ -62,7 +62,6 @@ class Lead
   named_scope :with_status, lambda { |statuses| { :where => {
     :status.in => statuses.map { |status| Lead.statuses.index(status) } } } }
   named_scope :unassigned, :where => { :assignee_id => nil }
-  named_scope :assigned_to, lambda { |user_id| { :where => { :assignee_id => user_id } } }
   named_scope :for_company, lambda { |company| { :where => { :user_id.in => company.users.map(&:id) } } }
 
   searchable do
@@ -93,6 +92,7 @@ class Lead
     else
       account = Account.find_or_create_for(self, account_name, options)
       contact = Contact.create_for(self, account)
+      opportunity = Opportunity.create_for(contact, options) if options[:opportunity]
       if [account, contact].all?(&:valid?)
         I18n.locale_around(:en) { update_attributes :status => 'Converted', :contact_id => contact.id }
       end

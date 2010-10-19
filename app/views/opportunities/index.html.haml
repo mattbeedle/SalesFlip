@@ -1,0 +1,33 @@
+.title
+  %h2= t(:opportunities).titleize
+  = add_new t(:add_opportunity), new_opportunity_path
+  
+- @opportunities.each do |opportunity|
+  %dl.item.opportunity
+    %dt{ :class => opportunity.stage }= opportunity.stage.capitalize
+    %dd
+      %strong= link_to opportunity.title, opportunity
+      %small
+        = '-'
+        = raw t(:added_ago_by, :time => l(opportunity.created_at, :format => :short), :by => opportunity.user.username)
+      %br/
+      = t(:opportunity_outline, :amount => number_to_currency(opportunity.amount, :precision => 2), :discount => number_to_percentage(opportunity.discount, :precision => 0), :probability => number_to_percentage(opportunity.probability, :precision => 0), :close_on => opportunity.close_on ? opportunity.close_on.to_s(:long) : nil)
+      = link_to opportunity.attachment.filename, opportunity.attachment.url unless opportunity.attachment.blank?
+      %span.actions
+        = link_to t(:edit), edit_opportunity_path(opportunity)
+= will_paginate @opportunities
+
+- content_for :sidebar do
+  .gold.box
+    %h3= t(:filter)
+    = form_tag '', :method => :get do
+      %ul.checks.stacked
+        - Opportunity.stages.each do |stage|
+          %li
+            = check_box_tag 'stage_is[]', stage, params[:stage_is] && params[:stage_is].include?(stage), :id => "stage_is_#{stage}"
+            %label{ :for => "stage_is_#{stage}" }= stage.capitalize
+      %ul.checks.stacked
+        %li
+          = check_box_tag 'assigned_to', current_user.id, params[:assigned_to]
+          %label{ :for => 'assigned_to' }= t(:assigned_to_me)
+      .clear= submit_tag t(:filter), :id => 'filter'

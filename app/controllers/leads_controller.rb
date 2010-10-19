@@ -56,7 +56,7 @@ class LeadsController < InheritedResources::Base
   def promote
     @lead.updater_id = current_user.id
     @account, @contact = @lead.promote!(
-      params[:account_id].blank? ? params[:account_name] : params[:account_id])
+      params[:account_id].blank? ? params[:account_name] : params[:account_id], params)
     if @account.errors.blank? and @contact.errors.blank?
       redirect_to account_path(@account)
     else
@@ -103,7 +103,7 @@ protected
   end
 
   def build_resource
-    if params[:lead] && (ids = params[:lead][:permitted_user_ids])
+    if params[:lead] && (ids = params[:lead][:permitted_user_ids]) && ids.is_a?(String)
       params[:lead][:permitted_user_ids] = ids.lines.to_a
     end
     @lead ||= Lead.new({ :updater => current_user, :user => current_user }.merge!(params[:lead] || {}))

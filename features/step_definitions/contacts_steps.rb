@@ -11,3 +11,7 @@ end
 Then /^#{capture_model} should have a contact with first_name: "(.+)"$/ do |target, first_name|
   assert model!(target).contacts.find(:first, :conditions => { :first_name => first_name })
 end
+
+Then /^the newly created contact should have an opportunity$/ do
+  assert_equal 1, Contact.first.opportunities.count
+end

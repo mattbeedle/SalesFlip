@@ -226,3 +226,7 @@ Search.blueprint do
   user { User.make(:annika) }
   terms { Sham.name }
 end
+
+Opportunity.blueprint do
+  title { Sham.name }
+end

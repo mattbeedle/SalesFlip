@@ -8,6 +8,7 @@ class Account
   include Trackable
   include Activities
   include Sunspot::Mongoid
+  include Assignable
 
   field :name
   field :email
@@ -24,7 +25,6 @@ class Account
   has_constant :account_types, lambda { I18n.t('account_types') }
 
   belongs_to_related :user
-  belongs_to_related :assignee, :class_name => 'User'
   has_many_related :contacts, :dependent => :nullify
   has_many_related :tasks, :as => :asset
   has_many_related :comments, :as => :commentable

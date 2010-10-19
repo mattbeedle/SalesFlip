@@ -8,6 +8,7 @@ class Contact
   include Trackable
   include Activities
   include Sunspot::Mongoid
+  include Assignable
 
   field :first_name
   field :last_name
@@ -43,20 +44,20 @@ class Contact
   before_create :set_identifier
   before_save   :set_full_name
 
-  has_constant :accesses, lambda { I18n.t('access_levels') }
-  has_constant :titles, lambda { I18n.t('titles') }
-  has_constant :sources,  lambda { I18n.t('lead_sources') }
-  has_constant :salutations, lambda { I18n.t('salutations') }
+  has_constant :accesses,     lambda { I18n.t(:access_levels) }
+  has_constant :titles,       lambda { I18n.t(:titles) }
+  has_constant :sources,      lambda { I18n.t(:lead_sources) }
+  has_constant :salutations,  lambda { I18n.t(:salutations) }
 
   belongs_to_related :account
   belongs_to_related :user
-  belongs_to_related :assignee, :class_name => 'User'
   belongs_to_related :lead
 
   has_many_related :tasks, :as => :asset, :dependent => :destroy
   has_many_related :comments, :as => :commentable, :dependent => :delete_all
   has_many_related :leads, :dependent => :destroy
   has_many_related :emails, :as => :commentable, :dependent => :delete_all
+  has_many_related :opportunities, :dependent => :destroy
 
   named_scope :for_company, lambda { |company| {
     :where => { :user_id.in => company.users.map(&:id) } } }

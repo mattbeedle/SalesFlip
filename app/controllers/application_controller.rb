@@ -24,7 +24,7 @@ protected
   end
 
   def fix_array_params
-    [:lead, :contact, :account].each do |type|
+    [:lead, :contact, :account, :opportunity].each do |type|
       if params[type] && params[type][:permitted_user_ids] && params[type][:permitted_user_ids].is_a?(String)
         params[type][:permitted_user_ids] = params[type][:permitted_user_ids].lines.to_a
       end

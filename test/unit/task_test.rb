@@ -304,6 +304,19 @@ class TaskTest < ActiveSupport::TestCase
         assert_equal @lead.reload.assignee, @user
       end
     end
+    
+    context 'when created against an unassigned opportunity' do
+      setup do
+        @opportunity = Opportunity.make :assignee_id => nil
+        @user = User.make
+      end
+      
+      should 'assign the opportunity to the user who create the task' do
+        @opportunity.tasks.create! :user => @user, :name => 'test', :due_at => Time.zone.now,
+          :category => Task.categories.first
+        assert_equal @opportunity.reload.assignee, @user
+      end
+    end
 
     should 'be valid with all required attributes' do
       assert @task.valid?

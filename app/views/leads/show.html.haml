@@ -45,7 +45,7 @@
 - if @lead.notes.present?
   .notes= raw @lead.notes
 
-= render :partial => "tasks/add_task", :locals => { :object => @lead }
+= render :partial => 'tasks/add_task', :locals => { :object => @lead }
 
 = render :partial => 'comments/comments', :locals => { :object => @lead }
 

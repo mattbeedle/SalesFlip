@@ -74,17 +74,16 @@ Feature: Manage leads
     And I should see "This is a good lead"
     And 1 comments should exist
 
-  # TODO seems to be a webrat bug breaking this feature
-  #Scenario: Adding an comment with an attachment
-  #  Given I am registered and logged in as annika
-  #  And a lead exists with user: annika
-  #  And I am on the lead's page
-  #  And I fill in "comment_text" with "Sent offer"
-  #  And I attach the file at "test/upload-files/erich_offer.pdf" to "Attachment"
-  #  When I press "comment_submit"
-  #  Then I should be on the lead page
-  #  And I should see "Sent offer"
-  #  And I should see "erich_offer.pdf"
+  Scenario: Adding an comment with an attachment
+    Given I am registered and logged in as annika
+    And a lead exists with user: annika
+    And I am on the lead's page
+    And I fill in "comment_text" with "Sent offer"
+    And I attach the file "/Users/mattbeedle/development/salesflip/test/upload-files/erich_offer.pdf" to "Attachment"
+    When I press "comment_submit"
+    Then I should be on the lead page
+    And I should see "Sent offer"
+    And I should see "erich_offer.pdf"
 
   Scenario: Editing a lead
     Given I am registered and logged in as annika
@@ -285,6 +284,19 @@ Feature: Manage leads
     And a new "Created" activity should have been created for "Contact" with "first_name" "Erich" and user: "annika"
     And a new "Converted" activity should have been created for "Lead" with "first_name" "Erich" and user: "annika"
     And a new "Created" activity should have been created for "Account" with "name" "World Dating" and user: "annika"
+    
+  Scenario: Converting a lead to a new account and with an opportunity
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And a lead: "erich" exists with user: benny
+    And I am on the lead's page
+    When I follow "Convert"
+    And I fill in "account_name" with "World Dating"
+    And I fill in "opportunity_title" with "A great opportunity"
+    And I press "convert"
+    Then I should be on the account page
+    And 1 opportunities should exist with title: "A great opportunity"
+    And the newly created contact should have an opportunity
 
   Scenario: Converting a lead to an existing account
     Given I am registered and logged in as annika
