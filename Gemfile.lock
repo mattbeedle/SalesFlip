@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/jnicklas/carrierwave.git
-  revision: c6d17f2f455f9817fde31fee40625a7fcbcbf877
+  revision: 92213faead44e6d621a196689db918f7a7c0be9f
   specs:
     carrierwave (0.5.0)
       activesupport (~> 3.0)
@@ -21,13 +21,6 @@ GIT
     hassle (0.0.1)
       haml
       rack
-
-GIT
-  remote: git://github.com/maccman/remail.git
-  revision: bd108e68d1f50da7cef9e07e8dae9dac7f98571a
-  specs:
-    remail (0.0.3)
-      activeresource
 
 GIT
   remote: git://github.com/mattbeedle/mongo_session_store.git
@@ -93,8 +86,8 @@ GEM
       ZenTest
     bcrypt-ruby (2.1.2)
     beanstalk-client (1.1.0)
-    bson (1.1)
-    bson_ext (1.1)
+    bson (1.1.1)
+    bson_ext (1.1.1)
     builder (2.1.2)
     capybara (0.3.9)
       culerity (>= 0.2.4)
@@ -103,7 +96,7 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       selenium-webdriver (>= 0.0.3)
-    childprocess (0.0.7)
+    childprocess (0.1.3)
       ffi (~> 0.6.3)
     chronic (0.2.3)
       hoe (>= 1.2.1)
@@ -132,13 +125,13 @@ GEM
     fakeweb (1.3.0)
     ffi (0.6.3)
       rake (>= 0.8.7)
-    gherkin (2.2.8)
+    gherkin (2.2.9)
       json (~> 1.4.6)
       term-ansicolor (~> 1.0.5)
-    haml (3.0.21)
+    haml (3.0.22)
     has_constant (0.2.9)
     has_scope (0.5.0)
-    heroku (1.10.14)
+    heroku (1.11.0)
       json_pure (>= 1.2.0, < 1.5.0)
       launchy (~> 0.3.2)
       rest-client (>= 1.4.0, < 1.7.0)
@@ -202,22 +195,24 @@ GEM
       rake (>= 0.8.4)
       thor (~> 0.14.0)
     rake (0.8.7)
+    remail (0.0.3)
+      activeresource
     responders (0.6.2)
     rest-client (1.6.1)
       mime-types (>= 1.16)
     riddle (1.1.0)
     rsolr (0.12.1)
       builder (>= 2.1.2)
-    rspec (2.0.0)
-      rspec-core (= 2.0.0)
-      rspec-expectations (= 2.0.0)
-      rspec-mocks (= 2.0.0)
-    rspec-core (2.0.0)
-    rspec-expectations (2.0.0)
+    rspec (2.0.1)
+      rspec-core (~> 2.0.1)
+      rspec-expectations (~> 2.0.1)
+      rspec-mocks (~> 2.0.1)
+    rspec-core (2.0.1)
+    rspec-expectations (2.0.1)
       diff-lcs (>= 1.1.2)
-    rspec-mocks (2.0.0)
-      rspec-core (= 2.0.0)
-      rspec-expectations (= 2.0.0)
+    rspec-mocks (2.0.1)
+      rspec-core (~> 2.0.1)
+      rspec-expectations (~> 2.0.1)
     rubyforge (2.0.4)
       json_pure (>= 1.1.7)
     rubyzip (0.9.4)
@@ -288,7 +283,7 @@ DEPENDENCIES
   pickle-mongoid
   rack-gridfs!
   rails (= 3.0.0)
-  remail!
+  remail
   riddle
   salesflip-lead_notifications
   shoulda
