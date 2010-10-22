@@ -1,89 +1,92 @@
 //---------------------------------------------------
 // Task Deadlines
 //---------------------------------------------------
-!overdue = #f00
-!due_today = #006200
-!due_tomorrow = #000
-!due_this_week = #3b7d80
-!due_next_week = #4882b3
-!due_later = #667acc
+$overdue: red
+$due_today: #006200
+$due_tomorrow: black
+$due_this_week: #3b7d80
+$due_next_week: #4882b3
+$due_later: #667acc
+
 h3.deadline
   +border-left-radius(3px)
-  :color #fff
-  :padding 5px 10px
+  color: white
+  padding: 5px 10px
   &#overdue
-    +h-grad(!overdue,#fff)
+    +h-grad($overdue, white)
   &#due_today
-    +h-grad(#000,#fff)
+    +h-grad(black, white)
   &#due_tomorrow
-    +h-grad(#222,#fff)
+    +h-grad(#222222, white)
   &#due_this_week
-    +h-grad(#444,#fff)
+    +h-grad(#444444, white)
   &#due_next_week
-    +h-grad(#666,#fff)
+    +h-grad(#666666, white)
   &#due_later
-    +h-grad(#888,#fff)
+    +h-grad(#888888, white)
 
 .item dd input[type=submit]
-  :background transparent
-  :border none
-  :color = !link
-  :padding 0
-  +text-shadow(#fff, 0px, 0px,0px)
-  +box-shadow(#fff, 0px, 0px,0px)
+  background: transparent
+  border: none
+  color: $link
+  padding: 0
+  +text-shadow(white, 0px, 0px, 0px)
+  +box-shadow(white, 0px, 0px, 0px)
 
 //---------------------------------------------------
 // Task Categories
 //---------------------------------------------------
-!call = #b5e7ff
-!email = #ffdeba
-!follow_up = #b5ffda
-!lunch = #ffd2ba
-!meeting = #f5ed9d
-!money = #d1ffba
-!presentation = #dedede
-!trip = #dec7ff
-=task-category(!color)
-  :background = !color
-  :color = !color - 90
+$call: #b5e7ff
+$email: #ffdeba
+$follow_up: #b5ffda
+$lunch: #ffd2ba
+$meeting: #f5ed9d
+$money: #d1ffba
+$presentation: #dedede
+$trip: #dec7ff
+
+=task-category($color)
+  background: $color
+  color: $color - 90
 
 dl.item.task
   &.completed dd
-    :padding-left 10px
-    :width 85%
+    padding-left: 10px
+    width: 85%
   dd
     span.actions
-      :width auto
+      width: auto
+
 dl.item
   dt
     &.no-source
-      +task-category(#ccc)
+      +task-category(#cccccc)
     &.call, &.new, &.lead
-      +task-category(!call)
+      +task-category($call)
     &.email, &.contacted, &.contact
-      +task-category(!email)
+      +task-category($email)
     &.follow-up, &.converted, &.account
-      +task-category(!follow_up)
+      +task-category($follow_up)
     &.lunch, &.rejected, &.task
-      +task-category(!lunch)
+      +task-category($lunch)
     &.meeting, &.comment
-      +task-category(!meeting)
+      +task-category($meeting)
     &.money
-      +task-category(!money)
+      +task-category($money)
     &.presentation
-      +task-category(!presentation)
+      +task-category($presentation)
     &.trip
-      +task-category(!trip)
-  
+      +task-category($trip)
+
 //---------------------------------------------------
 // Task Assets
 //---------------------------------------------------
 small.asset
-  :font-size 11px
-  :color #bbb
+  font-size: 11px
+  color: #bbbbbb
   a
-    :color #969696
-    :font-weight bold
-    :text-decoration none
+    color: #969696
+    font-weight: bold
+    text-decoration: none
     &:hover
-      :text-decoration underline
+      text-decoration: underline

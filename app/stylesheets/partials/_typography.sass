@@ -1,51 +1,54 @@
 body, h1, h2, h3, h4, h5, h6, p, ol, ul, dl, strong, em, div, a, table
-  :font-family "Lucida Grande", "Lucida Sans Unicode", helvetica, arial, sans-serif
+  font-family: "Lucida Grande", "Lucida Sans Unicode", helvetica, arial, sans-serif
 
 h1
-  :font-size 24px
+  font-size: 24px
+
 h2
-  :font-size 20px
-  :margin-top 0px
+  font-size: 20px
+  margin-top: 0px
+
 h3
-  :font-size 16px
-  
-  
+  font-size: 16px
+
 h1,h2,h3,h4,h5
   &.underline
-    :border-bottom 2px solid #ddd
+    border-bottom: 2px solid #dddddd
   &.grad
     +border-left-radius(3px)
-    :color #fff
-    +h-grad(#000,#fff)
-    :padding 3px 8px
+    color: white
+    +h-grad(black, white)
+    padding: 3px 8px
 
-  
 h4
-  :font-size 14px
+  font-size: 14px
+
 p, ol, ul, table
-  :font-size 13px
-    
+  font-size: 13px
+
 .right
-  :text-align right
+  text-align: right
 
 ul.square
-  :padding-left 15px
-  :list-style-type square
+  padding-left: 15px
+  list-style-type: square
 
 ul.plain
-  :padding-left 15px
-  :list-style-type none
+  padding-left: 15px
+  list-style-type: none
 
 a
-  :color = !link
+  color: $link
   &:hover
-    :color #000
+    color: black
+
 small.acted
-  :color #777
-  :font-style italic
+  color: #777777
+  font-style: italic
+
 small.xs
-  :font-size 11px
+  font-size: 11px
+
 em.timestamp
-  :font-size 11px
-  :color #888
-  
+  font-size: 11px
+  color: #888888
