@@ -4,7 +4,7 @@ class EmailReader
     imap = Net::IMAP.new(configuration.imap_host, 993, true)
     imap.login(configuration.imap_user, configuration.imap_password)
     imap.select('INBOX')
-    imap.search(["NOT", "DELETED", "NOT", "SEEN"]).each do |message_id|
+    imap.search(['NOT', 'DELETED', 'NOT', 'SEEN']).each do |message_id|
       email = Mail.new(imap.fetch(message_id, 'RFC822')[0].attr['RFC822'])
       imap.store(message_id, '+FLAGS', [:Deleted]) if parse_email(email)
     end
