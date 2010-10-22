@@ -103,7 +103,8 @@ protected
   end
 
   def build_resource
-    if params[:lead] && (ids = params[:lead][:permitted_user_ids])
+    if params[:lead] && (ids = params[:lead][:permitted_user_ids]) &&
+      params[:lead][:permitted_user_ids].is_a?(String)
       params[:lead][:permitted_user_ids] = ids.lines.to_a
     end
     @lead ||= Lead.new({ :updater => current_user, :user => current_user }.merge!(params[:lead] || {}))
