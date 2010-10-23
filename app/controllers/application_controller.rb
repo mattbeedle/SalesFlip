@@ -7,7 +7,6 @@ class ApplicationController < ActionController::Base
   layout 'application'
 
   before_filter :authenticate_user!
-  before_filter :configuration_check
   before_filter :bson_ids
   before_filter :fix_array_params
   before_filter "hook(:app_before_filter, self)"
@@ -52,12 +51,6 @@ protected
       redirect_to params[:return_to]
     else
       redirect_to default
-    end
-  end
-
-  def configuration_check
-    unless @configuration ||= Configuration.first
-      @configuration = Configuration.create!
     end
   end
 

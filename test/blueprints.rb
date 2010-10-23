@@ -17,11 +17,6 @@ Invitation.blueprint do
   user_type { 'User' }
 end
 
-Configuration.blueprint do
-  domain_name 'lean-crm.com'
-  company_name 'A company'
-end
-
 Company.blueprint do
   name
 end

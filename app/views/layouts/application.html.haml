@@ -13,9 +13,8 @@
       .pad
         %h1
           = link_to root_path do
-            %strong.logo SalesFlip:
-            = @configuration.company_name if @configuration
-        = render :partial => "layouts/nav" if current_user
+            %strong.logo SalesFlip
+        = render :partial => 'layouts/nav' if current_user
     #content
       .pad
         - if flash[:notice]
@@ -30,7 +29,7 @@
           - if user_signed_in?
             #search
               = simple_form_for @search || Search.new do |form|
-                .100= form.input :terms, :label => t('search_people')
+                .100= form.input :terms, :label => t(:search_people)
                 .boolean
                   = check_box_tag 'search[collections][]', 'Lead', (params[:search] && params[:search][:collections].include?('Lead')) || (!@search && params[:search].blank?) || (@search and @search.collections.include?('Lead')), :id => 'search_collections_lead'
                   %label{ :for => 'search_collections_lead' }= t('leads')
@@ -41,19 +40,19 @@
                   = check_box_tag 'search[collections][]', 'Account', (params[:search] && params[:search][:collections].include?('Account')) || (!@search && params[:search].blank?) || (@search and @search.collections.include?('Account')), :id => 'search_collections_account'
                   %label{ :for => 'search_collections_account' }= t('accounts')
                 .clear
-                .100= form.input :company, :label => t('search_companies')
+                .100= form.input :company, :label => t(:search_companies)
                 .clear
                 .clear
                 .act
-                  = form.submit t('search')
-                  - if controller_is('searches')
+                  = form.submit t(:search)
+                  - if controller_is(:searches)
                     %span
                       or
-                      = link_to t('go_back'), :back
+                      = link_to t(:go_back), :back
           = raw yield(:sidebar)
           - if action_is('index')
             #recent_items.box.ice
-              %h3= t('recent_items')
+              %h3= t(:recent_items)
               %ul.plain
                 - current_user.recent_items.each do |item|
                   %li

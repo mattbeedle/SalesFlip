@@ -137,7 +137,6 @@ class ActiveSupport::TestCase
       rescue
       end
     end
-    Configuration.make
     FakeWeb.allow_net_connect = false
     ActionMailer::Base.deliveries.clear
     FakeWeb.register_uri(:post, 'http://localhost:8981/solr/update?wt=ruby', :body => '')
