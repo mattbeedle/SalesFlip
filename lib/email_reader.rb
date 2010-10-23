@@ -90,7 +90,7 @@ protected
   end
 
   def self.find_user_from( email )
-    api_key = email.to.to_a.first.split('@').last.split('.').first
+    api_key = email.to.to_a.first.split('@').first
     user = User.first(:conditions => { :api_key => api_key })
     user = User.first(:conditions => { :email => email.from.to_a.first.strip }) if user.nil?
     user

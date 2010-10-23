@@ -99,7 +99,7 @@ class UserTest < ActiveSupport::TestCase
 
     should 'have dropbox email' do
       @user.save!
-      assert_equal "dropbox@#{@user.api_key}.salesflip.com", @user.dropbox_email
+      assert_equal "#{@user.api_key}@salesflip.appspotmail.com", @user.dropbox_email
     end
 
     context 'when invited' do

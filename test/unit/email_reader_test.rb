@@ -147,7 +147,7 @@ class EmailReaderTest < ActiveSupport::TestCase
     setup do
       @user = User.make(:annika, :email => 'matt.beedle@1000jobboersen.de')
       @email = Mail.new(File.read("#{Rails.root}/test/support/forwarded_outgoing.txt").strip)
-      @email.stubs(:to).returns(["dropbox@#{@user.api_key}.1000jobboersen.de"])
+      @email.stubs(:to).returns(["#{@user.api_key}@salesflip.appspotmail.com"])
     end
 
     context 'when receiver exists as a lead' do
@@ -205,7 +205,7 @@ class EmailReaderTest < ActiveSupport::TestCase
     setup do
       @user = User.make(:annika)
       @email = Mail.new(File.read("#{Rails.root}/test/support/forwarded_reply.txt").strip)
-      @email.stubs(:to).returns(["dropbox@#{@user.api_key}.1000jobboersen.de"])
+      @email.stubs(:to).returns(["#{@user.api_key}@salesflip.appspotmail.com"])
     end
 
     context 'when sender exists as a lead' do

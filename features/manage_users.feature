@@ -9,7 +9,7 @@ Feature: Manage users
     When I follow "profile"
     Then I should see "annika.fleischer@1000jobboersen.de"
     And I should see "My Profile"
-    And I should see "dropbox@"
+    And I should see "@salesflip.appspotmail.com"
     And an activity should not exist
 
   Scenario: Inviting a user

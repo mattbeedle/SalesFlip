@@ -76,7 +76,7 @@ class User
   end
 
   def dropbox_email
-    "dropbox@#{api_key}.salesflip.com"
+    "#{api_key}@salesflip.appspotmail.com"
   end
 
 protected

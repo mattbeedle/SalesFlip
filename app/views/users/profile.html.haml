@@ -1,11 +1,11 @@
-%h2.title= t('my_profile')
+%h2.title= t(:my_profile)
 %dl.profile
   %dt Email
   %dd= @user.email
 %dl.profile
   %dt Dropbox
   %dd
-    = mail_to "dropbox@#{@user.api_key}.salesflip.com"
+    = mail_to "#{@user.api_key}@salesflip.appspotmail.com"
     %span.help
       %span.up-arrow &#11014;
       %em= t('info.dropbox')
