@@ -77,11 +77,10 @@ protected
   end
 
   def similarity_check
-    return if params[:similarity_off]
-    build_resource
-    @similar_accounts ||= Account.for_company(current_user.company).similar_accounts(@account.name)
-    if @similar_accounts.any?
-      render :action => :did_you_mean
+    unless params[:similarity_off]
+      build_resource
+      @similar_accounts ||= Account.for_company(current_user.company).similar_accounts(@account.name)
+      render :action => :did_you_mean if @similar_accounts.any?
     end
   end
 end
