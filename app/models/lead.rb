@@ -38,6 +38,8 @@ class Lead
   field :facebook
   field :xing
   field :identifier,    :type => Integer
+  
+  index :status, :created_at
 
   validates_presence_of :user, :last_name
 
