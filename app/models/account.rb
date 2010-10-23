@@ -19,6 +19,8 @@ class Account
   field :shipping_address
   field :identifier,        :type => Integer
   field :account_type,      :type => Integer
+  
+  index :name
 
   has_constant :accesses, lambda { I18n.t('access_levels') }
   has_constant :account_types, lambda { I18n.t('account_types') }
