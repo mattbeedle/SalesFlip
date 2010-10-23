@@ -160,7 +160,7 @@ en:
   results: Results
   search_results_for: "Search Results for \"%{terms}\" (%{total} items found)"
   by_company: "By Company"
-  search_people: Search People
+  search_people: Quick Search
   search_companies: Search Companies
 
   #--------------------------------------------------------------
