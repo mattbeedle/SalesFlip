@@ -38,6 +38,7 @@ gem 'salesflip-lead_notifications', :require => 'lead_notifications'
 
 group :production do
   gem 'smurf'
+  gem 'mbeedle-heroku-autoscale', :require => 'heroku/autoscale'
 end
 
 group :development do
@@ -60,5 +61,4 @@ group :test do
   gem 'faker'
   gem 'shoulda'
   gem 'database_cleaner'
-  gem 'heroku-autoscale', :require => 'heroku/autoscale'
 end
