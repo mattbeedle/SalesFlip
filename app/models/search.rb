@@ -6,7 +6,7 @@ class Search
   field :collections, :type => Array
   field :company
 
-  belongs_to_related :user
+  belongs_to_related :user, :index => true
 
   validate :criteria_entered?
 

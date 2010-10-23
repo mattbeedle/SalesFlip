@@ -39,18 +39,19 @@ class Lead
   field :xing
   field :identifier,    :type => Integer
   
-  index :status, :created_at
+  index :status
+  index :created_at
 
   validates_presence_of :user, :last_name
 
   attr_accessor :do_not_notify
 
-  belongs_to_related  :user
-  belongs_to_related  :assignee, :class_name => 'User'
-  belongs_to_related  :contact
-  has_many_related    :comments, :as => :commentable, :dependent => :delete_all
-  has_many_related    :tasks, :as => :asset, :dependent => :delete_all
-  has_many_related    :emails, :as => :commentable, :dependent => :delete_all
+  belongs_to_related  :user, :index => true
+  belongs_to_related  :assignee, :class_name => 'User', :index => true
+  belongs_to_related  :contact, :index => true
+  has_many_related    :comments, :as => :commentable, :dependent => :delete_all, :index => true
+  has_many_related    :tasks, :as => :asset, :dependent => :delete_all, :index => true
+  has_many_related    :emails, :as => :commentable, :dependent => :delete_all, :index => true
 
   before_validation :set_initial_state
   before_create     :set_identifier, :set_recently_created

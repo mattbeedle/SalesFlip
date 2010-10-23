@@ -16,12 +16,12 @@ class Task
 
   has_constant :categories, lambda { I18n.t(:task_categories) }
 
-  belongs_to_related :user
-  belongs_to_related :asset, :polymorphic => true
-  belongs_to_related :assignee, :class_name => 'User'
-  belongs_to_related :completed_by, :class_name => 'User'
+  belongs_to_related :user, :index => true
+  belongs_to_related :asset, :polymorphic => true, :index => true
+  belongs_to_related :assignee, :class_name => 'User', :index => true
+  belongs_to_related :completed_by, :class_name => 'User', :index => true
 
-  has_many_related :activities, :as => :subject, :dependent => :destroy
+  has_many_related :activities, :as => :subject, :dependent => :destroy, :index => true
 
   validates_presence_of :user, :name, :due_at, :category
 

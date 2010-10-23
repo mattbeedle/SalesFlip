@@ -12,15 +12,15 @@ class User
 
   attr_accessor :company_name
 
-  has_many_related  :leads
-  has_many_related  :comments
-  has_many_related  :tasks
-  has_many_related  :accounts
-  has_many_related  :contacts
-  has_many_related  :activities
-  has_many_related  :searches
-  has_many_related  :invitations, :as => :inviter, :dependent => :destroy
-  has_one_related   :invitation, :as => :invited
+  has_many_related  :leads, :index => true
+  has_many_related  :comments, :index => true
+  has_many_related  :tasks, :index => true
+  has_many_related  :accounts, :index => true
+  has_many_related  :contacts, :index => true
+  has_many_related  :activities, :index => true
+  has_many_related  :searches, :index => true
+  has_many_related  :invitations, :as => :inviter, :dependent => :destroy, :index => true
+  has_one_related   :invitation, :as => :invited, :index => true
 
   belongs_to_related :company
 

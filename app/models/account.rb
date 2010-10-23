@@ -25,13 +25,14 @@ class Account
   has_constant :accesses, lambda { I18n.t('access_levels') }
   has_constant :account_types, lambda { I18n.t('account_types') }
 
-  belongs_to_related :user
-  belongs_to_related :assignee, :class_name => 'User'
-  has_many_related   :contacts, :dependent => :nullify
-  has_many_related   :tasks, :as => :asset
-  has_many_related   :comments, :as => :commentable
-  belongs_to_related :parent, :class_name => 'Account'
-  has_many_related   :children, :class_name => 'Account', :foreign_key => 'parent_id'
+  belongs_to_related :user, :index => true
+  belongs_to_related :assignee, :class_name => 'User', :index => true
+  belongs_to_related :parent, :class_name => 'Account', :index => true
+  
+  has_many_related   :contacts, :dependent => :nullify, :index => true
+  has_many_related   :tasks, :as => :asset, :index => true
+  has_many_related   :comments, :as => :commentable, :index => true
+  has_many_related   :children, :class_name => 'Account', :foreign_key => 'parent_id', :index => true
 
   validates_presence_of :user, :name
 
