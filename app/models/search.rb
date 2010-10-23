@@ -24,8 +24,8 @@ class Search
 private
   def criteria_entered?
     if self.terms.blank? and self.company.blank?
-      self.errors.add :terms, I18n.t('activerecord.errors.messages.blank')
-      self.errors.add :company, I18n.t('activerecord.errors.messages.blank')
+      self.errors.add :terms, I18n.t('activemodel.errors.messages.blank')
+      self.errors.add :company, I18n.t('activemodel.errors.messages.blank')
     end
   end
 end
