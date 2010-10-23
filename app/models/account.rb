@@ -25,9 +25,11 @@ class Account
 
   belongs_to_related :user
   belongs_to_related :assignee, :class_name => 'User'
-  has_many_related :contacts, :dependent => :nullify
-  has_many_related :tasks, :as => :asset
-  has_many_related :comments, :as => :commentable
+  has_many_related   :contacts, :dependent => :nullify
+  has_many_related   :tasks, :as => :asset
+  has_many_related   :comments, :as => :commentable
+  belongs_to_related :parent, :class_name => 'Account'
+  has_many_related   :children, :class_name => 'Account', :foreign_key => 'parent_id'
 
   validates_presence_of :user, :name
 
@@ -46,6 +48,13 @@ class Account
   def self.assigned_to( user_id )
     user_id = BSON::ObjectId.from_string(user_id) if user_id.is_a?(String)
     any_of({ :assignee_id => user_id }, { :user_id => user_id, :assignee_id => nil })
+  end
+  
+  def self.similar_accounts( name )
+    ids = Account.only(:id, :name).map do |account|
+      [account.id, name.levenshtein_similar(account.name)]
+    end.select { |similarity| similarity.last > 0.5 }.map(&:first)
+    Account.where(:_id.in => ids)
   end
 
   def self.exportable_fields
