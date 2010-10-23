@@ -6,7 +6,9 @@ class EmailsController < ApplicationController
     if request.headers['Authorization'] != '20015510-959d-012d-a4ae-001c25a0b06f'
       return head(:unauthorized)
     else
-      UserMailer.receive(params[:email][:raw])
+      unless UserMailer.receive(params[:email][:raw])
+        MailQueues.create :mail => params[:email][:raw]
+      end
       head :ok
     end
   end
