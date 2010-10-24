@@ -219,6 +219,7 @@ en:
   # Leads
   #--------------------------------------------------------------
   add_lead: Add Lead
+  update_lead: Update Lead
   company: Company
   contact_info: Contact Info
   convert: Convert
