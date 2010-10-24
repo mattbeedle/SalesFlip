@@ -39,8 +39,12 @@ class Lead
   field :xing
   field :identifier,    :type => Integer
   
-  index :status
-  index :created_at
+  index(
+    [
+      [:status, Mongo::DESCENDING],
+      [:created_at, Mongo::DESCENDING]
+    ]
+  )
 
   validates_presence_of :user, :last_name
 
