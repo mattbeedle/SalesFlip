@@ -7,9 +7,9 @@ class LeadsController < InheritedResources::Base
   respond_to :csv, :only => [ :index ]
 
   has_scope :with_status, :type => :array
-  has_scope :unassigned, :type => :boolean
+  has_scope :unassigned,  :type => :boolean
   has_scope :assigned_to
-  has_scope :source_is, :type => :array
+  has_scope :source_is,   :type => :array
 
   def index
     index! do |format|
