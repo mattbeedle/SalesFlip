@@ -24,6 +24,40 @@ en:
   users: Users
   invitations: Invitations
   yes_use: "Yes, use"
+  
+  activemodel:
+    errors:
+      models:
+        user:
+          attributes:
+            read_terms:
+              inclusion: You must agree to the terms to register
+      template:
+        header:
+          one:    "%{model} could not be saved: 1 Error."
+          other:  "%{model} could not be saved: %{count} Errors."
+        body: "Please check the following fields:"
+      messages:
+        inclusion: "is not a valid value"
+        exclusion: "is not available"
+        invalid: "is not valid"
+        confirm: "does not match confirmation"
+        accepted: "must be accepted"
+        empty: "can't be empty"
+        blank: "can't be blank"
+        too_long: "is too long (no more than %{count} characters)"
+        too_short: "is too short (no less than %{count} characters)"
+        wrong_length: "wronglength (must have exactly %{count} characters)"
+        taken: "is already taken"
+        not_a_number: "is not number"
+        greater_than: "must be larger than %{count}"
+        greater_than_or_equal_to: "must be greater than or equal to %{count}"
+        equal_to: "must be equal to %{count}"
+        less_than: "must be less than %{count}"
+        less_than_or_equal_to: "must be less than or equal to %{count}"
+        odd: "must be odd"
+        even: "must be even"
+        already_invited: "already on our invitation list"
 
   #--------------------------------------------------------------
   # Time
