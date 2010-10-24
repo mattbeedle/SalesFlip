@@ -33,6 +33,7 @@ gem 'sunspot_mongoid',      :git => 'git://github.com/jugyo/sunspot_mongoid.git'
 gem 'remail'
 gem 'rack-gridfs',          :require => 'rack/gridfs', :git => 'git://github.com/mattbeedle/rack-gridfs.git'
 gem 'amatch'
+gem 'gravtastic'
 
 # Plugins
 gem 'salesflip-lead_notifications', :require => 'lead_notifications'

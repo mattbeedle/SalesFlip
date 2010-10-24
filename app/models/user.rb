@@ -1,6 +1,8 @@
 class User
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Gravtastic
+  is_gravtastic
 
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable, :lockable and :timeoutable

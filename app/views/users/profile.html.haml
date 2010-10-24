@@ -1,6 +1,9 @@
 %h2.title= t(:my_profile)
 %dl.profile
-  %dt Email
+  %dt= t(:avatar)
+  %dd= image_tag @user.gravatar_url
+%dl.profile
+  %dt= t(:email)
   %dd= @user.email
 %dl.profile
   %dt Dropbox
@@ -9,4 +12,3 @@
     %span.help
       %span.up-arrow &#11014;
       %em= t('info.dropbox')
-  

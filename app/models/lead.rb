@@ -8,6 +8,8 @@ class Lead
   include Trackable
   include Activities
   include Sunspot::Mongoid
+  include Gravtastic
+  is_gravtastic
 
   field :first_name
   field :last_name

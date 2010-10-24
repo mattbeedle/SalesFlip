@@ -15,9 +15,9 @@
           = form.button :submit, t('keep_me_updated'), :id => 'keep_me_updated'
   %br/
   %small
-    = raw t('added_ago_by', :time => l(@account.created_at, :format => :short), :by => @account.user.username)
+    = raw t(:added_ago_by, :time => l(@account.created_at, :format => :short), :by => @account.user.username)
 .clear
-%h3= t('contacts')
+%h3= t(:contacts)
 .contacts
   - @account.contacts.each do |contact|
     = render :partial => 'contacts/contact_with_assets', :locals => {:contact => contact }
@@ -27,7 +27,7 @@
 
 - content_for :sidebar do
   .box.gold
-    %h3= t('contact_info_for', :name => @account.name)
+    %h3= t(:contact_info_for, :name => @account.name)
     %dl.info
       = show_attribute(@account, 'identifier')
       = show_attribute(@account, 'email', mail_to(@account.email, nil, :bcc => current_user.dropbox_email))
@@ -44,7 +44,7 @@
         - @account.children.each do |child|
           %li= link_to child.name, child
   #recent_activity.box.ice
-    %h3= t('recent_activity_for', :name => @account.full_name )
+    %h3= t(:recent_activity_for, :name => @account.full_name )
     = render :partial => 'shared/activity_for', :collection => @account.related_activities.limit(6), :as => :activity
     
   

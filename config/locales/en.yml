@@ -97,6 +97,7 @@ en:
   deliminator: Deliminator
   fields: Fields
   recent_activity: Recent Activity
+  avatar: Avatar
   
   #--------------------------------------------------------------
   # Form Labels
@@ -160,6 +161,7 @@ en:
   create_new_account: "No, Create New Account"
   account_may_exist: This account may already exist
   use_existing_account: Would you like to use an existing account instead?
+  accounts_created_accepted: Accounts (created/accepted)
 
   #--------------------------------------------------------------
   # Search
@@ -215,6 +217,7 @@ en:
   edit_contact: Edit Contact
   info_for: "Info for %{name}"
   no_contact_info: "No contact info for %{name}"
+  contacts_created_accepted: Contacts (created/accepted)
   #--------------------------------------------------------------
   # Leads
   #--------------------------------------------------------------
@@ -234,6 +237,7 @@ en:
   tracking_info: Tracking Info
   web_and_social_media: "Web &amp; Social Media"
   contact_already_exists: "Contact %{contact} already exists. Press convert to add this lead to that contact"
+  leads_created_accepted: Leads (created/accepted)
   lead_statuses:
     - New
     - Contacted

@@ -6,7 +6,7 @@
   = render :partial => @accounts
   = will_paginate @accounts
 - content_for :sidebar do
-  = render :partial => "shared/index_filter", :locals => { :collection => Account.account_types, :selector => :account_type_is}
+  = render :partial => 'shared/index_filter', :locals => { :collection => Account.account_types, :selector => :account_type_is }
   .gold.box
     %h3= t(:data_actions)
     %ul.plain
