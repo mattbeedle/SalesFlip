@@ -42,7 +42,7 @@ Salesflip::Application.configure do
 
   config.active_support.deprecation = :log
 
-  config.middleware.use Rack::GridFS, :hostname => 'swan.mongohq.com', :port => 27035,
+  config.middleware.use Rack::GridFS, :hostname => 'swan.mongohq.com', :port => 27093,
     :database => 'salesflip', :prefix => 'uploads', :user => ENV['MONGOHQ_USER'],
     :password => ENV['MONGOHQ_PASSWORD']
 
