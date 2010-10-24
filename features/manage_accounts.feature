@@ -82,7 +82,6 @@ Feature: Manage accounts
     And I should see "World Dating"
     And CareerMee should have sub account: World Dating
 
-
   Scenario: Creating an account
     Given I am registered and logged in as annika
     And I am on the accounts page

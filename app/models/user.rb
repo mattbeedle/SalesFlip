@@ -16,6 +16,7 @@ class User
 
   has_many_related  :leads, :index => true
   has_many_related  :comments, :index => true
+  has_many_related  :emails, :index => true
   has_many_related  :tasks, :index => true
   has_many_related  :accounts, :index => true
   has_many_related  :contacts, :index => true
