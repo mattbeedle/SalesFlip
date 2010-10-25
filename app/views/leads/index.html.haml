@@ -1,6 +1,6 @@
 %h2.title
   Leads
-  = add_new t('add_lead'), new_lead_path
+  = add_new t(:add_lead), new_lead_path(:return_to => request.fullpath)
 
 = render :partial => 'lead', :collection => @leads
 = will_paginate @leads
@@ -27,7 +27,7 @@
             %li
               = check_box_tag 'source_is[]', source, (params[:source_is] and params[:source_is].include?(source)), :id => "source_#{source.parameterize}"
               %label{ :for => "source_#{source.parameterize}" }= source
-        .clear= submit_tag t('filter'), :id => 'filter'
+        .clear= submit_tag t(:filter), :id => 'filter'
   .gold.box
     %h3= t(:data_actions)
     %ul.plain
