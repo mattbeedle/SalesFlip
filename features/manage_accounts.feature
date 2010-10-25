@@ -303,12 +303,24 @@ Feature: Manage accounts
     And I should see "Updated"
     And I should see "annika.fleischer@1000jobboersen.de"
 
-  Scenario: Exporting Accounts
+  Scenario: Exporting Accounts as a normal user
     Given I am registered and logged in as annika
-    And account: "careermee" exists with user: Annika
+    And an account exists with user: Annika
     And I am on the accounts page
+    Then I should not see "Export this list as a CSV"
+    
+  Scenario: Accounts index with format csv as a normal user
+    Given I am registered and logged in as annika
+    And an account exists with user: Annika
+    When I go to the leads csv page
+    Then I should be on the root page
+
+  Scenario: Exporting Accounts as an admin
+    Given I am registered and logged in as Matt
+    And an account exists with user: Matt
+    And I am on the leads page
     When I follow "Export this list as a CSV"
-    Then I should be on the export accounts page
+    Then I should be on the export leads page
 
   Scenario: Adding a contact to an existing account
     Given I am registered and logged in as annika

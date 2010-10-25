@@ -406,15 +406,21 @@ Feature: Manage leads
     And I should see "Updated"
     And I should see "annika.fleischer@1000jobboersen.de"
 
-  Scenario: Exporting Leads
+  Scenario: Exporting Leads as a normal user
     Given I am registered and logged in as annika
     And a lead: "erich" exists with user: Annika
     When I am on the leads page
-    Then I should see "Export this list as a CSV"
-
-  Scenario: Exporting Leads (2)
+    Then I should not see "Export this list as a CSV"
+    
+  Scenario: Leads index with format csv as a normal user
     Given I am registered and logged in as annika
     And a lead: "erich" exists with user: Annika
+    When I go to the leads csv page
+    Then I should be on the root page
+
+  Scenario: Exporting Leads as an admin
+    Given I am registered and logged in as Matt
+    And a lead: "erich" exists with user: Matt
     And I am on the leads page
     When I follow "Export this list as a CSV"
     Then I should be on the export leads page

@@ -28,7 +28,8 @@
               = check_box_tag 'source_is[]', source, (params[:source_is] and params[:source_is].include?(source)), :id => "source_#{source.parameterize}"
               %label{ :for => "source_#{source.parameterize}" }= source
         .clear= submit_tag t(:filter), :id => 'filter'
-  .gold.box
-    %h3= t(:data_actions)
-    %ul.plain
-      %li= link_to t(:export_as_csv), export_leads_path(@filters), :id => 'export_as_csv'
+  - if current_user.instance_of?(Admin)
+    .gold.box
+      %h3= t(:data_actions)
+      %ul.plain
+        %li= link_to t(:export_as_csv), export_leads_path(@filters), :id => 'export_as_csv'

@@ -1,14 +1,14 @@
 .title
-  %h2= t('accounts').titleize
-  = add_new t('add_account'), new_account_path
+  %h2= t(:accounts).titleize
+  = add_new t(:add_account), new_account_path
 
 .accounts
   = render :partial => @accounts
   = will_paginate @accounts
 - content_for :sidebar do
   = render :partial => 'shared/index_filter', :locals => { :collection => Account.account_types, :selector => :account_type_is }
-  .gold.box
-    %h3= t(:data_actions)
-    %ul.plain
-    
-      %li= link_to t(:export_as_csv), export_accounts_path, :id => 'export_as_csv'
+  - if current_user.instance_of?(Admin)
+    .gold.box
+      %h3= t(:data_actions)
+      %ul.plain
+        %li= link_to t(:export_as_csv), export_accounts_path, :id => 'export_as_csv'

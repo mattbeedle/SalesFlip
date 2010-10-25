@@ -57,6 +57,20 @@ User.blueprint(:benny) do
   password_confirmation { 'password' }
 end
 
+Admin.blueprint do
+  company { Company.make }
+  email
+  password { 'password' }
+  password_confirmation { 'password' }
+end
+
+Admin.blueprint(:matt) do
+  company { Company.make }
+  email { 'matt.beedle@1000jobboersen.de' }
+  password { 'password' }
+  password_confirmation { 'password' }
+end
+
 Lead.blueprint do
   first_name
   last_name
