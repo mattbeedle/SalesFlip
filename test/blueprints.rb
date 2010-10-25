@@ -57,18 +57,6 @@ User.blueprint(:benny) do
   password_confirmation { 'password' }
 end
 
-Admin.blueprint do
-  email
-  password { 'password' }
-  password_confirmation { 'password' }
-end
-
-Admin.blueprint(:matt) do
-  email { 'matt.beedle@1000jobboersen.de' }
-  password { 'password' }
-  password_confirmation { 'password' }
-end
-
 Lead.blueprint do
   first_name
   last_name
