@@ -7,7 +7,7 @@ class EmailsController < ApplicationController
       return head(:unauthorized)
     else
       unless UserMailer.receive(params[:email][:raw])
-        MailQueues.create :mail => params[:email][:raw]
+        MailQueue.create :mail => params[:email][:raw]
       end
       head :ok
     end
