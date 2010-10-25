@@ -59,7 +59,7 @@ class Task
     :due_at.gte => Time.zone.now.tomorrow.beginning_of_day.utc } } }
 
   named_scope :due_this_week, lambda { { :where => {
-    :due_at.gte => Time.zone.now.tomorrow.end_of_day.utc + 1.day,
+    :due_at.gte => Time.zone.now.tomorrow.beginning_of_day.utc + 1.day,
     :due_at.lte => Time.zone.now.next_week.utc } } }
 
   named_scope :due_next_week, lambda { { :where => {
@@ -130,20 +130,20 @@ class Task
     write_attribute :due_at,
       case due
       when 'overdue'
-        Time.zone.now.yesterday.end_of_day
+        Time.zone.now.yesterday.end_of_day.utc
       when 'due_today'
-        Time.zone.now.end_of_day
+        Time.zone.now.end_of_day.utc
       when 'due_tomorrow'
-        Time.zone.now.tomorrow.end_of_day
+        Time.zone.now.tomorrow.end_of_day.utc
       when 'due_this_week'
-        Time.zone.now.end_of_week
+        Time.zone.now.end_of_week.utc
       when 'due_next_week'
-        Time.zone.now.next_week.end_of_week
+        Time.zone.now.next_week.end_of_week.utc
       when 'due_later'
-        Time.zone.now.end_of_day + 5.years
+        (Time.zone.now.end_of_day + 5.years).utc
       else
         if !due.is_a?(Time) and Chronic.parse(due)
-          Chronic.parse(due)
+          Chronic.parse(due).utc
         else
           due
         end

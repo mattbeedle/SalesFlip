@@ -32,7 +32,7 @@ class TasksController < InheritedResources::Base
       success.html do
         return_to_or_default tasks_path(:incomplete => true)
         if params[:task] and params[:task][:assignee_id]
-          flash[:notice] = I18n.t('task_reassigned', :user => @task.assignee.email)
+          flash[:notice] = I18n.t(:task_reassigned, :user => @task.assignee.email)
         end
       end
     end
