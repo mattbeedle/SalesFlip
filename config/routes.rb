@@ -1,5 +1,5 @@
 Salesflip::Application.routes.draw do
-  devise_for :admins, :users
+  devise_for :users
 
   root :to => 'pages#index'
 
@@ -23,10 +23,5 @@ Salesflip::Application.routes.draw do
 
   resources :accounts do
     get :export, :on => :collection
-  end
-
-  namespace :admin do
-    root :to => 'configurations#show'
-    resource :configuration
   end
 end
