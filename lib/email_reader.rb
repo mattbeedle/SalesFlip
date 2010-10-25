@@ -25,6 +25,8 @@ class EmailReader
       comment
     end
     user
+  rescue
+    nil
   end
 
 protected
