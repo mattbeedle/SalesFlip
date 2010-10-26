@@ -3,20 +3,20 @@
   = raw "#{link_to activity.user.username.present? ? activity.user.username : activity.user.email, activity.user} #{activity.action.downcase} #{activity.subject_type.downcase}"
   %strong
     - if activity.subject.deleted_at || activity.subject.is_a?(Task)
-      = activity.subject.name
+      = truncate activity.subject.name, :length => 100, :separator => ' '
     - elsif activity.subject.is_a?(Comment)
       - if activity.subject.commentable.permitted_for?(current_user)
-        = link_to activity.subject.name, activity.subject.commentable
+        = link_to truncate(activity.subject.name, :length => 100, :separator => ' '), activity.subject.commentable
       - else
-        = activity.subject.name
+        = truncate activity.subject.name, :length => 100, :separator => ' '
     - elsif activity.subject.is_a?(Task)
       - if activity.subject.asset.permitted_for?(current_user)
-        = link_to activity.subject.name, activity.subject.asset
+        = link_to truncate(activity.subject.name, :length => 100, :separator => ' '), activity.subject.asset
       - else
-        = activity.subject.name
+        = truncate activity.subject.name, :length => 100, :separator => ' '
     - else
       - if activity.subject.permitted_for?(current_user)
-        = link_to activity.subject.name, activity.subject
+        = link_to truncate(activity.subject.name, :length => 100, :separator => ' '), activity.subject
       - else
-        = activity.subject.name
-  %small.timestamp= raw t('done_ago', :time => l(activity.updated_at, :format => :short))
+        = truncate activity.subject.name, :length => 100, :separator => ' '
+  %small.timestamp= raw t(:done_ago, :time => l(activity.updated_at, :format => :short))
