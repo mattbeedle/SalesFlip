@@ -13,6 +13,7 @@ class EmailsController < ApplicationController
         @queued_mail.update_attributes :status => 'Failed'
       end
       head :ok
+    end
     rescue
       MailQueue.create :mail => params[:email][:raw], :status => 'Failed' unless @queued_mail
       head :ok
