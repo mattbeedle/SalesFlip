@@ -14,9 +14,8 @@ class EmailsController < ApplicationController
       end
       head :ok
     end
-    rescue
-      MailQueue.create :mail => params[:email][:raw], :status => 'Failed' unless @queued_mail
-      head :ok
-    end
+  rescue
+    MailQueue.create :mail => params[:email][:raw], :status => 'Failed' unless @queued_mail
+    head :ok
   end
 end
