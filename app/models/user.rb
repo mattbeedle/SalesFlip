@@ -14,21 +14,21 @@ class User
 
   attr_accessor :company_name
 
-  has_many_related  :leads, :index => true
-  has_many_related  :comments, :index => true
-  has_many_related  :emails, :index => true
-  has_many_related  :tasks, :index => true
-  has_many_related  :accounts, :index => true
-  has_many_related  :contacts, :index => true
-  has_many_related  :activities, :index => true
-  has_many_related  :searches, :index => true
+  has_many_related  :leads,       :index => true
+  has_many_related  :comments,    :index => true
+  has_many_related  :emails,      :index => true
+  has_many_related  :tasks,       :index => true
+  has_many_related  :accounts,    :index => true
+  has_many_related  :contacts,    :index => true
+  has_many_related  :activities,  :index => true
+  has_many_related  :searches,    :index => true
   has_many_related  :invitations, :as => :inviter, :dependent => :destroy, :index => true
-  has_one_related   :invitation, :as => :invited, :index => true
+  has_one_related   :invitation,  :as => :invited, :index => true
 
   belongs_to_related :company
 
   before_validation :set_api_key, :create_company, :on => :create
-  after_create :update_invitation#, :add_user_to_postfix
+  after_create :update_invitation
 
   validates_presence_of :company
 
