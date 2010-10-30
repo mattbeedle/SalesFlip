@@ -10,7 +10,7 @@
       .40.z
         .string
           %label{ :for => 'account_id' }= t('simple_form.labels.account_id')
-          = select_tag :account_id, options_for_select([''] + Account.all.asc(:name).map {|a| [a.name, a.id] }, params[:account_id])
+          = select_tag :account_id, options_for_select(Account.all.asc(:name).map {|a| [a.name, a.id] }, params[:account_id]), :include_blank => true
     %fieldset
       .20.a
         .string
@@ -18,11 +18,8 @@
           = select_tag :permission, options_for_select(Account.permissions, params[:permission]), :include_blank => true
       .80.z
         .checks
-          %label== #{t('simple_form.labels.permitted_users')}:
-
-          - User.all.each do |user|
-            = check_box_tag :permitted_user_ids, user.id, params[:permitted_user_ids] && params[:permitted_user_ids].include?(user.id), :id => "permitted_user_ids_#{user.id}"
-            %label{ :for => "permitted_user_ids_#{user.id}" }= user.email
-  = submit_tag t('convert_lead'), :id => 'convert'
-  = t('or')
-  = link_to t('cancel'), :back
+          %label= "#{t('simple_form.labels.permitted_users')}:"
+          = select_tag :permitted_user_ids, options_for_select(current_user.company.users.asc(:email).map { |u| [u.email, u.id] }, params[:permitted_user_ids]), :multiple => true, :size => 5
+  = submit_tag t(:convert_lead), :id => 'convert'
+  = t(:or)
+  = link_to t(:cancel), :back

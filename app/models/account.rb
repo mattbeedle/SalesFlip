@@ -94,7 +94,7 @@ class Account
       permitted = options[:permitted_user_ids]
     end
     account = object.updater_or_user.accounts.create :permission => permission,
-      :name => name, :permitted_user_ids => permitted
+      :name => name, :permitted_user_ids => permitted, :account_type => 'Prospect'
   end
 
   def deliminated( deliminator, fields )

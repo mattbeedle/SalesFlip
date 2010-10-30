@@ -279,7 +279,7 @@ Feature: Manage leads
     Then I should be on the account page
     And I should see "World Dating"
     And I should see "Erich"
-    And an account should exist with name: "World Dating"
+    And 1 accounts should exist with name: "World Dating", account_type: 7
     And a contact should exist with first_name: "Erich"
     And a lead should exist with first_name: "Erich", status: 2
     And a new "Created" activity should have been created for "Contact" with "first_name" "Erich" and user: "annika"

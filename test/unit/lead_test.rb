@@ -311,9 +311,10 @@ class LeadTest < ActiveSupport::TestCase
         @lead.save!
       end
 
-      should 'create a new account and contact when a new account is specified' do
+      should 'create a new account (account_type: "Prospect") and contact when a new account is specified' do
         @lead.promote!('Super duper company')
-        assert account = Account.first(:conditions => { :name => 'Super duper company' })
+        assert account = Account.first(:conditions => { :name => 'Super duper company',
+          :account_type => Account.account_types.index('Prospect') })
         assert account.contacts.any? {|c| c.first_name == @lead.first_name &&
           c.last_name == @lead.last_name }
       end
