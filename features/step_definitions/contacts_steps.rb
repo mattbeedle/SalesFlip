@@ -11,3 +11,9 @@ end
 Then /^#{capture_model} should have a contact with first_name: "(.+)"$/ do |target, first_name|
   assert model!(target).contacts.find(:first, :conditions => { :first_name => first_name })
 end
+
+Then /^the #{capture_model} should belong to #{capture_model}$/ do |contact, user|
+  contact = model!(contact)
+  user = model!(user)
+  assert user.contacts.include?(contact)
+end
