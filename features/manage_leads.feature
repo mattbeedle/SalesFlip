@@ -49,6 +49,29 @@ Feature: Manage leads
     And I should see "Erich Feldmeier"
     And a created activity should exist for lead with first_name "Erich"
     And 0 emails should be delivered
+    
+  Scenario: Trying to re-assign a private lead
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And a lead: "erich" exists with user: Annika, permission: "Private"
+    And I am on the lead's edit page
+    When I select "benjamin.pochhammer@1000jobboersen.de" from "lead_assignee_id"
+    And I press "Update Lead"
+    Then I should be on the lead's page
+    And I should see "Cannot assign a private lead to another user, please change the permissions first"
+    And 1 leads should exist with assignee_id: nil
+    
+  Scenario: Trying to re-assign a shared lead to a user it is not shared with
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And another user exists
+    And a lead exists with user: Annika
+    And the lead is shared with the other user
+    And I am on the lead's edit page
+    When I select "benjamin.pochhammer@1000jobboersen.de" from "lead_assignee_id"
+    And I press "Update Lead"
+    Then I should be on the lead's page
+    And I should see "Cannot assign a shared lead to a user it is not shared with. Please change the permissions first"
 
   Scenario: Logging activity
     Given I am registered and logged in as annika

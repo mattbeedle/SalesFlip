@@ -8,6 +8,12 @@ Given /^I follow the edit link for the contact$/ do
   click_link "edit_contact_#{Contact.last.id}"
 end
 
+Given /^the contact is shared with the other user$/ do
+  contact = model!('contact')
+  user = model!('user')
+  contact.update_attributes :permission => 'Shared', :permitted_user_ids => [user.id]
+end
+
 Then /^#{capture_model} should have a contact with first_name: "(.+)"$/ do |target, first_name|
   assert model!(target).contacts.find(:first, :conditions => { :first_name => first_name })
 end

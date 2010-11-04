@@ -1,3 +1,5 @@
+= error_messages_for form.object
+
 = hidden_field_tag :return_to, params[:return_to] if params[:return_to]
 %fieldset
   .16.a= form.input :salutation, :as => :select, :collection => Lead.salutations.map(&:to_s)
@@ -6,8 +8,8 @@
   .33.z= form.input :last_name, :required => true
   .clear
   .50.a= form.input :account_id, :collection => Account.all.asc(:name).map {|a| [a.name, a.id] }
-  .50.z= link_to t('add_account'), new_account_path(:return_to => request.fullpath), :id => 'new_account', :class => 'inline-add'
-%h3.toggler= t('contact_info')
+  .50.z= link_to t(:add_account), new_account_path(:return_to => request.fullpath), :id => 'new_account', :class => 'inline-add'
+%h3.toggler= t(:contact_info)
 .toggle
   %fieldset
     .33.a= form.input :email
@@ -19,7 +21,7 @@
     .33.z= form.input :postal_code
     .clear
     .33.a
-      %label{ :for => 'contact_country' }= t('country')
+      %label{ :for => 'contact_country' }= t(:country)
       = localized_country_select :contact, :country, TOP_COUNTRIES
     .33=   form.input :alt_email
     .33.z= form.input :mobile
@@ -31,7 +33,7 @@
         =  form.label :do_not_call
     .clear
 
-%h3.toggler= raw t('web_and_social_media')
+%h3.toggler= raw t(:web_and_social_media)
 .toggle
   %fieldset
     .100=  form.input :website
@@ -40,14 +42,14 @@
     .50.a= form.input :facebook
     .50.z= form.input :xing
 
-%h3.toggler= raw "#{t('tracking')} &amp; #{t('simple_form.labels.permissions')}"
+%h3.toggler= raw "#{t(:tracking)} &amp; #{t('simple_form.labels.permissions')}"
 .toggle
   %fieldset
-    .25.a= form.input :source, :collection => t('lead_sources')
+    .25.a= form.input :source, :collection => t(:lead_sources)
     .25= form.input :assignee_id, :collection => current_user.company.users.map {|u| [u.full_name, u.id]}
     = render :partial => 'shared/permissions_form', :locals => { :form => form, :p1=> '25', :p2=> '25 z' }
 
 .act.pad
   = form.button :submit
-  = t('or')
-  = link_to t('cancel'), :back
+  = t(:or)
+  = link_to t(:cancel), :back

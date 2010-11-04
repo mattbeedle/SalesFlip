@@ -1,6 +1,6 @@
 %fieldset
   .75.a= form.input :title
-  .25.z= form.input :stage, :collection => Opportunity.stages
+  .25.z= form.input :stage, :collection => Opportunity.stages, :include_blank => false
   .clear
   .25.a= form.input :close_on, :as => :date, :start_year => Time.now.year, :start_month => Time.now.month, :start_day => Time.now.day
   .25= form.input :probability

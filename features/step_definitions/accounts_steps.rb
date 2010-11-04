@@ -12,6 +12,12 @@ Given /^I click the delete button for the task$/ do
   click_button "delete_task_#{Task.first.id}"
 end
 
+Given /^the account is shared with the other user$/ do
+  account = model!('account')
+  user = model!('user')
+  account.update_attributes :permission => 'Shared', :permitted_user_ids => [user.id]
+end
+
 Then /^#{capture_model} should have sub account: #{capture_model}$/ do |parent, sub|
   parent = model!(parent)
   sub = model!(sub)

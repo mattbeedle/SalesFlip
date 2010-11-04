@@ -26,6 +26,19 @@ module Permission
       validate :require_permitted_users
 
       has_constant :permissions, lambda { I18n.t(:permissions) }
+      
+      define_method :permitted_user_ids= do |permitted_user_ids|
+        unless permitted_user_ids.blank?
+          ids = permitted_user_ids.map do |id|
+             if id.is_a?(String)
+               BSON::ObjectId.from_string(id)
+             else
+               id
+             end
+          end.to_a
+          write_attribute :permitted_user_ids, ids
+        end
+      end
     end
     base.send(:include, InstanceMethods)
   end

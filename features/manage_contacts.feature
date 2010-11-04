@@ -66,6 +66,29 @@ Feature: Manage contacts
     And I should see "World Dating"
     And an account should exist with name: "World Dating"
     And a contact should exist with first_name: "Florian", last_name: "Behn"
+    
+  Scenario: Trying to re-assign a private contact
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And a contact exists with user: Annika, permission: "Private"
+    And I am on the contact's edit page
+    When I select "benjamin.pochhammer@1000jobboersen.de" from "contact_assignee_id"
+    And I press "Update Contact"
+    Then I should be on the contact's page
+    And I should see "Cannot assign a private contact to another user, please change the permissions first"
+    And 1 contacts should exist with assignee_id: nil
+
+  Scenario: Trying to re-assign a shared contact to a user it is not shared with
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And another user exists
+    And a contact exists with user: Annika
+    And the contact is shared with the other user
+    And I am on the contact's edit page
+    When I select "benjamin.pochhammer@1000jobboersen.de" from "contact_assignee_id"
+    And I press "Update Contact"
+    Then I should be on the contact's page
+    And I should see "Cannot assign a shared contact to a user it is not shared with. Please change the permissions first"
 
   Scenario: Updating a contact
     Given I am registered and logged in as annika

@@ -88,9 +88,7 @@ class ContactTest < ActiveSupport::TestCase
         assert contact.do_not_call
       end
     end
-  end
-
-  context 'Named scopes' do
+    
     context 'for_company' do
       setup do
         @contact = Contact.make
@@ -122,6 +120,34 @@ class ContactTest < ActiveSupport::TestCase
   context "Instance" do
     setup do
       @contact = Contact.make_unsaved(:florian, :user => User.make(:annika))
+      @user = User.make
+    end
+    
+    should 'always store permitted user ids as BSON::ObjectIds' do
+      @contact.permitted_user_ids = [@user.id.to_s]
+      assert_equal [@user.id], @contact.permitted_user_ids
+      user = User.make
+      @contact.permitted_user_ids = [user.id]
+      assert_equal [user.id], @contact.permitted_user_ids
+    end
+    
+    should 'not be able to assign to another user if the permission is private' do
+      @contact.save!
+      @contact.update_attributes :permission => 'Private'
+      assert @contact.valid?
+      @contact.assignee = @user
+      assert !@contact.valid?
+      assert @contact.errors[:base].include?('Cannot assign a private contact to another user, please change the permissions first')
+    end
+    
+    should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
+      @contact.save!
+      user = User.make
+      @contact.update_attributes :permission => 'Shared', :permitted_user_ids => [user.id]
+      assert @contact.valid?
+      @contact.assignee = @user
+      assert !@contact.valid?
+      assert @contact.errors[:base].include?('Cannot assign a shared contact to a user it is not shared with. Please change the permissions first')
     end
 
     should 'be able to get fields in pipe deliminated format' do
