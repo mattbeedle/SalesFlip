@@ -8,7 +8,7 @@ Given /^I am registered and logged in as annika$/ do
 end
 
 Given /^I follow the edit link for the lead$/ do
-  click "edit_lead_#{Lead.last.id}"
+  click_link "edit_lead_#{Lead.last.id}"
 end
 
 Given /^I have accepted an invitation from annika$/ do

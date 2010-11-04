@@ -3,7 +3,7 @@ Given /^the following tasks:$/ do |tasks|
 end
 
 When /^I follow the edit link for the task$/ do
-  click "edit_task_#{Task.last.id}"
+  click_link "edit_task_#{Task.last.id}"
 end
 
 When /^I delete the (\d+)(?:st|nd|rd|th) tasks$/ do |pos|

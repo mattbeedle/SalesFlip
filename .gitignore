@@ -18,4 +18,5 @@ log/*
 .autotest
 .bundle
 solr/data/*
-.sass-cache/
+.sass-cache/*
+public/stylesheets/*

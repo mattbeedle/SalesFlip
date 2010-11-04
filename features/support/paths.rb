@@ -33,6 +33,8 @@ module NavigationHelpers
       new_lead_path
     when /the leads page/
       leads_path
+    when /the leads csv page/
+      leads_path(:format => 'csv')
     when /the lead page/
       lead_path(@lead || Lead.last)
     when /the edit lead page/

@@ -9,6 +9,8 @@ class Contact
   include Activities
   include Sunspot::Mongoid
   include Assignable
+  include Gravtastic
+  is_gravtastic
 
   field :first_name
   field :last_name
@@ -37,6 +39,9 @@ class Contact
   field :country
   field :postal_code
   field :job_title
+  
+  index :first_name
+  index :last_name
 
   validates_presence_of :user, :last_name
   validates_uniqueness_of :email, :allow_blank => true
@@ -49,15 +54,16 @@ class Contact
   has_constant :sources,      lambda { I18n.t(:lead_sources) }
   has_constant :salutations,  lambda { I18n.t(:salutations) }
 
-  belongs_to_related :account
-  belongs_to_related :user
-  belongs_to_related :lead
+  belongs_to_related :account, :index => true
+  belongs_to_related :user, :index => true
+  belongs_to_related :assignee, :class_name => 'User', :index => true
+  belongs_to_related :lead, :index => true
 
-  has_many_related :tasks, :as => :asset, :dependent => :destroy
-  has_many_related :comments, :as => :commentable, :dependent => :delete_all
-  has_many_related :leads, :dependent => :destroy
-  has_many_related :emails, :as => :commentable, :dependent => :delete_all
-  has_many_related :opportunities, :dependent => :destroy
+  has_many_related :tasks, :as => :asset, :dependent => :destroy, :index => true
+  has_many_related :comments, :as => :commentable, :dependent => :delete_all, :index => true
+  has_many_related :leads, :dependent => :destroy, :index => true
+  has_many_related :emails, :as => :commentable, :dependent => :delete_all, :index => true
+  has_many_related :opportunities, :dependent => :destroy, :index => true
 
   named_scope :for_company, lambda { |company| {
     :where => { :user_id.in => company.users.map(&:id) } } }

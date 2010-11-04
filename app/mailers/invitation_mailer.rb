@@ -1,5 +1,5 @@
 class InvitationMailer < ActionMailer::Base
-  default :from => 'Do Not Reply <mattbeedle@googlemail.com>'
+  default :from => 'service@salesflip.com'
 
   def invitation( invitation )
     @invitation = invitation

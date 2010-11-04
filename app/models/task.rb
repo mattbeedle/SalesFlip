@@ -21,7 +21,7 @@ class Task
   belongs_to_related :asset, :polymorphic => true
   belongs_to_related :completed_by, :class_name => 'User'
 
-  has_many_related :activities, :as => :subject, :dependent => :destroy
+  has_many_related :activities, :as => :subject, :dependent => :destroy, :index => true
 
   validates_presence_of :user, :name, :due_at, :category
 
@@ -59,7 +59,7 @@ class Task
     :due_at.gte => Time.zone.now.tomorrow.beginning_of_day.utc } } }
 
   named_scope :due_this_week, lambda { { :where => {
-    :due_at.gte => Time.zone.now.tomorrow.end_of_day.utc + 1.day,
+    :due_at.gte => Time.zone.now.tomorrow.beginning_of_day.utc + 1.day,
     :due_at.lte => Time.zone.now.next_week.utc } } }
 
   named_scope :due_next_week, lambda { { :where => {
@@ -130,20 +130,20 @@ class Task
     write_attribute :due_at,
       case due
       when 'overdue'
-        Time.zone.now.yesterday.end_of_day
+        Time.zone.now.yesterday.end_of_day.utc
       when 'due_today'
-        Time.zone.now.end_of_day
+        Time.zone.now.end_of_day.utc
       when 'due_tomorrow'
-        Time.zone.now.tomorrow.end_of_day
+        Time.zone.now.tomorrow.end_of_day.utc
       when 'due_this_week'
-        Time.zone.now.end_of_week
+        Time.zone.now.end_of_week.utc
       when 'due_next_week'
-        Time.zone.now.next_week.end_of_week
+        Time.zone.now.next_week.end_of_week.utc
       when 'due_later'
-        Time.zone.now.end_of_day + 5.years
+        (Time.zone.now.end_of_day + 5.years).utc
       else
         if !due.is_a?(Time) and Chronic.parse(due)
-          Chronic.parse(due)
+          Chronic.parse(due).utc
         else
           due
         end
@@ -195,6 +195,8 @@ protected
 
   def notify_assignee
     TaskMailer.assignment_notification(self).deliver if reassigned?
+  rescue
+    nil
   end
 
   def log_update

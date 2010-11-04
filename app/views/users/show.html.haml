@@ -1,1 +1,27 @@
-coming
+.title
+  %h2= @user.username || @user.email
+= image_tag @user.gravatar_url
+%dl.profile
+  %dt= t(:leads_created_accepted)
+  %dd
+    = @user.leads.count
+    = '/'
+    = Lead.assigned_to(@user.id).count
+%dl.profile
+  %dt= t(:contacts_created_accepted)
+  %dd
+    = @user.contacts.count
+    = '/'
+    = Contact.assigned_to(@user.id).count
+%dl.profile
+  %dt= t(:accounts_created_accepted)
+  %dd
+    = @user.accounts.count
+    = '/'
+    = Account.assigned_to(@user.id).count
+%dl.profile
+  %dt= t(:comments)
+  %dd= @user.comments.count
+%dl.profile
+  %dt= t(:email_count)
+  %dd= @user.emails.count

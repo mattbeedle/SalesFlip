@@ -5,9 +5,15 @@ Given /^careermee is shared with annika$/ do
 end
 
 Given /^I follow the edit link for the account$/ do
-  click "edit_account_#{Account.last.id}"
+  click_link "edit_account_#{Account.last.id}"
 end
 
 Given /^I click the delete button for the task$/ do
-  click "delete_task_#{Task.first.id}"
+  click_button "delete_task_#{Task.first.id}"
+end
+
+Then /^#{capture_model} should have sub account: #{capture_model}$/ do |parent, sub|
+  parent = model!(parent)
+  sub = model!(sub)
+  assert parent.children.include?(sub)
 end

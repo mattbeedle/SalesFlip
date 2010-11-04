@@ -4,7 +4,7 @@ class EmailReader
     imap = Net::IMAP.new(configuration.imap_host, 993, true)
     imap.login(configuration.imap_user, configuration.imap_password)
     imap.select('INBOX')
-    imap.search(["NOT", "DELETED", "NOT", "SEEN"]).each do |message_id|
+    imap.search(['NOT', 'DELETED', 'NOT', 'SEEN']).each do |message_id|
       email = Mail.new(imap.fetch(message_id, 'RFC822')[0].attr['RFC822'])
       imap.store(message_id, '+FLAGS', [:Deleted]) if parse_email(email)
     end
@@ -25,6 +25,8 @@ class EmailReader
       comment
     end
     user
+  rescue
+    nil
   end
 
 protected
@@ -90,7 +92,7 @@ protected
   end
 
   def self.find_user_from( email )
-    api_key = email.to.to_a.first.split('@').last.split('.').first
+    api_key = email.to.to_a.first.split('@').first
     user = User.first(:conditions => { :api_key => api_key })
     user = User.first(:conditions => { :email => email.from.to_a.first.strip }) if user.nil?
     user

@@ -1,6 +1,8 @@
 class User
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Gravtastic
+  is_gravtastic
 
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable, :lockable and :timeoutable
@@ -11,24 +13,25 @@ class User
   field :api_key
 
   attr_accessor :company_name
-
-  has_many_related  :leads
-  has_many_related  :comments
-  has_many_related  :tasks
-  has_many_related  :accounts
-  has_many_related  :contacts
-  has_many_related  :activities
-  has_many_related  :searches
-  has_many_related  :invitations, :as => :inviter, :dependent => :destroy
-  has_many_related  :opportunities
+  
+  has_many_related  :leads,       :index => true
+  has_many_related  :comments,    :index => true
+  has_many_related  :emails,      :index => true
+  has_many_related  :tasks,       :index => true
+  has_many_related  :accounts,    :index => true
+  has_many_related  :contacts,    :index => true
+  has_many_related  :activities,  :index => true
+  has_many_related  :searches,    :index => true
+  has_many_related  :invitations, :as => :inviter, :dependent => :destroy, :index => true
+  has_one_related   :invitation,  :as => :invited, :index => true
+  has_many_related  :opportunities, :index => true
   has_many_related  :assigned_opportunities, :foreign_key => 'assignee_id',
-    :class_name => 'Opportunity'
-  has_one_related   :invitation, :as => :invited
+    :class_name => 'Opportunity', :index => true
 
   belongs_to_related :company
 
   before_validation :set_api_key, :create_company, :on => :create
-  after_create :update_invitation#, :add_user_to_postfix
+  after_create :update_invitation
 
   validates_presence_of :company
 
@@ -79,7 +82,7 @@ class User
   end
 
   def dropbox_email
-    "dropbox@#{api_key}.salesflip.com"
+    "#{api_key}@salesflip.appspotmail.com"
   end
 
 protected

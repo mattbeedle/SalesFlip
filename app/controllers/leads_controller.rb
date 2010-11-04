@@ -1,15 +1,16 @@
 class LeadsController < InheritedResources::Base
   before_filter :resource, :only => [ :convert, :promote, :reject ]
   before_filter :set_filters, :only => [ :index, :export ]
+  before_filter :export_allowed?, :only => [ :index ]
 
   respond_to :html
   respond_to :xml, :only => [ :new, :create, :index, :show ]
   respond_to :csv, :only => [ :index ]
 
   has_scope :with_status, :type => :array
-  has_scope :unassigned, :type => :boolean
+  has_scope :unassigned,  :type => :boolean
   has_scope :assigned_to
-  has_scope :source_is, :type => :array
+  has_scope :source_is,   :type => :array
 
   def index
     index! do |format|
@@ -51,6 +52,7 @@ class LeadsController < InheritedResources::Base
   def convert
     @account = current_user.accounts.new(:name => @lead.company)
     @contact = Contact.first(:conditions => { :email => @lead.email }) if @lead.email
+    @opportunity = current_user.opportunities.build :assignee => current_user
   end
 
   def promote
@@ -107,5 +109,11 @@ protected
       params[:lead][:permitted_user_ids] = ids.lines.to_a
     end
     @lead ||= Lead.new({ :updater => current_user, :user => current_user }.merge!(params[:lead] || {}))
+  end
+  
+  def export_allowed?
+    if request.format.csv?
+      redirect_to root_path unless current_user.instance_of?(Admin)
+    end
   end
 end

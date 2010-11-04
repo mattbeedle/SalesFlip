@@ -2,204 +2,234 @@
 // Fieldsets
 //---------------------------------------------------
 fieldset
-  :border 1px solid #CFCFB7
+  border: 1px solid #cfcfb7
   +border-radius(5px)
-  :margin-bottom 20px
-  :margin-left 0
-  +v-grad(#efeee1,#d3d0c4)
-  :padding 20px 20px 10px 20px
+  margin-bottom: 20px
+  margin-left: 0
+  +v-grad(#efeee1, #d3d0c4)
+  padding: 20px 20px 10px 20px
   div.a
-    div 
-      :padding-left 0px
-      :padding-right 10px
-
+    div
+      padding-left: 0px
+      padding-right: 10px
   div.z
     div
-      :padding-left 10px
-      :padding-right 0px
-
+      padding-left: 10px
+      padding-right: 0px
       select
-        :width 100%
+        width: 100%
   div.\31 00
     div
-      :padding-left 0px
-      :padding-right 0px
-
+      padding-left: 0px
+      padding-right: 0px
   div
-    :padding 0px
+    padding: 0px
     div
-      :padding-left 10px
-      :padding-right 10px
-      :padding-bottom 20px
+      padding-left: 10px
+      padding-right: 10px
+      padding-bottom: 20px
 
 .toggle fieldset
   +border-top-radius(0px)
+
 //----------------------------------------------------
 // Labels
 //----------------------------------------------------
 label
-  :cursor pointer
-  :display block
-  :font-size 14px
-  :font-weight bold
-  :padding-bottom 5px
-  :color #776D47
+  cursor: pointer
+  display: block
+  font-size: 14px
+  font-weight: bold
+  padding-bottom: 5px
+  color: #776d47
   +letterpress
   abbr
-    :border none
-    :color #f00
-    :display block
-    :float left
-    :width 7px
+    border: none
+    color: red
+    display: block
+    float: left
+    width: 7px
+
 body.index label
-  :color #000
+  color: black
+
 //----------------------------------------------------
 // Inputs
 //----------------------------------------------------
 input, textarea, select
-  :background #fff
-  :border 1px solid #aaa
+  background: white
+  border: 1px solid #aaaaaa
   +border-radius(4px)
-  :font-family "Lucida Grande", "Lucida Sans Unicode", helvetica, verdana, arial
-  :font-size 16px
-  :font-weight bold
-  :width 100%
+  font-family: "Lucida Grande", "Lucida Sans Unicode", helvetica, verdana, arial
+  font-size: 16px
+  font-weight: bold
+  width: 100%
+
 input, textarea
-  +inset-box-shadow(#ddd,1px,1px,4px)
-  :padding 5px 0px
-  :text-indent 5px
+  +inset-box-shadow(#dddddd, 1px, 1px, 4px)
+  padding: 5px 0px
+  text-indent: 5px
   &.hint
-    :color #ccc
+    color: #cccccc
+
 select
   +border-radius(4px)
-  :font-size 14px
-  +inset-box-shadow(#BBB6A6,-1px,-1px,4px)
-  :padding 5px
+  font-size: 14px
+  +inset-box-shadow(#bbb6a6, -1px, -1px, 4px)
+  padding: 5px
+
 .checks, .boolean, .radio
-  :float left
+  float: left
   input
-    :width 13px
+    width: 13px
   input, label
-    :display inline
+    display: inline
   label
-    :margin-right 12px
+    margin-right: 12px
   label.block
-    :display block
+    display: block
   &.full
-    :width 100%
+    width: 100%
+
 ul
   &.checks, &.radio, &.boolean
-    :list-style-type none
+    list-style-type: none
     &.stacked
       +no-bullets
-      :padding-left 0px
-      :margin-left 0px
+      padding-left: 0px
+      margin-left: 0px
 
 //---------------------------------------------------
 // Buttons
 //---------------------------------------------------
 .act
-  :font-size 13px
+  font-size: 13px
   &.pad
-    :padding 20px 0px 0px 0px
+    padding: 20px 0px 0px 0px
   input[type="submit"]
-    :font-size 14px
-input[type="submit"]
+    font-size: 14px
+
+input[type="submit"], a.button
   +border-radius(14px)
-  :border 1px solid #{!act_grad_3}
-  +box-shadow(#999, 0px, 1px,3px)
-  :color #fff
-  :cursor pointer
-  :font-size 14px
-  :padding 4px 12px
-  +shiny-button(!act_grad_1, !act_grad_2, !act_grad_3)
-  +text-shadow(!act_grad_3 - 30, 2px, 2px,2px)
-  :width auto
-  
+  border: 1px solid #{$act_grad_3}
+  +box-shadow(#999999, 0px, 1px, 3px)
+  color: white
+  cursor: pointer
+  font-size: 14px
+  padding: 4px 12px
+  +shiny-button($act_grad_1, $act_grad_2, $act_grad_3)
+  +text-shadow($act_grad_3 - 30, 2px, 2px, 2px)
+  width: auto
+  &.gray
+    border-color: #999999
+    color: black
+    +shiny-button(white, #cccccc, #999999)
+    +letterpress(#eeeeee)
+
 //---------------------------------------------------
 // Error Messages
 //---------------------------------------------------
 fieldset .fieldWithErrors
-  :margin 0px
-  :width 100%
+  margin: 0px
+  width: 100%
   input, textarea
-    :background-color #fcc
-    +inset-box-shadow(#daa,1px,1px,4px)
-    :border-color #f00
+    background-color: #ffcccc
+    +inset-box-shadow(#ddaaaa, 1px, 1px, 4px)
+    border-color: red
+
 span.error
-  :font-size 13px
-  :color #f00
-  :display block
-  :clear both
-  :margin-bottom 10px
-  :padding-left 5px
-  :font-weight bold
+  font-size: 13px
+  color: red
+  display: block
+  clear: both
+  margin-bottom: 10px
+  padding-left: 5px
+  font-weight: bold
+
 .clear
-  :clear both
-  
+  clear: both
+
 //---------------------------------------------------
 // Flash Message
 //---------------------------------------------------
 #flash
   +border-radius(5px)
-  +box-shadow(#aaa, 2px, 2px,2px)
-  :color #fff
-  :margin-bottom 20px
-  :padding 20px
-  :text-align center
-  +text-shadow(#000, 1px, 1px,2px)
+  +box-shadow(#aaaaaa, 2px, 2px, 2px)
+  color: white
+  margin-bottom: 20px
+  padding: 20px
+  text-align: center
+  +text-shadow(black, 1px, 1px, 2px)
   &.notice
-    +v-grad(#42cb7c,#25b023)
+    +v-grad(#42cb7c, #25b023)
   &.error
-    +v-grad(#f00,#800)
+    +v-grad(red, #880000)
 
 //---------------------------------------------------
 // Form Grid
 //---------------------------------------------------
-=field(!width)
-  @if !width!=100%
-    :float left
-  :width = !width
+=field($width)
+  @if $width != 100%
+    float: left
+  width: $width
   &.boolean, &.check, &.radio
-    :padding-top 25px
+    padding-top: 25px
   &.boolean, &.check, &.radio, .boolean, .check, .radio
     input
-      :width 13px
+      width: 13px
     input, label
-      :display inline
+      display: inline
+
 .\31 00
   +field(100%)
+
 .\38 0
   +field(90%)
+
 .\38 0
   +field(80%)
+
 .\37 5
   +field(75%)
+
 .\37 0
   +field(70%)
+
 .\36 6
   +field(66.66%)
+
 .\36 0
   +field(60%)
+
 .\35 0
   +field(50%)
+
 .\34 0
   +field(40%)
+
 .\33 5
   +field(35%)
+
 .\33 3
   +field(33.33%)
+
 .\33 0
   +field(30%)
+
 .\32 5
   +field(25%)
+
 .\32 0
   +field(20%)
+
 .\31 6
   +field(16.66%)
+
 .\31 5
   +field(15%)
+
 .\31 0
   +field(10%)
+
 .\35
   +field(5%)

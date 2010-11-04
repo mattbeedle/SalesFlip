@@ -1,7 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-
 require 'mongoid/railtie'
 
 # If you have a Gemfile, require the gems listed there, including any gems

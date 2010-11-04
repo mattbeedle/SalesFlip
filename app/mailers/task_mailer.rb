@@ -1,5 +1,5 @@
 class TaskMailer < ActionMailer::Base
-  default :from => 'Do Not Reply <mattbeedle@googlemail.com>'
+  default :from => 'service@salesflip.com'
 
   def assignment_notification( task )
     @url = task_url(task)

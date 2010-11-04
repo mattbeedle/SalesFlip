@@ -10,10 +10,10 @@ class Comment
   field :subject
   field :text
 
-  belongs_to_related :user
-  belongs_to_related :commentable, :polymorphic => true
+  belongs_to_related :user, :index => true
+  belongs_to_related :commentable, :polymorphic => true, :index => true
 
-  has_many_related :attachments, :as => :subject
+  has_many_related :attachments, :as => :subject, :index => true
 
   validates_presence_of :commentable, :user, :text
 

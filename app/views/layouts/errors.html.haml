@@ -9,10 +9,7 @@
       .pad
         %h1
           - link_to root_path do
-            %strong.logo SalesFlip:
-            - unless @configuration ||= Configuration.first
-              - @configuration = Configuration.create!
-            = @configuration.company_name if @configuration
+            %strong.logo SalesFlip
     #content
       .pad
         #the_error= yield

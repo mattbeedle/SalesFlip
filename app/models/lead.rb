@@ -9,6 +9,8 @@ class Lead
   include Activities
   include Sunspot::Mongoid
   include Assignable
+  include Gravtastic
+  is_gravtastic
 
   field :first_name
   field :last_name
@@ -39,6 +41,13 @@ class Lead
   field :facebook
   field :xing
   field :identifier,    :type => Integer
+  
+  index(
+    [
+      [:status, Mongo::DESCENDING],
+      [:created_at, Mongo::DESCENDING]
+    ]
+  )
 
   validates_presence_of :user, :last_name
 
@@ -54,10 +63,10 @@ class Lead
   before_create     :set_identifier, :set_recently_created
   after_save        :notify_assignee, :unless => :do_not_notify
 
-  has_constant :titles, lambda { I18n.t('titles') }
-  has_constant :statuses, lambda { I18n.t('lead_statuses') }
-  has_constant :sources, lambda { I18n.t('lead_sources') }
-  has_constant :salutations, lambda { I18n.t('salutations') }
+  has_constant :titles, lambda { I18n.t(:titles) }
+  has_constant :statuses, lambda { I18n.t(:lead_statuses) }
+  has_constant :sources, lambda { I18n.t(:lead_sources) }
+  has_constant :salutations, lambda { I18n.t(:salutations) }
 
   named_scope :with_status, lambda { |statuses| { :where => {
     :status.in => statuses.map { |status| Lead.statuses.index(status) } } } }
@@ -118,6 +127,8 @@ protected
     if !assignee.blank? && (changed.include?('assignee_id') || @recently_created && assignee_id != user_id)
       UserMailer.lead_assignment_notification(self).deliver
     end
+  rescue
+    nil
   end
 
   def set_initial_state

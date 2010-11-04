@@ -20,14 +20,20 @@ class Account
   field :shipping_address
   field :identifier,        :type => Integer
   field :account_type,      :type => Integer
+  
+  index :name
 
-  has_constant :accesses, lambda { I18n.t('access_levels') }
-  has_constant :account_types, lambda { I18n.t('account_types') }
+  has_constant :accesses, lambda { I18n.t(:access_levels) }
+  has_constant :account_types, lambda { I18n.t(:account_types) }
 
-  belongs_to_related :user
-  has_many_related :contacts, :dependent => :nullify
-  has_many_related :tasks, :as => :asset
-  has_many_related :comments, :as => :commentable
+  belongs_to_related :user, :index => true
+  belongs_to_related :assignee, :class_name => 'User', :index => true
+  belongs_to_related :parent, :class_name => 'Account', :index => true
+  
+  has_many_related   :contacts, :dependent => :nullify, :index => true
+  has_many_related   :tasks, :as => :asset, :index => true
+  has_many_related   :comments, :as => :commentable, :index => true
+  has_many_related   :children, :class_name => 'Account', :foreign_key => 'parent_id', :index => true
 
   validates_presence_of :user, :name
 
@@ -46,6 +52,13 @@ class Account
   def self.assigned_to( user_id )
     user_id = BSON::ObjectId.from_string(user_id) if user_id.is_a?(String)
     any_of({ :assignee_id => user_id }, { :user_id => user_id, :assignee_id => nil })
+  end
+  
+  def self.similar_accounts( name )
+    ids = Account.only(:id, :name).map do |account|
+      [account.id, name.levenshtein_similar(account.name)]
+    end.select { |similarity| similarity.last > 0.5 }.map(&:first)
+    Account.where(:_id.in => ids)
   end
 
   def self.exportable_fields
@@ -82,7 +95,7 @@ class Account
       permitted = options[:permitted_user_ids]
     end
     account = object.updater_or_user.accounts.create :permission => permission,
-      :name => name, :permitted_user_ids => permitted
+      :name => name, :permitted_user_ids => permitted, :account_type => 'Prospect'
   end
 
   def deliminated( deliminator, fields )

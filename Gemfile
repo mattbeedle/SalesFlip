@@ -16,7 +16,7 @@ gem 'compass'
 gem 'uuid'
 gem 'has_scope'
 gem 'navvy'
-gem 'chronic'
+gem 'aaronh-chronic',       :git => 'git://github.com/AaronH/chronic.git', :require => 'chronic'
 gem 'mail'
 gem 'beanstalk-client'
 gem 'will_paginate',        '3.0.pre'
@@ -32,12 +32,15 @@ gem 'sunspot_rails'
 gem 'sunspot_mongoid',      :git => 'git://github.com/jugyo/sunspot_mongoid.git'
 gem 'remail'
 gem 'rack-gridfs',          :require => 'rack/gridfs', :git => 'git://github.com/mattbeedle/rack-gridfs.git'
+gem 'amatch'
+gem 'gravtastic'
 
 # Plugins
 gem 'salesflip-lead_notifications', :require => 'lead_notifications'
 
 group :production do
   gem 'smurf'
+  gem 'mbeedle-heroku-autoscale', :require => 'heroku/autoscale'
 end
 
 group :development do
@@ -61,4 +64,5 @@ group :test do
   gem 'shoulda'
   gem 'database_cleaner'
   gem 'mbeedle-heroku-autoscale', :require => 'heroku/autoscale'
+  gem 'timecop'
 end

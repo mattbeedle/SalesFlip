@@ -1,90 +1,91 @@
 body.leads
   &.new, &.create, &.edit, &.update
     #main
-      :width 100%
+      width: 100%
+
 //----------------------------------------------------
 // Index
 //----------------------------------------------------
 dl.item
-  
   small
-    :color #777
+    color: #777777
     a
-      :color #333
-      :font-weight bold
-      :text-decoration none
+      color: #333333
+      font-weight: bold
+      text-decoration: none
       &:hover
-        :text-decoration underline
+        text-decoration: underline
     strong
-      :color #333
+      color: #333333
   dd
-    :width 86%
-    :padding-left 1%
+    width: 86%
+    padding-left: 1%
     span.actions
-      :padding-top 0px
-      :margin-top 4px
+      padding-top: 0px
+      margin-top: 4px
       input#accept
-        :margin-top -1px
+        margin-top: -1px
     &.accept
       span.actions
-        :width 7.2em
+        width: 7.2em
 
 div#main .title
   //----------------------------------------------------
   // Convert or Reject
   //----------------------------------------------------
-  
   .status
-    :font-size 13px
-    :line-height 23px
-    :margin-top -8px
-    :margin-left 0
-    :padding 0 16px 2px 11px
+    font-size: 13px
+    line-height: 23px
+    margin-top: -8px
+    margin-left: 0
+    padding: 0 16px 2px 11px
     +border-radius(14px)
     strong
-      :font-size 22px
+      font-size: 22px
     &.converted
-      :background #BDFFBC
-      :color #070
+      background: #bdffbc
+      color: #007700
     &.rejected
-      :background #fdd
-      :color #900
+      background: #ffdddd
+      color: #990000
       strong
-        :position relative
-        :top 2px
+        position: relative
+        top: 2px
+
 //----------------------------------------------------
 // Add Task
 //----------------------------------------------------
 h3.grad
   a#add_task
     +border-radius(10px)
-    :float right
-    :font-size 12px
-    :padding 2px 6px
+    float: right
+    font-size: 12px
+    padding: 2px 6px
     +silver-button
     b
-      :background #999
+      background: #999999
       +border-radius(10px)
-      :color #fff
-      :font-size 11px
-      :font-weight bold
-      :margin-right 1px
-      :padding 0px 3px 1px 3px
-      :position relative
-      :left -3px
-      :top -1px
-      +letterpress(#555)
+      color: white
+      font-size: 11px
+      font-weight: bold
+      margin-right: 1px
+      padding: 0px 3px 1px 3px
+      position: relative
+      left: -3px
+      top: -1px
+      +letterpress(#555555)
+
 //----------------------------------------------------
 // Contact Info
 //----------------------------------------------------
 #sidebar
   dl.info
-    :font-size 13px
-    +dl-horizontal(25%,70%)
+    font-size: 13px
+    +dl-horizontal(25%, 70%)
     dt,dd
-      :padding 4px 0px
+      padding: 4px 0px
     dt
-      :color = !gold - 90
-      :font-size 12px
-      :padding-right 10px
-      :text-align right
+      color: $gold - 90
+      font-size: 12px
+      padding-right: 10px
+      text-align: right

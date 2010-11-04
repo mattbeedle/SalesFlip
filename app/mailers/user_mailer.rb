@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default :from => 'Do Not Reply <mattbeedle@googlemail.com>'
+  default :from => 'service@salesflip.com'
 
   def tracked_items_update( user )
     @user   = user

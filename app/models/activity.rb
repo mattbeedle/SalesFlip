@@ -8,8 +8,10 @@ class Activity
   field :info
   field :notified_user_ids, :type => Array
 
-  belongs_to_related :user
-  belongs_to_related :subject, :polymorphic => true
+  belongs_to_related :user, :index => true
+  belongs_to_related :subject, :polymorphic => true, :index => true
+  
+  index :action
 
   validates_presence_of :subject, :user
 

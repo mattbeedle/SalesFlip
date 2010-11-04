@@ -486,6 +486,9 @@ class TaskTest < ActiveSupport::TestCase
         time = Chronic.parse('next tuesday')
         @task.due_at = 'next tuesday'
         assert_equal time.to_i, @task.due_at.to_i
+        time = Time.parse('1/1/2010 10:01:00')
+        @task.due_at = '1/1/2010 10:01:00'
+        assert_equal time.to_i, @task.due_at.to_i
       end
 
       should 'set due_at to specified time, if an actual time is specified' do

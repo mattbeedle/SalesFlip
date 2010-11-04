@@ -6,7 +6,7 @@ class Search
   field :collections, :type => Array
   field :company
 
-  belongs_to_related :user
+  belongs_to_related :user, :index => true
 
   validate :criteria_entered?
 
@@ -24,8 +24,8 @@ class Search
 private
   def criteria_entered?
     if self.terms.blank? and self.company.blank?
-      self.errors.add :terms, I18n.t('activerecord.errors.messages.blank')
-      self.errors.add :company, I18n.t('activerecord.errors.messages.blank')
+      self.errors.add :terms, I18n.t('activemodel.errors.messages.blank')
+      self.errors.add :company, I18n.t('activemodel.errors.messages.blank')
     end
   end
 end

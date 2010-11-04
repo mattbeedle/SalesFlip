@@ -75,6 +75,16 @@ Feature: Manage contacts
     When I press "contact_submit"
     Then I should be on the contact's page
     And a new "Updated" activity should have been created for "Contact" with "first_name" "Florian" and user: "annika"
+    
+  Scenario: Re-assigning a contact
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And a contact: "florian" exists with user: Benny
+    And I am on the contact's edit page
+    When I select "benjamin.pochhammer@1000jobboersen.de" from "contact_assignee_id"
+    And I press "contact_submit"
+    Then I should be on the contact's page
+    And the contact should belong to Benny
 
   Scenario: Viewing contacts
     Given I am registered and logged in as annika

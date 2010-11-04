@@ -25,7 +25,7 @@ module Permission
       validates_presence_of :permission
       validate :require_permitted_users
 
-      has_constant :permissions, lambda { I18n.t('permissions') }
+      has_constant :permissions, lambda { I18n.t(:permissions) }
     end
     base.send(:include, InstanceMethods)
   end

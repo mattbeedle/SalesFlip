@@ -7,7 +7,7 @@ class UserTest < ActiveSupport::TestCase
     should_belong_to :company
     should_have_instance_methods :company_name=, :company_name
     should_have_many :invitations, :leads, :comments, :tasks, :accounts, :contacts, :activities,
-      :searches, :opportunities, :assigned_opportunities
+      :searches, :opportunities, :assigned_opportunities, :emails
 
     context 'send_tracked_items_mail' do
       setup do
@@ -99,7 +99,7 @@ class UserTest < ActiveSupport::TestCase
 
     should 'have dropbox email' do
       @user.save!
-      assert_equal "dropbox@#{@user.api_key}.salesflip.com", @user.dropbox_email
+      assert_equal "#{@user.api_key}@salesflip.appspotmail.com", @user.dropbox_email
     end
 
     context 'when invited' do

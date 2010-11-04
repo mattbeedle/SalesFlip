@@ -25,3 +25,13 @@ end
 Given /^#{capture_model} is confirmed$/ do |m|
   model!(m).confirm!
 end
+
+Given /^I am registered and logged in as Matt$/ do
+  matt = Admin.make(:matt)
+  matt.confirm!
+  store_model('admin', 'matt', Admin.first)
+  visit new_user_session_path
+  fill_in 'user_email', :with => matt.email
+  fill_in 'user_password', :with => 'password'
+  click_button 'user_submit'
+end
