@@ -65,4 +65,5 @@ group :test do
   gem 'database_cleaner'
   gem 'mbeedle-heroku-autoscale', :require => 'heroku/autoscale'
   gem 'timecop'
+  gem 'test_notifier'
 end

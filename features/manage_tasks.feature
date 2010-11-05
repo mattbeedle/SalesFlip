@@ -36,6 +36,97 @@ Feature: Manage tasks
     When I press "task_submit"
     Then I should be on the tasks page
     And I should see "a test task"
+    
+  Scenario: Assigning a new task to a user, with a lead, when the lead is private
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And a lead exists with user: Annika, permission: "Private"
+    And I am on the lead's page
+    When I follow "Add Task"
+    And I follow "preset_date"
+    And I fill in "task_name" with "a test task"
+    And I select "Call" from "task_category"
+    And I select "Today" from "task_due_at"
+    And I select "benjamin.pochhammer@1000jobboersen.de" from "task_assignee_id"
+    And I press "Create Task"
+    Then 0 tasks should exist
+    And I should see "Cannot assign this task to anyone else because the lead that it is associated with is private. Please change the lead permission first"
+    
+  Scenario: Assigning a new task to a user, with an account, when the account is private
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And an account exists with user: Annika, permission: "Private"
+    And I am on the account's page
+    When I follow "Add Task"
+    And I follow "preset_date"
+    And I fill in "task_name" with "a test task"
+    And I select "Call" from "task_category"
+    And I select "Today" from "task_due_at"
+    And I select "benjamin.pochhammer@1000jobboersen.de" from "task_assignee_id"
+    And I press "Create Task"
+    Then 0 tasks should exist
+    And I should see "Cannot assign this task to anyone else because the account that it is associated with is private. Please change the account permission first"
+    
+  Scenario: Assigning a new task to a user, with a contact, when the contact is private
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And a contact exists with user: Annika, permission: "Private"
+    And I am on the contact's page
+    When I follow "Add Task"
+    And I follow "preset_date"
+    And I fill in "task_name" with "a test task"
+    And I select "Call" from "task_category"
+    And I select "Today" from "task_due_at"
+    And I select "benjamin.pochhammer@1000jobboersen.de" from "task_assignee_id"
+    And I press "Create Task"
+    Then 0 tasks should exist
+    And I should see "Cannot assign this task to anyone else because the contact that it is associated with is private. Please change the contact permission first"
+    
+  Scenario: Assigning a new task to a user, with a lead, when the lead is not shared with them
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And another user exists
+    And a lead exists with user: Annika
+    And the lead is shared with the other user
+    And I am on the lead's page
+    When I follow "Add Task"
+    And I follow "preset_date"
+    And I fill in "Subject" with "a test task"
+    And I select "Call" from "task_category"
+    And I select "Today" from "task_due_at"
+    And I select "benjamin.pochhammer@1000jobboersen.de" from "Assignee"
+    And I press "Create Task"
+    Then 0 tasks should exist
+    And I should see "Cannot assign this task to benjamin.pochhammer@1000jobboersen.de because the lead associated with it is not shared with that user"
+    
+  Scenario: Assigning a new task to a user, with an account, when the account is not shared with them
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And another user exists
+    And an account exists with user: Annika
+    And the account is shared with the other user
+    And I am on the account's page
+    When I follow "Add Task"
+    And I follow "preset_date"
+    And I fill in "Subject" with "a test task"
+    And I select "Call" from "task_category"
+    And I select "Today" from "task_due_at"
+    And I select "benjamin.pochhammer@1000jobboersen.de" from "Assignee"
+    And I press "Create Task"
+    Then 0 tasks should exist
+    And I should see "Cannot assign this task to benjamin.pochhammer@1000jobboersen.de because the account associated with it is not shared with that user"
+    
+  Scenario: Assigning an existing task to a user, with a contact, when the contact is private
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And a contact exists with user: Annika, permission: "Private"
+    And a task exists with user: Annika, asset: contact, assignee: Annika
+    And I am on the contact's page
+    When I go to the task's edit page
+    And I select "benjamin.pochhammer@1000jobboersen.de" from "task_assignee_id"
+    And I press "Update Task"
+    Then I should see "Cannot assign this task to anyone else because the contact that it is associated with is private. Please change the contact permission first"
+    And the task should be assigned to Annika
 
   Scenario: Viewing my tasks
     Given I am registered and logged in as annika

@@ -50,7 +50,18 @@ Feature: Manage leads
     And a created activity should exist for lead with first_name "Erich"
     And 0 emails should be delivered
     
-  Scenario: Trying to re-assign a private lead
+  Scenario: Trying to assign a new private lead
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And I am on the new lead page
+    When I fill in "Last Name" with "A test"
+    And I select "benjamin.pochhammer@1000jobboersen.de" from "lead_assignee_id"
+    And I select "Private" from "Permission"
+    And I press "Create Lead"
+    Then 0 leads should exist
+    And I should see "Cannot assign a private lead to another user, please change the permissions first"
+    
+  Scenario: Trying to assign an existing private lead
     Given I am registered and logged in as annika
     And Annika has invited Benny
     And a lead: "erich" exists with user: Annika, permission: "Private"
@@ -61,7 +72,19 @@ Feature: Manage leads
     And I should see "Cannot assign a private lead to another user, please change the permissions first"
     And 1 leads should exist with assignee_id: nil
     
-  Scenario: Trying to re-assign a shared lead to a user it is not shared with
+  Scenario: Trying to assign a new shared lead to a user it is not shared with
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And I am on the new lead page
+    When I fill in "Last Name" with "test"
+    And I select "Shared" from "Permission"
+    And I select "annika.fleischer@1000jobboersen.de" from "lead_permitted_user_ids"
+    And I select "benjamin.pochhammer@1000jobboersen.de" from "Assignee"
+    And I press "Create Lead"
+    Then 0 leads should exist
+    And I should see "Cannot assign a shared lead to a user it is not shared with. Please change the permissions first"
+    
+  Scenario: Trying to assign an existing shared lead to a user it is not shared with
     Given I am registered and logged in as annika
     And Annika has invited Benny
     And another user exists

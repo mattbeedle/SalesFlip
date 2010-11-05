@@ -1,3 +1,5 @@
+= error_messages_for form.object
+
 #due_at_value{ :style => 'display:none' }
   = form.object.due_at.to_s :long if form.object.due_at
 = hidden_field_tag :return_to, params[:return_to]
