@@ -1,5 +1,12 @@
 .title
   %h2= @opportunity.title
+  
+%h3= t(:attachments)
+- if @opportunity.attachments.any?
+  - @opportunity.attachments.each do |attachment|
+    = link_to attachment.attachment_filename, attachment.attachment.url
+- else
+  %p= t(:no_opportunity_attachments)
     
 = render :partial => 'tasks/add_task', :locals => { :object => @opportunity }
 

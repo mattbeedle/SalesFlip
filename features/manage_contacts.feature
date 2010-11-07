@@ -199,6 +199,18 @@ Feature: Manage contacts
     When I follow "florian-behn"
     Then I should be on the contact's page
     And I should see "Florian"
+  
+  Scenario: Adding an opportunity to a contact
+    Given I am registered and logged in as annika
+    And a contact exists with user: Annika
+    And I am on the contact's page
+    When I follow "Add Opportunity"
+    And I fill in "Title" with "Offer number 1"
+    And I attach the file "test/support/AboutStacks.pdf" to "Attachment"
+    And I press "Create Opportunity"
+    Then I should be on the contact's page
+    And 1 opportunities should exist with title: "Offer number 1"
+    And I should see "Offer number 1"
 
   Scenario: Adding a task to a contact
     Given I am registered and logged in as annika

@@ -1,0 +1,17 @@
+%dl.item.opportunity
+  %dt{ :class => opportunity.stage }= opportunity.stage.capitalize
+  %dd
+    %strong= link_to opportunity.title, opportunity
+    %small
+      = '-'
+      = raw t(:added_ago_by, :time => l(opportunity.created_at, :format => :short), :by => opportunity.user.username)
+    %br/
+    %strong= number_to_currency(opportunity.weighted_amount, :precision => 2)
+    = '|'
+    = t(:opportunity_outline, :amount => number_to_currency(opportunity.amount, :precision => 2), :discount => number_to_percentage(opportunity.discount, :precision => 0), :probability => number_to_percentage(opportunity.probability, :precision => 0), :close_on => opportunity.close_on ? opportunity.close_on.to_s(:long) : nil)
+    - if opportunity.attachments.any?
+      %br/
+      - opportunity.attachments.each do |attachment|
+        = link_to attachment.attachment_filename, attachment.attachment.url
+    %span.actions
+      = link_to t(:edit), edit_opportunity_path(opportunity)

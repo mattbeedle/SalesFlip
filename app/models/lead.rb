@@ -96,17 +96,17 @@ class Lead
 
   def promote!( account_name, options = {} )
     @recently_converted = true
-    if email and (contact = Contact.first(:conditions => { :email => email }))
+    if self.email and (contact = Contact.first(:conditions => { :email => email }))
       I18n.locale_around(:en) { update_attributes :status => 'Converted', :contact_id => contact.id }
     else
       account = Account.find_or_create_for(self, account_name, options)
       contact = Contact.create_for(self, account)
-      opportunity = Opportunity.create_for(contact, options) if options[:opportunity]
+      opportunity = Opportunity.create_for(contact, options)
       if [account, contact].all?(&:valid?)
         I18n.locale_around(:en) { update_attributes :status => 'Converted', :contact_id => contact.id }
       end
     end
-    return account || contact.account, contact
+    return account || contact.account, contact, opportunity
   end
 
   def reject!

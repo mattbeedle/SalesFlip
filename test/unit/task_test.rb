@@ -347,7 +347,7 @@ class TaskTest < ActiveSupport::TestCase
     should 'not be able to assign a task to someone else when the task has an account associated, and the account is shared, but not with that user' do
       user = User.make
       @task.save!
-      account = Lead.make :permission => 'Shared', :permitted_user_ids => [User.make.id], :user => @task.user
+      account = Account.make :permission => 'Shared', :permitted_user_ids => [User.make.id], :user => @task.user
       @task.update_attributes :asset => account
       assert @task.valid?
       @task.assignee = user

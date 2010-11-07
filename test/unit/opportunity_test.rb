@@ -5,10 +5,9 @@ class OpportunityTest < ActiveSupport::TestCase
     should_have_key :title, :stage, :close_on, :probability, :amount, :discount,
       :background_info, :created_at, :updated_at
     should_belong_to :assignee, :user, :contact
-    should_have_many :comments, :tasks
+    should_have_many :comments, :tasks, :attachments
     should_have_constant :stages
     should_validate_presence_of :title
-    should_have_uploader :attachment
     should_act_as_paranoid
     
     context 'assigned_to' do
@@ -65,10 +64,31 @@ class OpportunityTest < ActiveSupport::TestCase
         opportunity = Opportunity.create_for(Contact.new, :opportunity => { :title => 'An opportunity' })
         assert_equal 0, Opportunity.count
       end
+      
+      should 'not create the opportunity if the title is not supplied' do
+        opportunity = Opportunity.create_for(@contact, :opportunity => {})
+        assert_equal 0, Opportunity.count
+        assert opportunity.errors.blank?
+      end
     end
   end
   
-  context 'Instance' do    
+  context 'Instance' do
+    setup do
+      @opportunity = Opportunity.new
+    end
+    
+    should 'calculate the weighted amount based on the amount, the discount and the probability' do
+      @opportunity.attributes = { :amount => 200, :probability => 90 }
+      assert_equal 180, @opportunity.weighted_amount
+      @opportunity.attributes = { :amount => 1000, :discount => 500, :probability => 10 }
+      assert_equal 50, @opportunity.weighted_amount
+    end
+    
+    should 'default close_on to 1 month from now' do
+      assert_equal Date.parse(1.month.from_now.to_s), @opportunity.close_on
+    end
+    
     should 'have default stage of "prospecting"' do
       @opportunity = Opportunity.make(:stage => nil)
       assert_equal 'prospecting', @opportunity.stage

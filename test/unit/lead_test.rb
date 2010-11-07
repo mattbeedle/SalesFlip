@@ -405,6 +405,25 @@ class LeadTest < ActiveSupport::TestCase
         @lead.promote!('A company', :permission => 'Object')
         assert_equal @user.id, @lead.reload.updater_id
       end
+      
+      should 'create an opportunity if required' do
+        @lead.promote!('A company', :opportunity => { :title => 'An opportunity' })
+        assert_equal 1, @lead.contact.opportunities.count
+      end
+      
+      should 'return an account, a contact and an opportunity' do
+        result = @lead.promote!('A company', :opportunity => { :title => 'An opportunity' })
+        assert_equal [@lead.contact.account, @lead.contact, @lead.contact.opportunities.first],
+          result
+      end
+      
+      should 'return an account, a contact and an opportunity even when an opportunity is not created' do
+        account, contact, opportunity = @lead.promote!('A company')
+        assert account.is_a?(Account)
+        assert contact.is_a?(Contact)
+        assert opportunity.is_a?(Opportunity)
+        assert opportunity.errors.blank?
+      end
     end
 
     should 'require last name' do

@@ -1,4 +1,6 @@
-= form_tag promote_lead_path(@lead), :method => :put do
+= error_messages_for @account
+
+= form_tag promote_lead_path(@lead), :method => :put, :multipart => true do
   - if @contact && !@contact.new_record?
     = t(:contact_already_exists, :contact => @contact.full_name)
   - else
@@ -7,14 +9,15 @@
       .60.a
         .string
           %label{ :for => 'account_name' }= t('simple_form.labels.account_name')
-          = text_field_tag 'account_name'
+          = text_field_tag :account_name
       .40.z
         .string
           %label{ :for => 'account_id' }= t('simple_form.labels.account_id')
           = select_tag :account_id, options_for_select(Account.all.asc(:name).map {|a| [a.name, a.id] }, params[:account_id]), :include_blank => true
     %h3= t(:opportunity)
-    = simple_fields_for Opportunity.new do |opportunity_form|
-      = render :partial => 'opportunities/form', :locals => { :form => opportunity_form, :permissions => false, :buttons => false }
+    = simple_fields_for @opportunity do |opportunity_form|
+      = render :partial => 'opportunities/form', :locals => { :form => opportunity_form, :convert => true, :buttons => false }
+    %h3= t('simple_form.labels.permissions')
     %fieldset
       .20.a
         .string

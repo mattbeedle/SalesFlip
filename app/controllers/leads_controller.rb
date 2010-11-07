@@ -53,11 +53,12 @@ class LeadsController < InheritedResources::Base
     @account = current_user.accounts.new(:name => @lead.company)
     @contact = Contact.first(:conditions => { :email => @lead.email }) if @lead.email
     @opportunity = current_user.opportunities.build :assignee => current_user
+    @opportunity.attachments.build
   end
 
   def promote
     @lead.updater_id = current_user.id
-    @account, @contact = @lead.promote!(
+    @account, @contact, @opportunity = @lead.promote!(
       params[:account_id].blank? ? params[:account_name] : params[:account_id], params)
     if @account.errors.blank? and @contact.errors.blank?
       redirect_to account_path(@account)

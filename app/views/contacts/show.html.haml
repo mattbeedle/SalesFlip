@@ -5,7 +5,7 @@
       %small= raw " @ #{link_to @contact.account.name, @contact.account}"
   %ul.actions
     %li
-      = link_to t('edit'), edit_contact_path(@contact), :id => "edit_#{dom_id(@contact)}"
+      = link_to t(:edit), edit_contact_path(@contact), :id => "edit_#{dom_id(@contact)}"
     %li
       = simple_form_for @contact do |form|
         = hidden_field_tag :return_to, request.fullpath
@@ -17,13 +17,19 @@
           = form.button :submit, t('keep_me_updated'), :id => 'keep_me_updated'
   %br/
   %small
-    = raw t('added_ago_by', :time => l(@contact.created_at, :format => :short), :by => @contact.user.username)
-= render :partial => "tasks/add_task", :locals => { :object => @contact }
-= render :partial => "comments/comments", :locals => { :object => @contact }
+    = raw t(:added_ago_by, :time => l(@contact.created_at, :format => :short), :by => @contact.user.username)
+.opportunities
+  %h3.grad
+    = t(:opportunities)
+    = link_to raw("<b>+</b>#{t(:add_opportunity)}"), new_opportunity_path(:contact_id => @contact.id, :return_to => request.fullpath), :id => 'add_opportunity'
+  = render :partial => 'opportunities/opportunity', :collection => @contact.opportunities
+  
+= render :partial => 'tasks/add_task', :locals => { :object => @contact }
+= render :partial => 'comments/comments', :locals => { :object => @contact }
 
 - content_for :sidebar do
   .box.gold
-    %h3= t('contact_info_for', :name => @contact.first_name)
+    %h3= t(:contact_info_for, :name => @contact.first_name)
     %dl.info
       = show_attribute(@contact, 'identifier')
       = show_attribute(@contact, 'department')
@@ -42,5 +48,5 @@
       = show_attribute(@contact, 'born_on')
 
   #recent_activity.box.ice
-    %h3= t('recent_activity_for', :name => @contact.full_name )
+    %h3= t(:recent_activity_for, :name => @contact.full_name )
     = render :partial => 'shared/activity_for', :collection => @contact.activities.limit(6), :as => :activity

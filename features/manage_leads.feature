@@ -339,6 +339,7 @@ Feature: Manage leads
     When I follow "Convert"
     And I fill in "account_name" with "World Dating"
     And I fill in "opportunity_title" with "A great opportunity"
+    And I attach the file "test/support/AboutStacks.pdf" to "Attachment"
     And I press "convert"
     Then I should be on the account page
     And 1 opportunities should exist with title: "A great opportunity"
@@ -387,6 +388,8 @@ Feature: Manage leads
     When I follow "Convert"
     And I press "convert"
     Then I should be on the lead's promote page
+    And I should see "Account Name"
+    And I should see "Attachment"
 
   Scenario: Private lead (in)visiblity on leads page
     Given I am registered and logged in as annika

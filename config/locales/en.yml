@@ -240,6 +240,8 @@ en:
   add_opportunity: Add Opportunity
   select_contact: Select Contact
   opportunity: Opportunity
+  attachments: Attachments
+  no_opportunity_attachments: This opportunity has no attachments
 
   my_profile: My Profile
   recent_items: Recent Items

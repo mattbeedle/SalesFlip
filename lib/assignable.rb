@@ -3,14 +3,26 @@ module Assignable
     base.class_eval do
       belongs_to_related :assignee, :class_name => 'User'
       
-      named_scope :assigned_to, lambda { |user_id| { :where => { :assignee_id => user_id } } }
-      
       validate :check_permissions
     end
+    base.extend(ClassMethods)
     base.send(:include, InstanceMethods)
   end
   
+  module ClassMethods
+    def assigned_to( user_id )
+      if user_id.is_a?(String) && BSON::ObjectId.legal?(user_id)
+        user_id = BSON::ObjectId.from_string(user_id)
+      end
+      any_of({ :assignee_id => user_id }, { :assignee_id => nil, :user_id => user_id })
+    end
+  end
+  
   module InstanceMethods
+    # TODO should probably refactor this method. It just checks to make sure that the assignable
+    # object is not assigned to a user who does not have permission to view it, and if the
+    # assignable item is a task, it makes sure that the user being assigned the task has permission
+    # to view the asset that the task belongs to
     def check_permissions
       if respond_to?(:permission)
         if respond_to?(:asset) && self.asset && self.asset.respond_to?(:permission)

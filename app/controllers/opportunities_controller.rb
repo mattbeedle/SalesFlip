@@ -3,9 +3,14 @@ class OpportunitiesController < InheritedResources::Base
   has_scope :stage_is, :type => :array
   has_scope :assigned_to
   
+  def new
+    build_resource
+    @opportunity.attachments.build
+  end
+  
   def create
     create! do |success, failure|
-      success.html { redirect_to opportunities_path }
+      success.html { return_to_or_default opportunities_path }
     end
   end
   
@@ -25,7 +30,8 @@ protected
   end
   
   def build_resource
-    @opportunity ||= current_user.opportunities.build params[:opportunity]
+    attributes = { :contact_id => params[:contact_id] }.merge(params[:opportunity] || {})
+    @opportunity ||= current_user.opportunities.build attributes
   end
   
   def collection
