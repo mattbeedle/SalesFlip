@@ -22,7 +22,10 @@
   %h3.grad
     = t(:opportunities)
     = link_to raw("<b>+</b>#{t(:add_opportunity)}"), new_opportunity_path(:contact_id => @contact.id, :return_to => request.fullpath), :id => 'add_opportunity'
-  = render :partial => 'opportunities/opportunity', :collection => @contact.opportunities
+  - if @contact.opportunities.any?
+    = render :partial => @contact.opportunities
+  - else
+    %p= t(:no_opportunities)
   
 = render :partial => 'tasks/add_task', :locals => { :object => @contact }
 = render :partial => 'comments/comments', :locals => { :object => @contact }

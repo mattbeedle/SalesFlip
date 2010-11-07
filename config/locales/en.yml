@@ -242,6 +242,8 @@ en:
   opportunity: Opportunity
   attachments: Attachments
   no_opportunity_attachments: This opportunity has no attachments
+  opportunities_for: Opportunities for %{name}
+  no_opportunities: No opportunities yet
 
   my_profile: My Profile
   recent_items: Recent Items

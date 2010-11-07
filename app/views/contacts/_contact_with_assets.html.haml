@@ -16,7 +16,7 @@
             - else
               = hidden_field_tag 'contact[tracker_ids][]', current_user.id
               = form.button :submit, t(:keep_me_updated), :id => 'keep_me_updated'
-        %li.delete
+        -#%li.delete
           = simple_form_for contact, :html => { :method => :delete } do |form|
             = form.button :submit, t(:delete), :id => "delete_#{dom_id contact}"
     -#----------------------------------------------------------------------
@@ -34,7 +34,7 @@
       .half
         - unless %w(linked_in facebook xing twitter).each {|x| contact.send(x).blank?}
           %dl
-            %dt= t('follow')
+            %dt= t(:follow)
             %dd
               = link_to('Twitter', contact.website)   if !contact.website.blank?
               = link_to('LinkedIn',contact.linked_in) if !contact.linked_in.blank?
@@ -42,12 +42,17 @@
               = link_to('Xing',    contact.xing)      if !contact.facebook.blank?
         %small.timestamp
           = raw t(:added_ago_by, :time => l(contact.created_at, :format => :short), :by => contact.user.username)
+    %h5
+      = t(:opportunities_for, :name => contact.first_name)
+      = link_to raw("<b>+</b>#{t(:add_opportunity)}"), new_opportunity_path(:contact_id => contact.id, :return_to => request.fullpath)
+      .details
+        = render :partial => contact.opportunities
     -#----------------------------------------------------------------------
     -# Tasks for Contact
     -#----------------------------------------------------------------------
     %h5
       = t(:tasks_for, :name => contact.first_name)
-      = link_to raw("<b>+</b>#{t('add_task')}"), new_task_path(:asset_id => contact.id, :asset_type => "Contact", :return_to => request.fullpath), :id => "add_task_for_#{dom_id contact}"
+      = link_to raw("<b>+</b>#{t(:add_task)}"), new_task_path(:asset_id => contact.id, :asset_type => 'Contact', :return_to => request.fullpath), :id => "add_task_for_#{dom_id contact}"
     .details
       = render :partial => 'tasks/task', :collection => contact.tasks
       - if !contact.lead_id.blank?
