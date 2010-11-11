@@ -51,4 +51,7 @@ document.onReady(function() {
   new Base().initialize;
 });
 
-
+"#recent_activity span.toggler".on('click',function(event) {
+    this.toggleClass('closed')
+    this.parent().next().toggleClass('hide')
+});

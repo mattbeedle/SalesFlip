@@ -174,10 +174,10 @@ a#new
 // Index Listing
 //----------------------------------------------------
 div.item
-  :border-bottom 1px solid #ccc
+  :border-bottom 1px solid ($act_blue + 40)
   :clear both
   :margin-left 0px
-  :padding 3px 0px
+  :padding 5px 0px
   :width 100%
   :position relative
 dl.item
@@ -340,14 +340,61 @@ span.icon
   :color #777
   :font-size 16px
   :padding 0px 5px
+span.subject
+  background: #85BAC4
+  color: #fff
+  padding: 2px 5px
+  +border-radius(3px)
+  font-size: 9px
 small.timestamp
   :color #888
   :font-style italic
   :float right
   :margin-top 4px
+.item-body
+  padding-top: 10px
+  padding-left: 12px
 #recent_activity
-  :font-size 12px
+  h3
+    padding-bottom: 9px
+  :font-size 10px
+  span.toggler
+    color: #275466
+    cursor: pointer
+    &:hover
+      color: #000
+    &.closed
+      +rotate(270deg)
+      position: relative
+      top: -1px
+  .no-children
+    padding-left: 12px
+  .item-body
+    label
+      color: $act_blue - 70
+      margin-right: 6px
+      font-size: 12px
+    span, label
+      float: left
+    textarea
+      font-size: 12px
+      font-weight: normal
+    input[type="submit"], a.button
+      :border 1px solid #{$act_blue - 50}
+      +box-shadow(#999, 0px, 1px,3px)
+      +shiny-button($act_blue + 60, $act_blue, $act_blue - 50)
+      +text-shadow($act_blue - 30, 2px, 2px,2px)
+      font-size: 12px
+      padding: 2px 8px
+      text-indent: 0px
+      float: right
+      margin-left: 6px
+    .task input[type="submit"]
+      position: relative
+      top: -4px
   
+.hide
+  display: none
 //----------------------------------------------------
 // Pagination
 //----------------------------------------------------

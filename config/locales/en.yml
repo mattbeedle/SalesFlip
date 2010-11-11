@@ -46,7 +46,7 @@ en:
   yesterday: Yesterday
   time:
     formats:
-      short: "<b>%b %d.</b> %Y @ <b>%I:%M%p</b>"
+      short: "<b>%b %d</b> @ <b>%I:%M%p</b>"
   today: Today
   tomorrow: Tomorrow
   next_week: Next Week
