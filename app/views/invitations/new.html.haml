@@ -1,7 +1,7 @@
 = simple_form_for @invitation do |form|
   %fieldset
     .50.a= form.input :email
-    .50.z= form.input :role, :collection => Invitation.roles
+    .50.z= form.input :role, :collection => ROLES - ['Administrator'], :include_blank => false
   .act.pad
     = form.submit t(:create), :id => 'invitation_submit'
     = t(:or)
