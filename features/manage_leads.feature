@@ -311,6 +311,17 @@ Feature: Manage leads
     Then I should be on the account page
     And I should see "CareerMee"
     And 1 contacts should exist
+    
+  Scenario: Converting a lead with a blank email when a contact already exists with a blank email
+    Given I am registered and logged in as annika
+    And a lead exists with user: annika, email: ""
+    And account: "careermee" exists with user: annika
+    And contact: "florian" exists with email: "", account: careermee
+    And I am on the lead's page
+    When I follow "Convert"
+    Then I should be on the lead's convert page
+    And I should not see "already exists. Press convert to add this lead to that contact"
+    And I should see "Account Name"
 
   Scenario: Convert page when converting to an existing account
     Given I am registered and logged in as annika

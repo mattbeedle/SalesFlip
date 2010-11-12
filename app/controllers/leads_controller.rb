@@ -53,7 +53,7 @@ class LeadsController < InheritedResources::Base
 
   def convert
     @account = current_user.accounts.new(:name => @lead.company)
-    @contact = Contact.first(:conditions => { :email => @lead.email }) if @lead.email
+    @contact = Contact.first(:conditions => { :email => @lead.email }) unless @lead.email.blank?
   end
 
   def promote
