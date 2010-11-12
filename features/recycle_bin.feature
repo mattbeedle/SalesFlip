@@ -1,17 +1,30 @@
 Feature: Recycle Bin
   In order to recover deleted items
-  A User
+  An Administrator
   wants a recycle bin
 
   Scenario: Recycle bin navigation
-    Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika
+    Given Matt exists
+    And I am logged in as Matt
+    And a lead: "erich" exists with user: Matt
     And erich has been deleted
     When I am on the dashboard page
     Then I should see "(1)"
+    
+  Scenario: Recycle bin navigation as a normal user
+    Given I am registered and logged in as annika
+    And I am on the dashboard page
+    Then I should not see "Recycle Bin"
+    
+  Scenario: Recycle bin page as a normal user
+    Given I am registered and logged in as annika
+    When I go to the deleted items page
+    Then I should be on the root page
+    And I should see "Access denied"
 
   Scenario: Private item (in)visibility
-    Given I am registered and logged in as annika
+    Given Matt exists
+    And I am logged in as Matt
     And a user: "benny" exists
     And a lead: "erich" exists with user: benny, permission: "Private"
     And erich has been deleted
@@ -20,8 +33,9 @@ Feature: Recycle Bin
     And I should not see "Recycle Bin (1)"
 
   Scenario: Restoring a lead
-    Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika
+    Given Matt exists
+    And I am logged in as Matt
+    And a lead: "erich" exists with user: Matt
     And erich has been deleted
     And I go to the recycle bin page
     When I press "restore_erich-feldmeier"
@@ -55,8 +69,9 @@ Feature: Recycle Bin
   #  Then I should not see "Erich" within "#main"
 
   Scenario: Restoring a contact
-    Given I am registered and logged in as annika
-    And a contact: "florian" exists with user: annika
+    Given Matt exists
+    And I am logged in as Matt
+    And a contact: "florian" exists with user: Matt
     And florian has been deleted
     And I go to the recycle bin page
     When I press "restore_florian-behn"
@@ -64,8 +79,9 @@ Feature: Recycle Bin
     And a contact should exist with deleted_at: nil
 
   Scenario: Permanently deleting a contact
-    Given I am registered and logged in as annika
-    And a contact: "florian" exists with user: annika
+    Given Matt exists
+    And I am logged in as Matt
+    And a contact: "florian" exists with user: Matt
     And florian has been deleted
     When I go to the recycle bin page
     And I click the delete button for the contact
@@ -90,8 +106,9 @@ Feature: Recycle Bin
   
     
   Scenario: Restoring an account
-    Given I am registered and logged in as annika
-    And an account: "careermee" exists with user: annika
+    Given Matt exists
+    And I am logged in as Matt
+    And an account: "careermee" exists with user: Matt
     And careermee has been deleted
     And I go to the recycle bin page
     When I press "restore_careermee"
@@ -99,8 +116,9 @@ Feature: Recycle Bin
     And an account should exist with deleted_at: nil
 
   Scenario: Permanently deleting an account
-    Given I am registered and logged in as annika
-    And an account: "careermee" exists with user: annika
+    Given Matt exists
+    And I am logged in as Matt
+    And an account: "careermee" exists with user: Matt
     And careermee has been deleted
     When I go to the recycle bin page
     And I click the delete button for the account

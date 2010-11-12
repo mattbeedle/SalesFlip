@@ -35,6 +35,7 @@ end
 
 Given /^I am logged in as #{capture_model}$/ do |m|
   model = model!(m)
+  model.confirm!
   visit new_user_session_path
   fill_in 'user_email', :with => model.email
   fill_in 'user_password', :with => 'password'
