@@ -6,7 +6,7 @@ module Permission
     field :permitted_user_ids,  :type => Array,   :default => []
 
     named_scope :permitted_for, lambda { |user|
-      if user.instance_of?(User)
+      if !user.role_is?('Freelancer')
         { :where => {
           '$where' => "this.user_id == '#{user.id}' || this.permission == '#{Contact.permissions.index('Public')}' || " +
           "this.assignee_id == '#{user.id}' || " +
@@ -37,7 +37,7 @@ module Permission
 
   def permitted_for?( user )
     I18n.locale_around(:en) do
-      if user.instance_of?(User)
+      if !user.role_is?('Freelancer')
         user_id == user.id || permission == 'Public' || assignee_id == user.id ||
           (permission == 'Shared' && permitted_user_ids.include?(user.id)) ||
           (permission == 'Private' && assignee_id == user.id)

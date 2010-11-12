@@ -8,6 +8,7 @@ class UserTest < ActiveSupport::TestCase
     should_have_instance_methods :company_name=, :company_name
     should_have_many :invitations, :leads, :comments, :tasks, :accounts, :contacts, :activities,
       :searches, :emails
+    should_have_constant :roles
 
     context 'send_tracked_items_mail' do
       setup do
@@ -89,6 +90,18 @@ class UserTest < ActiveSupport::TestCase
     #  assert Alias.find_by_mail_and_destination("@#{@user.api_key}.salesflip.com",
     #                                            'catch.all@salesflip.com')
     #end
+    
+    should 'default role to "Sales Person"' do
+      @user.role = nil
+      @user.save!
+      assert @user.role_is?('Sales Person')
+    end
+    
+    should 'not default role to "Sales Person" if a role is already set' do
+      @user.role = 'Freelancer'
+      @user.save!
+      assert @user.role_is?('Freelancer')
+    end
 
     should 'create company from company name' do
       @user = User.new User.plan(:annika, :company_name => 'A test company', :company => nil)
@@ -105,15 +118,15 @@ class UserTest < ActiveSupport::TestCase
     context 'when invited' do
       setup do
         @user.save!
-        @invitation = Invitation.make :inviter => @user, :user_type => 'Freelancer',
+        @invitation = Invitation.make :inviter => @user, :role => 'Freelancer',
           :email => 'test@test.com'
       end
 
       should 'populate details from invitation code' do
         user = User.new :invitation_code => @invitation.code
         assert_equal 'test@test.com', user.email
-        #assert_equal 'Freelancer', user._type
         assert_equal 'test', user.username
+        assert_equal 'Freelancer', user.role
         assert_equal @user.company_id, user.company_id
       end
 

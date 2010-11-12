@@ -1,17 +1,15 @@
 class UsersController < InheritedResources::Base
-  skip_before_filter :authenticate_user!, :only => [:new, :create]
+  before_filter :load_current_user, :only => [ :profile ]
+  skip_before_filter :authenticate_user!, :only => [ :new, :create ]
   skip_before_filter :log_viewed_item
-  before_filter :invitation, :only => [:new, :create]
-  before_filter :freelancer_redirect, :only => [:index]
+  before_filter :invitation, :only => [ :new, :create ]
+  
+  load_and_authorize_resource
 
   def create
     create! do |success, failure|
       success.html { redirect_to root_path }
     end
-  end
-
-  def profile
-    @user = current_user
   end
 
 protected
@@ -24,8 +22,8 @@ protected
   def build_resource
     attributes = params[:user] || {}
     if invitation
-      attributes.merge!(:invitation_code => invitation.code)
-      @user ||= invitation.user_type.constantize.new attributes
+      attributes.merge!(:invitation_code => invitation.code, :role => invitation.role)
+      @user ||= User.new attributes
     else
       @user ||= User.new attributes
     end
@@ -33,5 +31,9 @@ protected
 
   def collection
     @users ||= current_user.company.users.order_by([:username, :asc])
+  end
+  
+  def load_current_user
+    @user ||= current_user
   end
 end

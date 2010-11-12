@@ -23,6 +23,5 @@ Salesflip::Application.routes.draw do
 
   resources :accounts do
     get :export, :on => :collection
-    get :did_you_mean, :on => :collection
   end
 end

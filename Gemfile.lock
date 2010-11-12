@@ -96,6 +96,7 @@ GEM
     bson (1.1.2)
     bson_ext (1.1.2)
     builder (2.1.2)
+    cancan (1.4.0)
     capybara (0.4.0)
       celerity (>= 0.7.9)
       culerity (>= 0.2.4)
@@ -261,6 +262,7 @@ DEPENDENCIES
   beanstalk-client
   bson
   bson_ext
+  cancan
   capybara
   carrierwave!
   compass

@@ -14,7 +14,7 @@ Sham.annika_email { |index| "annika.fleischer#{index}@1000jobboersen.de" }
 Invitation.blueprint do
   email
   inviter { User.make }
-  user_type { 'User' }
+  role { 'Sales Person' }
 end
 
 Company.blueprint do
@@ -25,15 +25,9 @@ Company.blueprint(:jobboersen) do
   name { '1000JobBoersen' }
 end
 
-Freelancer.blueprint do
-  company { Company.make }
-  email
-  password { 'password' }
-  password_confirmation { 'password' }
-end
-
-Freelancer.blueprint(:carsten_werner) do
+User.blueprint(:carsten_werner) do
   email { 'carsten.werner@1000jobboersen.de' }
+  role { 'Freelancer' }
 end
 
 User.blueprint do
@@ -41,34 +35,22 @@ User.blueprint do
   email
   password { 'password' }
   password_confirmation { 'password' }
+  role { 'Sales Person' }
 end
 
 User.blueprint(:annika) do
-  company { Company.make }
   email { Sham.annika_email }
-  password { 'password' }
-  password_confirmation { 'password' }
+  role { 'Service Person' }
 end
 
 User.blueprint(:benny) do
   company { Company.make }
   email { 'benjamin.pochhammer@1000jobboersen.de' }
-  password { 'password' }
-  password_confirmation { 'password' }
 end
 
-Admin.blueprint do
-  company { Company.make }
-  email
-  password { 'password' }
-  password_confirmation { 'password' }
-end
-
-Admin.blueprint(:matt) do
-  company { Company.make }
+User.blueprint(:matt) do
   email { 'matt.beedle@1000jobboersen.de' }
-  password { 'password' }
-  password_confirmation { 'password' }
+  role { 'Administrator' }
 end
 
 Lead.blueprint do

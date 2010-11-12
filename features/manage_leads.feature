@@ -121,7 +121,7 @@ Feature: Manage leads
     Given a user: "annika" exists
     And I have accepted an invitation from annika
     And a lead: "erich" exists with user: annika
-    And a lead: "markus" exists with user: freelancer
+    And a lead: "markus" exists with user: user
     When I am on the leads page
     Then I should not see "Erich"
     And I should see "Markus"

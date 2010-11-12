@@ -7,7 +7,7 @@
   = will_paginate @accounts
 - content_for :sidebar do
   = render :partial => 'shared/index_filter', :locals => { :collection => Account.account_types, :selector => :account_type_is }
-  - if current_user.instance_of?(Admin)
+  - if can? :export, current_user
     .gold.box
       %h3= t(:data_actions)
       %ul.plain

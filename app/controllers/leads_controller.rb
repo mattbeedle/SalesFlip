@@ -1,4 +1,6 @@
 class LeadsController < InheritedResources::Base
+  load_and_authorize_resource
+
   before_filter :resource, :only => [ :convert, :promote, :reject ]
   before_filter :set_filters, :only => [ :index, :export ]
   before_filter :export_allowed?, :only => [ :index ]
@@ -95,8 +97,7 @@ protected
 
   def resource
     @lead ||= hook(:leads_resource, self).last
-    @lead ||= Lead.for_company(current_user.company).permitted_for(current_user).
-      where(:_id => params[:id]).first
+    @lead ||= Lead.for_company(current_user.company).where(:_id => params[:id]).first
   end
 
   def begin_of_association_chain
@@ -113,7 +114,7 @@ protected
   
   def export_allowed?
     if request.format.csv?
-      redirect_to root_path unless current_user.instance_of?(Admin)
+      raise CanCan::AccessDenied unless can? :export, current_user
     end
   end
 end

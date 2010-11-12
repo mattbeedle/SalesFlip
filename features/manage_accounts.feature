@@ -38,6 +38,15 @@ Feature: Manage accounts
     Then I should be on the accounts page
     And I should see "World Dating"
     And I should not see "CareerMee"
+    
+  Scenario: Viewing accounts as a freelancer
+    Given Annika exists
+    And I have accepted an invitation from annika
+    And an account exists with name: "annikas account", user: Annika
+    And an account exists with name: "another account", user: Annika, assignee: user
+    When I go to the accounts page
+    Then I should see "another account"
+    And I should not see "annikas account"
 
   Scenario: Creating a sub account (The parent account name should be displayed)
     Given I am registered and logged in as annika
@@ -312,15 +321,15 @@ Feature: Manage accounts
   Scenario: Accounts index with format csv as a normal user
     Given I am registered and logged in as annika
     And an account exists with user: Annika
-    When I go to the leads csv page
+    When I go to the accounts csv page
     Then I should be on the root page
 
   Scenario: Exporting Accounts as an admin
     Given I am registered and logged in as Matt
     And an account exists with user: Matt
-    And I am on the leads page
+    And I am on the accounts page
     When I follow "Export this list as a CSV"
-    Then I should be on the export leads page
+    Then I should be on the export accounts page
 
   Scenario: Adding a contact to an existing account
     Given I am registered and logged in as annika

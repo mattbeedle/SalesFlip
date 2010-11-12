@@ -7,52 +7,52 @@
   - if @lead.status_is?('Converted')
     %span.status.converted
       %strong &#10004;
-      = t('converted')
+      = t(:converted)
   - if @lead.status_is?('Rejected')
     %span.status.rejected
       %strong &#10008;
-      = t('rejected')
+      = t(:rejected)
   %ul.actions
     %li
       = link_to t('edit'), edit_lead_path(@lead, :return_to => request.fullpath), :id => "edit_#{dom_id @lead}"
     - if @lead.assignee.nil?
       %li
-        = simple_form_for @lead, :html => {:class => "accept"} do |form|
+        = simple_form_for @lead, :html => { :class => 'accept' } do |form|
           = form.hidden_field :do_not_notify, :value => true
           = form.hidden_field :assignee_id, :value => current_user.id
           = hidden_field_tag :return_to, request.fullpath
-          = form.button :submit, t('accept').capitalize, :id => 'accept'
+          = form.button :submit, t(:accept).capitalize, :id => 'accept'
     %li
       - if @lead.tracked_by?(current_user)
-        = simple_form_for @lead, :html => {:class => "stop update"} do |form|
+        = simple_form_for @lead, :html => { :class => 'stop update' } do |form|
           = hidden_field_tag 'lead[remove_tracker_ids][]', current_user.id
           = hidden_field_tag :return_to, request.fullpath
-          = form.button :submit, t('stop_updating_me'), :id => 'stop_updating_me'
+          = form.button :submit, t(:stop_updating_me), :id => 'stop_updating_me'
       - else
-        = simple_form_for @lead, :html => {:class => "start update"} do |form|
+        = simple_form_for @lead, :html => { :class => 'start update' } do |form|
           = hidden_field_tag 'lead[tracker_ids][]', current_user.id
           = hidden_field_tag :return_to, request.fullpath
-          = form.button :submit, t('keep_me_updated'), :id => 'keep_me_updated'
+          = form.button :submit, t(:keep_me_updated), :id => 'keep_me_updated'
     - unless @lead.status_is?('Converted') or @lead.status_is?('Rejected')
-      %li= link_to t('convert'), convert_lead_path(@lead), :id=> 'convert_lead'
+      %li= link_to t(:convert), convert_lead_path(@lead), :id => 'convert_lead'
       %li
         = simple_form_for @lead, :url => reject_lead_path(@lead), :html => { :method => :put } do |form|
-          = form.button :submit, t('reject'), :id => 'reject_lead'
+          = form.button :submit, t(:reject), :id => 'reject_lead'
   %br/
   %small
-    = raw t('added_ago_by', :time => l(@lead.created_at, :format => :short), :by => @lead.user.username)
-    = " : #{t('assigned_to', :user => User.find(@lead.assignee_id).full_name) if @lead.assignee_id.present?}"
+    = raw t(:added_ago_by, :time => l(@lead.created_at, :format => :short), :by => @lead.user.username)
+    = " : #{t(:assigned_to, :user => User.find(@lead.assignee_id).full_name) if @lead.assignee_id.present?}"
 - if @lead.notes.present?
   .notes= raw @lead.notes
 
-= render :partial => "tasks/add_task", :locals => { :object => @lead }
+= render :partial => 'tasks/add_task', :locals => { :object => @lead }
 
 = render :partial => 'comments/comments', :locals => { :object => @lead }
 
 
 - content_for :sidebar do
   .box.gold
-    %h3= t('contact_info')
+    %h3= t(:contact_info)
     %dl.info
       = show_attribute(@lead, 'identifier')
       = show_attribute(@lead, 'company')
@@ -67,12 +67,12 @@
       = show_attribute(@lead, 'city')
       = show_attribute(@lead, 'postal_code')
       = show_attribute(@lead, 'referred_by')
-      = show_attribute(@lead, 'website', link_to(t('visit_website'),@lead.website))
-      = show_attribute(@lead, 'twitter', link_to('Twitter',@lead.website))
-      = show_attribute(@lead, 'linked_in', link_to('LinkedIn',@lead.linked_in))
-      = show_attribute(@lead, 'facebook', link_to('Facebook',@lead.facebook))
-      = show_attribute(@lead, 'xing', link_to('Xing',@lead.xing))
+      = show_attribute(@lead, 'website', link_to(t(:visit_website), @lead.website))
+      = show_attribute(@lead, 'twitter', link_to('Twitter', @lead.website))
+      = show_attribute(@lead, 'linked_in', link_to('LinkedIn', @lead.linked_in))
+      = show_attribute(@lead, 'facebook', link_to('Facebook', @lead.facebook))
+      = show_attribute(@lead, 'xing', link_to('Xing', @lead.xing))
       = show_attribute(@lead, 'referred_by')
   #recent_activity.box.ice
-    %h3= t('recent_activity_for', :name => @lead.full_name )
+    %h3= t(:recent_activity_for, :name => @lead.full_name )
     = render :partial => 'shared/activity_for', :collection => @lead.activities.limit(6), :as => :activity

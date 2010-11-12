@@ -1,4 +1,6 @@
 class AccountsController < InheritedResources::Base
+  load_and_authorize_resource
+  
   before_filter :merge_updater_id, :only => [ :update ]
   before_filter :parent_account, :only => [ :new ]
   before_filter :similarity_check, :only => [ :create ]
@@ -61,8 +63,7 @@ protected
 
   def resource
     @account ||= hook(:accounts_resource, self).last
-    @account ||= Account.for_company(current_user.company).permitted_for(current_user).
-      where(:_id => params[:id]).first
+    @account ||= Account.for_company(current_user.company).where(:_id => params[:id]).first
   end
 
   def begin_of_association_chain
@@ -92,7 +93,7 @@ protected
   
   def export_allowed?
     if request.format.csv?
-      redirect_to root_path unless current_user.instance_of?(Admin)
+      raise CanCan::AccessDenied unless can? :export, current_user
     end
   end
 end

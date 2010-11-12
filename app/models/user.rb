@@ -1,6 +1,8 @@
 class User
   include Mongoid::Document
   include Mongoid::Timestamps
+  include HasConstant
+  include HasConstant::Orm::Mongoid
   include Gravtastic
   is_gravtastic
 
@@ -11,24 +13,28 @@ class User
 
   field :username
   field :api_key
+  field :role,      :type => Integer
 
   attr_accessor :company_name
 
-  has_many_related  :leads,       :index => true
-  has_many_related  :comments,    :index => true
-  has_many_related  :emails,      :index => true
-  has_many_related  :tasks,       :index => true
-  has_many_related  :accounts,    :index => true
-  has_many_related  :contacts,    :index => true
-  has_many_related  :activities,  :index => true
-  has_many_related  :searches,    :index => true
-  has_many_related  :invitations, :as => :inviter, :dependent => :destroy, :index => true
-  has_one_related   :invitation,  :as => :invited, :index => true
+  references_many  :leads,       :index => true
+  references_many  :comments,    :index => true
+  references_many  :emails,      :index => true
+  references_many  :tasks,       :index => true
+  references_many  :accounts,    :index => true
+  references_many  :contacts,    :index => true
+  references_many  :activities,  :index => true
+  references_many  :searches,    :index => true
+  references_many  :invitations, :as => :inviter, :dependent => :destroy, :index => true
+  references_one   :invitation,  :as => :invited, :index => true
 
-  belongs_to_related :company
+  referenced_in :company
 
   before_validation :set_api_key, :create_company, :on => :create
+  before_create :set_default_role
   after_create :update_invitation
+  
+  has_constant :roles, ROLES
 
   validates_presence_of :company
 
@@ -37,6 +43,7 @@ class User
       self.company_id = @invitation.inviter.company_id
       self.username = @invitation.email.split('@').first if self.username.blank?
       self.email = @invitation.email if self.email.blank?
+      self.role = @invitation.role
     end
   end
 
@@ -96,10 +103,8 @@ protected
   def update_invitation
     @invitation.update_attributes :invited_id => self.id unless @invitation.nil?
   end
-
-  def add_user_to_postfix
-    Alias.create :mail => "@#{self.api_key}.salesflip.com",
-      :destination => 'catch.all@salesflip.com'
-    Domain.create :domain => "#{self.api_key}.salesflip.com"
+  
+  def set_default_role
+    self.role = 'Sales Person' if self.role.blank?
   end
 end

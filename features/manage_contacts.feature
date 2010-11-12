@@ -50,6 +50,15 @@ Feature: Manage contacts
     And I should see "Florian Behn"
     And account: "careermee" should have a contact with first_name: "Florian"
     And a new "Created" activity should have been created for "Contact" with "first_name" "Florian"
+    
+  Scenario: Viewing contacts as a freelancer
+    Given Annika exists
+    And I have accepted an invitation from annika
+    And contact: "florian" exists with user: Annika
+    And contact: "steven" exists with user: Annika, assignee: user
+    When I go to the contacts page
+    Then I should see "Steven"
+    And I should not see "Florian"
 
   Scenario: Adding a contact when the account does not exist
     Given I am registered and logged in as annika
@@ -247,3 +256,22 @@ Feature: Manage contacts
     Then I should be on the contact's page
     And I should see "Updated"
     And I should see "annika.fleischer@1000jobboersen.de"
+
+  Scenario: Exporting Contacts as a normal user
+    Given I am registered and logged in as annika
+    And an contact exists with user: Annika
+    And I am on the contacts page
+    Then I should not see "Export this list as a CSV"
+
+  Scenario: Contacts index with format csv as a normal user
+    Given I am registered and logged in as annika
+    And an contact exists with user: Annika
+    When I go to the contacts csv page
+    Then I should be on the root page
+
+  Scenario: Exporting Contacts as an admin
+    Given I am registered and logged in as Matt
+    And an contact exists with user: Matt
+    And I am on the contacts page
+    When I follow "Export this list as a CSV"
+    Then I should be on the export contacts page

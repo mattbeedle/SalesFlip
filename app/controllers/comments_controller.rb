@@ -14,7 +14,7 @@ class CommentsController < InheritedResources::Base
   def update
     update! do |success, failure|
       success.html do
-        flash[:notice] = I18n.t('comment_updated')
+        flash[:notice] = I18n.t(:comment_updated)
         return_to_or_default commentable_path
       end
     end

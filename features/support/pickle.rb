@@ -28,8 +28,8 @@ Pickle.configure do |config|
   config.map 'erich', 'Erich',          :to => 'lead: "erich"'
   config.map 'florian', 'Florian',      :to => 'contact: "florian"'
   config.map '1000JobBoersen',          :to => 'company: "jobboersen"'
-  config.map 'Carsten Werner',          :to => 'freelancer: "carsten_werner"'
-  config.map 'Matt',                    :to => 'admin: "matt"'
+  config.map 'Carsten Werner',          :to => 'user: "carsten_werner"'
+  config.map 'Matt',                    :to => 'user: "matt"'
 end
 require 'pickle/path/world'
 require 'pickle/email/world'

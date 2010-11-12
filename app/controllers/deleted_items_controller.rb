@@ -1,6 +1,6 @@
 class DeletedItemsController < ApplicationController
 
-  before_filter :resource, :only => [:update, :destroy]
+  before_filter :resource, :only => [ :update, :destroy ]
 
   def index
     @items ||= [

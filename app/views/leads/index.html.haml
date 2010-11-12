@@ -28,7 +28,7 @@
               = check_box_tag 'source_is[]', source, (params[:source_is] and params[:source_is].include?(source)), :id => "source_#{source.parameterize}"
               %label{ :for => "source_#{source.parameterize}" }= source
         .clear= submit_tag t(:filter), :id => 'filter'
-  - if current_user.instance_of?(Admin)
+  - if can? :export, current_user
     .gold.box
       %h3= t(:data_actions)
       %ul.plain

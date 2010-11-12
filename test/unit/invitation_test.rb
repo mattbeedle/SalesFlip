@@ -2,11 +2,11 @@ require 'test_helper'
 
 class InvitationTest < ActiveSupport::TestCase
   context 'Class' do
-    should_have_key :email, :inviter_id, :invited_id, :created_at, :updated_at, :user_type,
+    should_have_key :email, :inviter_id, :invited_id, :created_at, :updated_at, :role,
       :code
-    should_require_key :email, :inviter, :user_type
-    should_have_constant :user_types
+    should_require_key :email, :inviter, :role
     should_belong_to :inviter, :invited
+    should_have_constant :roles
   end
 
   context 'Named scopes' do

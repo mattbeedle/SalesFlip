@@ -15,14 +15,10 @@ class Activity
 
   validates_presence_of :subject, :user
 
-  named_scope :for_subject, lambda {|model| {
-    :where => { :subject_id => model.id, :subject_type => model.class.to_s } } }
-  validates_presence_of :subject
-
-  named_scope :already_notified, lambda {|user| {
-    :where => { :notified_user_ids => user.id } } }
-  named_scope :not_notified, lambda { |user| {
-    :where => { :notified_user_ids => { '$ne' => user.id } } } }
+  named_scope :for_subject, lambda { |subject| {
+    :where => { :subject_id => subject.id, :subject_type => subject.class.to_s } } }
+  named_scope :already_notified, lambda { |user| { :where => { :notified_user_ids => user.id } } }
+  named_scope :not_notified, lambda { |user| { :where => { :notified_user_ids.ne => user.id } } }
 
   has_constant :actions, lambda { I18n.t(:activity_actions) }
 

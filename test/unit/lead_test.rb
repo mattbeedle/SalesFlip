@@ -141,7 +141,7 @@ class LeadTest < ActiveSupport::TestCase
 
       context 'when freelancer' do
         setup do
-          @freelancer = Freelancer.make
+          @freelancer = User.make :role => 'Freelancer'
         end
 
         should 'not return all public leads' do

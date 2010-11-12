@@ -46,6 +46,8 @@ module NavigationHelpers
       accounts_path
     when /the account page/
       account_path(@account || Account.last)
+    when /the accounts csv page/
+      accounts_path(:format => 'csv')
 
     when /the new contact page/
       new_contact_path
@@ -53,6 +55,8 @@ module NavigationHelpers
       contacts_path
     when /the contact page/
       contact_path(@contact || Contact.last)
+    when /the contacts csv page/
+      contacts_path(:format => 'csv')
 
     when /the admin login page/
       new_admin_session_path
