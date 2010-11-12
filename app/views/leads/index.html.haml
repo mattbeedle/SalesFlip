@@ -6,7 +6,7 @@
 = will_paginate @leads
 
 - content_for :sidebar do
-  - unless current_user.instance_of?(Freelancer)
+  - unless current_user.role_is?('Freelancer')
     .gold.box
       %h3= t(:filter_by_status)
       = form_tag '', :method => :get do
