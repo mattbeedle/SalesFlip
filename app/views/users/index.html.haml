@@ -1,10 +1,15 @@
 %h2.title
-  =t('users')
+  = t(:users)
 
 %table
   %tr
-    %th= t('username')
-    %th= t('email')
-    %th= t('confirmed_at')
-    %th= t('user_type')
-  = render :partial => 'user', :collection => @users
+    %th= t(:username)
+    %th= t(:email)
+    %th= t(:confirmed_at)
+    %th= t(:user_type)
+  - @users.each do |user|
+    %tr
+      %td= user.username
+      %td= user.email
+      %td= user.confirmed_at.to_s :short if user.confirmed?
+      %td
