@@ -8,7 +8,7 @@
       by
       = link_to activity.user.email.split('@')[0], activity.user
       %small.timestamp= raw l(activity.updated_at, :format => :short)
-    .item-body.hide
+    .item-body
       - if activity.subject_type == "Task"
         - task = activity.subject
         - if task.completed?
