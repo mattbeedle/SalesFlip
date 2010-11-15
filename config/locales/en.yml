@@ -80,7 +80,7 @@ en:
   yesterday: Yesterday
   time:
     formats:
-      short: "<b>%b %d.</b> %Y @ <b>%I:%M%p</b>"
+      short: "<b>%b %d</b> @ <b>%I:%M%p</b>"
   today: Today
   tomorrow: Tomorrow
   next_week: Next Week
@@ -268,7 +268,9 @@ en:
   reject_lead: Reject Lead
   reject: Reject
   rejected: Rejected
+  save_lead: Save Lead
   tracking_info: Tracking Info
+  update_lead: Update Lead
   web_and_social_media: "Web &amp; Social Media"
   contact_already_exists: "Contact %{contact} already exists. Press convert to add this lead to that contact"
   leads_created_accepted: Leads (created/accepted)

@@ -9,10 +9,10 @@
         = simple_form_for account do |form|
           = hidden_field_tag :return_to, account_path(@account.parent_id)
           = form.hidden_field :parent_id, :value => @account.parent_id
-          = form.button :submit, "#{t(:yes_use)} #{account.name}", :class => 'gray'
+          = form.button :submit, "#{t(:yes_use)} #{account.name}", :class => 'link'
   - else
     - @similar_accounts.each do |account|
-      %li= link_to "#{t(:yes_use)} #{account.name}", account, :class => 'gray button'
+      %li= link_to "#{t(:yes_use)} #{account.name}", account, :class => 'link'
 
   %li
     = simple_form_for @account do |form|
