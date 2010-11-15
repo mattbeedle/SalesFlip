@@ -12,7 +12,7 @@
       - if activity.subject_type == "Task"
         - task = activity.subject
         - if task.completed?
-          %label= task.name
+          %label.complete= task.name
         - else
           = simple_form_for task do |form|
             = hidden_field_tag :return_to, request.fullpath
@@ -20,14 +20,14 @@
             %label{ :for => "activity_task_#{task.id}" }= task.name
             %span.status= "(#{task.due_at_in_words})"
             %span.save.task
-              = form.button :submit, t('save')
+              = form.button :submit, t('save'), :id => "activity_task_submit"
             .clear
       - else
         - comment = activity.subject
         = simple_form_for comment do |form|
-          = form.input :text, :as => :text, :input_html => {:rows => 2}, :label => false
+          = form.input :text, :as => :text, :input_html => {:rows => 2, :id => "activity_comment_text"}, :label => false
           %span.save
-            = form.button :submit, t('save')
+            = form.button :submit, t('save'), :id => "activity_comment_submit"
           .clear
       
   - else
@@ -35,5 +35,5 @@
       %span.subject= activity.subject_type
       = activity.action
       by
-      = link_to activity.user.email.split('@')[0], activity.user
+      = link_to activity.user.email, activity.user
       %small.timestamp= raw l(activity.updated_at, :format => :short)

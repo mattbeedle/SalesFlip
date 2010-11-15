@@ -245,7 +245,7 @@ Feature: Manage leads
     And I press "task_submit"
     Then the task "Call to get offer details" should have been completed
     And I should be on the lead's page
-    And I should not see "Call to get offer details"
+    And I should not see "Call to get offer details" within "#main"
 
   Scenario: Deleting a task
     Given I am registered and logged in as annika
@@ -255,7 +255,7 @@ Feature: Manage leads
     When I click the delete button for the task
     Then I should be on the lead's page
     And a task should not exist
-    And I should not see "Call to get offer details"
+    And I should not see "Call to get offer details" within "#main"
 
   Scenario: Rejecting a lead
     Given I am registered and logged in as annika
