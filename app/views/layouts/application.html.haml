@@ -7,7 +7,7 @@
     = title_tag 'SalesFlip'
     = description_tag 'An unobtrusive, slim CRM built with MongoMapper and RightJS'
     = keywords_tag 'SalesFlip salesflip CRM unobtrusive mongomapper rightjs'
-    %meta{ :content => "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
+    %meta{ :content => 'text/html; charset=utf-8', 'http-equiv' => 'Content-Type' }
   = body do
     #header
       .pad
@@ -55,7 +55,7 @@
                   %li
                     %span== #{item.class.to_s}:
                     - if item.instance_of?(Comment)
-                      = "on " + link_to(item.commentable.full_name, item.commentable)
+                      = 'on ' + link_to(item.commentable.full_name, item.commentable)
                     - elsif item.respond_to?(:deleted_at)
                       = item.deleted_at.blank? ? link_to(item.name, item) : item.name
                     - else

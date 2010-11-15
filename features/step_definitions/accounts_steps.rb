@@ -12,6 +12,10 @@ Given /^I click the delete button for the task$/ do
   click_button "delete_task_#{Task.first.id}"
 end
 
+When /^I click the delete button for the comment$/ do
+  click_button "delete_comment_#{Comment.first.id}"
+end
+
 Then /^#{capture_model} should have sub account: #{capture_model}$/ do |parent, sub|
   parent = model!(parent)
   sub = model!(sub)

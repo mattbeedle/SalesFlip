@@ -246,7 +246,7 @@ Feature: Manage leads
     And I press "task_submit"
     Then the task "Call to get offer details" should have been completed
     And I should be on the lead's page
-    And I should not see "Call to get offer details"
+    And I should not see "Call to get offer details" within "label"
 
   Scenario: Deleting a task
     Given I am registered and logged in as annika
@@ -415,7 +415,7 @@ Feature: Manage leads
     And I press "lead_submit"
     Then I should be on the lead's page
     And I should see "Updated"
-    And I should see "annika.fleischer@1000jobboersen.de"
+    And I should see "Lead Updated by annika.fleischer"
 
   Scenario: Exporting Leads as a normal user
     Given I am registered and logged in as annika
