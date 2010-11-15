@@ -23,6 +23,7 @@ class Invitation
 
 protected
   def generate_code
+    UUID.state_file = false
     self.code = UUID.new.generate if code.blank?
   end
 
