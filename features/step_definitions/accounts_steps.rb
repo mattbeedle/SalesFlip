@@ -21,3 +21,24 @@ Then /^#{capture_model} should have sub account: #{capture_model}$/ do |parent, 
   sub = model!(sub)
   assert parent.children.include?(sub)
 end
+
+When /^I add a contact$/ do
+  click "Add Contact"
+  fill_in 'First Name', :with => 'Matt'
+  fill_in 'Last Name', :with => 'Beedle'
+  click_button 'contact_submit'
+end
+
+When /^I add a task$/ do
+  click "Add Task"
+  click "preset_date"
+  fill_in 'Subject', :with => 'Make these features pass'
+  select 'Follow-up', :from => 'Category'
+  select 'Today', :from => 'Due at'
+  click_button 'task_submit'
+end
+
+When /^I add a comment$/ do
+  fill_in 'comment_text', :with => 'This is pretty cool'
+  click_button 'comment_submit'
+end

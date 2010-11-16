@@ -210,7 +210,7 @@ Feature: Manage contacts
     And I press "task_submit"
     Then the task "Call to get offer details" should have been completed
     And I should be on the contact's page
-    And I should not see "Call to get offer details"
+    And I should not see "Call to get offer details" within "#main"
     And a new "Completed" activity should have been created for "Task" with "name" "Call to get offer details" and user: "annika"
 
   Scenario: Deleting a task
@@ -221,7 +221,7 @@ Feature: Manage contacts
     When I click the delete button for the task
     Then I should be on the contact's page
     And a task should not exist
-    And I should not see "Call to get offer details"
+    And I should not see "Call to get offer details" within "#main"
 
   Scenario: Adding a comment
     Given I am registered and logged in as annika
