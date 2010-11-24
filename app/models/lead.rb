@@ -43,6 +43,13 @@ class Lead
   
   index(
     [
+      [ :first_name, Mongo::ASCENDING ],
+      [ :last_name, Mongo::ASCENDING ]
+    ],
+  )
+    
+  index(
+    [
       [:status, Mongo::DESCENDING],
       [:created_at, Mongo::DESCENDING]
     ]
