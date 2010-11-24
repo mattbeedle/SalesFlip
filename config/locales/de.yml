@@ -1,0 +1,418 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+de:
+  #--------------------------------------------------------------
+  # Layout
+  #--------------------------------------------------------------
+  welcome: Welcome
+  dashboard: Dashboard
+  edit_notifications: Notifications
+  task: Task
+  tasks: Tasks
+  lead: Lead
+  leads: Leads
+  account: Account
+  accounts: Accounts
+  contacts: Contacts
+  profile: Profile
+  login: Login
+  logout: Logout
+  recycle_bin_empty: Recycle Bin
+  recycle_bin: "Recycle Bin (%{count})"
+  use: Use
+  users: Users
+  invitations: Invitations
+  yes_use: "Yes, use"
+  
+  activemodel:
+    errors:
+      models:
+        user:
+          attributes:
+            read_terms:
+              inclusion: You must agree to the terms to register
+      template:
+        header:
+          one:    "%{model} could not be saved: 1 Error."
+          other:  "%{model} could not be saved: %{count} Errors."
+        body: "Please check the following fields:"
+      messages:
+        inclusion: "is not a valid value"
+        exclusion: "is not available"
+        invalid: "is not valid"
+        confirm: "does not match confirmation"
+        accepted: "must be accepted"
+        empty: "can't be empty"
+        blank: "can't be blank"
+        too_long: "is too long (no more than %{count} characters)"
+        too_short: "is too short (no less than %{count} characters)"
+        wrong_length: "wronglength (must have exactly %{count} characters)"
+        taken: "is already taken"
+        not_a_number: "is not number"
+        greater_than: "must be larger than %{count}"
+        greater_than_or_equal_to: "must be greater than or equal to %{count}"
+        equal_to: "must be equal to %{count}"
+        less_than: "must be less than %{count}"
+        less_than_or_equal_to: "must be less than or equal to %{count}"
+        odd: "must be odd"
+        even: "must be even"
+        already_invited: "already on our invitation list"
+
+  #--------------------------------------------------------------
+  # Time
+  #--------------------------------------------------------------
+  added_ago: "added on %{time}"
+  added_ago_by: "added by %{by} on %{time}"
+  assigned_ago_by: "assigned to %{for} on %{time} by %{by}"
+  assigned_to: "Assigned to %{user}"
+  created_ago: "created %{time} ago"
+  done_ago: "done on %{time}"
+  removed_ago: "removed on %{time}"
+  posted_ago: "Posted on %{time}"
+  updated_ago: "updated on %{time} ago"
+  wrote_ago: "wrote on %{time}"
+  email_sent_ago: "sent via email on %{time}"
+  via_email: "&#9993; via Email &gt; Re:%{subject}"
+  last_year: Last Year
+  last_month: Last Month
+  last_week: Last Week
+  yesterday: Yesterday
+  time:
+    formats:
+      short: "<b>%b %d</b> @ <b>%I:%M%p</b>"
+  today: Today
+  tomorrow: Tomorrow
+  next_week: Next Week
+  this_week: This Week
+  this_month: This Month
+  next_month: Next Month
+  next_year: Next Year
+  
+  #--------------------------------------------------------------
+  # UI
+  #--------------------------------------------------------------
+  assigned: Assigned
+  unassigned: Unassigned
+  account_type: Account Type
+  assigned_to_me: Assigned to me
+  name_like: Name
+  source_is: Source
+  back: Back
+  cancel: Cancel
+  configuration: Configuration
+  completed: Completed
+  delete_icon: "&#10005;"
+  delete: "Delete"
+  edit: Edit
+  filter: Filter
+  filters: Filters
+  filter_by_status: Filter by Status
+  data_actions: Data Options
+  follow: Follow
+  go_back: Go Back
+  or: or
+  notes: Notes
+  no_source: No Source
+  pending: Pending
+  privileges: Privileges
+  subject: Subject
+  tracking: Tracking
+  save: Save
+  submit: Submit
+  visit_website: Visit Website
+  keep_me_updated: Keep me updated
+  stop_updating_me: Stop updating me
+  accept: Accept
+  export_as_csv: Export this list as a CSV
+  choose_fields: Choose Fields to Export
+  export: Export
+  create: Create
+  deliminator: Deliminator
+  fields: Fields
+  recent_activity: Recent Activity
+  avatar: Avatar
+  
+  #--------------------------------------------------------------
+  # Form Labels
+  #--------------------------------------------------------------
+  simple_form:
+    labels:
+      task:
+        name: Subject
+      identifier: Identifier
+      address: Address
+      account_name: Account Name
+      account_id: Account
+      alt_email: Other Email
+      alternative_email: Other Email
+      billing_address: Billing Address
+      campaign_id: Campaign
+      company: Company
+      do_not_call: Do Not Call
+      email: Email
+      fax: Fax
+      facebook: Facebook
+      first_name: First Name
+      last_name: Last Name
+      linked_in: Linked In
+      mobile: Mobile
+      permission: Permission
+      permissions: Permissions
+      permitted_users: Permitted Users
+      phone: Phone
+      status: Status
+      source: Source
+      shipping_address: Shipping Address
+      rating: Rating
+      referred_by: Referred By
+      salutation: Salutation
+      title: Title
+      twitter: Twitter
+      xing: Xing
+      website: Website
+      department: Department
+      job_title: Job Title
+      city: City
+      postal_code: Postal Code
+  
+  #--------------------------------------------------------------
+  # Account
+  #--------------------------------------------------------------
+  access_levels:
+    - Private
+  add_account: Add Account
+  delete_account: Delete Account
+  edit_account: Edit Account
+  add_sub_account: Add Sub-Account
+  add_sub_account_for: "Add Sub-Account for %{account}"
+  sub_account: Sub-Account
+  sub_accounts: Sub-Accounts
+  permissions:
+  - Public
+  - Shared
+  - Private
+  create_new_account: "No, Create New Account"
+  account_may_exist: This account may already exist
+  use_existing_account: Would you like to use an existing account instead?
+  accounts_created_accepted: Accounts (created/accepted)
+
+  #--------------------------------------------------------------
+  # Search
+  #--------------------------------------------------------------
+  search: Search
+  no_search_results: "There are no matches, <a href=\"%{link}\">search again</a>"
+  results: Results
+  search_results_for: "Search Results for \"%{terms}\" (%{total} items found)"
+  by_company: "By Company"
+  search_people: Quick Search
+  search_companies: Search Companies
+
+  #--------------------------------------------------------------
+  # Activity
+  #--------------------------------------------------------------
+  activity_actions:
+    - Viewed
+    - Created
+    - Updated
+    - Completed
+    - 'Re-assigned'
+    - Rejected
+    - 'Re-scheduled'
+    - Converted
+    - Commented
+    - Deleted
+    - Restored
+
+  my_profile: My Profile
+  recent_items: Recent Items
+  recent_activity_for: "Recent Activity for %{name}"
+  #--------------------------------------------------------------
+  # Comments
+  #--------------------------------------------------------------
+  add_comment: Add Comment
+  add_comment_for: "Add a Comment for %{name}"
+  edit_comment: Edit this Comment
+  comment: Comment
+  comment_updated: Comment was successfully updated
+  comments: Comments
+  comments_for: "Comments for %{name}"
+  save_comment: Save Comment
+  update_comment: Update Comment
+  wrote: wrote
+  
+  #--------------------------------------------------------------
+  # Contact
+  #--------------------------------------------------------------
+  add_contact: Add Contact
+  contact_info: Contact Info
+  contact_info_for: "Contact %{name}"
+  delete_contact: Delete Contact
+  edit_contact: Edit Contact
+  info_for: "Info for %{name}"
+  no_contact_info: "No contact info for %{name}"
+  contacts_created_accepted: Contacts (created/accepted)
+  #--------------------------------------------------------------
+  # Leads
+  #--------------------------------------------------------------
+  add_lead: Add Lead
+  update_lead: Update Lead
+  company: Company
+  contact_info: Contact Info
+  convert: Convert
+  converted: Converted
+  convert_lead: Convert Lead
+  delete_lead: Delete Lead
+  edit_lead: Edit Lead
+  lead_name: Lead Name
+  reject_lead: Reject Lead
+  reject: Reject
+  rejected: Rejected
+  save_lead: Save Lead
+  tracking_info: Tracking Info
+  update_lead: Update Lead
+  web_and_social_media: "Web &amp; Social Media"
+  contact_already_exists: "Contact %{contact} already exists. Press convert to add this lead to that contact"
+  leads_created_accepted: Leads (created/accepted)
+  lead_statuses:
+    - New
+    - Contacted
+    - Converted
+    - Rejected
+    - Not Interested
+    - Interested
+  lead_sources:
+    - Campaign
+    - Cold Call
+    - Conference
+    - Online Marketing
+    - Referal
+    - "Self-generated"
+    - Website
+    - Word of Mouth
+    - Other
+    - Imported
+  salutations:
+    - Herr
+    - asfef
+    - Frau
+  titles:
+    - Dr
+    - Sir
+    - Lord
+    - Madam
+    - Earl
+  account_types:
+    - Analyst
+    - Competitor
+    - Customer
+    - Integrator
+    - Investor
+    - Partner
+    - Press
+    - Prospect
+    - Reseller
+    - Other
+
+  #--------------------------------------------------------------
+  # Task
+  #--------------------------------------------------------------
+  add_task: Add Task
+  delete_task: Delete Task
+  edit_task: Edit Task
+  update_task: Update Task
+  due_today: Today
+  due_tomorrow: Tomorrow
+  due_this_week: This week
+  due_next_week: Next week
+  due_later: Sometime later
+  overdue: As soon as possible
+  task_categories:
+    - Call
+    - Email
+    - "Follow-up"
+    - Lunch
+    - Meeting
+    - Money
+    - Presentation
+    - Trip
+  task_reassigned: "Task has been re-assigned to %{user}"
+  no_tasks_for_lead: "You have no tasks for this lead. <a href='%{link}'>Add one now</a>"
+  no_tasks_for: "You have no tasks for this %{asset}. <a href='%{link}'>Add one now</a>"
+
+  #--------------------------------------------------------------
+  # Deleted Items
+  #--------------------------------------------------------------
+  restore: restore
+  permanently_delete: permantently delete
+
+  #--------------------------------------------------------------
+  # Users
+  #--------------------------------------------------------------
+  add_user: Add User
+  confirmed_at: Confirmed At
+  username: Username
+  user_type: User Type
+
+  #--------------------------------------------------------------
+  # Invitations
+  #--------------------------------------------------------------
+  email: Email
+  state: State
+  pending: Pending
+  accepted: Accepted
+  new_invitation: Invite Someone!
+
+  #--------------------------------------------------------------
+  # Emails
+  #--------------------------------------------------------------
+  email_count: Emails
+  emails:
+    do_not_reply: "do-not-reply@%{host}"
+    task_reassigned:
+      subject: You have been assigned a new task
+    daily_task_summary:
+      subject: "SalesFlip: Daily task summary for %{date}"
+    tracked_items_update:
+      subject: "SalesFlip: Tracked items update for %{date}"
+    lead_assignment:
+      subject: "SalesFlip: You have been assigned a lead"
+    invitation:
+      subject: "SalesFlip: You have been invited to join %{company}'s company"
+      body:
+        top: Here is your invitation link, please signup here.  You will then receive a confirmation email before you are able to log in
+    lead_notification:
+      subject: New lead
+      body:
+        top: A new lead has arrived matching your notification criteria
+  
+  
+  #--------------------------------------------------------------
+  # Icons
+  #--------------------------------------------------------------
+  icons:
+    email: "&#9993;"
+    comment: "&#9699;"
+  
+  #--------------------------------------------------------------
+  # Info
+  #--------------------------------------------------------------
+  info:
+    dropbox: "This is the account which is used to route external emails into your comments feeds"
+  
+  #--------------------------------------------------------------
+  # Tasks
+  #--------------------------------------------------------------
+  tasks_for: "Tasks for %{name}"
+  no_outstanding_tasks: You have no outstanding tasks
+  
+  #--------------------------------------------------------------
+  # Errors
+  #--------------------------------------------------------------
+  error_404: The page you are looking for cannot be found.
+  error_404_note: "Check if the URL is correct or %{link}"
+  error_422: "The change you wanted was rejected."
+  error_422_note: "You may not have necessary permissions. %{link}"
+  error_500: A system error has occurred.
+  error_500_note: "%{link} or %{email}"
+  contact_the_admin: contact the administrator
