@@ -60,7 +60,9 @@ class LeadsController < InheritedResources::Base
     @lead.updater_id = current_user.id
     @account, @contact = @lead.promote!(
       params[:account_id].blank? ? params[:account_name] : params[:account_id])
-    if @account.errors.blank? and @contact.errors.blank?
+    if @account.nil? && @contact.valid?
+      redirect_to contact_path(@contact)
+    elsif @account.valid? && @contact.valid?
       redirect_to account_path(@account)
     else
       render :action => :convert

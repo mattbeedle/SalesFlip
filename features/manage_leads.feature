@@ -312,6 +312,16 @@ Feature: Manage leads
     And I should see "CareerMee"
     And 1 contacts should exist
     
+  Scenario: Converting a lead to an existing contact that has no account
+    Given I am registered and logged in as annika
+    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com"
+    And contact: "florian" exists with email: "erich.feldmeier@gmail.com", account: nil, user: annika
+    And I am on the lead's page
+    When I follow "Convert"
+    And I press "convert"
+    Then I should be on the contact's page
+    And 1 contacts should exist
+    
   Scenario: Converting a lead with a blank email when a contact already exists with a blank email
     Given I am registered and logged in as annika
     And a lead exists with user: annika, email: ""

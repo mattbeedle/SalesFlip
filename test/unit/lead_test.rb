@@ -393,12 +393,11 @@ class LeadTest < ActiveSupport::TestCase
         assert result.last.is_a?(Contact)
       end
       
-      should 'return an invalid account if the contact exists, but it does not have an account, and no name is specified' do
+      should 'return nil instead of account if the contact exists, but it does not have an account, and no name is specified' do
         @lead.update_attributes :email => 'florian.behn@careermee.com'
         @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
         result = @lead.promote!('')
-        assert result.first.is_a?(Account)
-        assert !result.first.errors[:name].blank?
+        assert result.first.nil?
       end
       
       should 'not set the contact account id if the contact exists without an account, and the new account is invalid' do
@@ -406,6 +405,14 @@ class LeadTest < ActiveSupport::TestCase
         @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
         @lead.promote!('')
         assert @contact.reload.account_id.blank?
+      end
+      
+      should 'not attempt to assign to a contact if the email is blank' do
+        @lead.update_attributes :email => ''
+        @contact = Contact.make(:florian, :email => '')
+        @lead.promote!('an account')
+        assert_equal 2, Contact.count
+        assert !@contact.leads.include?(@lead)
       end
     end
 
