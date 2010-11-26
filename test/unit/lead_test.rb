@@ -381,6 +381,25 @@ class LeadTest < ActiveSupport::TestCase
         @lead.promote!('A company', :permission => 'Object')
         assert_equal @user.id, @lead.reload.updater_id
       end
+      
+      should 'still return an account if the contact exists, but it does not have an account' do
+        @lead.update_attributes :email => 'florian.behn@careermee.com'
+        @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
+        assert @contact.account.blank?
+        result = @lead.promote!('New Account')
+        assert_equal 1, Account.count
+        assert !@contact.reload.account.blank?
+        assert result.first.is_a?(Account)
+        assert result.last.is_a?(Contact)
+      end
+      
+      should 'return an invalid account if the contact exists, but it does not have an account, and no name is specified' do
+        @lead.update_attributes :email => 'florian.behn@careermee.com'
+        @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
+        result = @lead.promote!('')
+        assert result.first.is_a?(Account)
+        assert !result.first.errors[:name].blank?
+      end
     end
 
     should 'require last name' do
