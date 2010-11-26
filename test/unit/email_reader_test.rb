@@ -23,6 +23,18 @@ class EmailReaderTest < ActiveSupport::TestCase
       end
     end
   end
+  
+  context 'when email has weirdo german characters in the subject line' do
+    setup do
+      @user = User.make(:annika, :email => 'annika.fleischer@1000jobboersen.de')
+      @email = Mail.new(File.read("#{Rails.root}/test/support/weirdo_german_characters_in_subject.txt"))
+    end
+    
+    should 'encode the subject line correctly' do
+      EmailReader.parse_email(@email)
+      assert_equal 'Ärsche gibte hier genug!', Email.first.subject
+    end
+  end
 
   context "when email is outgoing (bcc'd)" do
     setup do

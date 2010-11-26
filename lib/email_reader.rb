@@ -34,7 +34,7 @@ protected
     if subject = Mail.new(get_email_content(email)).subject
       subject
     else
-      (email.charset ? Iconv.iconv('utf-8', 'iso-8859-1', email.subject).first : email.subject)
+      email.subject.encode('utf-8')
     end
   end
 
@@ -45,7 +45,7 @@ protected
 
   def self.get_email_content( email )
     if email.content_type.match(/text\/plain/)
-      return Iconv.iconv('utf-8', 'iso-8859-1', email.body.to_s).first
+      return email.body.to_s.force_encoding(email.charset).encode('utf-8')
     else
       email.parts.each do |part|
         return get_email_content(part)
