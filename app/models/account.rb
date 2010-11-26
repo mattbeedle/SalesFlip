@@ -35,14 +35,13 @@ class Account
   has_many_related   :children, :class_name => 'Account', :foreign_key => 'parent_id', :index => true
 
   validates_presence_of :user, :name
+  validates_uniqueness_of :email, :allow_blank => true
 
   before_create :set_identifier
 
   named_scope :for_company, lambda { |company| { :where => { :user_id.in => company.users.map(&:id) } } }
   named_scope :unassigned, :where => { :assignee_id => nil }
   named_scope :name_like, lambda { |name| { :where => { :name => /#{name}/i } } }
-
-  validates_uniqueness_of :email, :allow_blank => true
 
   searchable do
     text :name, :email, :phone, :website, :fax
