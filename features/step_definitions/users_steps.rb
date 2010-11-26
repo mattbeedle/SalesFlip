@@ -9,7 +9,7 @@ end
 Given /^I am registered and logged in as annika$/ do
   visit new_user_path
   fill_in_registration_form(:email => 'annika.fleischer@1000jobboersen.de')
-  click_button 'user_submit'
+  click_link_or_button 'user_submit'
   visit user_confirmation_path(:confirmation_token =>
                                User.last.confirmation_token)
   store_model('user', 'annika', User.last)
@@ -22,7 +22,7 @@ Given /^I am registered and logged in as Carsten Werner$/ do
   visit new_user_session_path
   fill_in 'user_email', :with => 'carsten.werner@1000jobboersen.de'
   fill_in 'user_password', :with => 'password'
-  click_button 'user_submit'
+  click_link_or_button 'user_submit'
 end
 
 Given /^I have a Freelancer invitation$/ do
@@ -39,7 +39,7 @@ Given /^I am logged in as #{capture_model}$/ do |m|
   visit new_user_session_path
   fill_in 'user_email', :with => model.email
   fill_in 'user_password', :with => 'password'
-  click_button 'user_submit'
+  click_link_or_button 'user_submit'
 end
 
 Given /^#{capture_model} is confirmed$/ do |m|
@@ -53,6 +53,6 @@ Given /^I am registered and logged in as Matt$/ do
   visit new_user_session_path
   fill_in 'user_email', :with => matt.email
   fill_in 'user_password', :with => 'password'
-  click_button 'user_submit'
+  click_link_or_button 'user_submit'
   matt.update_attributes :role => 'Administrator'
 end

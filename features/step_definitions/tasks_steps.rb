@@ -3,13 +3,13 @@ Given /^the following tasks:$/ do |tasks|
 end
 
 When /^I follow the edit link for the task$/ do
-  click_link "edit_task_#{Task.last.id}"
+  click_link_or_button "edit_task_#{Task.last.id}"
 end
 
 When /^I delete the (\d+)(?:st|nd|rd|th) tasks$/ do |pos|
   visit tasks_url
   within("table tr:nth-child(#{pos.to_i+1})") do
-    click_link "Destroy"
+    click_link_or_button "Destroy"
   end
 end
 

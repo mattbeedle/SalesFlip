@@ -13,7 +13,7 @@ Given /^I have accepted an invitation from annika$/ do
   visit new_user_session_path
   fill_in 'user_email', :with => 'test@test.com'
   fill_in 'user_password', :with => 'password'
-  click_button 'user_submit'
+  click_link_or_button 'user_submit'
 end
 
 Given /I execute "([^\"]*)"$/ do |command|
@@ -29,7 +29,7 @@ end
 Given /^I am registered and logged in as benny$/ do
   visit new_user_path
   fill_in_registration_form(:email => 'benjamin.pochhammer@1000jobboersen.de')
-  click_button 'user_submit'
+  click_link_or_button 'user_submit'
   visit user_confirmation_path(:confirmation_token =>
                                User.last.confirmation_token)
   store_model('user', 'benny', User.last)
@@ -40,7 +40,7 @@ Given /^I login as #{capture_model}$/ do |user|
   m.update_attributes :confirmed_at => Time.now
   visit new_user_session_path
   fill_in_login_form(:email => m.email)
-  click_button 'user_submit'
+  click_link_or_button 'user_submit'
 end
 
 Given /^erich is shared with annika$/ do
