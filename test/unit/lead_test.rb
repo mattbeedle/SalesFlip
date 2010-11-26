@@ -400,6 +400,13 @@ class LeadTest < ActiveSupport::TestCase
         assert result.first.is_a?(Account)
         assert !result.first.errors[:name].blank?
       end
+      
+      should 'not set the contact account id if the contact exists without an account, and the new account is invalid' do
+        @lead.update_attributes :email => 'florian.behn@careermee.com'
+        @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
+        @lead.promote!('')
+        assert @contact.reload.account_id.blank?
+      end
     end
 
     should 'require last name' do

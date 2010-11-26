@@ -108,7 +108,7 @@ class Lead
       I18n.locale_around(:en) { update_attributes :status => 'Converted', :contact_id => contact.id }
       if contact.account.blank?
         account = Account.find_or_create_for(self, account_name, options)
-        contact.update_attributes :account => account
+        contact.update_attributes :account => account if account.valid?
       end
     else
       account = Account.find_or_create_for(self, account_name, options)
