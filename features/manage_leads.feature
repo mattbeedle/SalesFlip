@@ -166,7 +166,7 @@ Feature: Manage leads
     Given a user: "annika" exists
     And I have accepted an invitation from annika
     And a lead: "erich" exists with user: annika
-    And a lead: "markus" exists with user: freelancer
+    And a lead: "markus" exists with user: user
     When I am on the leads page
     Then I should not see "Erich"
     And I should see "Markus"
@@ -291,7 +291,7 @@ Feature: Manage leads
     And I press "task_submit"
     Then the task "Call to get offer details" should have been completed
     And I should be on the lead's page
-    And I should not see "Call to get offer details"
+    And I should not see "Call to get offer details" within "#main"
 
   Scenario: Deleting a task
     Given I am registered and logged in as annika
@@ -301,7 +301,7 @@ Feature: Manage leads
     When I click the delete button for the task
     Then I should be on the lead's page
     And a task should not exist
-    And I should not see "Call to get offer details"
+    And I should not see "Call to get offer details" within "#main"
 
   Scenario: Rejecting a lead
     Given I am registered and logged in as annika
@@ -370,6 +370,27 @@ Feature: Manage leads
     Then I should be on the account page
     And I should see "CareerMee"
     And 1 contacts should exist
+    
+  Scenario: Converting a lead to an existing contact that has no account
+    Given I am registered and logged in as annika
+    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com"
+    And contact: "florian" exists with email: "erich.feldmeier@gmail.com", account: nil, user: annika
+    And I am on the lead's page
+    When I follow "Convert"
+    And I press "convert"
+    Then I should be on the contact's page
+    And 1 contacts should exist
+    
+  Scenario: Converting a lead with a blank email when a contact already exists with a blank email
+    Given I am registered and logged in as annika
+    And a lead exists with user: annika, email: ""
+    And account: "careermee" exists with user: annika
+    And contact: "florian" exists with email: "", account: careermee
+    And I am on the lead's page
+    When I follow "Convert"
+    Then I should be on the lead's convert page
+    And I should not see "already exists. Press convert to add this lead to that contact"
+    And I should see "Account Name"
 
   Scenario: Convert page when converting to an existing account
     Given I am registered and logged in as annika
@@ -465,7 +486,7 @@ Feature: Manage leads
     And I press "lead_submit"
     Then I should be on the lead's page
     And I should see "Updated"
-    And I should see "annika.fleischer@1000jobboersen.de"
+    And I should see "Lead Updated by annika.fleischer"
 
   Scenario: Exporting Leads as a normal user
     Given I am registered and logged in as annika

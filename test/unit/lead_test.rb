@@ -138,7 +138,7 @@ class LeadTest < ActiveSupport::TestCase
 
       context 'when freelancer' do
         setup do
-          @freelancer = Freelancer.make
+          @freelancer = User.make :role => 'Freelancer'
         end
 
         should 'not return all public leads' do
@@ -423,6 +423,39 @@ class LeadTest < ActiveSupport::TestCase
         assert contact.is_a?(Contact)
         assert opportunity.is_a?(Opportunity)
         assert opportunity.errors.blank?
+      end
+      
+      should 'still return an account if the contact exists, but it does not have an account' do
+        @lead.update_attributes :email => 'florian.behn@careermee.com'
+        @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
+        assert @contact.account.blank?
+        result = @lead.promote!('New Account')
+        assert_equal 1, Account.count
+        assert !@contact.reload.account.blank?
+        assert result.first.is_a?(Account)
+        assert result[1].is_a?(Contact)
+      end
+      
+      should 'return nil instead of account if the contact exists, but it does not have an account, and no name is specified' do
+        @lead.update_attributes :email => 'florian.behn@careermee.com'
+        @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
+        result = @lead.promote!('')
+        assert result.first.nil?
+      end
+      
+      should 'not set the contact account id if the contact exists without an account, and the new account is invalid' do
+        @lead.update_attributes :email => 'florian.behn@careermee.com'
+        @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
+        @lead.promote!('')
+        assert @contact.reload.account_id.blank?
+      end
+      
+      should 'not attempt to assign to a contact if the email is blank' do
+        @lead.update_attributes :email => ''
+        @contact = Contact.make(:florian, :email => '')
+        @lead.promote!('an account')
+        assert_equal 2, Contact.count
+        assert !@contact.leads.include?(@lead)
       end
     end
 

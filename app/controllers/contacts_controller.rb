@@ -1,5 +1,8 @@
 class ContactsController < InheritedResources::Base
+  load_and_authorize_resource
+  
   before_filter :merge_updater_id, :only => [ :update ]
+  before_filter :can_export?, :only => [ :index ]
 
   respond_to :html
   respond_to :xml
@@ -51,8 +54,7 @@ protected
 
   def resource
     @contact ||= hook(:contacts_resource, self).last
-    @contact ||= Contact.for_company(current_user.company).permitted_for(current_user).
-      where(:_id => params[:id]).first
+    @contact ||= Contact.for_company(current_user.company).where(:_id => params[:id]).first
   end
 
   def begin_of_association_chain
@@ -71,5 +73,11 @@ protected
 
   def account
     @account ||= Account.find(params[:account_id]) if params[:account_id]
+  end
+  
+  def can_export?
+    if request.format.csv?
+      raise CanCan::AccessDenied unless can?(:export, current_user)
+    end
   end
 end

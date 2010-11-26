@@ -1,6 +1,7 @@
 class DeletedItemsController < ApplicationController
 
-  before_filter :resource, :only => [:update, :destroy]
+  before_filter :admin_required
+  before_filter :resource, :only => [ :update, :destroy ]
 
   def index
     @items ||= [
@@ -26,5 +27,9 @@ protected
     @item ||= Lead.first(:conditions => { :id => params[:id] })
     @item ||= Contact.first(:conditions => { :id => params[:id] })
     @item ||= Account.first(:conditions => { :id => params[:id] })
+  end
+  
+  def admin_required
+    raise CanCan::AccessDenied unless current_user.role_is?('Administrator')
   end
 end

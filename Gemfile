@@ -34,6 +34,7 @@ gem 'remail'
 gem 'rack-gridfs',          :require => 'rack/gridfs', :git => 'git://github.com/mattbeedle/rack-gridfs.git'
 gem 'amatch'
 gem 'gravtastic'
+gem 'cancan'
 
 # Plugins
 gem 'salesflip-lead_notifications', :require => 'lead_notifications'

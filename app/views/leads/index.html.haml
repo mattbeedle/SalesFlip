@@ -1,12 +1,12 @@
 %h2.title
   Leads
-  = add_new t(:add_lead), new_lead_path(:return_to => request.fullpath)
+  = add_new t(:add_lead), new_lead_path(:return_to => leads_path(:assigned_to => current_user.id, :with_status => ['New']))
 
 = render :partial => 'lead', :collection => @leads
 = will_paginate @leads
 
 - content_for :sidebar do
-  - unless current_user.instance_of?(Freelancer)
+  - unless current_user.role_is?('Freelancer')
     .gold.box
       %h3= t(:filter_by_status)
       = form_tag '', :method => :get do
@@ -28,7 +28,7 @@
               = check_box_tag 'source_is[]', source, (params[:source_is] and params[:source_is].include?(source)), :id => "source_#{source.parameterize}"
               %label{ :for => "source_#{source.parameterize}" }= source
         .clear= submit_tag t(:filter), :id => 'filter'
-  - if current_user.instance_of?(Admin)
+  - if can? :export, current_user
     .gold.box
       %h3= t(:data_actions)
       %ul.plain

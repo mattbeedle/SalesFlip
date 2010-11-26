@@ -1,4 +1,6 @@
 class LeadsController < InheritedResources::Base
+  load_and_authorize_resource
+
   before_filter :resource, :only => [ :convert, :promote, :reject ]
   before_filter :set_filters, :only => [ :index, :export ]
   before_filter :export_allowed?, :only => [ :index ]
@@ -51,7 +53,7 @@ class LeadsController < InheritedResources::Base
 
   def convert
     @account = current_user.accounts.new(:name => @lead.company)
-    @contact = Contact.first(:conditions => { :email => @lead.email }) if @lead.email
+    @contact = Contact.first(:conditions => { :email => @lead.email }) unless @lead.email.blank?
     @opportunity = current_user.opportunities.build :assignee => current_user
     @opportunity.attachments.build
   end
@@ -60,7 +62,9 @@ class LeadsController < InheritedResources::Base
     @lead.updater_id = current_user.id
     @account, @contact, @opportunity = @lead.promote!(
       params[:account_id].blank? ? params[:account_name] : params[:account_id], params)
-    if @account.errors.blank? and @contact.errors.blank?
+    if @account.nil? && @contact.valid?
+      redirect_to contact_path(@contact)
+    elsif @account.valid? && @contact.valid?
       redirect_to account_path(@account)
     else
       render :action => :convert
@@ -97,8 +101,7 @@ protected
 
   def resource
     @lead ||= hook(:leads_resource, self).last
-    @lead ||= Lead.for_company(current_user.company).permitted_for(current_user).
-      where(:_id => params[:id]).first
+    @lead ||= Lead.for_company(current_user.company).where(:_id => params[:id]).first
   end
 
   def begin_of_association_chain
@@ -114,7 +117,7 @@ protected
   
   def export_allowed?
     if request.format.csv?
-      redirect_to root_path unless current_user.instance_of?(Admin)
+      raise CanCan::AccessDenied unless can? :export, current_user
     end
   end
 end

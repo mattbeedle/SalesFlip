@@ -44,6 +44,13 @@ class Lead
   
   index(
     [
+      [ :first_name, Mongo::ASCENDING ],
+      [ :last_name, Mongo::ASCENDING ]
+    ],
+  )
+    
+  index(
+    [
       [:status, Mongo::DESCENDING],
       [:created_at, Mongo::DESCENDING]
     ]
@@ -96,8 +103,12 @@ class Lead
 
   def promote!( account_name, options = {} )
     @recently_converted = true
-    if self.email and (contact = Contact.first(:conditions => { :email => email }))
+    if !self.email.blank? and (contact = Contact.first(:conditions => { :email => self.email }))
       I18n.locale_around(:en) { update_attributes :status => 'Converted', :contact_id => contact.id }
+      if contact.account.blank? && !account_name.blank?
+        account = Account.find_or_create_for(self, account_name, options)
+        contact.update_attributes :account => account if account.valid?
+      end
     else
       account = Account.find_or_create_for(self, account_name, options)
       contact = Contact.create_for(self, account)

@@ -4,9 +4,9 @@ Given /^#{capture_model} has been deleted$/ do |item|
 end
 
 When /^I click the delete button for the account$/ do
-  click_button "delete_account_#{Account.first.id}"
+  click_link_or_button "delete_account_#{Account.first.id}"
 end
 
 When /^I click the delete button for the contact$/ do
-  click_button "delete_contact_#{Contact.first.id}"
+  click_link_or_button "delete_contact_#{Contact.first.id}"
 end

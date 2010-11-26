@@ -5,7 +5,7 @@ end
 Given /^I am logged in$/ do
   visit new_user_session_path
   fill_in_login_form
-  click_button 'user_submit'
+  click_link_or_button 'user_submit'
 end
 
 Given /^I logout$/ do

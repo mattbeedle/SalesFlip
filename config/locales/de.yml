@@ -1,7 +1,7 @@
 # Sample localization file for English. Add more files in this directory for other locales.
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
-en:
+de:
   #--------------------------------------------------------------
   # Layout
   #--------------------------------------------------------------
@@ -15,7 +15,6 @@ en:
   account: Account
   accounts: Accounts
   contacts: Contacts
-  opportunities: Opportunities
   profile: Profile
   login: Login
   logout: Logout
@@ -224,26 +223,6 @@ en:
     - Commented
     - Deleted
     - Restored
-    
-  #--------------------------------------------------------------
-  # Opportunities
-  #--------------------------------------------------------------
-  opportunity_stages:
-    - prospecting
-    - analysis
-    - presentation
-    - negotiation
-    - final review
-    - closed/won
-    - closed/lost
-  opportunity_outline: "%{amount} with %{discount} discount and %{probability} probability | expected to close %{close_on}"
-  add_opportunity: Add Opportunity
-  select_contact: Select Contact
-  opportunity: Opportunity
-  attachments: Attachments
-  no_opportunity_attachments: This opportunity has no attachments
-  opportunities_for: Opportunities for %{name}
-  no_opportunities: No opportunities yet
 
   my_profile: My Profile
   recent_items: Recent Items
@@ -314,9 +293,9 @@ en:
     - Other
     - Imported
   salutations:
-    - Mr
-    - Ms
-    - Mrs
+    - Herr
+    - asfef
+    - Frau
   titles:
     - Dr
     - Sir

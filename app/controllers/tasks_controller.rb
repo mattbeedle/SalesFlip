@@ -1,4 +1,5 @@
 class TasksController < InheritedResources::Base
+  load_and_authorize_resource
 
   has_scope :assigned,              :type => :boolean
   has_scope :completed,             :type => :boolean

@@ -2,9 +2,14 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-
   protect_from_forgery
+  
   layout 'application'
+  
+  rescue_from CanCan::AccessDenied do |exception|
+    flash[:error] = 'Access denied.'
+    redirect_to root_url
+  end
 
   before_filter :authenticate_user!
   before_filter :bson_ids
@@ -51,13 +56,6 @@ protected
       redirect_to params[:return_to]
     else
       redirect_to default
-    end
-  end
-
-  def freelancer_redirect
-    if current_user.is_a?(Freelancer)
-      redirect_to root_path
-      return false
     end
   end
 end

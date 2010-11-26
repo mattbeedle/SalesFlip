@@ -38,6 +38,15 @@ Feature: Manage accounts
     Then I should be on the accounts page
     And I should see "World Dating"
     And I should not see "CareerMee"
+    
+  Scenario: Viewing accounts as a freelancer
+    Given Annika exists
+    And I have accepted an invitation from annika
+    And an account exists with name: "annikas account", user: Annika
+    And an account exists with name: "another account", user: Annika, assignee: user
+    When I go to the accounts page
+    Then I should see "another account"
+    And I should not see "annikas account"
 
   Scenario: Creating a sub account (The parent account name should be displayed)
     Given I am registered and logged in as annika
@@ -154,16 +163,17 @@ Feature: Manage accounts
     When I follow the edit link for the account
     Then I should be on the account's edit page
 
-  #Scenario: Deleting an account from the index page
-  #  Given I am registered and logged in as annika
-  #  And a user: "benny" exists
-  #  And benny belongs to the same company as annika
-  #  And account: "careermee" exists with user: benny
-  #  And I am on the accounts page
-  #  When I click the delete button for the account
-  #  Then I should be on the accounts page
-  #  And I should not see "CareerMee" within "#main"
-  #  And a new "Deleted" activity should have been created for "Account" with "name" "CareerMee" and user: "annika"
+  @wip
+  Scenario: Deleting an account from the index page
+    Given I am registered and logged in as annika
+    And a user: "benny" exists
+    And benny belongs to the same company as annika
+    And account: "careermee" exists with user: benny
+    And I am on the accounts page
+    When I click the delete button for the account
+    Then I should be on the accounts page
+    And I should not see "CareerMee" within "#main"
+    And a new "Deleted" activity should have been created for "Account" with "name" "CareerMee" and user: "annika"
 
   Scenario: Viewing accounts
     Given I am registered and logged in as annika
@@ -190,15 +200,16 @@ Feature: Manage accounts
     When I follow the edit link for the account
     Then I should be on the account's edit page
   
-  #Scenario: Deleting an account from the show page
-  #  Given I am registered and logged in as annika
-  #  And a user: "benny" exists
-  #  And account: "careermee" exists with user: benny
-  #  And I am on the account's page
-  #  When I click the delete button for the account
-  #  Then I should be on the accounts page
-  #  And I should not see "CareerMee" within "#main"
-  #  And a new "Deleted" activity should have been created for "Account" with "name" "CareerMee" and user: "annika"
+  @wip
+  Scenario: Deleting an account from the show page
+    Given I am registered and logged in as annika
+    And a user: "benny" exists
+    And account: "careermee" exists with user: benny
+    And I am on the account's page
+    When I click the delete button for the account
+    Then I should be on the accounts page
+    And I should not see "CareerMee" within "#main"
+    And a new "Deleted" activity should have been created for "Account" with "name" "CareerMee" and user: "annika"
   
   Scenario: Private account (in)visibility on the accounts page
     Given I am registered and logged in as annika
@@ -260,7 +271,7 @@ Feature: Manage accounts
     And I press "task_submit"
     Then the task "Call to get offer details" should have been completed
     And I should be on the account's page
-    And I should not see "Call to get offer details"
+    And I should not see "Call to get offer details" within "#main"
 
   Scenario: Deleting a task
     Given I am registered and logged in as annika
@@ -270,7 +281,7 @@ Feature: Manage accounts
     When I click the delete button for the task
     Then I should be on the account's page
     And a task should not exist
-    And I should not see "Call to get offer details"
+    And I should not see "Call to get offer details" within "#main"
 
   Scenario: Adding a comment
     Given I am registered and logged in as annika
@@ -282,38 +293,30 @@ Feature: Manage accounts
     And I should see "This is a good lead"
     And 1 comments should exist
 
-  # Seems to fail due to a webrat bug
-  #Scenario: Adding a comment with an attachment
-  #  Given I am registered and logged in as annika
-  #  And a account exists with user: annika
-  #  And I am on the account's page
-  #  And I fill in "comment_text" with "Sent offer"
-  #  And I attach the file at "test/upload-files/erich_offer.pdf" to "Attachment"
-  #  When I press "comment_submit"
-  #  Then I should be on the account page
-  #  And I should see "Sent offer"
-  #  And I should see "erich_offer.pdf"
+  @wip
+  Scenario: Adding a comment with an attachment
+    Given I am registered and logged in as annika
+    And a account exists with user: annika
+    And I am on the account's page
+    And I fill in "comment_text" with "Sent offer"
+    And I attach the file at "test/upload-files/erich_offer.pdf" to "Attachment"
+    When I press "comment_submit"
+    Then I should be on the account page
+    And I should see "Sent offer"
+    And I should see "erich_offer.pdf"
 
-  #Scenario: Editing a comment
-  #  Given I am registered and logged in as annika
-  #  And account: "careermee" exists with user: annika, permission: "Public"
-  #  And a comment exists with user: annika, commentable: account, text: "Excellent account!"
-  #  And I am on the account's page
-  #  When I follow "Edit this Comment"
-  #  Then I should be on the comment's edit page
-  #  And I fill in "comment_text" with "Excellent account!!!"
-  #  When I press "Update Comment"
-  #  Then I should be on the account's page
-  #  And I should see "Excellent account!!!"
-
-  #Scenario: Deleting a comment
-  #  Given I am registered and logged in as annika
-  #  And account: "careermee" exists with user: annika, permission: "Public"
-  #  And a comment exists with user: annika, commentable: account, text: "Some account this is"
-  #  And I am on the account's page
-  #  When I click the delete button for the comment
-  #  Then I should be on the account's page
-  #  And I should not see "Some account this is"
+  @wip
+  Scenario: Editing a comment
+    Given I am registered and logged in as annika
+    And account: "careermee" exists with user: annika, permission: "Public"
+    And a comment exists with user: annika, commentable: account, text: "Excellent account!"
+    And I am on the account's page
+    When I follow "Edit this Comment"
+    Then I should be on the comment's edit page
+    And I fill in "comment_text" with "Excellent account!!!"
+    When I press "Update Comment"
+    Then I should be on the account's page
+    And I should see "Excellent account!!!"
 
   Scenario: Viewing activites on the show page
     Given I am registered and logged in as annika
@@ -324,7 +327,7 @@ Feature: Manage accounts
     And I press "account_submit"
     Then I should be on the account's page
     And I should see "Updated"
-    And I should see "annika.fleischer@1000jobboersen.de"
+    And I should see "Account Updated by annika.fleischer"
 
   Scenario: Exporting Accounts as a normal user
     Given I am registered and logged in as annika
@@ -335,15 +338,15 @@ Feature: Manage accounts
   Scenario: Accounts index with format csv as a normal user
     Given I am registered and logged in as annika
     And an account exists with user: Annika
-    When I go to the leads csv page
+    When I go to the accounts csv page
     Then I should be on the root page
 
   Scenario: Exporting Accounts as an admin
     Given I am registered and logged in as Matt
     And an account exists with user: Matt
-    And I am on the leads page
+    And I am on the accounts page
     When I follow "Export this list as a CSV"
-    Then I should be on the export leads page
+    Then I should be on the export accounts page
 
   Scenario: Adding a contact to an existing account
     Given I am registered and logged in as annika

@@ -50,6 +50,15 @@ Feature: Manage contacts
     And I should see "Florian Behn"
     And account: "careermee" should have a contact with first_name: "Florian"
     And a new "Created" activity should have been created for "Contact" with "first_name" "Florian"
+    
+  Scenario: Viewing contacts as a freelancer
+    Given Annika exists
+    And I have accepted an invitation from annika
+    And contact: "florian" exists with user: Annika
+    And contact: "steven" exists with user: Annika, assignee: user
+    When I go to the contacts page
+    Then I should see "Steven"
+    And I should not see "Florian"
 
   Scenario: Adding a contact when the account does not exist
     Given I am registered and logged in as annika
@@ -236,7 +245,7 @@ Feature: Manage contacts
     And I press "task_submit"
     Then the task "Call to get offer details" should have been completed
     And I should be on the contact's page
-    And I should not see "Call to get offer details"
+    And I should not see "Call to get offer details" within "#main"
     And a new "Completed" activity should have been created for "Task" with "name" "Call to get offer details" and user: "annika"
 
   Scenario: Deleting a task
@@ -247,7 +256,7 @@ Feature: Manage contacts
     When I click the delete button for the task
     Then I should be on the contact's page
     And a task should not exist
-    And I should not see "Call to get offer details"
+    And I should not see "Call to get offer details" within "#main"
 
   Scenario: Adding a comment
     Given I am registered and logged in as annika
@@ -260,17 +269,17 @@ Feature: Manage contacts
     And 1 comments should exist
     And a new "Created" activity should have been created for "Comment" with "text" "This is a good lead" and user: "annika"
 
-  # TODO: webrat bug seems to be submitting this file as a String
-  #Scenario: Adding a comment with an attachment
-  #  Given I am registered and logged in as annika
-  #  And a contact exists with user: annika
-  #  And I am on the contact's page
-  #  And I fill in "comment_text" with "Sent offer"
-  #  And I attach the file at "test/upload-files/erich_offer.pdf" to "Attachment"
-  #  When I press "comment_submit"
-  #  Then I should be on the contact page
-  #  And I should see "Sent offer"
-  #  And I should see "erich_offer.pdf"
+  @wip
+  Scenario: Adding a comment with an attachment
+    Given I am registered and logged in as annika
+    And a contact exists with user: annika
+    And I am on the contact's page
+    And I fill in "comment_text" with "Sent offer"
+    And I attach the file at "test/upload-files/erich_offer.pdf" to "Attachment"
+    When I press "comment_submit"
+    Then I should be on the contact page
+    And I should see "Sent offer"
+    And I should see "erich_offer.pdf"
 
   Scenario: Viewing activites on the show page
     Given I am registered and logged in as annika
@@ -281,4 +290,23 @@ Feature: Manage contacts
     And I press "contact_submit"
     Then I should be on the contact's page
     And I should see "Updated"
-    And I should see "annika.fleischer@1000jobboersen.de"
+    And I should see "Contact Updated by annika.fleischer"
+
+  Scenario: Exporting Contacts as a normal user
+    Given I am registered and logged in as annika
+    And an contact exists with user: Annika
+    And I am on the contacts page
+    Then I should not see "Export this list as a CSV"
+
+  Scenario: Contacts index with format csv as a normal user
+    Given I am registered and logged in as annika
+    And an contact exists with user: Annika
+    When I go to the contacts csv page
+    Then I should be on the root page
+
+  Scenario: Exporting Contacts as an admin
+    Given I am registered and logged in as Matt
+    And an contact exists with user: Matt
+    And I am on the contacts page
+    When I follow "Export this list as a CSV"
+    Then I should be on the export contacts page

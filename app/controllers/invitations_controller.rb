@@ -1,6 +1,5 @@
 class InvitationsController < InheritedResources::Base
-
-  before_filter :freelancer_redirect
+  load_and_authorize_resource
 
   def create
     create! do |success, failure|

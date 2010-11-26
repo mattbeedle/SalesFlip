@@ -111,15 +111,19 @@ ul
 
 input[type="submit"], a.button
   +border-radius(14px)
-  border: 1px solid #{$act_grad_3}
-  +box-shadow(#999999, 0px, 1px, 3px)
-  color: white
-  cursor: pointer
-  font-size: 14px
-  padding: 4px 12px
-  +shiny-button($act_grad_1, $act_grad_2, $act_grad_3)
-  +text-shadow($act_grad_3 - 30, 2px, 2px, 2px)
-  width: auto
+  :border 1px solid #{!act_grad_3}
+  +box-shadow(#999, 0px, 1px,3px)
+  :color #fff
+  :cursor pointer
+  :font-size 14px
+  :padding 4px 12px
+  +shiny-button(!act_grad_1, !act_grad_2, !act_grad_3)
+  +text-shadow(!act_grad_3 - 30, 2px, 2px,2px)
+  :width auto
+  &.link
+    color: $link
+    background: transparent
+    padding: 0
   &.gray
     border-color: #999999
     color: black

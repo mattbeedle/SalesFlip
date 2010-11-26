@@ -74,4 +74,52 @@ namespace(:one_time) do
       l.save!
     end
   end
+  
+  desc 'Import phonebook leads'
+  task :import_phonebook_leads => :environment do
+    require 'benchmark'
+    headings = ['salutation', 'first_name', 'company', 'additional', 'street', 'address_number',
+      'first_line_address', 'locality', 'D', 'postal_code', 'region', 'phone_type', 'phone_code',
+      'phone_main', 'phone1', 'phone']
+    File.open('doc/phone_book.txt', 'r').read.force_encoding('iso-8859-1').encode('utf-8').split("\r").each_with_index do |line, index|
+      next if index == 0
+      row = line.split("\t")
+      next unless row[1].blank?
+      u = User.where(:email => /beedle/i).first
+      l = u.leads.build :source => 'Imported', :rating => 2, :do_not_log => true, :first_name => 'n/a',
+        :last_name => 'n/a'
+      
+      headings.each_with_index do |heading, index|
+        I18n.locale_around(:de) do
+          l.send("#{heading}=", row[index] ? row[index].strip : nil) if l.respond_to?(heading)
+        end
+      end
+      
+      ids = Account.only(:id, :name).map do |account|
+        [account.id, l.company.levenshtein_similar(account.name)]
+      end.select { |similarity| similarity.last > 0.9 }.map(&:first)
+      
+      unless ids.blank?
+        accounts = Account.where(:_id.in => ids)
+        puts "skipped: #{l.company} (#{accounts.map(&:name).inspect})"
+        next
+      end
+      
+      ids = Lead.only(:id, :company).map do |lead|
+        [lead.id, l.company.levenshtein_similar(lead.company)]
+      end.select { |similarity| similarity.last > 0.9 }.map(&:first)
+      
+      unless ids.blank?
+        leads = Lead.where(:_id.in => ids)
+        puts "skipped: #{l.company} (#{leads.map(&:company).inspect})"
+        next
+      end
+      
+      begin
+        l.save!
+      rescue
+        throw [l, row]
+      end
+    end
+  end
 end

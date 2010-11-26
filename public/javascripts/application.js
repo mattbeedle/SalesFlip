@@ -3,8 +3,15 @@ var Base = new Class({
   initialize: function() {
     this.watchTitleTogglers();
     this.addRealTaskCalendar();
+    this.hideActivityBodies();
   },
-
+  
+  hideActivityBodies: function() {
+    $$('.item-body').each(function(item) {
+      item.addClass('hide');
+    });
+  },
+  
   addRealTaskCalendar: function() {
     if ($('realdate') != null) {
       due_at = null;
@@ -51,4 +58,7 @@ document.onReady(function() {
   new Base().initialize;
 });
 
-
+"#recent_activity span.toggler".on('click',function(event) {
+    this.toggleClass('closed');
+    this.parent().next().toggleClass('hide');
+});
