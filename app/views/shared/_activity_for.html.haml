@@ -23,12 +23,7 @@
               = form.button :submit, t(:save), :id => 'activity_task_submit'
             .clear
       - else
-        - comment = activity.subject
-        = simple_form_for comment do |form|
-          = form.input :text, :as => :text, :input_html => { :rows => 2, :id => 'activity_comment_text' }, :label => false
-          %span.save
-            = form.button :submit, t(:save), :id => 'activity_comment_submit'
-          .clear
+        = activity.subject.text
       
   - else
     .no-children
