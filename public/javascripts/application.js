@@ -54,7 +54,7 @@ var Base = new Class({
   }
 });
 
-document.onReady(function() {
+$(document).on('ready', function() {
   new Base().initialize;
 });
 
