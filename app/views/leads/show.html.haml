@@ -47,7 +47,7 @@
 
 = render :partial => 'tasks/add_task', :locals => { :object => @lead }
 
-= render :partial => 'comments/comments', :locals => { :object => @lead }
+= render :partial => 'comments/comments', :locals => { :object => @lead, :comments => @lead.comments }
 
 
 - content_for :sidebar do

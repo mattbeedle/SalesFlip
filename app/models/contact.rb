@@ -82,6 +82,11 @@ class Contact
       f.match(/access|permission|permitted_user_ids|tracker_ids/)
     end
   end
+  
+  def comments_including_leads
+    Comment.any_of({ :commentable_type => self.class.name, :commentable_id => self.id },
+      { :commentable_type => 'Lead', :commentable_id.in => self.leads.map(&:id) })
+  end
 
   def full_name
     "#{first_name} #{last_name}"

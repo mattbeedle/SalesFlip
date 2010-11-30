@@ -117,7 +117,6 @@ class Lead
         I18n.locale_around(:en) { update_attributes :status => 'Converted', :contact_id => contact.id }
       end
     end
-    contact.comments << self.comments
     return account || contact.account, contact
   end
 
