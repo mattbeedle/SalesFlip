@@ -54,9 +54,9 @@ Salesflip::Application.configure do
 
   require 'heroku/autoscale'
   config.middleware.use Heroku::Autoscale,
-    :username  => ENV["HEROKU_USERNAME"],
-    :password  => ENV["HEROKU_PASSWORD"],
-    :app_name  => ENV["HEROKU_STAGING_APP_NAME"],
+    :username  => ENV['HEROKU_USERNAME'],
+    :password  => ENV['HEROKU_PASSWORD'],
+    :app_name  => ENV['HEROKU_STAGING_APP_NAME'],
     :min_dynos => 1,
     :max_dynos => 20,
     :queue_wait_low  => 100,  # milliseconds
