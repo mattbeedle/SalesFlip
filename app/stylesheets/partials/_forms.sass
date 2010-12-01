@@ -6,8 +6,12 @@ fieldset
   +border-radius(5px)
   margin-bottom: 20px
   margin-left: 0
-  +v-grad(#efeee1, #d3d0c4)
+  +v-grad(#EBE7DF, #DCD6CE)
   padding: 20px 20px 10px 20px
+  &.comment
+    background: none repeat scroll 0 0 #FFFBE0
+    border: 1px solid #DBDCB6
+    +border-radius(0px)
   div.a
     div
       padding-left: 0px
@@ -27,7 +31,7 @@ fieldset
     div
       padding-left: 10px
       padding-right: 10px
-      padding-bottom: 20px
+      padding-bottom: 6px
 
 .toggle fieldset
   +border-top-radius(0px)
@@ -39,8 +43,7 @@ label
   cursor: pointer
   display: block
   font-size: 14px
-  font-weight: bold
-  padding-bottom: 5px
+  padding-bottom: 1px
   color: #776d47
   +letterpress
   abbr
@@ -64,6 +67,8 @@ input, textarea, select
   font-size: 16px
   font-weight: bold
   width: 100%
+  &[multiple="multiple"]
+    width: auto
 
 input, textarea
   +inset-box-shadow(#dddddd, 1px, 1px, 4px)

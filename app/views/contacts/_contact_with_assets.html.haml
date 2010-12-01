@@ -22,7 +22,6 @@
     -#----------------------------------------------------------------------
     -# Info for Contact
     -#----------------------------------------------------------------------
-    %h5= raw t(:info_for, :name => contact.first_name)
     .details
       .half
         %dl
@@ -46,7 +45,7 @@
     -# Tasks for Contact
     -#----------------------------------------------------------------------
     %h5
-      = t(:tasks_for, :name => contact.first_name)
+      = t('tasks')
       = link_to raw("<b>+</b>#{t('add_task')}"), new_task_path(:asset_id => contact.id, :asset_type => "Contact", :return_to => request.fullpath), :id => "add_task_for_#{dom_id contact}"
     .details
       = render :partial => 'tasks/task', :collection => contact.tasks
@@ -56,8 +55,6 @@
     -# Comments for Contact
     -#----------------------------------------------------------------------
     - if contact.comments.any?
-      %h5
-        = t(:comments_for, :name => contact.first_name)
       - contact.comments.sorted.each do |comment|
         = render :partial => 'comments/inline_comment', :locals => { :comment => comment }
       - if !contact.lead_id.blank?
