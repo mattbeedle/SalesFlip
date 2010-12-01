@@ -22,6 +22,10 @@ cucumber:
 staging:
   <<: *defaults
   database: salesflip_staging
+  port: <%= ENV['MONGOHQ_STAGING_PORT'] %>
+  username: <%= ENV['MONGOHQ_STAGING_USER'] %>
+  password: <%= ENV['MONGOHQ_STAGING_PASSWORD'] %>
+  database: <%= ENV['MONGOHQ_STAGING_DATABASE'] %>
 
 # set these environment variables on your prod server
 production:
