@@ -416,3 +416,5 @@ en:
   error_500: A system error has occurred.
   error_500_note: "%{link} or %{email}"
   contact_the_admin: contact the administrator
+  company_info: Company Info
+  country: Country

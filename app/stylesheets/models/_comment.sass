@@ -22,15 +22,23 @@ div #main .inline-comment
     padding-left: 20px
     padding-top: 4px
   .message
-    border: 1px solid #{$ice - 20}
-    +border-radius(10px)
+    background: none repeat scroll 0 0 #FFFBE0
+    border: 1px solid #DBDCB6
     color: #333333
-    line-height: 20px
+    cursor:default
     font-size: 13px
-    margin-bottom: 20px
-    padding: 20px
-    +shiny-button($ice + 30, $ice, white, 0, false)
+    line-height: 20px
+    margin-bottom: 7px
+    padding: 2px 12px 12px
     text-align: left
+    text-decoration: none
+  .user
+    margin-bottom: 4px
+    a
+      font-size: 10px
+      text-decoration: none
+      font-style: italic
+  
 
 .user
   a
