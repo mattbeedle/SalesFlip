@@ -19,7 +19,7 @@
 .clear
 %h3= t(:contacts)
 .contacts
-  - @account.contacts.each do |contact|
+  - @account.contacts.not_deleted.each do |contact|
     = render :partial => 'contacts/contact_with_assets', :locals => {:contact => contact }
 .clear
 = render :partial => 'tasks/add_task', :locals => { :object => @account }

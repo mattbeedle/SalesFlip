@@ -186,12 +186,24 @@ Feature: Manage accounts
   Scenario: Viewing an account
     Given I am registered and logged in as annika
     And account: "careermee" exists with user: annika, name: "CareerMee"
+    And a contact exists with account: CareerMee, first_name: "Joe", last_name: "Marley"
     And I am on the dashboard page
     And I follow "accounts"
     When I follow "careermee"
     Then I should see "CareerMee"
     And I should be on the account page
     And a new "Viewed" activity should have been created for "Account" with "name" "CareerMee"
+    And I should see "Joe Marley"
+    
+  Scenario: Viewing an account with a deleted contact
+    Given I am registered and logged in as annika
+    And CareerMee exists with user: annika, name: "CareerMee"
+    And a contact exists with account: CareerMee, first_name: "Joe", last_name: "Marley", deleted_at: "01/01/09"
+    And I am on the dashboard page
+    And I follow "accounts"
+    When I follow "careermee"
+    Then I should see "CareerMee"
+    And I should not see "Joe Marley"
 
   Scenario: Editing an account from the show page
     Given I am registered and logged in as annika
