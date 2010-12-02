@@ -9,17 +9,17 @@
         = hidden_field_tag :return_to, request.fullpath
         - if @account.tracked_by?(current_user)
           = hidden_field_tag 'account[remove_tracker_ids][]', current_user.id
-          = form.button :submit, t('stop_updating_me'), :id => 'stop_updating_me'
+          = form.button :submit, t(:stop_updating_me), :id => 'stop_updating_me'
         - else
           = hidden_field_tag 'account[tracker_ids][]', current_user.id
-          = form.button :submit, t('keep_me_updated'), :id => 'keep_me_updated'
+          = form.button :submit, t(:keep_me_updated), :id => 'keep_me_updated'
   %br/
   %small
     = raw t(:added_ago_by, :time => l(@account.created_at, :format => :short), :by => @account.user.username)
 .clear
 %h3= t(:contacts)
 .contacts
-  - @account.contacts.each do |contact|
+  - @account.contacts.not_deleted.each do |contact|
     = render :partial => 'contacts/contact_with_assets', :locals => {:contact => contact }
 .clear
 = render :partial => 'tasks/add_task', :locals => { :object => @account }
