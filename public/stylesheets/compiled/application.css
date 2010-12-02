@@ -123,7 +123,7 @@ dl.item { margin: 0px; }
 /* line 188, ../../../app/stylesheets/partials/_layout.sass */
 dl.item dt, dl.item dd { clear: none; display: block; float: left; }
 /* line 192, ../../../app/stylesheets/partials/_layout.sass */
-dl.item dt { -moz-border-radius-topleft: 10px; -webkit-border-top-left-radius: 10px; -o-border-top-left-radius: 10px; -ms-border-top-left-radius: 10px; -khtml-border-top-left-radius: 10px; border-top-left-radius: 10px; -moz-border-radius-bottomleft: 10px; -webkit-border-bottom-left-radius: 10px; -o-border-bottom-left-radius: 10px; -ms-border-bottom-left-radius: 10px; -khtml-border-bottom-left-radius: 10px; border-bottom-left-radius: 10px; font-size: 11px; margin-top: 2px; padding: 4px 6px 4px 0px; text-align: right; width: 12%; }
+dl.item dt { -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; font-size: 11px; margin-top: 2px; padding: 4px 6px 4px 0px; text-align: center; width: 12%; }
 /* line 199, ../../../app/stylesheets/partials/_layout.sass */
 dl.item dd { border-bottom: 1px solid #cccccc; margin-left: 0px; padding: 3px 0px; width: 87%; position: relative; }
 /* line 206, ../../../app/stylesheets/partials/_layout.sass */
@@ -633,56 +633,72 @@ div #main .inline-comment { margin-bottom: 12px; }
 /* line 3, ../../../app/stylesheets/models/_comment.sass */
 div #main .inline-comment .avatar { width: 40px; float: left; }
 /* line 6, ../../../app/stylesheets/models/_comment.sass */
-div #main .inline-comment .message { width: 92%; float: left; }
-/* line 9, ../../../app/stylesheets/models/_comment.sass */
+div #main .inline-comment .message { width: 100%; float: left; position: relative; }
+/* line 10, ../../../app/stylesheets/models/_comment.sass */
+div #main .inline-comment .message span.right { display: block; position: absolute; top: 3px; right: 57px; }
+/* line 15, ../../../app/stylesheets/models/_comment.sass */
 div #main .inline-comment small.timestamp { float: left; }
-/* line 11, ../../../app/stylesheets/models/_comment.sass */
+/* line 17, ../../../app/stylesheets/models/_comment.sass */
 div #main .inline-comment ul.actions { float: right; }
-/* line 14, ../../../app/stylesheets/models/_comment.sass */
-div #main .inline-comment ul.actions li a, div #main .inline-comment ul.actions li input { font-size: 11px; }
+/* line 20, ../../../app/stylesheets/models/_comment.sass */
+div #main .inline-comment ul.actions li a, div #main .inline-comment ul.actions li input { font-size: 13px; text-decoration: none; }
+/* line 23, ../../../app/stylesheets/models/_comment.sass */
+div #main .inline-comment ul.actions li input.delete { color: red; display: block; position: relative; top: 3px; }
 
-/* line 18, ../../../app/stylesheets/models/_comment.sass */
-.comment .quote { color: #c9eaef; font-size: 14px; line-height: 11px; padding-left: 20px; padding-top: 4px; }
-/* line 24, ../../../app/stylesheets/models/_comment.sass */
-.comment .message { background: none repeat scroll 0 0 #fffbe0; border: 1px solid #dbdcb6; color: #333333; font-size: 13px; line-height: 20px; margin-bottom: 7px; padding: 2px 12px 12px; text-align: left; text-decoration: none; }
-/* line 35, ../../../app/stylesheets/models/_comment.sass */
-.comment .user { margin-bottom: 4px; }
-/* line 37, ../../../app/stylesheets/models/_comment.sass */
-.comment .user a { font-size: 10px; text-decoration: none; font-style: italic; }
+/* line 30, ../../../app/stylesheets/models/_comment.sass */
+div#main .comment .quote { color: #c9eaef; font-size: 14px; line-height: 11px; padding-left: 20px; padding-top: 4px; }
+/* line 36, ../../../app/stylesheets/models/_comment.sass */
+div#main .comment .message { background: none repeat scroll 0 0 #fffbe0; border: 1px solid #dbdcb6; color: #333333; font-size: 13px; line-height: 20px; margin-bottom: 7px; padding: 2px 12px 12px; text-align: left; text-decoration: none; position: relative; }
+/* line 48, ../../../app/stylesheets/models/_comment.sass */
+div#main .comment .message span.right { display: block; position: absolute; top: 3px; right: 31px; }
+/* line 55, ../../../app/stylesheets/models/_comment.sass */
+div#main .comment .message span.right ul.actions li a { position: relative; left: 4px; }
+/* line 58, ../../../app/stylesheets/models/_comment.sass */
+div#main .comment .message span.right ul.actions li a, div#main .comment .message span.right ul.actions li form input { font-size: 12px; text-decoration: none; }
+/* line 61, ../../../app/stylesheets/models/_comment.sass */
+div#main .comment .message span.right ul.actions li a.delete, div#main .comment .message span.right ul.actions li form input.delete { color: red; position: relative; top: 2px; }
+/* line 66, ../../../app/stylesheets/models/_comment.sass */
+div#main .comment .user { margin-bottom: 4px; }
+/* line 68, ../../../app/stylesheets/models/_comment.sass */
+div#main .comment .user a { font-size: 10px; text-decoration: none; font-style: italic; }
 
-/* line 44, ../../../app/stylesheets/models/_comment.sass */
+/* line 75, ../../../app/stylesheets/models/_comment.sass */
 .user a { font-size: 12px; }
-/* line 46, ../../../app/stylesheets/models/_comment.sass */
+/* line 77, ../../../app/stylesheets/models/_comment.sass */
 .user span.icon { padding: 0px; position: relative; top: 3px; font-size: 22px; font-style: normal; }
-/* line 52, ../../../app/stylesheets/models/_comment.sass */
+/* line 83, ../../../app/stylesheets/models/_comment.sass */
 .user strong { font-size: 12px; color: #333333; }
 
-/* line 1, ../../../app/stylesheets/models/_contact.sass */
-div#main .contact_with_assets { border: 1px solid #c7daf0; overflow: hidden; *zoom: 1; background-color: #d9e7e8; background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#d9e7e8)); background-image: -moz-linear-gradient(center top, white 0%, #d9e7e8 100%); padding: 12px; }
+/* line 2, ../../../app/stylesheets/models/_contact.sass */
+div#main .contact_with_assets h3.toggler { width: 99%; padding-left: 1%; padding-right: 0px; }
 /* line 6, ../../../app/stylesheets/models/_contact.sass */
-div#main .contact_with_assets .contact-avatar { float: left; min-width: 65px; width: 9%; }
-/* line 10, ../../../app/stylesheets/models/_contact.sass */
-div#main .contact_with_assets .heading { clear: both; }
-/* line 12, ../../../app/stylesheets/models/_contact.sass */
-div#main .contact_with_assets ul.actions { margin-top: 0em; }
-/* line 14, ../../../app/stylesheets/models/_contact.sass */
-div#main .contact_with_assets label { font-size: 12px; }
-/* line 16, ../../../app/stylesheets/models/_contact.sass */
-div#main .contact_with_assets h4 { display: inline; font-size: 14px; }
+div#main .contact_with_assets .toggle { background: #ecf3f4; border: 1px solid #c7daf0; overflow: hidden; *zoom: 1; width: 100%; }
+/* line 11, ../../../app/stylesheets/models/_contact.sass */
+div#main .contact_with_assets .contact-avatar { float: left; min-width: 93px; margin-left: 1%; margin-top: 1%; width: 11%; }
+/* line 17, ../../../app/stylesheets/models/_contact.sass */
+div#main .contact_with_assets .heading, div#main .contact_with_assets .details { clear: both; }
 /* line 19, ../../../app/stylesheets/models/_contact.sass */
-div#main .contact_with_assets .info { overflow: hidden; *zoom: 1; float: left; width: 89%; }
-/* line 23, ../../../app/stylesheets/models/_contact.sass */
-div#main .contact_with_assets .icon { border: 2px solid #0073b1; -moz-border-radius: 2px; -webkit-border-radius: 2px; -o-border-radius: 2px; -ms-border-radius: 2px; -khtml-border-radius: 2px; border-radius: 2px; width: 50px; }
+div#main .contact_with_assets ul.actions { margin-top: 0em; margin-bottom: 7px; }
+/* line 22, ../../../app/stylesheets/models/_contact.sass */
+div#main .contact_with_assets label { font-size: 12px; }
+/* line 24, ../../../app/stylesheets/models/_contact.sass */
+div#main .contact_with_assets h4 { display: inline; font-size: 14px; }
 /* line 27, ../../../app/stylesheets/models/_contact.sass */
-div#main .contact_with_assets h5 { border-bottom: 3px solid #dadbd0; color: #808079; font-size: 12px; margin: 12px 0 0 0; padding-bottom: 2px; }
-/* line 33, ../../../app/stylesheets/models/_contact.sass */
-div#main .contact_with_assets h5 a { float: right; }
-
+div#main .contact_with_assets .info { overflow: hidden; *zoom: 1; float: left; width: 86%; padding-bottom: 12px; }
+/* line 32, ../../../app/stylesheets/models/_contact.sass */
+div#main .contact_with_assets .icon { border: 2px solid #0073b1; -moz-border-radius: 2px; -webkit-border-radius: 2px; -o-border-radius: 2px; -ms-border-radius: 2px; -khtml-border-radius: 2px; border-radius: 2px; width: 50px; }
 /* line 36, ../../../app/stylesheets/models/_contact.sass */
-.details { -moz-border-radius-bottomleft: 2px; -webkit-border-bottom-left-radius: 2px; -o-border-bottom-left-radius: 2px; -ms-border-bottom-left-radius: 2px; -khtml-border-bottom-left-radius: 2px; border-bottom-left-radius: 2px; -moz-border-radius-bottomright: 2px; -webkit-border-bottom-right-radius: 2px; -o-border-bottom-right-radius: 2px; -ms-border-bottom-right-radius: 2px; -khtml-border-bottom-right-radius: 2px; border-bottom-right-radius: 2px; overflow: hidden; *zoom: 1; color: #999591; font-size: 12px; padding: 12px; background-color: #f7f7e8; background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#f7f7e8)); background-image: -moz-linear-gradient(center top, white 0%, #f7f7e8 100%); }
-/* line 43, ../../../app/stylesheets/models/_contact.sass */
-.details .half { width: 50%; float: left; }
+div#main .contact_with_assets h5 { border-bottom: 3px solid #dadbd0; color: #808079; font-size: 12px; margin: 12px 0 0 0; padding-bottom: 2px; }
+/* line 42, ../../../app/stylesheets/models/_contact.sass */
+div#main .contact_with_assets h5 a { float: right; }
+/* line 44, ../../../app/stylesheets/models/_contact.sass */
+div#main .contact_with_assets a.add_task { float: left; }
+
 /* line 46, ../../../app/stylesheets/models/_contact.sass */
+.details { border: 1px solid #c7daf0; overflow: hidden; *zoom: 1; color: #999591; font-size: 12px; padding: 12px; background: white; margin-bottom: 8px; }
+/* line 54, ../../../app/stylesheets/models/_contact.sass */
+.details .half { width: 50%; float: left; }
+/* line 57, ../../../app/stylesheets/models/_contact.sass */
 .details .half dl { clear: both; overflow: none; float: left; width: 100%; margin: 0px; }
 /* line 66, ../../../app/stylesheets/partials/_tools.sass */
 .details .half dl dt, .details .half dl dd { float: left; clear: none; display: block; margin: 0px; }
@@ -690,32 +706,33 @@ div#main .contact_with_assets h5 a { float: right; }
 .details .half dl dt { width: 20%; }
 /* line 73, ../../../app/stylesheets/partials/_tools.sass */
 .details .half dl dd { width: 80%; }
-/* line 49, ../../../app/stylesheets/models/_contact.sass */
+/* line 60, ../../../app/stylesheets/models/_contact.sass */
 .details .half dl dt, .details .half dl dd { margin-bottom: 5px; }
-/* line 51, ../../../app/stylesheets/models/_contact.sass */
+/* line 62, ../../../app/stylesheets/models/_contact.sass */
 .details dl.item.task dd { width: 84%; }
-/* line 53, ../../../app/stylesheets/models/_contact.sass */
-.details a { color: #b06b43; }
-/* line 55, ../../../app/stylesheets/models/_contact.sass */
-.details a:hover { color: black; }
 
-/* line 63, ../../../app/stylesheets/models/_contact.sass */
-body#accounts div#main .contact_with_assets div.item span.actions dd input[type="submit"], body#accounts dl.item dd input[type="submit"] { color: #b06b43; }
-/* line 65, ../../../app/stylesheets/models/_contact.sass */
-body#accounts div#main .contact_with_assets div.item span.actions dd input[type="submit"]:hover, body#accounts dl.item dd input[type="submit"]:hover { color: black; }
-/* line 67, ../../../app/stylesheets/models/_contact.sass */
-body#accounts div#main .contact_with_assets div.item span.actions dd input[type="submit"].delete, body#accounts dl.item dd input[type="submit"].delete { color: #ff3300; }
-/* line 69, ../../../app/stylesheets/models/_contact.sass */
-body#accounts div#main .contact_with_assets div.item span.actions dd input[type="submit"].delete:hover, body#accounts dl.item dd input[type="submit"].delete:hover { color: black; }
 /* line 71, ../../../app/stylesheets/models/_contact.sass */
-body#accounts div#main .contact_with_assets div.item span.actions dd span.actions, body#accounts dl.item dd span.actions { width: 5.4em; }
+body#accounts div#main .contact_with_assets div.item span.actions dd input[type="submit"].delete, body#accounts dl.item dd input[type="submit"].delete { color: #ff3300; }
 /* line 73, ../../../app/stylesheets/models/_contact.sass */
+body#accounts div#main .contact_with_assets div.item span.actions dd input[type="submit"].delete:hover, body#accounts dl.item dd input[type="submit"].delete:hover { color: black; }
+/* line 75, ../../../app/stylesheets/models/_contact.sass */
+body#accounts div#main .contact_with_assets div.item span.actions dd span.actions, body#accounts dl.item dd span.actions { width: 5.4em; }
+/* line 77, ../../../app/stylesheets/models/_contact.sass */
 body#accounts div#main .contact_with_assets div.item span.actions dd span.item_name span.save, body#accounts dl.item dd span.item_name span.save { right: 5.4em; }
 
-/* line 79, ../../../app/stylesheets/models/_contact.sass */
+/* line 83, ../../../app/stylesheets/models/_contact.sass */
 .contact_with_assets form { font-size: 12px; }
-/* line 81, ../../../app/stylesheets/models/_contact.sass */
+/* line 85, ../../../app/stylesheets/models/_contact.sass */
 .contact_with_assets form input[type="submit"] { font-size: 12px; }
+
+/* line 87, ../../../app/stylesheets/models/_contact.sass */
+.inline-comment, .add-comment { background: #fffbe0; border: 1px solid #dbdcb6; }
+
+/* line 90, ../../../app/stylesheets/models/_contact.sass */
+.add-comment { padding: 10px; }
+
+/* line 92, ../../../app/stylesheets/models/_contact.sass */
+.submit { padding-top: 8px; }
 
 /* line 4, ../../../app/stylesheets/models/_deleted_items.sass */
 body#deleted_items dl.item dd span.item_name form { width: auto; }

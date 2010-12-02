@@ -1,24 +1,34 @@
-.inline-comment.details
-  .avatar= raw image_tag("/images/avatars/mr.gif", :width => '27', :height => '27')
-  .message
-    - if comment.is_a?(Email)
-      = mail_to comment.from, nil, :bcc => current_user.dropbox_email
-    - else
-      = link_to comment.user.full_name, comment.user
-
-    = raw comment.text.gsub(/\n/, '<br />')
-    - comment.attachments.each do |attachment|
-      = link_to attachment.attachment_filename, attachment.attachment.url
-    .footer
-      %small.timestamp
-        = raw l(comment.created_at, :format => :short)
+.comment{ :class => !comment.is_a?(Email) ? 'email' : nil  }
+  - if comment.is_a?(Email)
+    .message
+      .user
+        = mail_to comment.from, nil, :bcc => current_user.dropbox_email
+        %span.icon= raw t('icons.email')
+        %strong
+          == raw #{t('subject')}:
+          = raw comment.subject
+        %small.acted= raw t('email_sent_ago', :time => l(comment.created_at, :format => :short))
+      = raw comment.text.gsub(/\n/, '<br />')
+      .attachments
+        - comment.attachments.each do |attachment|
+          = link_to attachment.attachment_filename, attachment.attachment.url
+  - else
+    .message
+      .user
+        = link_to comment.user.email, comment.user
+        %small.acted= raw t('wrote_ago', :time => l(comment.created_at, :format => :short))
+      = raw comment.text
+      .attachments
+        - comment.attachments.each do |attachment|
+          = link_to attachment.attachment_filename, attachment.attachment.url
+      
       %span.right
         - if comment.is_a?(Email)
           = raw t('via_email', :subject => comment.subject)
         - elsif comment.user == current_user
           %ul.actions
-            %li= link_to t('edit_comment'), edit_comment_path(comment,:return_to => request.fullpath), :id => "edit_#{dom_id(comment)}"
+            %li= link_to t('edit'), edit_comment_path(comment,:return_to => request.fullpath), :id => "edit_#{dom_id(comment)}", :class => 'edit'
             %li
               = simple_form_for comment, :html => { :method => :delete } do |form|
                 = hidden_field_tag :return_to, request.fullpath
-                = form.button :submit, t('delete_icon'), :class => 'delete', :id => "delete_comment_#{comment.id}"
+                = form.button :submit, t('delete_icon').html_safe, :class => 'delete', :id => "delete_comment_#{comment.id}"

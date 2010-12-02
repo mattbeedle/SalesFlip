@@ -4,17 +4,29 @@ div #main .inline-comment
     width: 40px
     float: left
   .message
-    width: 92%
+    width: 100%
     float: left
+    position: relative
+    span.right
+      display: block
+      position: absolute
+      top: 3px
+      right: 57px
   small.timestamp
     float: left
   ul.actions
     float: right
     li
       a, input
-        font-size: 11px
+        font-size: 13px
+        text-decoration: none
+      input.delete
+        color: #f00
+        display: block
+        position: relative
+        top: 3px
 
-.comment
+div#main .comment
   .quote
     color: $ice
     font-size: 14px
@@ -32,6 +44,25 @@ div #main .inline-comment
     padding: 2px 12px 12px
     text-align: left
     text-decoration: none
+    position: relative
+    span.right
+      display: block
+      position: absolute
+      top: 3px
+      right: 31px
+      ul.actions
+        li
+          a
+            position: relative
+            left: 4px
+          a, form input
+            font-size: 12px
+            text-decoration: none
+            &.delete
+              color: #f00
+              div #main
+              position: relative
+              top: 2px
   .user
     margin-bottom: 4px
     a

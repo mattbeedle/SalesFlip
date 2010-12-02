@@ -1,16 +1,24 @@
 div#main .contact_with_assets
-  border: 1px solid #c7daf0
-  +clearfix
-  +v-grad(white, #d9e7e8)
-  padding: 12px
+  h3.toggler
+    width: 99%
+    padding-left: 1%
+    padding-right: 0px
+  .toggle
+    background: #ECF3F4
+    border: 1px solid #c7daf0
+    +clearfix
+    width: 100%
   .contact-avatar
     float: left
-    min-width: 65px
-    width: 9%
-  .heading
+    min-width: 93px
+    margin-left: 1%
+    margin-top: 1%
+    width: 11%
+  .heading, .details
     clear: both
   ul.actions
     margin-top: 0em
+    margin-bottom: 7px
   label
     font-size: 12px
   h4
@@ -19,7 +27,8 @@ div#main .contact_with_assets
   .info
     +clearfix
     float: left
-    width: 89%
+    width: 86%
+    padding-bottom: 12px
   .icon
     border: 2px solid $link
     +border-radius(2px)
@@ -32,14 +41,16 @@ div#main .contact_with_assets
     padding-bottom: 2px
     a
       float: right
-
+  a.add_task
+    float: left
 .details
-  +border-bottom-radius(2px)
+  border: 1px solid #c7daf0
   +clearfix
   color: #999591
   font-size: 12px
   padding: 12px
-  +v-grad(white, #f7f7e8)
+  background: #fff
+  margin-bottom: 8px
   .half
     width: 50%
     float: left
@@ -50,10 +61,6 @@ div#main .contact_with_assets
         margin-bottom: 5px
   dl.item.task dd
     width: 84%
-  a
-    color: $cafe
-    &:hover
-      color: black
 
 //----------------------------------------------------
 // Tasks
@@ -61,9 +68,6 @@ div#main .contact_with_assets
 body#accounts div#main .contact_with_assets div.item span.actions, body#accounts dl.item
   dd
     input[type="submit"]
-      color: $cafe
-      &:hover
-        color: black
       &.delete
         color: $orange
         &:hover
@@ -80,3 +84,10 @@ body#accounts div#main .contact_with_assets div.item span.actions, body#accounts
   font-size: 12px
   input[type="submit"]
     font-size: 12px
+.inline-comment, .add-comment
+  background: #FFFBE0
+  border: 1px solid #DBDCB6
+.add-comment
+  padding: 10px
+.submit
+  padding-top: 8px
