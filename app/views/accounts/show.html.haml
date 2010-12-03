@@ -1,7 +1,6 @@
 .title
   %h2= @account.name
   %ul.actions
-    %li= link_to t(:add_contact), new_contact_path(:return_to => request.fullpath, :account_id => @account.id), :id => 'add_contact'
     %li= link_to t(:edit_account), [:edit, @account], :id => "edit_#{dom_id(@account)}"
     %li= link_to t(:add_sub_account), new_account_path(:account_id => @account.id), :id => 'add_sub_account'
     %li
@@ -13,16 +12,31 @@
         - else
           = hidden_field_tag 'account[tracker_ids][]', current_user.id
           = form.button :submit, t(:keep_me_updated), :id => 'keep_me_updated'
-  %br/
+.details
+  .half
+    %dl
+      = show_attribute(@account, 'email', mail_to(@account.email, nil, :bcc => current_user.dropbox_email))
+  .half
+    %dl
+      %dt= t('social_media')
+      %dd
+        - twit = @account.website.blank?   ? nil : link_to('Twitter', @account.website)
+        - link = @account.linked_in.blank? ? nil : link_to('LinkedIn',@account.linked_in)
+        - face = @account.facebook.blank?  ? nil : link_to('Facebook',@account.facebook)
+        - xing = @account.xing.blank?      ? nil : link_to('Xing', @account.xing)
+        = [twit, link, face, xing].compact.join(', ').html_safe
   %small
     = raw t(:added_ago_by, :time => l(@account.created_at, :format => :short), :by => @account.user.username)
 .clear
-%h3= t(:contacts)
+%h3.grad= t(:contacts)
 .contacts
   - @account.contacts.not_deleted.each do |contact|
     = render :partial => 'contacts/contact_with_assets', :locals => {:contact => contact }
+  .clear
+  = link_to raw("<b>+</b>#{t(:add_contact)}"), new_contact_path(:return_to => request.fullpath, :account_id => @account.id), :id => 'add_contact'
 .clear
 = render :partial => 'tasks/add_task', :locals => { :object => @account }
+.clear
 = render :partial => 'comments/comments', :locals => { :object => @account, :comments => @account.comments }
 
 - content_for :sidebar do

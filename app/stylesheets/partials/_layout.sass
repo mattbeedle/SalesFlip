@@ -155,12 +155,8 @@ div#main
       margin-top: 12px
     &.open
       +border-bottom-radius(0px)
-      +silver-button-pressed
       text-align: left
       margin-bottom: 0px
-      span
-        color: #555555
-        +letterpress(#bbbbbb)
     span
       color: #999999
       font-size: 12px
@@ -190,12 +186,15 @@ dl.item
     display: block
     float: left
   dt
+    border-bottom: 1px solid #cccccc
     +border-radius(3px)
     font-size: 11px
     margin-top: 2px
     padding: 4px 6px 4px 0px
     text-align: center
     width: 12%
+    &.category
+      font-size: 9px
   dd
     border-bottom: 1px solid #cccccc
     margin-left: 0px

@@ -15,6 +15,10 @@ class Account
   field :website
   field :phone
   field :fax
+  field :facebook
+  field :linked_in
+  field :twitter
+  field :xing
   field :billing_address
   field :shipping_address
   field :identifier,        :type => Integer

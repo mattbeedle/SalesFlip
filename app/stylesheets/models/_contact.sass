@@ -1,8 +1,23 @@
 div#main .contact_with_assets
+  small.timestamp
+    float: right
+    font-size: 11px
   h3.toggler
     width: 99%
     padding-left: 1%
     padding-right: 0px
+    small
+      font-size: 12px
+      font-weight: normal
+      padding-left: 20px
+    ul.actions
+      position: relative
+      top: -3px
+      right: 8px
+      li input
+        +silver-button
+        padding: 0px 5px
+        font-weight: normal
   .toggle
     background: #ECF3F4
     border: 1px solid #c7daf0
@@ -10,10 +25,10 @@ div#main .contact_with_assets
     width: 100%
   .contact-avatar
     float: left
-    min-width: 93px
-    margin-left: 1%
-    margin-top: 1%
-    width: 11%
+    margin-right: 1%
+    img
+      height: 48px
+      width:  48px
   .heading, .details
     clear: both
   ul.actions
@@ -27,7 +42,9 @@ div#main .contact_with_assets
   .info
     +clearfix
     float: left
-    width: 86%
+    width: 98%
+    padding-top: 1%
+    padding-left: 1%
     padding-bottom: 12px
   .icon
     border: 2px solid $link
@@ -41,8 +58,6 @@ div#main .contact_with_assets
     padding-bottom: 2px
     a
       float: right
-  a.add_task
-    float: left
 .details
   border: 1px solid #c7daf0
   +clearfix
@@ -51,11 +66,20 @@ div#main .contact_with_assets
   padding: 12px
   background: #fff
   margin-bottom: 8px
+  position: relative
+  ul.actions
+    float: right
+  small.timestamp
+    position: absolute
+    bottom: 7px
+    right: 7px
+  .add
+    padding-top: 8px
   .half
-    width: 50%
+    width: 43%
     float: left
     dl
-      +dl-horizontal(20%, 80%)
+      +dl-horizontal(30%, 70%)
       margin: 0px
       dt, dd
         margin-bottom: 5px
@@ -89,5 +113,9 @@ body#accounts div#main .contact_with_assets div.item span.actions, body#accounts
   border: 1px solid #DBDCB6
 .add-comment
   padding: 10px
-.submit
-  padding-top: 8px
+body .submit
+  +clearfix
+  padding-top: 12px
+  float: right
+  input[type="submit"]
+    padding: 2px 4px

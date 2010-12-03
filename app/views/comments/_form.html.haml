@@ -7,9 +7,11 @@
     = form.hidden_field :commentable_id
     = form.hidden_field :commentable_type
   = form.input :text, :label => "Add Comment", :as => :text, :input_html => {:rows => 2}, :grid => '100'
-  = form.simple_fields_for 'attachments_attributes[]', Attachment.new do |attachment_form|
-    = attachment_form.input :attachment, :as => :file
-  .submit
-    = form.submit t('save_comment')
-    = t('or')
-    = link_to t('cancel'), :back
+  .50.a
+    .string
+      = form.simple_fields_for 'attachments_attributes[]', Attachment.new do |attachment_form|
+        = attachment_form.input :attachment, :as => :file
+  .50.z
+    .submit
+      = form.submit t('save_comment')
+    .clear
