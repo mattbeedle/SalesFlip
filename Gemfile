@@ -12,6 +12,8 @@ gem 'mongoid',              :git => 'git://github.com/mattbeedle/mongoid.git', :
 gem 'mongo'
 gem 'bson'
 gem 'bson_ext'
+gem 'delayed_job'
+gem 'delayed_job_mongoid'
 gem 'compass'
 gem 'uuid'
 gem 'has_scope'
