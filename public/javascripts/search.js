@@ -4,6 +4,6 @@ var Search = Class({
   }
 });
 
-document.on('ready', function() {
+$(document).on('ready', function() {
   new Search().initialize;
 });

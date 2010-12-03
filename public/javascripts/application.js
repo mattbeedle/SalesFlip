@@ -26,7 +26,7 @@ var Base = new Class({
 
   watchTitleTogglers: function() {
 
-    $$("div.toggle").each(function(div) { div.hide(); });
+    //$$("div.toggle").each(function(div) { div.hide(); });
 
     $$("h3.toggler").each(function(h3) {
 
@@ -54,7 +54,7 @@ var Base = new Class({
   }
 });
 
-document.onReady(function() {
+$(document).on('ready', function() {
   new Base().initialize;
 });
 

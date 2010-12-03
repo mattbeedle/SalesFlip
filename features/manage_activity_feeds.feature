@@ -30,10 +30,3 @@ Feature: Manage activity feeds
     When I add a comment
     Then I should see "Comment" within "#recent_activity"
     And I should see "This is pretty cool" within "#recent_activity"
-  
-  Scenario: Editing a comment from the history feed
-    Given I am on the account's page
-    When I add a comment
-    And I fill in "activity_comment_text" with "Make these features pass NOW"
-    And I press "activity_comment_submit"
-    Then I should see "Make these features pass NOW"

@@ -6,7 +6,7 @@ class Comment
   include Activities
   include Permission
   include ParanoidDelete
-
+ 
   field :subject
   field :text
 
@@ -18,7 +18,7 @@ class Comment
   validates_presence_of :commentable, :user, :text
 
   after_create :add_attachments
-
+  
   def self.sorted
     where.asc(:created_at)
   end

@@ -55,25 +55,30 @@ div#main .title
 //----------------------------------------------------
 // Add Task
 //----------------------------------------------------
-h3.grad
-  a#add_task
+a#add_contact
+  margin-top: 8px
+  margin-right: 1%
+a#add_task
+  margin-right: 0
+a#add_task, a.add_task, a#add_contact
+  +border-radius(10px)
+  float: right
+  font-size: 12px
+  padding: 2px 6px
+  +silver-button
+  font-weight: normal
+  b
+    background: #999999
     +border-radius(10px)
-    float: right
-    font-size: 12px
-    padding: 2px 6px
-    +silver-button
-    b
-      background: #999999
-      +border-radius(10px)
-      color: white
-      font-size: 11px
-      font-weight: bold
-      margin-right: 1px
-      padding: 0px 3px 1px 3px
-      position: relative
-      left: -3px
-      top: -1px
-      +letterpress(#555555)
+    color: white
+    font-size: 11px
+    font-weight: bold
+    margin-right: 1px
+    padding: 0px 3px 1px 3px
+    position: relative
+    left: -3px
+    top: -1px
+    +letterpress(#555555)
 
 //----------------------------------------------------
 // Contact Info

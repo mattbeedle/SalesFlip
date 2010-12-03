@@ -123,6 +123,13 @@ class ContactTest < ActiveSupport::TestCase
     setup do
       @contact = Contact.make_unsaved(:florian, :user => User.make(:annika))
     end
+    
+    should 'be able to get all comments including those for any associated leads' do
+      @contact.save!
+      lead = Lead.make :contact => @contact
+      comment = Comment.make :commentable => lead
+      assert @contact.comments_including_leads.include?(comment)
+    end
 
     should 'be able to get fields in pipe deliminated format' do
       assert_equal @contact.deliminated('|', ['first_name', 'last_name']), "Florian|Behn"

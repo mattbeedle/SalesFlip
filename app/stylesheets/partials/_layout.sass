@@ -155,12 +155,8 @@ div#main
       margin-top: 12px
     &.open
       +border-bottom-radius(0px)
-      +silver-button-pressed
       text-align: left
       margin-bottom: 0px
-      span
-        color: #555555
-        +letterpress(#bbbbbb)
     span
       color: #999999
       font-size: 12px
@@ -190,12 +186,15 @@ dl.item
     display: block
     float: left
   dt
-    +border-left-radius(10px)
+    border-bottom: 1px solid #cccccc
+    +border-radius(3px)
     font-size: 11px
     margin-top: 2px
     padding: 4px 6px 4px 0px
-    text-align: right
+    text-align: center
     width: 12%
+    &.category
+      font-size: 9px
   dd
     border-bottom: 1px solid #cccccc
     margin-left: 0px
@@ -460,3 +459,13 @@ small.timestamp
 
 .hidden
   display: none
+//-------------------------------------------------------
+// Comment
+//-------------------------------------------------------
+.comments-closed
+  background: #FFEBAA
+  border: 1px solid #cb8
+  padding: 12px
+  font-size: 13px
+  text-align: center
+  margin-bottom: 30px

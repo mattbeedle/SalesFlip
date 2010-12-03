@@ -285,7 +285,19 @@ Feature: Manage leads
     And a new "Created" activity should have been created for "Contact" with "first_name" "Erich" and user: "annika"
     And a new "Converted" activity should have been created for "Lead" with "first_name" "Erich" and user: "annika"
     And a new "Created" activity should have been created for "Account" with "name" "World Dating" and user: "annika"
-
+  
+  Scenario: Converting lead comments
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And a lead: "erich" exists with user: benny
+    And I am on the lead's page
+    And I fill in "comment_text" with "This is a good lead"
+    And I press "comment_submit"
+    And I follow "Convert"
+    And I fill in "account_name" with "World Dating"
+    And I press "convert"
+    Then I should see "This is a good lead"
+  
   Scenario: Converting a lead to an existing account
     Given I am registered and logged in as annika
     And a lead: "erich" exists with user: annika

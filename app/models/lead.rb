@@ -23,9 +23,16 @@ class Lead
   field :title,         :type => Integer
   field :salutation,    :type => Integer
   field :company
+  field :company_phone
+  field :company_blog
+  field :company_facebook
+  field :company_twitter
+  field :website
+  field :career_site
   field :job_title
   field :department
   field :alternative_email
+  field :fax
   field :mobile
   field :address
   field :city
@@ -34,7 +41,7 @@ class Lead
   field :referred_by
   field :do_not_call,   :type => Boolean
 
-  field :website
+  
   field :twitter
   field :linked_in
   field :facebook

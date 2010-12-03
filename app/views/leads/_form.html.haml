@@ -1,59 +1,67 @@
 = hidden_field_tag :return_to, params[:return_to]
 %h2.title= t('add_lead')
-%h3.toggler.open= t('lead_name')
+%h3.toggler.open= t('contact_info')
 .toggle
   %fieldset
     .16.a= form.input :salutation, :as => :select, :collection => Lead.salutations.map(&:to_s)
     .16= form.input :title, :as => :select, :collection => Lead.titles.map(&:to_s)
     .33= form.input :first_name, :required => true
     .33.z= form.input :last_name, :required => true
-
-%h3.toggler= t('contact_info')
-.toggle
-  %fieldset
-    .33.a= form.input :company
-    .33=  form.input :email
-    .33.z= form.input :phone
     .clear
-    .33.a= form.input :department
-    .33.z= form.input :job_title
+    .33.a= form.input :job_title
+    .66.z= form.input :department
     .clear
-    .33.a= form.input :address, :as => :text, :input_html => { :rows => 4 }
-    .33= form.input :city
-    .33.z= form.input :postal_code
-    .clear
-    .33.a
-      %label{ :for => 'lead_country' }= t('country')
-      = localized_country_select :lead, :country, TOP_COUNTRIES
-    .33= form.input :alternative_email
-    .33.z= form.input :mobile
-    .clear
-    .33.a= form.input :referred_by
-    .33.boolean
+    .40.a= form.input :phone
+    .40= form.input :mobile
+    .20.boolean.z
       = form.check_box :do_not_call
       = form.label :do_not_call
     .clear
-
-%h3.toggler= raw t('web_and_social_media')
-.toggle
-  %fieldset
-    .100=  form.input :website
-    .50.a= form.input :twitter
-    .50.z= form.input :linked_in
-    .50.a= form.input :facebook
-    .50.z= form.input :xing
-
-%h3.toggler= raw "#{t('tracking')} &amp; #{t('simple_form.labels.permissions')}"
-.toggle
-  %fieldset
-    .25.a= form.input :status, :as => :select, :collection => Lead.statuses.map(&:to_s), :include_blank => false
-    .25= form.input :rating, :as => :select, :collection => 1..5
-    .25= form.input :assignee_id, :collection => current_user.company.users.map {|a| [a.email, a.id] }, :include_blank => true, :required => true
-    .25.z= form.input :source, :as => :select, :collection => Lead.sources.map(&:to_s)
+    .50.a= form.input :email
+    .50.z= form.input :alternative_email
     .clear
-    = render :partial => 'shared/permissions_form', :locals => { :form => form, :p1 => '25 a', :p2 => '25' }
+    .50.a= form.input :xing
+    .50.z= form.input :facebook
+    .50.a= form.input :linked_in
+    .50.z= form.input :twitter
+    
+    
+%h3.toggler.open= t('company_info')
+.toggle
+  %fieldset
+    .100= form.input :company    
+    .clear
+    .60.a= form.input :address
+    .20= form.input :fax
+    .20.z= form.input :company_phone
+    .clear
+    .10.a= form.input :postal_code
+    .50= form.input :city
+    .40.z
+      %label{ :for => 'lead_country' }= t('country')
+      = localized_country_select :lead, :country, TOP_COUNTRIES
+    .clear
+    .50.a=  form.input :website
+    .50.z=  form.input :career_site
+    .clear
+    .33.a=  form.input :company_facebook, :label => 'Facebook'
+    .33=  form.input :company_twitter, :label => 'Twitter'
+    .33.z= form.input :company_blog, :label => 'Blog'
 
-%h3.toggler= t('notes')
+%h3.toggler.open=raw "#{t('tracking')} &amp; #{t('simple_form.labels.permissions')}"
+.toggle
+  %fieldset
+    .35.a= form.input :assignee_id, :collection => current_user.company.users.map {|a| [a.email, a.id] }, :include_blank => true, :required => true
+    .15= form.input :status, :as => :select, :collection => Lead.statuses.map(&:to_s), :include_blank => false
+    = render :partial => 'shared/permissions_form', :locals => { :form => form, :p1 => '10', :p2 => '30.z' }
+    .clear
+    .33.a= form.input :rating, :as => :select, :collection => 1..5
+    .33= form.input :source, :as => :select, :collection => Lead.sources.map(&:to_s)
+    .33.z= form.input :referred_by
+    .clear
+    
+
+%h3.toggler.open=t('notes')
 .toggle
   %fieldset
     .100
