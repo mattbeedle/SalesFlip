@@ -18,7 +18,7 @@
       = show_attribute(@account, 'email', mail_to(@account.email, nil, :bcc => current_user.dropbox_email))
   .half
     %dl
-      %dt= t('social_media')
+      %dt= t(:social_media)
       %dd
         - twit = @account.website.blank?   ? nil : link_to('Twitter', @account.website)
         - link = @account.linked_in.blank? ? nil : link_to('LinkedIn',@account.linked_in)

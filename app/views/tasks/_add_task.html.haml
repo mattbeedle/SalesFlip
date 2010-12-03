@@ -1,4 +1,4 @@
-%h3.grad= t('tasks')
+%h3.grad= t(:tasks)
 .tasks
   - if object.tasks.for(current_user).incomplete.any?
     = render :partial => 'tasks/task', :collection => object.tasks.for(current_user).incomplete
