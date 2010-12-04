@@ -1,20 +1,35 @@
+fieldset.comment
+  padding: 12px
+
 div #main .inline-comment
   margin-bottom: 12px
   .avatar
     width: 40px
     float: left
   .message
-    width: 92%
+    width: 100%
     float: left
+    position: relative
+    span.right
+      display: block
+      position: absolute
+      top: 3px
+      right: 57px
   small.timestamp
     float: left
   ul.actions
     float: right
     li
       a, input
-        font-size: 11px
+        font-size: 13px
+        text-decoration: none
+      input.delete
+        color: #f00
+        display: block
+        position: relative
+        top: 3px
 
-.comment
+div#main .comment
   .quote
     color: $ice
     font-size: 14px
@@ -22,15 +37,42 @@ div #main .inline-comment
     padding-left: 20px
     padding-top: 4px
   .message
-    border: 1px solid #{$ice - 20}
-    +border-radius(10px)
+    background: none repeat scroll 0 0 #FFFBE0
+    border: 1px solid #DBDCB6
     color: #333333
-    line-height: 20px
+    cursor:default
     font-size: 13px
-    margin-bottom: 20px
-    padding: 20px
-    +shiny-button($ice + 30, $ice, white, 0, false)
+    line-height: 20px
+    margin-bottom: 7px
+    padding: 2px 12px 12px
     text-align: left
+    text-decoration: none
+    position: relative
+    span.right
+      display: block
+      position: absolute
+      top: 3px
+      right: 31px
+      ul.actions
+        li
+          a
+            position: relative
+            left: 4px
+          a, form input
+            font-size: 12px
+            text-decoration: none
+            &.delete
+              color: #f00
+              div #main
+              position: relative
+              top: 2px
+  .user
+    margin-bottom: 4px
+    a
+      font-size: 10px
+      text-decoration: none
+      font-style: italic
+  
 
 .user
   a

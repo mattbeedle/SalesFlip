@@ -29,7 +29,7 @@
     %p= t(:no_opportunities)
 
 = render :partial => 'tasks/add_task', :locals => { :object => @contact }
-= render :partial => 'comments/comments', :locals => { :object => @contact }
+= render :partial => 'comments/comments', :locals => { :object => @contact, :comments => @contact.comments_including_leads.desc(:created_at) }
 
 - content_for :sidebar do
   .box.gold

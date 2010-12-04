@@ -24,9 +24,16 @@ class Lead
   field :title,         :type => Integer
   field :salutation,    :type => Integer
   field :company
+  field :company_phone
+  field :company_blog
+  field :company_facebook
+  field :company_twitter
+  field :website
+  field :career_site
   field :job_title
   field :department
   field :alternative_email
+  field :fax
   field :mobile
   field :address
   field :city
@@ -35,7 +42,7 @@ class Lead
   field :referred_by
   field :do_not_call,   :type => Boolean
 
-  field :website
+  
   field :twitter
   field :linked_in
   field :facebook
@@ -84,6 +91,7 @@ class Lead
     text :first_name, :last_name, :email, :phone, :notes, :company, :alternative_email, :mobile,
       :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing
   end
+  handle_asynchronously :solr_index
   
   def self.with_status( statuses )
     statuses = statuses.lines if statuses.respond_to?(:lines)

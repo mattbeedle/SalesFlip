@@ -6,7 +6,7 @@
     .50.a= form.input :name
     .50.z= form.input :account_type, :collection => Account.account_types
 
-%h3.toggler= t(:contact_info)
+%h3.toggler.open=t(:contact_info)
 .toggle
   %fieldset
     .66.a= form.input :email
@@ -18,7 +18,7 @@
     .100= form.input :website
 
 
-%h3.toggler= raw "#{t(:tracking)} &amp; #{t('simple_form.labels.permissions')}"
+%h3.toggler.open=raw "#{t(:tracking)} &amp; #{t('simple_form.labels.permissions')}"
 .toggle
   %fieldset
     .25.a= form.input :assignee_id, :collection => current_user.company.users.map {|u| [u.email, u.id] }

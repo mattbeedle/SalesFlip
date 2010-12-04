@@ -38,7 +38,7 @@ module Activities
     @activities ||=
       Activity.any_of({ :subject_type.in => %w(Lead Account Contact), :subject_id => self.id },
                       { :subject_type.in => %w(Comment Email), :subject_id.in => comments.map(&:id) },
-                      { :subject_type => 'Task', :subject_id.in => tasks.map(&:id) }).desc(:created_at)
+                      { :subject_type => 'Task', :subject_id.in => tasks.map(&:id) }).desc(:updated_at)
     if self.respond_to?(:contacts)
       @activities = @activities.any_of(
         { :subject_type => 'Contact', :subject_id.in => self.contacts.map(&:id) },

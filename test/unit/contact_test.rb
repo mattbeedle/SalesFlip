@@ -149,6 +149,13 @@ class ContactTest < ActiveSupport::TestCase
       assert !@contact.valid?
       assert @contact.errors[:base].include?('Cannot assign a shared contact to a user it is not shared with. Please change the permissions first')
     end
+    
+    should 'be able to get all comments including those for any associated leads' do
+      @contact.save!
+      lead = Lead.make :contact => @contact
+      comment = Comment.make :commentable => lead
+      assert @contact.comments_including_leads.include?(comment)
+    end
 
     should 'be able to get fields in pipe deliminated format' do
       assert_equal @contact.deliminated('|', ['first_name', 'last_name']), "Florian|Behn"

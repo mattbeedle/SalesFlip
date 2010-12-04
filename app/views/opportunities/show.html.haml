@@ -10,7 +10,7 @@
     
 = render :partial => 'tasks/add_task', :locals => { :object => @opportunity }
 
-= render :partial => 'comments/comments', :locals => { :object => @opportunity }
+= render :partial => 'comments/comments', :locals => { :object => @opportunity, :comments => @opportunity.comments }
 
 %h3 Contact
 - if @opportunity.contact.blank?
