@@ -49,6 +49,7 @@ end
 group :development do
   gem 'wirble'
   gem 'heroku'
+  gem 'thin'
 end
 
 group :test do
