@@ -240,6 +240,7 @@ Feature: Manage accounts
   Scenario: Adding a task to an account
     Given I am registered and logged in as annika
     And an account: "careermee" exists with user: annika
+    And a task exists with asset: account, name: "Close the deal"
     And I am on the account's page
     And I follow "add_task"
     And I follow "preset_date"
@@ -248,7 +249,7 @@ Feature: Manage accounts
     And I select "Call" from "task_category"
     When I press "task_submit"
     Then I should be on the account's page
-    And a task should have been created
+    And 2 tasks should have been created
     And I should see "Call to get offer details"
   
   Scenario: Marking an account task as completed

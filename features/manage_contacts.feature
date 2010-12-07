@@ -190,6 +190,7 @@ Feature: Manage contacts
     Given I am registered and logged in as annika
     And Annika has invited Benny
     And a contact: "florian" exists with user: benny
+    And a task exists with asset: contact, name: "Close the deal"
     And I am on the contact's page
     And I follow "add_task"
     And I follow "preset_date"
@@ -198,7 +199,7 @@ Feature: Manage contacts
     And I select "Call" from "task_category"
     When I press "task_submit"
     Then I should be on the contact's page
-    And a task should have been created
+    And 2 tasks should have been created
     And I should see "Call to get offer details"
 
   Scenario: Marking a contact task as completed

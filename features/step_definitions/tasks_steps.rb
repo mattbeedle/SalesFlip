@@ -32,3 +32,7 @@ Then /^a task re\-assignment email should have been sent to "([^\"]*)"$/ do |ema
   end
   assert truth
 end
+
+Then /^(\d+) tasks should have been created$/ do |count|
+  assert_equal count.to_i, Task.count
+end
