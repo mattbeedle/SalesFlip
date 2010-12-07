@@ -121,7 +121,14 @@ GEM
     cucumber-rails (0.3.2)
       cucumber (>= 0.8.0)
     culerity (0.2.12)
+    daemons (1.1.0)
     database_cleaner (0.6.0)
+    delayed_job (2.1.2)
+      activesupport (~> 3.0)
+      daemons
+    delayed_job_mongoid (1.0.1)
+      delayed_job (~> 2.1.1)
+      mongoid (~> 2.0)
     devise (1.1.5)
       bcrypt-ruby (~> 2.1.2)
       warden (~> 1.0.2)
@@ -237,6 +244,10 @@ GEM
     sunspot_rails (1.1.0)
       sunspot (= 1.1.0)
     term-ansicolor (1.0.5)
+    thin (1.2.7)
+      daemons (>= 1.0.9)
+      eventmachine (>= 0.12.6)
+      rack (>= 1.0.0)
     thor (0.14.6)
     timecop (0.3.5)
     treetop (1.4.9)
@@ -269,6 +280,8 @@ DEPENDENCIES
   cucumber
   cucumber-rails
   database_cleaner
+  delayed_job
+  delayed_job_mongoid
   devise
   faker
   fakeweb
@@ -304,6 +317,7 @@ DEPENDENCIES
   sunspot
   sunspot_mongoid!
   sunspot_rails
+  thin
   timecop
   uuid
   warden

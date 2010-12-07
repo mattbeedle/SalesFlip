@@ -92,6 +92,7 @@ class Lead
     text :first_name, :last_name, :email, :phone, :notes, :company, :alternative_email, :mobile,
       :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing
   end
+  handle_asynchronously :solr_index
   
   def self.with_status( statuses )
     statuses = statuses.lines if statuses.respond_to?(:lines)
