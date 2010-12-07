@@ -71,5 +71,5 @@ Before do
   ActionMailer::Base.deliveries.clear
   Sham.reset
   FakeWeb.allow_net_connect = false
-  FakeWeb.register_uri(:post, 'http://localhost:8981/solr/update?wt=ruby', :body => '')
+  Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
 end
