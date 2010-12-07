@@ -28,24 +28,7 @@
         #sidebar
           - if user_signed_in? && !action_is('new', 'create', 'update', 'edit')
             #search
-              = simple_form_for @search || Search.new do |form|
-                .100= form.input :terms, :label => t(:search_people)
-                .boolean
-                  = check_box_tag 'search[collections][]', 'Lead', (params[:search] && params[:search][:collections].include?('Lead')) || (!@search && params[:search].blank?) || (@search and @search.collections and @search.collections.include?('Lead')), :id => 'search_collections_lead'
-                  %label{ :for => 'search_collections_lead' }= t(:leads)
-
-                  = check_box_tag 'search[collections][]', 'Contact', (params[:search] && params[:search][:collections].include?('Contact')) || (!@search && params[:search].blank?) || (@search and @search.collections and @search.collections.include?('Contact')), :id => 'search_collections_contact'
-                  %label{ :for => 'search_collections_contact' }= t(:contacts)
-
-                  = check_box_tag 'search[collections][]', 'Account', (params[:search] && params[:search][:collections].include?('Account')) || (!@search && params[:search].blank?) || (@search and @search.collections and @search.collections.include?('Account')), :id => 'search_collections_account'
-                  %label{ :for => 'search_collections_account' }= t(:accounts)
-                .clear
-                .act
-                  = form.submit t(:search)
-                  - if controller_is(:searches)
-                    %span
-                      or
-                      = link_to t(:go_back), :back
+              = render :partial => "searches/form"
           = raw yield(:sidebar)
           - if action_is('index')
             #recent_items.box.ice
