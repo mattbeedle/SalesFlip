@@ -11,3 +11,7 @@ Mongoid.database.eval(
   } } );
   JAVASCRIPT
 )
+
+ActionDispatch::ShowExceptions.rescue_responses.update({
+  'Mongoid::Errors::DocumentNotFound' => :not_found
+})
