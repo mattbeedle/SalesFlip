@@ -99,7 +99,7 @@ protected
 
   def resource
     @lead ||= hook(:leads_resource, self).last
-    @lead ||= Lead.for_company(current_user.company).where(:_id => params[:id]).first
+    @lead ||= Lead.for_company(current_user.company).find(params[:id]) if params[:id]
   end
 
   def begin_of_association_chain
