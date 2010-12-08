@@ -14,6 +14,7 @@ class User
   field :username
   field :api_key
   field :role,      :type => Integer
+  field :type
 
   attr_accessor :company_name
 

@@ -38,7 +38,7 @@ Feature: Manage accounts
     Then I should be on the accounts page
     And I should see "World Dating"
     And I should not see "CareerMee"
-    
+
   Scenario: Viewing accounts as a freelancer
     Given Annika exists
     And I have accepted an invitation from annika
@@ -194,7 +194,7 @@ Feature: Manage accounts
     And I should be on the account page
     And a new "Viewed" activity should have been created for "Account" with "name" "CareerMee"
     And I should see "Joe Marley"
-    
+
   Scenario: Viewing an account with a deleted contact
     Given I am registered and logged in as annika
     And CareerMee exists with user: annika, name: "CareerMee"
@@ -211,7 +211,7 @@ Feature: Manage accounts
     And I am on the account's page
     When I follow the edit link for the account
     Then I should be on the account's edit page
-  
+
   @wip
   Scenario: Deleting an account from the show page
     Given I am registered and logged in as annika
@@ -222,7 +222,7 @@ Feature: Manage accounts
     Then I should be on the accounts page
     And I should not see "CareerMee" within "#main"
     And a new "Deleted" activity should have been created for "Account" with "name" "CareerMee" and user: "annika"
-  
+
   Scenario: Private account (in)visibility on the accounts page
     Given I am registered and logged in as annika
     And a user: "benny" exists
@@ -263,6 +263,7 @@ Feature: Manage accounts
   Scenario: Adding a task to an account
     Given I am registered and logged in as annika
     And an account: "careermee" exists with user: annika
+    And a task exists with asset: account, name: "Close the deal"
     And I am on the account's page
     And I follow "add_task"
     And I follow "preset_date"
@@ -271,9 +272,9 @@ Feature: Manage accounts
     And I select "Call" from "task_category"
     When I press "task_submit"
     Then I should be on the account's page
-    And a task should have been created
+    And 2 tasks should have been created
     And I should see "Call to get offer details"
-  
+
   Scenario: Marking an account task as completed
     Given I am registered and logged in as annika
     And an account exists with user: annika
@@ -346,7 +347,7 @@ Feature: Manage accounts
     And an account exists with user: Annika
     And I am on the accounts page
     Then I should not see "Export this list as a CSV"
-    
+
   Scenario: Accounts index with format csv as a normal user
     Given I am registered and logged in as annika
     And an account exists with user: Annika
@@ -370,3 +371,4 @@ Feature: Manage accounts
     And I press "contact_submit"
     Then I should be on the account's page
     And I should see "Matt Beedle"
+    And I should not see "Delete" in the source

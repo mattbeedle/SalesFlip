@@ -251,6 +251,7 @@ Feature: Manage leads
   Scenario: Adding a task to a lead
     Given I am registered and logged in as annika
     And a lead exists with user: annika
+    And a task exists with asset: lead, name: "Close the deal"
     And I am on the lead's page
     And all emails have been delivered
     And I follow "add_task"
@@ -260,8 +261,9 @@ Feature: Manage leads
     And I select "Call" from "task_category"
     When I press "task_submit"
     Then I should be on the lead's page
-    And a task should have been created
+    And 2 tasks should have been created
     And I should see "Call to get offer details"
+    And I should see "Close the deal"
     And 0 emails should be delivered
 
   Scenario: Adding a task to an unassigned lead
