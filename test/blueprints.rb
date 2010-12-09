@@ -63,6 +63,12 @@ User.blueprint(:matt) do
   role { 'Administrator' }
 end
 
+Campaign.blueprint do
+  name
+  start_date { Date.today }
+  end_date { 14.days.from_now }
+end
+
 Lead.blueprint do
   first_name
   last_name

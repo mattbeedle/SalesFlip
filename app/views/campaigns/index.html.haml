@@ -1,0 +1,13 @@
+%h2.title
+  Campaigns
+  = add_new t(:add_campaign), new_campaign_path
+
+.campaigns
+  - @campaigns.each do |campaign|
+    %dl.item
+      %dd
+        = campaign.name
+        %small
+          = l(campaign.start_date, :format => :short) if campaign.start_date?
+          = "-" if campaign.start_date? && campaign.end_date?
+          = l(campaign.end_date, :format => :short) if campaign.end_date?

@@ -1,0 +1,10 @@
+= simple_form_for @campaign do |form|
+  %h2.title= t('add_campaign')
+
+  %fieldset
+    .a= form.input :name
+
+    .50.a= form.input :start_date
+    .50.z= form.input :end_date
+
+  = form.submit t('save_campaign'), :id => "campaign_submit"

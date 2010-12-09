@@ -16,6 +16,8 @@
       %li= link_to t(:leads), leads_path('with_status[]' => 'New', :unassigned => true, 'source_is[]' => 'Imported'), :class => active_if(controller_is('leads'))
     - if can? :read, Opportunity
       %li= link_to t(:opportunities), opportunities_path(:assigned_to => current_user.id), :id => 'opportunities', :class => active_if(controller_is('opportunities'))
+    - if can? :read, Campaign
+      %li= link_to t(:campaigns), campaigns_path, :id => 'campaigns', :class => active_if(controller_is('campaigns'))
     - if can? :read, Account
       %li= link_to t(:accounts), accounts_path, :id => 'accounts', :class => active_if(controller_is('accounts'))
     - if can? :read, Contact

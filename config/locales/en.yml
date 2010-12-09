@@ -12,6 +12,8 @@ en:
   tasks: Tasks
   lead: Lead
   leads: Leads
+  campaign: Campaign
+  campaigns: Campaigns
   account: Account
   accounts: Accounts
   contacts: Contacts
@@ -305,6 +307,12 @@ en:
   info_for: "Info for %{name}"
   no_contact_info: "No contact info for %{name}"
   contacts_created_accepted: Contacts (created/accepted)
+
+  #--------------------------------------------------------------
+  # Campaigns
+  #--------------------------------------------------------------
+  add_campaign: Add Campaign
+  save_campaign: Save Campaign
 
   #--------------------------------------------------------------
   # Leads
