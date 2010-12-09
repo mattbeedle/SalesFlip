@@ -5,7 +5,7 @@
     - else
       = account.name
     %small
-      = "Email: #{mail_to(account.email, nil, :bcc => current_user.dropbox_email)}" if account.email.present?
+      = "Email: #{mail_to(account.email, nil, :bcc => current_user.dropbox_email)}".html_safe if account.email.present?
       = raw " | Phone: <b>#{account.phone}</b>" if account.phone.present?
       = raw " | Fax: <b>#{account.fax}</b>" if account.fax.present?
     %br/
