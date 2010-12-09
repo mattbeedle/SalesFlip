@@ -24,3 +24,12 @@ Feature: Manage campaigns
     When I follow "Campaigns" within "#navigation"
     Then I should see "Generate 100 leads this month"
     And I should see "Dec 01 - Dec 31"
+
+  Scenario: Viewing a campaign
+    Given I am registered and logged in as annika
+    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010"
+    And I am on the campaigns page
+
+    When I follow "Generate 100 leads this month"
+    Then I should see "Generate 100 leads this month"
+    And I should see "Dec 01 - Dec 31"

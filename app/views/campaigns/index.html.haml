@@ -6,8 +6,5 @@
   - @campaigns.each do |campaign|
     %dl.item
       %dd
-        = campaign.name
-        %small
-          = l(campaign.start_date, :format => :short) if campaign.start_date?
-          = "-" if campaign.start_date? && campaign.end_date?
-          = l(campaign.end_date, :format => :short) if campaign.end_date?
+        = link_to campaign.name, campaign
+        = render :partial => 'campaigns/date_range', :locals => { :campaign => campaign }

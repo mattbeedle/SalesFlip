@@ -1,0 +1,4 @@
+.title
+  %h2
+    = @campaign.name
+    = render :partial => 'campaigns/date_range', :locals => { :campaign => @campaign }
