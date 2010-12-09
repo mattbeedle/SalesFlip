@@ -1,4 +1,7 @@
 .title
   %h2
     = @campaign.name
-    = render :partial => 'campaigns/date_range', :locals => { :campaign => @campaign }
+  %ul.actions
+    %li= link_to t(:edit), edit_campaign_path(@campaign)
+  %br/
+  = render :partial => 'campaigns/date_range', :locals => { :campaign => @campaign }

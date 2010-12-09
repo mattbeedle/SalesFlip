@@ -1,0 +1,13 @@
+= simple_form_for @campaign do |form|
+  %fieldset
+    .a= form.input :name
+
+    .50.a= form.input :start_date
+    .50.z= form.input :end_date
+
+  = form.submit t('save_campaign'), :id => "campaign_submit"
+  or
+  - if @campaign.new_record?
+    = link_to t('cancel'), campaigns_path
+  - else
+    = link_to t('cancel'), campaign_path(@campaign)

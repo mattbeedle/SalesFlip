@@ -264,6 +264,7 @@ de:
   # Campaigns
   #--------------------------------------------------------------
   add_campaign: Add Campaign
+  edit_campaign: Edit Campaign
   save_campaign: Save Campaign
 
   #--------------------------------------------------------------
