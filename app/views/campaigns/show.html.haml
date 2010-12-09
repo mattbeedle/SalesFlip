@@ -5,3 +5,9 @@
     %li= link_to t(:edit), edit_campaign_path(@campaign)
   %br/
   = render :partial => 'campaigns/date_range', :locals => { :campaign => @campaign }
+
+- content_for :sidebar do
+  .box.gold
+  #recent_activity.box.ice
+    %h3= t(:recent_activity_for, :name => @campaign.name )
+    = render :partial => 'shared/activity_for', :collection => @campaign.related_activities.desc(:updated_at).limit(6), :as => :activity

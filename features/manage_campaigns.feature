@@ -51,3 +51,33 @@ Feature: Manage campaigns
     And I should see "Campaign was successfully updated"
     And I should see "Generate 20 leads next week"
     And I should see "Dec 08 - Dec 15"
+
+  Scenario: Viewing campaign creation event
+    Given I am registered and logged in as annika
+    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: annika
+
+    When I go to the campaign's page
+    Then I should see "Campaign Created by annika.fleischer@1000jobboersen.de"
+
+    When I go to the home page
+    Then I should see "annika.fleischer@1000jobboersen.de created campaign Generate 100 leads this month"
+
+  Scenario: Viewing campaign update event
+    Given I am registered and logged in as annika
+    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: annika
+    And I go to the campaign's edit page
+    And I fill in "Start date" with "2/12/2010"
+
+    When I press "Save Campaign"
+    Then I should see "Campaign Updated by annika.fleischer@1000jobboersen.de"
+
+    When I go to the home page
+    Then I should see "annika.fleischer@1000jobboersen.de updated campaign Generate 100 leads this month"
+
+  Scenario: Viewing campaign view events
+    Given I am registered and logged in as annika
+    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: annika
+    And I go to the campaign's page
+
+    When I refresh the page
+    Then I should see "Campaign Viewed by annika.fleischer@1000jobboersen.de"
