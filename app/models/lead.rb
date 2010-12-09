@@ -59,6 +59,7 @@ class Lead
 
   belongs_to   :user, :required => true
   belongs_to   :contact, :required => false
+  belongs_to   :campaign, :required => false
   has n, :comments, :as => :commentable#, :dependent => :delete_all
   has n, :tasks, :as => :asset#, :dependent => :delete_all
   has n, :emails, :as => :commentable#, :dependent => :delete_all

@@ -126,6 +126,18 @@ Feature: Manage leads
     Then I should be on the lead's page
     And I should see "Cannot assign a shared lead to a user it is not shared with. Please change the permissions first"
 
+  Scenario: Creating a lead with a campaign
+    Given I am registered and logged in as annika
+    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010"
+    When I am on the new lead page
+    Then I should see "Campaign" within ".simple_form"
+    When I fill in "First Name" with "Erich"
+    And I fill in "Last Name" with "Feldmeier"
+    And I select "Generate 100 leads this month" from "Campaign"
+    And I press "Save Lead"
+    And I follow "Erich Feldmeier"
+    Then I should see "Generate 100 leads this month"
+
   Scenario: Logging activity
     Given I am registered and logged in as annika
     And Annika has invited Benny

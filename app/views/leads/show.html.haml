@@ -57,6 +57,9 @@
     %h3= t(:contact_info)
     - if @lead.assigned_to?(current_user)
       %dl.info
+        - if campaign = @lead.campaign
+          %dt= t('campaign')
+          %dd= link_to campaign.name, campaign_path(campaign)
         = show_attribute(@lead, 'identifier')
         = show_attribute(@lead, 'company')
         = show_attribute(@lead, 'job_title')
