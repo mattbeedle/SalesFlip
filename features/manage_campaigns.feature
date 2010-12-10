@@ -51,6 +51,15 @@ Feature: Manage campaigns
     Then I should see "Leads 100 1"
     And I should see "Conversions 5 1"
 
+  Scenario: Viewing list of campaigns with objectives
+    Given I am registered and logged in as annika
+    And a campaign: "generate_leads" exists
+    And a lead: "erich" exists with campaign: generate_leads, status: "Converted"
+
+    When I go to the campaigns page
+    Then I should see "Leads: 1/100"
+    And I should see "Conversions: 1/5"
+
   Scenario: Viewing list of campaigns
     Given I am registered and logged in as annika
     And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010"

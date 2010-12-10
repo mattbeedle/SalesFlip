@@ -25,7 +25,7 @@
         %tr
           %th Conversions
           %td.target== #{objective.number_of_conversions}
-          %td.actual== #{@campaign.leads.with_status('Converted').count}
+          %td.actual== #{@campaign.leads.converted.count}
 
 .tasks
   %h3.grad= t('tasks')
