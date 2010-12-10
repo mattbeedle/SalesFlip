@@ -104,3 +104,16 @@ Feature: Manage campaigns
 
     When I refresh the page
     Then I should see "Campaign Viewed by annika.fleischer@1000jobboersen.de"
+
+  Scenario: Creating a task for a campaign
+    Given I am registered and logged in as annika
+    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: annika
+    And I am on the campaign page
+
+    When I follow "Add Task"
+    And I fill in "Subject" with "Follow up on lead 3"
+    And I select "Call" from "Category"
+    And I press "Create Task"
+    Then I should be on the campaign page
+    And I should see "Tasks"
+    And I should see "Follow up on lead 3"
