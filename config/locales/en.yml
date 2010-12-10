@@ -14,6 +14,7 @@ en:
   leads: Leads
   campaign: Campaign
   campaigns: Campaigns
+  objectives: Objectives
   account: Account
   accounts: Accounts
   contacts: Contacts
@@ -157,6 +158,7 @@ en:
     labels:
       task:
         name: Subject
+      conversion_percentage: Conversion (%)
       identifier: Identifier
       address: Address
       account_name: Account Name

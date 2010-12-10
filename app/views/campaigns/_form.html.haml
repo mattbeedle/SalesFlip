@@ -5,6 +5,13 @@
     .50.a= form.input :start_date
     .50.z= form.input :end_date
 
+  %h3.toggler.open= t('objectives')
+  .toggle
+    %fieldset
+      = form.simple_fields_for @campaign.objective || :objective do |f|
+        .16.a= f.input :number_of_leads
+        .16.z= f.input :conversion_percentage
+
   = form.submit t('save_campaign'), :id => "campaign_submit"
   or
   - if @campaign.new_record?

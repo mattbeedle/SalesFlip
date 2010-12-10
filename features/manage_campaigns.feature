@@ -16,6 +16,40 @@ Feature: Manage campaigns
 
     Then I should be on the campaigns page
     And I should see "Campaign was successfully created"
+    And I should not see "Objectives"
+
+  Scenario: Setting campaign objectives
+    Given I am registered and logged in as annika
+    And I am on the new campaign page
+
+    When I fill in "Name" with "Generate leads"
+    And I fill in "Number of leads" with "10"
+    And I fill in "Conversion (%)" with "10"
+    And I press "Save Campaign"
+    And I follow "Generate leads"
+    Then I should see "Objectives"
+    And I should see "Leads 10 0"
+    And I should see "Conversions 1 0"
+
+    When I follow "Edit"
+    And I fill in "Number of leads" with ""
+    And I press "Save Campaign"
+    Then I should see "can't be blank"
+
+    When I fill in "Number of leads" with "5"
+    And I fill in "Conversion (%)" with ""
+    And I press "Save Campaign"
+    Then I should see "Leads 5 0"
+    And I should see "Conversions N/A 0"
+
+  Scenario: Viewing campaign with objectives
+    Given I am registered and logged in as annika
+    And a campaign: "generate_leads" exists
+    And a lead: "erich" exists with campaign: generate_leads, status: "Converted"
+
+    When I go to the campaign's page
+    Then I should see "Leads 100 1"
+    And I should see "Conversions 5 1"
 
   Scenario: Viewing list of campaigns
     Given I am registered and logged in as annika

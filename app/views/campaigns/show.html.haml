@@ -7,6 +7,26 @@
   %br/
   = render :partial => 'campaigns/date_range', :locals => { :campaign => @campaign }
 
+- if @campaign.objective? && objective = @campaign.objective
+  .objectives
+    %h3.grad= t('objectives')
+
+    %table
+      %thead
+        %tr
+          %th
+          %th.target Target
+          %th.actual Actual
+      %tbody
+        %tr
+          %th Leads
+          %td.target= objective.number_of_leads
+          %td.actual= @campaign.leads.count
+        %tr
+          %th Conversions
+          %td.target== #{objective.number_of_conversions}
+          %td.actual== #{@campaign.leads.with_status('Converted').count}
+
 .tasks
   %h3.grad= t('tasks')
   - if @campaign.tasks.count == 0
