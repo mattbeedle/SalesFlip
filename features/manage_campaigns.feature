@@ -43,6 +43,20 @@ Feature: Manage campaigns
     Then I should see "Leads"
     And I should see "Erich Feldmeier"
 
+  Scenario: Creating a lead from the campaign
+    Given I am registered and logged in as annika
+    And a campaign: "generate_leads" exists
+    And I am on that campaign's page
+
+    When I follow "Add Lead"
+    Then I should be on the new lead page
+
+    When I fill in "First Name" with "Erich"
+    And I fill in "Last Name" with "Feldmeier"
+    And I press "Save Lead"
+    Then I should be on the campaign page
+    And I should see "Erich Feldmeier"
+
   Scenario: Editing a campaign
     Given I am registered and logged in as annika
     And the campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010"

@@ -13,6 +13,8 @@
     This campaign currently has no leads.
   - else
     = render @campaign.leads
+  %ul.actions
+    %li= link_to raw("<b>+</b>#{t(:add_lead)}"), new_lead_path(:return_to => request.fullpath, :lead => { :campaign_id => @campaign.id }), :id => "new"
 
 - content_for :sidebar do
   #recent_activity.box.ice
