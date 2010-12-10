@@ -105,6 +105,18 @@ Feature: Manage campaigns
     When I refresh the page
     Then I should see "Campaign Viewed by annika.fleischer@1000jobboersen.de"
 
+  Scenario: Creating a comment for a campaign
+    Given I am registered and logged in as annika
+    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: annika
+
+    When I go to the campaign page
+    Then I should see "Comments"
+
+    When I fill in "Add Comment" with "Good progress!"
+    And I press "Save Comment"
+    Then I should be on the campaign page
+    And I should see "Good progress!"
+
   Scenario: Creating a task for a campaign
     Given I am registered and logged in as annika
     And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: annika

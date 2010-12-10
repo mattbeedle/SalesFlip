@@ -12,6 +12,7 @@ class Campaign
   belongs_to_related :user, :index => true
   has_many_related :leads
   has_many_related :tasks, :as => :asset, :dependent => :delete_all, :index => true
+  has_many_related :comments, :as => :commentable, :dependent => :delete_all, :index => true
 
   def permission_is?(permission)
     permission == 'Public'

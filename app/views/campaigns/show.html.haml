@@ -26,6 +26,10 @@
   %ul.actions
     = add_new t(:add_lead), new_lead_path(:return_to => request.fullpath, :lead => { :campaign_id => @campaign.id })
 
+.clear
+
+= render :partial => 'comments/comments', :locals => { :object => @campaign, :comments => @campaign.comments }
+
 - content_for :sidebar do
   #recent_activity.box.ice
     %h3= t(:recent_activity_for, :name => @campaign.name )
