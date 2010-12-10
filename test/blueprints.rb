@@ -69,6 +69,12 @@ Campaign.blueprint do
   end_date { 14.days.from_now }
 end
 
+Campaign.blueprint(:generate_leads) do
+  name { "Generate 100 leads this month" }
+  start_date { Date.today }
+  end_date { 1.month.from_now }
+end
+
 Lead.blueprint do
   first_name
   last_name

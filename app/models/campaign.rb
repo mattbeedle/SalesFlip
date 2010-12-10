@@ -8,7 +8,9 @@ class Campaign
   field :end_date, :type => Date
 
   validates_presence_of :name
+
   belongs_to_related :user, :index => true
+  has_many_related :leads
 
   def permission_is?(permission)
     permission == 'Public'

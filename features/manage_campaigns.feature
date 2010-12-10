@@ -34,6 +34,15 @@ Feature: Manage campaigns
     Then I should see "Generate 100 leads this month"
     And I should see "Dec 01 - Dec 31"
 
+  Scenario: Viewing a campaign with leads
+    Given I am registered and logged in as annika
+    And a campaign: "generate_leads" exists
+    And a lead: "erich" exists with campaign: generate_leads
+
+    When I go to that campaign's page
+    Then I should see "Leads"
+    And I should see "Erich Feldmeier"
+
   Scenario: Editing a campaign
     Given I am registered and logged in as annika
     And the campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010"

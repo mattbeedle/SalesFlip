@@ -6,6 +6,14 @@
   %br/
   = render :partial => 'campaigns/date_range', :locals => { :campaign => @campaign }
 
+.leads
+  %h3.grad= t('leads')
+
+  - if @campaign.leads.count == 0
+    This campaign currently has no leads.
+  - else
+    = render @campaign.leads
+
 - content_for :sidebar do
   #recent_activity.box.ice
     %h3= t(:recent_activity_for, :name => @campaign.name )
