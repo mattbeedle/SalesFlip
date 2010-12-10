@@ -57,6 +57,24 @@ Feature: Manage campaigns
     Then I should be on the campaign page
     And I should see "Erich Feldmeier"
 
+  Scenario: Deleting a campaign
+    Given I am registered and logged in as Matt
+    And the campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: Matt
+    And I am on that campaign's page
+
+    When I press "Delete"
+    Then I should be on the campaigns page
+    And I should not see "Generate 100 leads this month" within "#main"
+
+    When I go to the deleted items page
+    Then I should see "Generate 100 leads this month" within "#main"
+
+    When I press "restore"
+    Then I should not see "Generate 100 leads this month" within "#main"
+
+    When I go to the campaigns page
+    Then I should see "Generate 100 leads this month" within "#main"
+
   Scenario: Editing a campaign
     Given I am registered and logged in as annika
     And the campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010"

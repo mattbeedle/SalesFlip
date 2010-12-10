@@ -3,6 +3,7 @@
     = @campaign.name
   %ul.actions
     %li= link_to t(:edit), edit_campaign_path(@campaign)
+    %li= button_to t(:delete), campaign_path(@campaign), :method => :delete
   %br/
   = render :partial => 'campaigns/date_range', :locals => { :campaign => @campaign }
 

@@ -8,6 +8,10 @@ class CampaignsController < InheritedResources::Base
 
   protected
 
+  def end_of_association_chain
+    super.not_deleted
+  end
+
   def create_resource(campaign)
     campaign.user = current_user
     super
