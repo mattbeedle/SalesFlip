@@ -8,9 +8,9 @@ class Activity
   field :info
   field :notified_user_ids, :type => Array
 
-  belongs_to_related :user, :index => true
-  belongs_to_related :subject, :polymorphic => true, :index => true
-  
+  referenced_in :user, :index => true
+  referenced_in :subject, :polymorphic => true, :index => true
+
   index :action
 
   validates_presence_of :subject, :user
@@ -37,9 +37,9 @@ class Activity
   end
 
   def self.update_activity( user, subject, action )
-    activity = Activity.first(:conditions => { :user_id => user.id, :subject_id => subject.id,
+    activity = Activity.where(:user_id => user.id, :subject_id => subject.id,
                               :subject_type => subject.class.name,
-                              :action => Activity.actions.index(action) })
+                              :action => Activity.actions.index(action)).first
     if activity
       activity.update_attributes(:updated_at => Time.zone.now, :user_id => user.id)
     else

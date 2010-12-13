@@ -208,4 +208,5 @@ end
 
 Opportunity.blueprint do
   title { Sham.name }
+  user { User.make }
 end
