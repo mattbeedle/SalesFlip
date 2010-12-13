@@ -37,7 +37,7 @@ class User
   before_validation :set_api_key, :create_company, :on => :create
   before_create :set_default_role
   after_create :update_invitation
-  
+
   has_constant :roles, ROLES
 
   validates_presence_of :company
@@ -107,7 +107,7 @@ protected
   def update_invitation
     @invitation.update_attributes :invited_id => self.id unless @invitation.nil?
   end
-  
+
   def set_default_role
     self.role = 'Sales Person' if self.role.blank?
   end

@@ -48,14 +48,14 @@ class Lead
   field :facebook
   field :xing
   field :identifier,    :type => Integer
-  
+
   index(
     [
       [ :first_name, Mongo::ASCENDING ],
       [ :last_name, Mongo::ASCENDING ]
     ],
   )
-    
+
   index(
     [
       [:status, Mongo::DESCENDING],
@@ -67,11 +67,11 @@ class Lead
 
   attr_accessor :do_not_notify
 
-  belongs_to_related  :user
-  belongs_to_related  :contact
-  has_many_related    :comments, :as => :commentable, :dependent => :delete_all
-  has_many_related    :tasks, :as => :asset, :dependent => :delete_all
-  has_many_related    :emails, :as => :commentable, :dependent => :delete_all
+  referenced_in  :user
+  referenced_in  :contact
+  referenced_in    :comments, :as => :commentable, :dependent => :delete_all
+  referenced_in    :tasks, :as => :asset, :dependent => :delete_all
+  referenced_in    :emails, :as => :commentable, :dependent => :delete_all
 
   before_validation :set_initial_state
   before_create     :set_identifier, :set_recently_created

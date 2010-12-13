@@ -4,7 +4,7 @@ class Attachment
 
   field :attachment
 
-  belongs_to_related :subject, :polymorphic => true, :index => true
+  referenced_in :subject, :polymorphic => true, :index => true
 
   validates_presence_of :subject
   validate :validate_attachment
