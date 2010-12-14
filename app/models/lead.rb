@@ -42,7 +42,6 @@ class Lead
   field :referred_by
   field :do_not_call,   :type => Boolean
 
-  
   field :twitter
   field :linked_in
   field :facebook
@@ -67,11 +66,11 @@ class Lead
 
   attr_accessor :do_not_notify
 
-  referenced_in  :user
-  referenced_in  :contact
-  referenced_in    :comments, :as => :commentable, :dependent => :delete_all
-  referenced_in    :tasks, :as => :asset, :dependent => :delete_all
-  referenced_in    :emails, :as => :commentable, :dependent => :delete_all
+  referenced_in   :user
+  referenced_in   :contact
+  references_many :comments, :as => :commentable, :dependent => :delete_all
+  references_many :tasks, :as => :asset, :dependent => :delete_all
+  references_many :emails, :as => :commentable, :dependent => :delete_all
 
   before_validation :set_initial_state
   before_create     :set_identifier, :set_recently_created
@@ -92,7 +91,7 @@ class Lead
       :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing
   end
   handle_asynchronously :solr_index
-  
+
   def self.with_status( statuses )
     statuses = statuses.lines if statuses.respond_to?(:lines)
     where(:status.in => statuses.map { |status| Lead.statuses.index(status) })
