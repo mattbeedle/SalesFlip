@@ -89,4 +89,5 @@ function text2html(string) {
 
 function resizeMirror(elem, mirror) {
   elem.setHeight(mirror.getStyle('height').replace(/px/, '').toInt() + 40);
+  mirror.setWidth(elem.getStyle('width').replace(/px/, '').toInt());
 };

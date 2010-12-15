@@ -752,7 +752,7 @@ div#main .comment .user a { font-size: 10px; text-decoration: none; font-style: 
 textarea#comment_text { max-height: 280px; min-height: 48px; }
 
 /* line 92, ../../../app/stylesheets/models/_comment.sass */
-div.mirror { position: absolute; top: -999999px; }
+div.mirror { position: absolute; left: -9999px; }
 
 /* line 2, ../../../app/stylesheets/models/_contact.sass */
 div#main .contact_with_assets small.timestamp { float: right; font-size: 11px; }
