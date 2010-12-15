@@ -125,7 +125,7 @@ Feature: Manage leads
     And a lead exists with user: annika
     And I am on the lead's page
     And I fill in "comment_text" with "Sent offer"
-    And I attach the file "/Users/mattbeedle/development/salesflip/test/upload-files/erich_offer.pdf" to "Attachment"
+    And I attach the file "test/upload-files/erich_offer.pdf" to "Attachment"
     When I press "comment_submit"
     Then I should be on the lead page
     And I should see "Sent offer"
