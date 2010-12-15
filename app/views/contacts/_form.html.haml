@@ -45,9 +45,14 @@
 %h3.toggler.open= raw "#{t(:tracking)} &amp; #{t('simple_form.labels.permissions')}"
 .toggle
   %fieldset
-    .25.a= form.input :source, :collection => t(:lead_sources)
-    .25= form.input :assignee_id, :collection => current_user.company.users.map { |u| [u.full_name, u.id] }
-    = render :partial => 'shared/permissions_form', :locals => { :form => form, :p1=> '25', :p2=> '25 z' }
+    %span.col.seventy-five.first
+      %span.wrap
+        .20.a= form.input :source, :collection => t('lead_sources')
+        .60= form.input :assignee_id, :collection => current_user.company.users.map {|u| [u.full_name, u.id]}
+        .20.z= form.input :permission, :collection => Lead.permissions, :include_blank => false
+    %span.col.twenty-five.last
+      %span.wrap
+        .100= form.input :permitted_user_ids, :collection => current_user.company.users.asc(:email).map {|u| [u.email, u.id] }, :include_blank => false, :input_html => { :multiple => true, :size => 5 }
 
 .act.pad
   = form.button :submit

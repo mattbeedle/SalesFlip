@@ -133,7 +133,11 @@ en:
   fields: Fields
   recent_activity: Recent Activity
   avatar: Avatar
-  
+  address: Address
+  primary_email: Primary Email
+  alt_email: Other Email
+  or_preset_date: or preset date
+  or_real_date: or real date
   #--------------------------------------------------------------
   # Form Labels
   #--------------------------------------------------------------

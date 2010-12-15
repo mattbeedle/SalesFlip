@@ -1,5 +1,6 @@
 %dl.item.lead
-  %dt{ :class => lead.status.downcase }= lead.status
+  %dt
+    %span{ :class => lead.status.downcase }= lead.status
   %dd{ :class => lead.assignee == current_user ? nil : "accept" }
     %strong
       - if lead.permitted_for?(current_user)

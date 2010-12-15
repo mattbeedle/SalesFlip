@@ -43,4 +43,8 @@ module ApplicationHelper
     icon.html_safe
   end
   
+  def br(attribute)
+    attribute.present? ? attribute.break : nil
+  end
+    
 end

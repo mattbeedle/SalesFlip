@@ -1,3 +1,4 @@
+$field_padding : 10px
 //---------------------------------------------------
 // Fieldsets
 //---------------------------------------------------
@@ -15,10 +16,10 @@ fieldset
   div.a
     div
       padding-left: 0px
-      padding-right: 10px
+      padding-right: $field_padding
   div.z
     div
-      padding-left: 10px
+      padding-left: $field_padding
       padding-right: 0px
       select
         width: 100%
@@ -29,8 +30,8 @@ fieldset
   div
     padding: 0px
     div
-      padding-left: 10px
-      padding-right: 10px
+      padding-left: $field_padding
+      padding-right: $field_padding
       padding-bottom: 6px
 
 .toggle fieldset
@@ -44,7 +45,7 @@ label
   display: block
   font-size: 14px
   padding-bottom: 1px
-  color: #776d47
+  color: #6D6959
   +letterpress
   abbr
     border: none
@@ -159,7 +160,8 @@ span.error
 
 .clear
   clear: both
-
+div.rui-re-anchor div.timepicker select
+  width: auto
 //---------------------------------------------------
 // Flash Message
 //---------------------------------------------------
@@ -215,6 +217,9 @@ span.error
 .\35 0
   +field(50%)
 
+.\34 8
+  +field(48%)
+
 .\34 0
   +field(40%)
 
@@ -244,3 +249,45 @@ span.error
 
 .\35
   +field(5%)
+
+.col
+  width: 100%
+  float: left
+  display: block
+  &.ten
+    width: 10%
+  &.fifteen
+    width: 15%
+  &.twenty
+    width: 20%
+  &.twenty-five
+    width: 25%
+  &.thirty
+    width: 30%
+  &.thirty-three
+    width: 33%
+  &.forty
+    width: 40%
+  &.fifty
+    width: 50%
+  &.sixty
+    width: 60%
+  &.seventy
+    width: 70%
+  &.seventy-five
+    width: 75%
+  &.eighty
+    width: 80%
+  &.eighty-five
+    width: 85%
+  &.ninety
+    width: 90%
+  .wrap
+    padding: 0 $field_padding
+    display: block
+  &.first
+    .wrap
+      padding-left: 0px
+  &.last
+    .wrap
+      padding-right: 0px

@@ -41,7 +41,7 @@ class LeadsController < InheritedResources::Base
   def update
     params[:lead].merge!(:updater_id => current_user.id)
     update! do |success, failure|
-      success.html { return_to_or_default leads_path }
+      success.html { throw "hello"; return_to_or_default leads_path }
     end
   end
 

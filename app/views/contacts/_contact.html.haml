@@ -1,6 +1,7 @@
 %dl.item.contact
-  %dt{ :class => contact.source.present? ? contact.source.downcase : "no-source"}
-    = contact.source.present? ? contact.source : t('no_source')
+  %dt
+    %span{ :class => contact.source.present? ? contact.source.downcase : "no-source"}
+      = contact.source.present? ? contact.source : t('no_source')
   %dd
     %strong
       - if contact.permitted_for?(current_user)
