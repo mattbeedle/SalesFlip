@@ -5,7 +5,7 @@
     %strong= link_to opportunity.title, opportunity
     %small
       = '-'
-      = raw t(:added_ago_by, :time => l(opportunity.created_at, :format => :short), :by => opportunity.user.username)
+      = raw t(:added_ago_by, :time => l(opportunity.created_at, :format => :short), :by => opportunity.user.full_name)
     %br/
     %small
       %strong= number_to_currency(opportunity.weighted_amount, :precision => 2)

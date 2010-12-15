@@ -394,14 +394,14 @@ label abbr { border: none; color: red; display: block; float: left; width: 7px; 
 body.index label { color: black; }
 
 /* line 63, ../../../app/stylesheets/partials/_forms.sass */
-input, textarea, select { background: white; border: 1px solid #aaaaaa; -moz-border-radius: 4px; -webkit-border-radius: 4px; -o-border-radius: 4px; -ms-border-radius: 4px; -khtml-border-radius: 4px; border-radius: 4px; font-family: "Lucida Grande", "Lucida Sans Unicode", helvetica, verdana, arial; font-size: 16px; font-weight: bold; width: 100%; }
+input, textarea, select, div.mirror { background: white; border: 1px solid #aaaaaa; -moz-border-radius: 4px; -webkit-border-radius: 4px; -o-border-radius: 4px; -ms-border-radius: 4px; -khtml-border-radius: 4px; border-radius: 4px; font-family: "Lucida Grande", "Lucida Sans Unicode", helvetica, verdana, arial; font-size: 16px; font-weight: bold; width: 100%; }
 /* line 71, ../../../app/stylesheets/partials/_forms.sass */
-input[multiple="multiple"], textarea[multiple="multiple"], select[multiple="multiple"] { width: auto; }
+input[multiple="multiple"], textarea[multiple="multiple"], select[multiple="multiple"], div.mirror[multiple="multiple"] { width: auto; }
 
 /* line 74, ../../../app/stylesheets/partials/_forms.sass */
-input, textarea { -webkit-box-shadow: inset 1px 1px 4px #dddddd; -moz-box-shadow: 1px 1px 4px #dddddd inset; padding: 5px 0px; text-indent: 5px; }
+input, textarea, div.mirror { -webkit-box-shadow: inset 1px 1px 4px #dddddd; -moz-box-shadow: 1px 1px 4px #dddddd inset; padding: 5px 0px; text-indent: 5px; }
 /* line 78, ../../../app/stylesheets/partials/_forms.sass */
-input.hint, textarea.hint { color: #cccccc; }
+input.hint, textarea.hint, div.mirror.hint { color: #cccccc; }
 
 /* line 81, ../../../app/stylesheets/partials/_forms.sass */
 select { -moz-border-radius: 4px; -webkit-border-radius: 4px; -o-border-radius: 4px; -ms-border-radius: 4px; -khtml-border-radius: 4px; border-radius: 4px; font-size: 14px; -webkit-box-shadow: inset -1px -1px 4px #bbb6a6; -moz-box-shadow: -1px -1px 4px #bbb6a6 inset; padding: 5px; }
@@ -747,6 +747,12 @@ div#main .comment .user a { font-size: 10px; text-decoration: none; font-style: 
 .user span.icon { padding: 0px; position: relative; top: 3px; font-size: 22px; font-style: normal; }
 /* line 86, ../../../app/stylesheets/models/_comment.sass */
 .user strong { font-size: 12px; color: #333333; }
+
+/* line 89, ../../../app/stylesheets/models/_comment.sass */
+textarea#comment_text { max-height: 280px; min-height: 48px; }
+
+/* line 92, ../../../app/stylesheets/models/_comment.sass */
+div.mirror { position: absolute; top: -999999px; }
 
 /* line 2, ../../../app/stylesheets/models/_contact.sass */
 div#main .contact_with_assets small.timestamp { float: right; font-size: 11px; }

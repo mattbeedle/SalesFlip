@@ -58,7 +58,7 @@ class User
   end
 
   def full_name
-    username.present? ? username : email
+    username.present? ? username : email.split('@').first
   end
   alias :name :full_name
 

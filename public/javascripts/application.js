@@ -4,8 +4,24 @@ var Base = new Class({
     this.watchTitleTogglers();
     this.addRealTaskCalendar();
     this.hideActivityBodies();
+    this.growTextAreas();
   },
   
+  growTextAreas: function() {
+    $$('textarea').each(function(t) {
+      t.parent().insert("<div class='mirror'></div>")
+      var mirror = t.parent().find('.mirror').first();
+      mirror.update(text2html(t.value()))
+      resizeMirror(t,mirror)
+      t.on('keyup', function(event) {
+        var nu = this.value();
+        if (event.keyCode == 13) {var nu = this.value() + '\n'};
+        mirror.update(text2html(nu));
+        resizeMirror(this,mirror);
+      }); 
+    });
+  },
+    
   hideActivityBodies: function() {
     $$('.item-body').each(function(item) {
       item.addClass('hide');
@@ -66,3 +82,11 @@ $(document).on('ready', function() {
     this.toggleClass('closed');
     this.parent().next().toggleClass('hide');
 });
+
+function text2html(string) {
+  return string.replace(/&/g,'&amp;').replace(/  /g, '&nbsp;').replace(/<|>/g, '&gt;').replace(/\n\r?/g, '<br />');
+};
+
+function resizeMirror(elem, mirror) {
+  elem.setHeight(mirror.getStyle('height').replace(/px/, '').toInt() + 40);
+};
