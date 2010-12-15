@@ -34,14 +34,14 @@ class LeadsController < InheritedResources::Base
 
   def create
     create! do |success, failure|
-      success.html { return_to_or_default leads_path }
+      success.html { return_to_or_default lead_path(resource) }
     end
   end
 
   def update
     params[:lead].merge!(:updater_id => current_user.id)
     update! do |success, failure|
-      success.html { return_to_or_default leads_path }
+      success.html { return_to_or_default lead_path(resource) }
     end
   end
 

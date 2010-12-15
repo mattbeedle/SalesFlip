@@ -3,7 +3,7 @@
   .75.a= form.input :title
   .25.z= form.input :stage, :collection => Opportunity.stages, :include_blank => false
   .clear
-  .25.a= form.input :close_on, :as => :date, :start_year => Time.now.year, :start_month => Time.now.month, :start_day => Time.now.day
+  .25.a= datepicker_for(form, :close_on)
   .25= form.input :probability
   .25= form.input :amount
   .25.z= form.input :discount
@@ -17,9 +17,10 @@
       = attachment_form.input :attachment, :as => :file
   .clear
 - if !defined?(convert) || (defined?(convert) && convert == false)
-  %h3= t('simple_form.labels.permissions')
-  %fieldset
-    = render :partial => 'shared/permissions_form', :locals => { :form => form, :p1 => '25 a', :p2 => '25' }
+  %h3.toggler.open= t('simple_form.labels.permissions')
+
+  .toggle
+    %fieldset= render :partial => 'shared/permissions_form', :locals => { :form => form, :p1 => '25 a', :p2 => '25' }
 - if !defined?(buttons) || (defined?(buttons) && buttons == true)
   .act.pad
     = form.button :submit

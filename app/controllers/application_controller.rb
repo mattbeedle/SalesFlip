@@ -17,7 +17,9 @@ class ApplicationController < ActionController::Base
   before_filter "hook(:app_before_filter, self)"
   after_filter  "hook(:app_after_filter, self)"
   after_filter  :log_viewed_item, :only => :show
-
+  
+  helper :all
+  
 protected
   def bson_ids
     params.each do |key, value|

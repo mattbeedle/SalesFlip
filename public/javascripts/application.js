@@ -13,15 +13,19 @@ var Base = new Class({
   },
   
   addRealTaskCalendar: function() {
-    if ($('realdate') != null) {
-      due_at = null;
-      if($('due_at_value') != null) { due_at = $('due_at_value').innerHTML.trim(); }
-      $('realdate').insert({
-        after: '<label for="realdate_input">Due At</label><input id="realdate_input" type="text" name="task[due_at]" value="' + due_at + '"/ autocomplete="off">'
-      });
-      $('realdate').remove();
-      new Calendar({ format: "%Y-%m-%d %H:%M" }).assignTo('realdate_input');
-    }
+    $$('.realdate').each(function(realdate) {
+      var value_div = realdate.find('.value').first();
+      var id        = value_div.get('object');
+      var name      = value_div.get('name');
+      var value     = value_div.html().trim();
+      var abbr      = value_div.get('required')=='true' ? "<abbr>*</abbr>" : '';
+      var input     = '<div class="string"><label for="' + id + '">' + abbr + value_div.get('title') + '</label><input id="' + id + '" type="text" name="' + name + '" value="' + value + '"/ autocomplete="off"></div>';
+      var date_or_time = value_div.get('format')=='Date' ? "%Y-%m-%d" : "%Y-%m-%d %H:%M"; 
+      
+      realdate.find('span').first().remove();
+      realdate.insert(input, 'top');
+      new Calendar({ format: date_or_time}).assignTo(id);
+    });
   },
 
   watchTitleTogglers: function() {

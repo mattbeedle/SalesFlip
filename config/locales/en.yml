@@ -240,7 +240,7 @@ en:
     - final review
     - closed/won
     - closed/lost
-  opportunity_outline: "%{amount} with %{discount} discount and %{probability} probability | expected to close %{close_on}"
+  opportunity_outline: "Weighted: %{amount} with %{discount} discount and %{probability} probability | expected to close %{close_on}"
   add_opportunity: Add Opportunity
   select_contact: Select Contact
   opportunity: Opportunity
@@ -444,3 +444,29 @@ en:
   company_info: Company Info
   country: Country
   social_media: Social Media
+  
+  #--------------------------------------------------------------
+  # Rails Date Defaults
+  #--------------------------------------------------------------
+  date:
+    formats:
+      default: "%d-%m-%Y"
+      short: "%e. %b"
+      long: "%e. %B %Y"
+      only_day: "%e"
+      datestamp: "%Y-%m-%d"
+      timestamp: "%Y-%m-%d %H:%M"
+    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    abbr_day_names: [Sun, Mon, Tues, Wed, Thurs, Fri, Sat]
+    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+    order: [ :day, :month, :year ]
+  time:
+    formats:
+      default: "%A, %e. %B %Y, %H:%M"
+      short: "%B %e, %Y %H:%M"
+      long: "%A, %e, %B %Y @%H:%M%p"
+      time: "%H:%M"
+      timestamp: "%Y-%m-%d %H:%M"
+    am: "AM"
+    pm: "PM"

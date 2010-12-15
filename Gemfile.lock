@@ -228,7 +228,6 @@ GEM
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.2.0)
     rubyzip (0.9.4)
-    salesflip-lead_notifications (0.0.10)
     selenium-webdriver (0.1.1)
       childprocess (= 0.1.4)
       ffi (~> 0.6.3)
@@ -311,7 +310,6 @@ DEPENDENCIES
   rails (= 3.0.0)
   remail
   riddle
-  salesflip-lead_notifications
   shoulda
   simple_form
   smurf

@@ -39,7 +39,7 @@ gem 'gravtastic'
 gem 'cancan'
 
 # Plugins
-gem 'salesflip-lead_notifications', :require => 'lead_notifications'
+#gem 'salesflip-lead_notifications', :require => 'lead_notifications'
 
 group :production do
   gem 'smurf'

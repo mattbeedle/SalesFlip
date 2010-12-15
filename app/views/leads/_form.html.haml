@@ -69,15 +69,15 @@
       %span.wrap
         .33.a= form.input :source, :collection => t('lead_sources')
         .33= form.input :permission, :collection => Lead.permissions, :include_blank => false
-        .33.z= form.input :assignee_id, :collection => current_user.company.users.map {|u| [u.full_name, u.id]}
+        .33.z= form.input :status, :as => :select, :collection => Lead.statuses.map(&:to_s), :include_blank => false
+        .clear
+        .70.a= form.input :assignee_id, :collection => current_user.company.users.map {|a| [a.email, a.id] }, :include_blank => true, :required => true
+        .20= form.input :permission, :collection => Lead.permissions, :include_blank => false
 
-        .20.a= form.input :status, :as => :select, :collection => Lead.statuses.map(&:to_s), :include_blank => false
-        .60= form.input :assignee_id, :collection => current_user.company.users.map {|a| [a.email, a.id] }, :include_blank => true, :required => true
-        .20.z= form.input :permission, :collection => Lead.permissions, :include_blank => false
-
-        .33.a= form.input :rating, :as => :select, :collection => 1..5
-        .33= form.input :source, :as => :select, :collection => Lead.sources.map(&:to_s)
-        .33.z= form.input :referred_by
+        .10.z= form.input :rating, :as => :select, :collection => 1..5
+        .clear
+        .50.a= form.input :source, :as => :select, :collection => Lead.sources.map(&:to_s)
+        .50.z= form.input :referred_by
         .clear
     %span.col.twenty-five.last
       %span.wrap
