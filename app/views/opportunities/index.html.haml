@@ -1,16 +1,26 @@
+- opportunities = Opportunity.not_deleted.permitted_for(current_user)
 .title
   %h2= t(:opportunities).titleize
   = add_new t(:add_opportunity), new_opportunity_path
 
 = render :partial => @opportunities
 = will_paginate @opportunities
-
+-# TODO: Make pagination work with these grouped opportunities
+-# if opportunities.any?
+  - Opportunity.stages.each do |stage|
+    - if opportunities.stage_is(stage).any?
+      - if !params[:stage_is]
+        = render :partial => 'opportunity', :collection => opportunities.stage_is(stage)
+      - elsif params[:stage_is] && params[:stage_is].include?(stage)
+        - if params[:assigned_to]
+          = render :partial => 'opportunity', :collection => opportunities.stage_is(stage).assigned_to(params[:assigned_to])
+        - else
+          = render :partial => 'opportunity', :collection => opportunities.stage_is(stage)
 - content_for :sidebar do
   .gold.box
     %h3= t(:filter)
     = form_tag '', :method => :get do
       %ul.checks.stacked
-        - opportunities = Opportunity.not_deleted.permitted_for(current_user)
         - Opportunity.stages.each do |stage|
           %li
             = check_box_tag 'stage_is[]', stage, params[:stage_is] && params[:stage_is].include?(stage), :id => "stage_is_#{stage}"
