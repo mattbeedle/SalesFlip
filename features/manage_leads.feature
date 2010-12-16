@@ -49,7 +49,7 @@ Feature: Manage leads
     And I should see "Erich Feldmeier"
     And a created activity should exist for lead with first_name "Erich"
     And 0 emails should be delivered
-    
+
   Scenario: Trying to assign a new private lead
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -60,7 +60,7 @@ Feature: Manage leads
     And I press "Create Lead"
     Then 0 leads should exist
     And I should see "Cannot assign a private lead to another user, please change the permissions first"
-    
+
   Scenario: Trying to assign an existing private lead
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -71,7 +71,7 @@ Feature: Manage leads
     Then I should be on the lead's page
     And I should see "Cannot assign a private lead to another user, please change the permissions first"
     And 1 leads should exist with assignee_id: nil
-    
+
   Scenario: Trying to assign a new shared lead to a user it is not shared with
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -83,7 +83,7 @@ Feature: Manage leads
     And I press "Create Lead"
     Then 0 leads should exist
     And I should see "Cannot assign a shared lead to a user it is not shared with. Please change the permissions first"
-    
+
   Scenario: Trying to assign an existing shared lead to a user it is not shared with
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -495,7 +495,7 @@ Feature: Manage leads
     And a lead: "erich" exists with user: Annika
     When I am on the leads page
     Then I should not see "Export this list as a CSV"
-    
+
   Scenario: Leads index with format csv as a normal user
     Given I am registered and logged in as annika
     And a lead: "erich" exists with user: Annika
