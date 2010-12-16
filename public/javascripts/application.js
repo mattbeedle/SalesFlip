@@ -87,7 +87,7 @@ var Base = new Class({
         else {
            this.select('span')[0].update('&#9660;');
         };
-        this.next('.toggle').toggle('slide',{ duration:100 });
+        this.next('.toggle').toggle();
         this.toggleClass('open');
       });
     });

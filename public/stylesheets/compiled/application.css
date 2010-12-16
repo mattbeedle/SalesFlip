@@ -441,7 +441,7 @@ form span.date a { position: absolute; top: 0px; right: 5%; }
 .act a { float: right; }
 
 /* line 130, ../../../app/stylesheets/partials/_forms.sass */
-input[type="submit"], a.button { -moz-border-radius: 14px; -webkit-border-radius: 14px; -o-border-radius: 14px; -ms-border-radius: 14px; -khtml-border-radius: 14px; border-radius: 14px; border: 1px solid #d36f12; -moz-box-shadow: #999999 0px 1px 3px 0; -webkit-box-shadow: #999999 0px 1px 3px 0; -o-box-shadow: #999999 0px 1px 3px 0; box-shadow: #999999 0px 1px 3px 0; color: white; cursor: pointer; font-size: 14px; padding: 4px 12px; background: #ff8800; background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffae35), color-stop(0.17, #ff8800), color-stop(1, #d36f12)); background: -moz-linear-gradient(top, #ffae35 0%, #ff8800 17%, #d36f12 100%); text-align: center; text-decoration: none; text-shadow: #b55100 2px 2px 2px; width: auto; }
+input[type="submit"], a.button { -moz-border-radius: 14px; -webkit-border-radius: 14px; -o-border-radius: 14px; -ms-border-radius: 14px; -khtml-border-radius: 14px; border-radius: 14px; border: 1px solid #d36f12; -moz-box-shadow: #999999 0px 1px 3px 0; -webkit-box-shadow: #999999 0px 1px 3px 0; -o-box-shadow: #999999 0px 1px 3px 0; box-shadow: #999999 0px 1px 3px 0; color: white; cursor: pointer; font-size: 12px; padding: 4px 12px; background: #ff8800; background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffae35), color-stop(0.17, #ff8800), color-stop(1, #d36f12)); background: -moz-linear-gradient(top, #ffae35 0%, #ff8800 17%, #d36f12 100%); text-align: center; text-decoration: none; text-shadow: #b55100 2px 2px 2px; width: auto; }
 /* line 18, ../../../app/stylesheets/partials/_tools.sass */
 input[type="submit"]:hover, a.button:hover { background: #ff9c14; background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffc249), color-stop(0.14, #ff9c14), color-stop(1, #e78326)); background: -moz-linear-gradient(top, #ffc249 0%, #ff9c14 14%, #e78326 100%); }
 /* line 141, ../../../app/stylesheets/partials/_forms.sass */
@@ -711,55 +711,57 @@ ul#did_you_mean a.gray { font-weight: bold; margin-top: 12px; position: relative
 
 /* line 1, ../../../app/stylesheets/models/_comment.sass */
 fieldset.comment { padding: 12px; }
+/* line 3, ../../../app/stylesheets/models/_comment.sass */
+fieldset.comment label { font-size: 12px; }
 
-/* line 4, ../../../app/stylesheets/models/_comment.sass */
+/* line 5, ../../../app/stylesheets/models/_comment.sass */
 div #main .inline-comment { margin-bottom: 12px; }
-/* line 6, ../../../app/stylesheets/models/_comment.sass */
+/* line 7, ../../../app/stylesheets/models/_comment.sass */
 div #main .inline-comment .avatar { width: 40px; float: left; }
-/* line 9, ../../../app/stylesheets/models/_comment.sass */
+/* line 10, ../../../app/stylesheets/models/_comment.sass */
 div #main .inline-comment .message { width: 100%; float: left; position: relative; }
-/* line 13, ../../../app/stylesheets/models/_comment.sass */
+/* line 14, ../../../app/stylesheets/models/_comment.sass */
 div #main .inline-comment .message span.right { display: block; position: absolute; top: 3px; right: 57px; }
-/* line 18, ../../../app/stylesheets/models/_comment.sass */
+/* line 19, ../../../app/stylesheets/models/_comment.sass */
 div #main .inline-comment small.timestamp { float: left; }
-/* line 20, ../../../app/stylesheets/models/_comment.sass */
+/* line 21, ../../../app/stylesheets/models/_comment.sass */
 div #main .inline-comment ul.actions { float: right; }
-/* line 23, ../../../app/stylesheets/models/_comment.sass */
+/* line 24, ../../../app/stylesheets/models/_comment.sass */
 div #main .inline-comment ul.actions li a, div #main .inline-comment ul.actions li input { font-size: 13px; text-decoration: none; }
-/* line 26, ../../../app/stylesheets/models/_comment.sass */
+/* line 27, ../../../app/stylesheets/models/_comment.sass */
 div #main .inline-comment ul.actions li input.delete { color: red; display: block; position: relative; top: 3px; }
 
-/* line 33, ../../../app/stylesheets/models/_comment.sass */
+/* line 34, ../../../app/stylesheets/models/_comment.sass */
 div#main .comment .quote { color: #c9eaef; font-size: 14px; line-height: 11px; padding-left: 20px; padding-top: 4px; }
-/* line 39, ../../../app/stylesheets/models/_comment.sass */
+/* line 40, ../../../app/stylesheets/models/_comment.sass */
 div#main .comment .message { background: none repeat scroll 0 0 #fffbe0; border: 1px solid #dbdcb6; color: #333333; font-size: 13px; line-height: 20px; margin-bottom: 7px; padding: 2px 12px 12px; text-align: left; text-decoration: none; position: relative; }
-/* line 51, ../../../app/stylesheets/models/_comment.sass */
+/* line 52, ../../../app/stylesheets/models/_comment.sass */
 div#main .comment .message span.right { display: block; position: absolute; top: 3px; right: 31px; }
-/* line 58, ../../../app/stylesheets/models/_comment.sass */
+/* line 59, ../../../app/stylesheets/models/_comment.sass */
 div#main .comment .message span.right ul.actions li a { position: relative; left: 4px; }
-/* line 61, ../../../app/stylesheets/models/_comment.sass */
+/* line 62, ../../../app/stylesheets/models/_comment.sass */
 div#main .comment .message span.right ul.actions li a, div#main .comment .message span.right ul.actions li form input { font-size: 12px; text-decoration: none; }
-/* line 64, ../../../app/stylesheets/models/_comment.sass */
+/* line 65, ../../../app/stylesheets/models/_comment.sass */
 div#main .comment .message span.right ul.actions li a.delete, div#main .comment .message span.right ul.actions li form input.delete { color: red; position: relative; top: 2px; }
-/* line 69, ../../../app/stylesheets/models/_comment.sass */
+/* line 70, ../../../app/stylesheets/models/_comment.sass */
 div#main .comment .user { margin-bottom: 4px; }
-/* line 71, ../../../app/stylesheets/models/_comment.sass */
+/* line 72, ../../../app/stylesheets/models/_comment.sass */
 div#main .comment .user a { font-size: 10px; text-decoration: none; font-style: italic; }
 
-/* line 78, ../../../app/stylesheets/models/_comment.sass */
+/* line 79, ../../../app/stylesheets/models/_comment.sass */
 .user a { font-size: 12px; }
-/* line 80, ../../../app/stylesheets/models/_comment.sass */
+/* line 81, ../../../app/stylesheets/models/_comment.sass */
 .user span.icon { padding: 0px; position: relative; top: 3px; font-size: 22px; font-style: normal; }
-/* line 86, ../../../app/stylesheets/models/_comment.sass */
+/* line 87, ../../../app/stylesheets/models/_comment.sass */
 .user strong { font-size: 12px; color: #333333; }
 
-/* line 89, ../../../app/stylesheets/models/_comment.sass */
+/* line 90, ../../../app/stylesheets/models/_comment.sass */
 textarea#comment_text { max-height: 280px; min-height: 48px; }
 
-/* line 92, ../../../app/stylesheets/models/_comment.sass */
+/* line 93, ../../../app/stylesheets/models/_comment.sass */
 div.mirror { position: absolute; left: -9999px; }
 
-/* line 97, ../../../app/stylesheets/models/_comment.sass */
+/* line 98, ../../../app/stylesheets/models/_comment.sass */
 .text.truncated { height: 100px; overflow: hidden; }
 
 /* line 2, ../../../app/stylesheets/models/_contact.sass */

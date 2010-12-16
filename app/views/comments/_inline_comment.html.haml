@@ -8,7 +8,7 @@
           == raw #{t('subject')}:
           = raw comment.subject
         %small.acted= raw t('email_sent_ago', :time => l(comment.created_at, :format => :short))
-      .text= raw comment.text.gsub(/\n/, '<br />')
+      .text= raw comment.text.break
       .attachments
         - comment.attachments.each do |attachment|
           = link_to attachment.attachment_filename, attachment.attachment.url
@@ -17,7 +17,7 @@
       .user
         = link_to comment.user.full_name, comment.user
         %small.acted= raw t('wrote_ago', :time => l(comment.created_at, :format => :short))
-      .text= raw comment.text
+      .text= raw comment.text.break
       .attachments
         - comment.attachments.each do |attachment|
           = link_to attachment.attachment_filename, attachment.attachment.url
