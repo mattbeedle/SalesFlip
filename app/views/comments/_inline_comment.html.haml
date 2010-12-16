@@ -8,16 +8,16 @@
           == raw #{t('subject')}:
           = raw comment.subject
         %small.acted= raw t('email_sent_ago', :time => l(comment.created_at, :format => :short))
-      = raw comment.text.gsub(/\n/, '<br />')
+      .text= raw comment.text.gsub(/\n/, '<br />')
       .attachments
         - comment.attachments.each do |attachment|
           = link_to attachment.attachment_filename, attachment.attachment.url
   - else
     .message
       .user
-        = link_to comment.user.email, comment.user
+        = link_to comment.user.full_name, comment.user
         %small.acted= raw t('wrote_ago', :time => l(comment.created_at, :format => :short))
-      = raw comment.text
+      .text= raw comment.text
       .attachments
         - comment.attachments.each do |attachment|
           = link_to attachment.attachment_filename, attachment.attachment.url

@@ -6,7 +6,7 @@
   - else
     = form.hidden_field :commentable_id
     = form.hidden_field :commentable_type
-  = form.input :text, :label => "Add Comment", :as => :text, :input_html => {:rows => 2}, :grid => '100'
+  = form.text_area :text, :label => '', :rows => 2
   .50.a
     .string
       = form.simple_fields_for 'attachments_attributes[]', Attachment.new do |attachment_form|
