@@ -1,6 +1,6 @@
 #menus
   %p
-    = t(:welcome, :username => current_user.username)
+    = t(:welcome, :user => current_user.full_name)
     |
     = link_to t(:my_profile), profile_path, :id => 'profile'
     |

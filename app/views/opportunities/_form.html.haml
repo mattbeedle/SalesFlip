@@ -1,7 +1,7 @@
 = hidden_field_tag :return_to, params[:return_to] if params[:return_to]
 %fieldset
   .75.a= form.input :title
-  .25.z= form.input :stage, :collection => Opportunity.stages, :include_blank => false
+  .25.z= form.input :stage, :collection => Opportunity.stages, :include_blank => true
   .clear
   .25.a= datepicker_for(form, :close_on)
   .25= form.input :probability
@@ -10,17 +10,19 @@
   .clear
   - if !defined?(convert) || (defined?(convert) && convert == false)
     .75.a= form.input :contact_id, :collection => Contact.for_company(current_user.company).permitted_for(current_user).sort_by(&:name).map { |c| [c.name, c.id] }
-    .25.z= form.input :assignee_id, :collection => current_user.company.users.sort_by(&:email).map { |u| [u.email, u.id] }
+    .25.z= form.input :assignee_id, :collection => current_user.company.users.sort_by(&:email).map { |u| [u.email, u.id] }, :selected => current_user.id
     .clear
   - form.object.attachments.each do |attachment|
     = simple_fields_for 'opportunity[attachments_attributes][]', attachment do |attachment_form|
       = attachment_form.input :attachment, :as => :file
-  .clear
-- if !defined?(convert) || (defined?(convert) && convert == false)
-  %h3.toggler.open= t('simple_form.labels.permissions')
+  - if !defined?(convert) || (defined?(convert) && convert == false)
+    %div.25
+      = form.input :permission, :collection => Lead.permissions, :include_blank => false
 
-  .toggle
-    %fieldset= render :partial => 'shared/permissions_form', :locals => { :form => form, :p1 => '25 a', :p2 => '25' }
+    %div.25.z
+      = form.input :permitted_user_ids, :collection => current_user.company.users.asc(:email).map {|u| [u.email, u.id] }, :include_blank => false, :input_html => { :multiple => true, :size => 5 }
+  .clear
+
 - if !defined?(buttons) || (defined?(buttons) && buttons == true)
   .act.pad
     = form.button :submit

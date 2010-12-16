@@ -80,6 +80,7 @@ div#main
   .pad
     padding: 20px
     +clearfix
+    min-height: 400px
   .title
     border-bottom: 3px solid #cccccc
     +border-top-radius(4px)
@@ -290,6 +291,8 @@ div.item, dl.item dd
     &.gold
       background: $gold
       margin-bottom: 20px
+      label
+        font-size: 12px
       h3
         color: $gold - 90
       input[type="submit"]

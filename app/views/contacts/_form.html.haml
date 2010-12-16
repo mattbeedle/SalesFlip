@@ -48,7 +48,7 @@
     %span.col.seventy-five.first
       %span.wrap
         .20.a= form.input :source, :collection => t('lead_sources')
-        .60= form.input :assignee_id, :collection => current_user.company.users.map {|u| [u.full_name, u.id]}
+        .60= form.input :assignee_id, :collection => current_user.company.users.map {|u| [u.email, u.id]}
         .20.z= form.input :permission, :collection => Lead.permissions, :include_blank => false
     %span.col.twenty-five.last
       %span.wrap

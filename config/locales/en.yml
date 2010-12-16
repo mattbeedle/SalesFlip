@@ -5,7 +5,7 @@ en:
   #--------------------------------------------------------------
   # Layout
   #--------------------------------------------------------------
-  welcome: Welcome
+  welcome: "Welcome %{user}"
   dashboard: Dashboard
   edit_notifications: Notifications
   task: Task
@@ -272,6 +272,7 @@ en:
   add_contact: Add Contact
   contact_info: Contact Info
   contact_info_for: "Contact %{name}"
+  contact_info_for_account: "Account: %{name}"
   delete_contact: Delete Contact
   edit_contact: Edit Contact
   info_for: "Info for %{name}"

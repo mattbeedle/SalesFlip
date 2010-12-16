@@ -13,7 +13,7 @@
           = hidden_field_tag 'account[tracker_ids][]', current_user.id
           = form.button :submit, t(:keep_me_updated), :id => 'keep_me_updated'
   %small
-    = raw t(:added_ago_by, :time => l(@account.created_at, :format => :short), :by => @account.user.username)
+    = t(:assigned_to, :user => (@account.assignee.nil? ? "Nobody" : @account.assignee.full_name))
 .clear
 %h3.grad= t(:contacts)
 - if @account.contacts.any?
@@ -31,7 +31,7 @@
 
 - content_for :sidebar do
   .box.ice
-    %h3= t(:contact_info_for, :name => @account.name)
+    %h3= t(:contact_info_for_account, :name => @account.name)
     %dl.info
       = show_attribute(@account, 'identifier')
       = show_attribute(@account, 'email', mail_to(@account.email, nil, :bcc => current_user.dropbox_email))

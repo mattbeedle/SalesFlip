@@ -58,7 +58,6 @@ Feature: Manage leads
     And I select "benjamin.pochhammer@1000jobboersen.de" from "lead_assignee_id"
     And I select "Private" from "Permission"
     And I press "Create Lead"
-    Then show me the page
     Then 0 leads should exist
     And I should see "Cannot assign a private lead to another user, please change the permissions first"
     
