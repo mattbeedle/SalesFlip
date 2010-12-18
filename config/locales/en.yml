@@ -182,7 +182,7 @@ en:
       job_title: Job Title
       city: City
       postal_code: Postal Code
-  
+
   #--------------------------------------------------------------
   # Account
   #--------------------------------------------------------------
@@ -203,6 +203,14 @@ en:
   account_may_exist: This account may already exist
   use_existing_account: Would you like to use an existing account instead?
   accounts_created_accepted: Accounts (created/accepted)
+
+  #--------------------------------------------------------------
+  # Users
+  #--------------------------------------------------------------
+  assigned_leads: Assigned Leads
+  contacted_leads: Contacted Leads
+  converted_leads: Converted Leads
+  pipeline: Pipeline
 
   #--------------------------------------------------------------
   # Search
