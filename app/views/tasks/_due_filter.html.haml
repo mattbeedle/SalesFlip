@@ -1,19 +1,8 @@
 %ul.checks.stacked
-  %li
-    = check_box_tag 'scopes[overdue]', true, params[:scopes] && params[:scopes][:overdue], :id => 'overdue'
-    %label{ :for => 'overdue' }= t('overdue')
-  %li
-    = check_box_tag 'scopes[due_today]', true, params[:scopes] && params[:scopes][:due_today], :id => 'due_today'
-    %label{ :for => 'due_today' }= t('due_today')
-  %li
-    = check_box_tag 'scopes[due_tomorrow]', true, params[:scopes] && params[:scopes][:due_tomorrow], :id => 'due_tomorrow'
-    %label{ :for => 'due_tomorrow' }= t('due_tomorrow')
-  %li
-    = check_box_tag 'scopes[due_this_week]', true, params[:scopes] && params[:scopes][:due_this_week], :id => 'due_this_week'
-    %label{ :for => 'due_this_week' }= t('due_this_week')
-  %li
-    = check_box_tag 'scopes[due_next_week]', true, params[:scopes] && params[:scopes][:due_next_week], :id => 'due_next_week'
-    %label{ :for => 'due_next_week' }= t('due_next_week')
-  %li
-    = check_box_tag 'scopes[due_later]', true, params[:scopes] && params[:scopes][:due_later], :id => 'due_later'
-    %label{ :for => 'due_later' }= t('due_later')
+  - %w(overdue due_today due_tomorrow due_this_week due_next_week due_later).each do |due|
+    %li
+      = check_box_tag "scopes[#{due}]", true, params[:scopes] && params[:scopes][due.to_sym], :id => due
+      %label{ :for => due }
+        = t(due)
+        - if !eval("@#{due}").nil?
+          %span.count= "(#{eval("@#{due}").size})"

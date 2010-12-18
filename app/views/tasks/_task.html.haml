@@ -1,5 +1,6 @@
 %dl.item.task{ :class => task.completed? ? 'completed' : nil }
-  %dt.category{ :class => task.category.downcase }= task.category
+  %dt.category
+    %span{ :class => task.category.downcase }= task.category
   %dd
     %span.item_name
       - if task.completed?
@@ -9,7 +10,7 @@
           = hidden_field_tag :return_to, request.fullpath
           %span.boolean= check_box_tag 'task[completed_by_id]', current_user.id, false, :id => "task_#{task.id}"
           %label{ :for => "task_#{task.id}" }= task.name
-          = "(#{task.due_at_in_words})"
+          %small= "(#{task.due_at_in_words})"
           %span.save
             = form.button :submit, t('save')
           -#%small.asset= task_asset_link(task) unless task.asset.nil?

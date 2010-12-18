@@ -1,0 +1,12 @@
+%h2= t(:opportunity_stages_heading)
+= link_to t(:add_opportunity_stage), new_administration_opportunity_stage_path
+%table
+  %tr
+    %th= t(:name)
+    %th= t(:percentage)
+    %th= t(:actions)
+  - @opportunity_stages.each do |stage|
+    %tr
+      %td= stage.name
+      %td= number_to_percentage stage.percentage, :precision => 0 if stage.percentage
+      %td= link_to t(:delete), [:confirm_delete, :administration, stage]

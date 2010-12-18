@@ -8,6 +8,7 @@ class Contact
   include Trackable
   include Activities
   include Sunspot::Mongoid
+  include Assignable
   include Gravtastic
   is_gravtastic
 
@@ -48,20 +49,21 @@ class Contact
   before_create :set_identifier
   before_save   :set_full_name
 
-  has_constant :accesses, lambda { I18n.t('access_levels') }
-  has_constant :titles, lambda { I18n.t('titles') }
-  has_constant :sources,  lambda { I18n.t('lead_sources') }
-  has_constant :salutations, lambda { I18n.t('salutations') }
+  has_constant :accesses,     lambda { I18n.t(:access_levels) }
+  has_constant :titles,       lambda { I18n.t(:titles) }
+  has_constant :sources,      lambda { I18n.t(:lead_sources) }
+  has_constant :salutations,  lambda { I18n.t(:salutations) }
 
-  belongs_to_related :account, :index => true
-  belongs_to_related :user, :index => true
-  belongs_to_related :assignee, :class_name => 'User', :index => true
-  belongs_to_related :lead, :index => true
+  referenced_in :account, :index => true
+  referenced_in :user, :index => true
+  referenced_in :assignee, :class_name => 'User', :index => true
+  referenced_in :lead, :index => true
 
-  has_many_related :tasks, :as => :asset, :dependent => :destroy, :index => true
-  has_many_related :comments, :as => :commentable, :dependent => :delete_all, :index => true
-  has_many_related :leads, :dependent => :destroy, :index => true
-  has_many_related :emails, :as => :commentable, :dependent => :delete_all, :index => true
+  references_many :tasks, :as => :asset, :dependent => :destroy, :index => true
+  references_many :comments, :as => :commentable, :dependent => :delete_all, :index => true
+  references_many :leads, :dependent => :destroy, :index => true
+  references_many :emails, :as => :commentable, :dependent => :delete_all, :index => true
+  references_many :opportunities, :dependent => :destroy, :index => true
 
   named_scope :for_company, lambda { |company| {
     :where => { :user_id.in => company.users.map(&:id) } } }

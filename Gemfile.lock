@@ -144,6 +144,7 @@ GEM
     gherkin (2.3.2)
       json (~> 1.4.6)
       term-ansicolor (~> 1.0.5)
+    git (1.2.5)
     gravtastic (3.1.0)
     haml (3.0.24)
     has_constant (0.2.9)
@@ -156,6 +157,10 @@ GEM
     inherited_resources (1.1.2)
       has_scope (~> 0.5.0)
       responders (~> 0.6.0)
+    jeweler (1.5.1)
+      bundler (~> 1.0.0)
+      git (>= 1.2.5)
+      rake
     json (1.4.6)
     json_pure (1.4.6)
     launchy (0.3.7)
@@ -180,8 +185,17 @@ GEM
       rake
     mongo (1.1.5)
       bson (>= 1.1.5)
+    mongoid_i18n (0.1.8)
+      bson_ext
+      bundler
+      jeweler
+      mocha
+      mongoid (>= 2.0.0.beta.20)
+      mongoid (>= 2.0.0.beta.9)
+      rspec (>= 2.0.0.beta.8)
     navvy (0.3.1)
     nokogiri (1.4.4)
+    notifier (0.1.1)
     pickle (0.4.4)
       cucumber (>= 0.8)
       rake
@@ -222,12 +236,11 @@ GEM
       rspec-core (~> 2.3.0)
       rspec-expectations (~> 2.3.0)
       rspec-mocks (~> 2.3.0)
-    rspec-core (2.3.0)
+    rspec-core (2.3.1)
     rspec-expectations (2.3.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.3.0)
     rubyzip (0.9.4)
-    salesflip-lead_notifications (0.0.10)
     selenium-webdriver (0.1.1)
       childprocess (= 0.1.4)
       ffi (~> 0.6.3)
@@ -245,6 +258,8 @@ GEM
     sunspot_rails (1.1.0)
       sunspot (= 1.1.0)
     term-ansicolor (1.0.5)
+    test_notifier (0.3.6)
+      notifier
     thin (1.2.7)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -302,6 +317,7 @@ DEPENDENCIES
   mongo
   mongo_session_store!
   mongoid!
+  mongoid_i18n
   navvy
   pickle
   pickle-mongoid
@@ -309,7 +325,6 @@ DEPENDENCIES
   rails (= 3.0.0)
   remail
   riddle
-  salesflip-lead_notifications
   shoulda
   simple_form
   smurf
@@ -318,6 +333,7 @@ DEPENDENCIES
   sunspot
   sunspot_mongoid!
   sunspot_rails
+  test_notifier
   thin
   timecop
   uuid

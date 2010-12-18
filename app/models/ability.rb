@@ -1,10 +1,10 @@
 require 'lead'
 class Ability
   include CanCan::Ability
-  
+
   def initialize( user )
     user ||= User.new :role => 'Freelancer'
-    
+
     if user.role_is?('Administrator')
       can :manage, :all
     elsif user.role_is?('Sales Person') || user.role_is?('Service Person')
@@ -15,6 +15,14 @@ class Ability
       can :read, Invitation
       can :manage, Task
       can :read, Search
+      can :read, Opportunity do |opportunity|
+        opportunity && opportunity.permitted_for?(user)
+      end
+      can :update, Opportunity do |opportunity|
+        opportunity && opportunity.permitted_for?(user)
+      end
+      can :create, Opportunity
+      can :update, Opportunity
       can :reject, Lead do |lead|
         lead && lead.permitted_for?(user)
       end
@@ -50,6 +58,7 @@ class Ability
       can :read, Account
       can :manage, Task
       can :read, Contact
+      can :read, Opportunity
     end
   end
 end

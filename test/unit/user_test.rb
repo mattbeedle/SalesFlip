@@ -7,7 +7,7 @@ class UserTest < ActiveSupport::TestCase
     should_belong_to :company
     should_have_instance_methods :company_name=, :company_name
     should_have_many :invitations, :leads, :comments, :tasks, :accounts, :contacts, :activities,
-      :searches, :emails
+      :searches, :opportunities, :assigned_opportunities, :emails
     should_have_constant :roles
 
     context 'send_tracked_items_mail' do
@@ -179,9 +179,9 @@ class UserTest < ActiveSupport::TestCase
         assert_equal @user.full_name, "annie"
       end
 
-      should 'return email if username is not present' do
+      should 'return email username if username is not present' do
         @user.save!
-        assert_equal @user.full_name, "annika.fleischer1@1000jobboersen.de"
+        assert_equal @user.full_name, "annika.fleischer1"
       end
     end
 

@@ -37,9 +37,10 @@ gem 'rack-gridfs',          :require => 'rack/gridfs', :git => 'git://github.com
 gem 'amatch'
 gem 'gravtastic'
 gem 'cancan'
+gem 'mongoid_i18n', :require => 'mongoid/i18n'
 
 # Plugins
-gem 'salesflip-lead_notifications', :require => 'lead_notifications'
+#gem 'salesflip-lead_notifications', :require => 'lead_notifications'
 
 group :production do
   gem 'smurf'
@@ -67,5 +68,7 @@ group :test do
   gem 'faker'
   gem 'shoulda'
   gem 'database_cleaner'
+  gem 'mbeedle-heroku-autoscale', :require => 'heroku/autoscale'
   gem 'timecop'
+  gem 'test_notifier'
 end

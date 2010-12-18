@@ -5,7 +5,7 @@ en:
   #--------------------------------------------------------------
   # Layout
   #--------------------------------------------------------------
-  welcome: Welcome
+  welcome: "Welcome %{user}"
   dashboard: Dashboard
   edit_notifications: Notifications
   task: Task
@@ -15,6 +15,7 @@ en:
   account: Account
   accounts: Accounts
   contacts: Contacts
+  opportunities: Opportunities
   profile: Profile
   login: Login
   logout: Logout
@@ -24,7 +25,9 @@ en:
   users: Users
   invitations: Invitations
   yes_use: "Yes, use"
-  
+  administration: Administration
+  sales_site: Back to CRM
+
   activemodel:
     errors:
       models:
@@ -132,7 +135,11 @@ en:
   fields: Fields
   recent_activity: Recent Activity
   avatar: Avatar
-  
+  address: Address
+  primary_email: Primary Email
+  alt_email: Other Email
+  or_preset_date: or preset date
+  or_real_date: or real date
   #--------------------------------------------------------------
   # Form Labels
   #--------------------------------------------------------------
@@ -223,6 +230,35 @@ en:
     - Commented
     - Deleted
     - Restored
+    
+  #--------------------------------------------------------------
+  # Opportunities
+  #--------------------------------------------------------------
+  opportunity_stages:
+    - prospecting
+    - analysis
+    - presentation
+    - negotiation
+    - final review
+    - closed/won
+    - closed/lost
+  opportunity_outline: "Weighted: %{amount} with %{discount} discount and %{probability} probability | expected to close %{close_on}"
+  add_opportunity: Add Opportunity
+  select_contact: Select Contact
+  opportunity: Opportunity
+  attachments: Attachments
+  no_opportunity_attachments: This opportunity has no attachments
+  opportunities_for: Opportunities for %{name}
+  no_opportunities: No opportunities yet
+
+  #--------------------------------------------------------------
+  # Opportunity Stages
+  #--------------------------------------------------------------
+  add_opportunity_stage: Add Opportunity Stage
+  opportunity_stages_heading: Opportunity Stages
+  name: Name
+  percentage: Percentage
+  actions: actions
 
   my_profile: My Profile
   recent_items: Recent Items
@@ -247,6 +283,7 @@ en:
   add_contact: Add Contact
   contact_info: Contact Info
   contact_info_for: "Contact %{name}"
+  contact_info_for_account: "Account: %{name}"
   delete_contact: Delete Contact
   edit_contact: Edit Contact
   info_for: "Info for %{name}"
@@ -419,3 +456,29 @@ en:
   company_info: Company Info
   country: Country
   social_media: Social Media
+  
+  #--------------------------------------------------------------
+  # Rails Date Defaults
+  #--------------------------------------------------------------
+  date:
+    formats:
+      default: "%d-%m-%Y"
+      short: "%e. %b"
+      long: "%e. %B %Y"
+      only_day: "%e"
+      datestamp: "%Y-%m-%d"
+      timestamp: "%Y-%m-%d %H:%M"
+    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    abbr_day_names: [Sun, Mon, Tues, Wed, Thurs, Fri, Sat]
+    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+    order: [ :day, :month, :year ]
+  time:
+    formats:
+      default: "%A, %e. %B %Y, %H:%M"
+      short: "%B %e, %Y %H:%M"
+      long: "%A, %e, %B %Y @%H:%M%p"
+      time: "%H:%M"
+      timestamp: "%Y-%m-%d %H:%M"
+    am: "AM"
+    pm: "PM"

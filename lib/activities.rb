@@ -1,8 +1,8 @@
 module Activities
   extend ActiveSupport::Concern
-  
+
   included do
-    has_many_related :activities, :as => :subject, :dependent => :destroy
+    references_many :activities, :as => :subject, :dependent => :destroy
 
     after_create  :log_creation
     after_update  :log_update
@@ -11,7 +11,7 @@ module Activities
 
     attr_accessor :do_not_log
   end
-  
+
   def log_creation
     return if self.do_not_log
     Activity.log(self.user, self, 'Created')

@@ -6,7 +6,7 @@ Salesflip::Application.routes.draw do
   match 'profile', :to => 'users#profile'
 
   resources :users, :comments, :tasks, :deleted_items,
-    :searches, :invitations, :emails
+    :searches, :invitations, :emails, :opportunities
 
   resources :leads do
     member do
@@ -23,5 +23,13 @@ Salesflip::Application.routes.draw do
 
   resources :accounts do
     get :export, :on => :collection
+  end
+
+  namespace :administration do
+    root :to => 'pages#index'
+
+    resources :opportunity_stages do
+      get :confirm_delete, :on => :member
+    end
   end
 end

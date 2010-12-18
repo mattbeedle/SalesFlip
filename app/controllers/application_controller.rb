@@ -17,7 +17,9 @@ class ApplicationController < ActionController::Base
   before_filter "hook(:app_before_filter, self)"
   after_filter  "hook(:app_after_filter, self)"
   after_filter  :log_viewed_item, :only => :show
-
+  
+  helper :all
+  
 protected
   def bson_ids
     params.each do |key, value|
@@ -28,7 +30,7 @@ protected
   end
 
   def fix_array_params
-    [:lead, :contact, :account].each do |type|
+    [:lead, :contact, :account, :opportunity].each do |type|
       if params[type] && params[type][:permitted_user_ids] && params[type][:permitted_user_ids].is_a?(String)
         params[type][:permitted_user_ids] = params[type][:permitted_user_ids].lines.to_a
       end

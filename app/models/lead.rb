@@ -8,6 +8,7 @@ class Lead
   include Trackable
   include Activities
   include Sunspot::Mongoid
+  include Assignable
   include Gravtastic
   is_gravtastic
 
@@ -41,20 +42,19 @@ class Lead
   field :referred_by
   field :do_not_call,   :type => Boolean
 
-  
   field :twitter
   field :linked_in
   field :facebook
   field :xing
   field :identifier,    :type => Integer
-  
+
   index(
     [
       [ :first_name, Mongo::ASCENDING ],
       [ :last_name, Mongo::ASCENDING ]
     ],
   )
-    
+
   index(
     [
       [:status, Mongo::DESCENDING],
@@ -66,26 +66,24 @@ class Lead
 
   attr_accessor :do_not_notify
 
-  belongs_to_related  :user, :index => true
-  belongs_to_related  :assignee, :class_name => 'User', :index => true
-  belongs_to_related  :contact, :index => true
-  has_many_related    :comments, :as => :commentable, :dependent => :delete_all, :index => true
-  has_many_related    :tasks, :as => :asset, :dependent => :delete_all, :index => true
-  has_many_related    :emails, :as => :commentable, :dependent => :delete_all, :index => true
+  referenced_in   :user
+  referenced_in   :contact
+  references_many :comments, :as => :commentable, :dependent => :delete_all
+  references_many :tasks, :as => :asset, :dependent => :delete_all
+  references_many :emails, :as => :commentable, :dependent => :delete_all
 
   before_validation :set_initial_state
   before_create     :set_identifier, :set_recently_created
   after_save        :notify_assignee, :unless => :do_not_notify
 
-  has_constant :titles, lambda { I18n.t('titles') }
-  has_constant :statuses, lambda { I18n.t('lead_statuses') }
-  has_constant :sources, lambda { I18n.t('lead_sources') }
-  has_constant :salutations, lambda { I18n.t('salutations') }
+  has_constant :titles,       lambda { I18n.t(:titles) }
+  has_constant :statuses,     lambda { I18n.t(:lead_statuses) }
+  has_constant :sources,      lambda { I18n.t(:lead_sources) }
+  has_constant :salutations,  lambda { I18n.t(:salutations) }
 
   named_scope :with_status, lambda { |statuses| { :where => {
     :status.in => statuses.map { |status| Lead.statuses.index(status) } } } }
   named_scope :unassigned, :where => { :assignee_id => nil }
-  named_scope :assigned_to, lambda { |user_id| { :where => { :assignee_id => user_id } } }
   named_scope :for_company, lambda { |company| { :where => { :user_id.in => company.users.map(&:id) } } }
 
   searchable do
@@ -93,7 +91,7 @@ class Lead
       :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing
   end
   handle_asynchronously :solr_index
-  
+
   def self.with_status( statuses )
     statuses = statuses.lines if statuses.respond_to?(:lines)
     where(:status.in => statuses.map { |status| Lead.statuses.index(status) })
@@ -121,11 +119,12 @@ class Lead
     else
       account = Account.find_or_create_for(self, account_name, options)
       contact = Contact.create_for(self, account)
+      opportunity = Opportunity.create_for(contact, options)
       if [account, contact].all?(&:valid?)
         I18n.locale_around(:en) { update_attributes :status => 'Converted', :contact_id => contact.id }
       end
     end
-    return account || contact.account, contact
+    return account || contact.account, contact, opportunity
   end
 
   def reject!

@@ -1,5 +1,8 @@
 = simple_form_for @search || Search.new do |form|
-  .100= form.input :terms
+  .70.a
+    .string= form.input :terms
+  .submit.search.30.z
+    .string= form.submit t(:search)
   .boolean
     = check_box_tag 'search[collections][]', 'Lead', (params[:search] && params[:search][:collections].try(:include?, 'Lead')) || (!@search && params[:search].blank?) || (@search and @search.collections and @search.collections.include?('Lead')), :id => 'search_collections_lead'
     %label{ :for => 'search_collections_lead' }= t(:leads)
@@ -10,8 +13,6 @@
     = check_box_tag 'search[collections][]', 'Account', (params[:search] && params[:search][:collections].try(:include?, 'Account')) || (!@search && params[:search].blank?) || (@search and @search.collections and @search.collections.include?('Account')), :id => 'search_collections_account'
     %label{ :for => 'search_collections_account' }= t(:accounts)
   .clear
-  .act
-    = form.submit t(:search)
     - if controller_is(:searches)
       %span
         or

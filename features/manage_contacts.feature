@@ -75,6 +75,29 @@ Feature: Manage contacts
     And I should see "World Dating"
     And an account should exist with name: "World Dating"
     And a contact should exist with first_name: "Florian", last_name: "Behn"
+    
+  Scenario: Trying to re-assign a private contact
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And a contact exists with user: Annika, permission: "Private"
+    And I am on the contact's edit page
+    When I select "benjamin.pochhammer@1000jobboersen.de" from "contact_assignee_id"
+    And I press "Update Contact"
+    Then I should be on the contact's page
+    And I should see "Cannot assign a private contact to another user, please change the permissions first"
+    And 1 contacts should exist with assignee_id: nil
+
+  Scenario: Trying to re-assign a shared contact to a user it is not shared with
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And another user exists
+    And a contact exists with user: Annika
+    And the contact is shared with the other user
+    And I am on the contact's edit page
+    When I select "benjamin.pochhammer@1000jobboersen.de" from "contact_assignee_id"
+    And I press "Update Contact"
+    Then I should be on the contact's page
+    And I should see "Cannot assign a shared contact to a user it is not shared with. Please change the permissions first"
 
   Scenario: Updating a contact
     Given I am registered and logged in as annika
@@ -186,10 +209,23 @@ Feature: Manage contacts
     Then I should be on the contact's page
     And I should see "Florian"
 
+  Scenario: Adding an opportunity to a contact
+    Given I am registered and logged in as annika
+    And a contact exists with user: Annika
+    And I am on the contact's page
+    When I follow "Add Opportunity"
+    And I fill in "Title" with "Offer number 1"
+    And I attach the file "test/support/AboutStacks.pdf" to "Attachment"
+    And I press "Create Opportunity"
+    Then I should be on the contact's page
+    And 1 opportunities should exist with title: "Offer number 1"
+    And I should see "Offer number 1"
+
   Scenario: Adding a task to a contact
     Given I am registered and logged in as annika
     And Annika has invited Benny
     And a contact: "florian" exists with user: benny
+    And a task exists with asset: contact, name: "Close the deal"
     And I am on the contact's page
     And I follow "add_task"
     And I follow "preset_date"
@@ -198,7 +234,7 @@ Feature: Manage contacts
     And I select "Call" from "task_category"
     When I press "task_submit"
     Then I should be on the contact's page
-    And a task should have been created
+    And 2 tasks should have been created
     And I should see "Call to get offer details"
 
   Scenario: Marking a contact task as completed

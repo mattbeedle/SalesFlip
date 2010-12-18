@@ -6,6 +6,7 @@ class Task
   include Permission
   include Mongoid::Rails::MultiParameterAttributes
   include Activities
+  include Assignable
 
   field :name
   field :due_at,          :type => Time
@@ -16,19 +17,18 @@ class Task
 
   has_constant :categories, lambda { I18n.t(:task_categories) }
 
-  belongs_to_related :user, :index => true
-  belongs_to_related :asset, :polymorphic => true, :index => true
-  belongs_to_related :assignee, :class_name => 'User', :index => true
-  belongs_to_related :completed_by, :class_name => 'User', :index => true
+  referenced_in :user
+  referenced_in :asset, :polymorphic => true
+  referenced_in :completed_by, :class_name => 'User'
 
-  has_many_related :activities, :as => :subject, :dependent => :destroy, :index => true
+  references_many :activities, :as => :subject, :dependent => :destroy, :index => true
 
   validates_presence_of :user, :name, :due_at, :category
 
   before_create :set_recently_created
   before_update :log_reassignment
   before_save   :log_recently_changed
-  after_create  :assign_unassigned_lead, :assign_unassigned_lead
+  after_create  :assign_unassigned_asset
   after_update  :log_update
   after_save    :notify_assignee
 
@@ -187,8 +187,8 @@ protected
     @recently_changed = changed
   end
 
-  def assign_unassigned_lead
-    if asset and asset.is_a?(Lead) and asset.assignee.blank?
+  def assign_unassigned_asset
+    if asset && (asset.is_a?(Lead) || asset.is_a?(Opportunity)) && asset.assignee.blank?
       asset.update_attributes :assignee => self.user
     end
   end

@@ -3,4 +3,3 @@
     = form.hidden_field :commentable_type, :value => object.class.to_s
     = form.hidden_field :commentable_id, :value => object.id
     = render :partial => 'comments/form', :locals => { :form => form }
-    

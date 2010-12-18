@@ -14,6 +14,7 @@ class User
   field :username
   field :api_key
   field :role,      :type => Integer
+  field :type
 
   attr_accessor :company_name
 
@@ -27,13 +28,16 @@ class User
   references_many  :searches,    :index => true
   references_many  :invitations, :as => :inviter, :dependent => :destroy, :index => true
   references_one   :invitation,  :as => :invited, :index => true
+  references_many  :opportunities, :index => true
+  references_many  :assigned_opportunities, :foreign_key => 'assignee_id',
+    :class_name => 'Opportunity', :index => true
 
   referenced_in :company
 
   before_validation :set_api_key, :create_company, :on => :create
   before_create :set_default_role
   after_create :update_invitation
-  
+
   has_constant :roles, ROLES
 
   validates_presence_of :company
@@ -54,7 +58,7 @@ class User
   end
 
   def full_name
-    username.present? ? username : email
+    username.present? ? username : email.split('@').first
   end
   alias :name :full_name
 
@@ -103,7 +107,7 @@ protected
   def update_invitation
     @invitation.update_attributes :invited_id => self.id unless @invitation.nil?
   end
-  
+
   def set_default_role
     self.role = 'Sales Person' if self.role.blank?
   end

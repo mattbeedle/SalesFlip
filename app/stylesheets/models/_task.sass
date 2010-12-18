@@ -8,6 +8,9 @@ $due_this_week: #3b7d80
 $due_next_week: #4882b3
 $due_later: #667acc
 
+body.tasks.index
+  dl.item dt span
+    margin-top: 2px
 h3.deadline
   +border-left-radius(3px)
   color: white
@@ -58,22 +61,23 @@ dl.item.task
       width: auto
 
 dl.item
-  dt
+  dt span
+    
     &.no-source
       +task-category(#cccccc)
-    &.call, &.new, &.lead
+    &.call, &.new, &.lead, &.prospecting, &.infomail_sent
       +task-category($call)
-    &.email, &.contacted, &.contact
+    &.email, &.contacted, &.contact, &.analysis, &.offer_requested
       +task-category($email)
-    &.follow-up, &.converted, &.account
+    &.follow-up, &.converted, &.account, &.presentation, &.offer_sent
       +task-category($follow_up)
-    &.lunch, &.rejected, &.task
+    &.lunch, &.rejected, &.task, &.closed_lost
       +task-category($lunch)
-    &.meeting, &.comment
+    &.meeting, &.comment, &.final_review, &.appointment_made
       +task-category($meeting)
-    &.money
+    &.money, &.closed_won
       +task-category($money)
-    &.presentation
+    &.presentation, &.negotiation
       +task-category($presentation)
     &.trip
       +task-category($trip)
@@ -90,3 +94,6 @@ small.asset
     text-decoration: none
     &:hover
       text-decoration: underline
+.gold.box
+  span.count
+    color: $gold - 80

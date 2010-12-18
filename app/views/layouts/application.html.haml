@@ -5,9 +5,9 @@
     = yield(:javascripts)
     = stylesheet_link_tag 'application.css'
     = title_tag 'SalesFlip'
-    = description_tag 'An unobtrusive, slim CRM built with MongoMapper and RightJS'
-    = keywords_tag 'SalesFlip salesflip CRM unobtrusive mongomapper rightjs'
-    %meta{ :content => 'text/html; charset=utf-8', 'http-equiv' => 'Content-Type' }
+    = description_tag 'An unobtrusive, slim CRM built with Mongoid and RightJS'
+    = keywords_tag 'SalesFlip salesflip CRM unobtrusive mongoid rightjs mongoDB'
+    %meta{ :content => "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
   = body do
     #header
       .pad
@@ -26,7 +26,7 @@
         #main{ :class => @main_class }
           .pad= yield
         #sidebar
-          - if user_signed_in? && !action_is('new', 'create', 'update', 'edit')
+          - if user_signed_in? && !action_is('new', 'create', 'update', 'edit', 'convert')
             #search
               = render :partial => "searches/form"
           = raw yield(:sidebar)

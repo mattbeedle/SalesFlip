@@ -19,9 +19,6 @@ class LeadTest < ActiveSupport::TestCase
         end
       end
     end
-  end
-
-  context 'Named Scopes' do
 
     context 'for_company' do
       setup do
@@ -175,6 +172,33 @@ class LeadTest < ActiveSupport::TestCase
     setup do
       @lead = Lead.make_unsaved(:erich, :user => User.make)
       @user = User.make(:benny)
+    end
+    
+    should 'always store permitted user ids as BSON::ObjectIds' do
+      @lead.permitted_user_ids = [@user.id.to_s]
+      assert_equal [@user.id], @lead.permitted_user_ids
+      user = User.make
+      @lead.permitted_user_ids = [user.id]
+      assert_equal [user.id], @lead.permitted_user_ids
+    end
+    
+    should 'not be able to assign to another user if the permission is private' do
+      @lead.save!
+      @lead.update_attributes :permission => 'Private'
+      assert @lead.valid?
+      @lead.assignee = @user
+      assert !@lead.valid?
+      assert @lead.errors[:base].include?('Cannot assign a private lead to another user, please change the permissions first')
+    end
+    
+    should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
+      @lead.save!
+      user = User.make
+      @lead.update_attributes :permission => 'Shared', :permitted_user_ids => [user.id]
+      assert @lead.valid?
+      @lead.assignee = @user
+      assert !@lead.valid?
+      assert @lead.errors[:base].include?('Cannot assign a shared lead to a user it is not shared with. Please change the permissions first')
     end
 
     should 'be able to get fields in pipe deliminated format' do
@@ -381,7 +405,28 @@ class LeadTest < ActiveSupport::TestCase
         @lead.promote!('A company', :permission => 'Object')
         assert_equal @user.id, @lead.reload.updater_id
       end
-      
+
+      should 'create an opportunity if required' do
+        @lead.promote!('A company', :opportunity => { :title => 'An opportunity', :stage =>
+          OpportunityStage.first })
+        assert_equal 1, @lead.contact.opportunities.count
+      end
+
+      should 'return an account, a contact and an opportunity' do
+        result = @lead.promote!('A company', :opportunity => { :title => 'An opportunity',
+          :stage => OpportunityStage.first })
+        assert_equal [@lead.contact.account, @lead.contact, @lead.contact.opportunities.first],
+          result
+      end
+
+      should 'return an account, a contact and an opportunity even when an opportunity is not created' do
+        account, contact, opportunity = @lead.promote!('A company')
+        assert account.is_a?(Account)
+        assert contact.is_a?(Contact)
+        assert opportunity.is_a?(Opportunity)
+        assert opportunity.errors.blank?
+      end
+
       should 'still return an account if the contact exists, but it does not have an account' do
         @lead.update_attributes :email => 'florian.behn@careermee.com'
         @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
@@ -390,23 +435,23 @@ class LeadTest < ActiveSupport::TestCase
         assert_equal 1, Account.count
         assert !@contact.reload.account.blank?
         assert result.first.is_a?(Account)
-        assert result.last.is_a?(Contact)
+        assert result[1].is_a?(Contact)
       end
-      
+
       should 'return nil instead of account if the contact exists, but it does not have an account, and no name is specified' do
         @lead.update_attributes :email => 'florian.behn@careermee.com'
         @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
         result = @lead.promote!('')
         assert result.first.nil?
       end
-      
+
       should 'not set the contact account id if the contact exists without an account, and the new account is invalid' do
         @lead.update_attributes :email => 'florian.behn@careermee.com'
         @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
         @lead.promote!('')
         assert @contact.reload.account_id.blank?
       end
-      
+
       should 'not attempt to assign to a contact if the email is blank' do
         @lead.update_attributes :email => ''
         @contact = Contact.make(:florian, :email => '')

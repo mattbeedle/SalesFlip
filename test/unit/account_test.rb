@@ -173,9 +173,7 @@ class AccountTest < ActiveSupport::TestCase
         end
       end
     end
-  end
-
-  context 'Named scopes' do
+    
     context 'for_company' do
       setup do
         @account = Account.make
@@ -206,6 +204,34 @@ class AccountTest < ActiveSupport::TestCase
   context 'Instance' do
     setup do
       @account = Account.make_unsaved(:careermee, :user => User.make)
+      @user = User.make
+    end
+    
+    should 'always store permitted user ids as BSON::ObjectIds' do
+      @account.permitted_user_ids = [@user.id.to_s]
+      assert_equal [@user.id], @account.permitted_user_ids
+      user = User.make
+      @account.permitted_user_ids = [user.id]
+      assert_equal [user.id], @account.permitted_user_ids
+    end
+    
+    should 'not be able to assign to another user if the permission is private' do
+      @account.save!
+      @account.update_attributes :permission => 'Private'
+      assert @account.valid?
+      @account.assignee = @user
+      assert !@account.valid?
+      assert @account.errors[:base].include?('Cannot assign a private account to another user, please change the permissions first')
+    end
+    
+    should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
+      @account.save!
+      user = User.make
+      @account.update_attributes :permission => 'Shared', :permitted_user_ids => [user.id]
+      assert @account.valid?
+      @account.assignee = @user
+      assert !@account.valid?
+      assert @account.errors[:base].include?('Cannot assign a shared account to a user it is not shared with. Please change the permissions first')
     end
 
     should 'be able to get all related leads' do

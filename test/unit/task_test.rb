@@ -291,6 +291,71 @@ class TaskTest < ActiveSupport::TestCase
     setup do
       @task = Task.make_unsaved
     end
+    
+    should 'not be able to assign a task to someone else when the task has a lead associated, and the lead is private' do
+      user = User.make
+      @task.save!
+      lead = Lead.make :permission => 'Private', :user => @task.user #lead belongs to same user as task does
+      @task.update_attributes :asset => lead
+      assert @task.valid?
+      @task.assignee = user
+      assert !@task.valid?
+      message = 'Cannot assign this task to anyone else because the lead that it is associated ' +
+        'with is private. Please change the lead permission first'
+      assert @task.errors[:base].include?(message)
+    end
+    
+    should 'not be able to assign a task to someone else when the task has an account associated, and the account is private' do
+      user = User.make
+      @task.save!
+      account = Account.make :permission => 'Private', :user => @task.user #lead belongs to same user as task does
+      @task.update_attributes :asset => account
+      assert @task.valid?
+      @task.assignee = user
+      assert !@task.valid?
+      message = 'Cannot assign this task to anyone else because the account that it is associated ' +
+        'with is private. Please change the account permission first'
+      assert @task.errors[:base].include?(message)
+    end
+    
+    should 'not be able to assign a task to someone else when the task has a contact associated, and the contact is private' do
+      user = User.make
+      @task.save!
+      contact = Contact.make :permission => 'Private', :user => @task.user #lead belongs to same user as task does
+      @task.update_attributes :asset => contact
+      assert @task.valid?
+      @task.assignee = user
+      assert !@task.valid?
+      message = 'Cannot assign this task to anyone else because the contact that it is associated ' +
+        'with is private. Please change the contact permission first'
+      assert @task.errors[:base].include?(message)
+    end
+    
+    should 'not be able to assign a task to someone else when the task has a lead associated, and the lead is shared, but not with that user' do
+      user = User.make
+      @task.save!
+      lead = Lead.make :permission => 'Shared', :permitted_user_ids => [User.make.id], :user => @task.user
+      @task.update_attributes :asset => lead
+      assert @task.valid?
+      @task.assignee = user
+      assert !@task.valid?
+      message = "Cannot assign this task to #{user.email} because the lead associated with it " +
+        "is not shared with that user"
+      assert @task.errors[:base].include?(message)
+    end
+    
+    should 'not be able to assign a task to someone else when the task has an account associated, and the account is shared, but not with that user' do
+      user = User.make
+      @task.save!
+      account = Account.make :permission => 'Shared', :permitted_user_ids => [User.make.id], :user => @task.user
+      @task.update_attributes :asset => account
+      assert @task.valid?
+      @task.assignee = user
+      assert !@task.valid?
+      message = "Cannot assign this task to #{user.email} because the account associated with it " +
+        "is not shared with that user"
+      assert @task.errors[:base].include?(message)
+    end
 
     context 'when created against an unassigned lead' do
       setup do
@@ -302,6 +367,19 @@ class TaskTest < ActiveSupport::TestCase
         @lead.tasks.create! :user => @user, :name => 'test', :due_at => Time.zone.now,
           :category => Task.categories.first
         assert_equal @lead.reload.assignee, @user
+      end
+    end
+    
+    context 'when created against an unassigned opportunity' do
+      setup do
+        @opportunity = Opportunity.make :assignee_id => nil
+        @user = User.make
+      end
+      
+      should 'assign the opportunity to the user who create the task' do
+        @opportunity.tasks.create! :user => @user, :name => 'test', :due_at => Time.zone.now,
+          :category => Task.categories.first
+        assert_equal @opportunity.reload.assignee, @user
       end
     end
 
@@ -364,7 +442,9 @@ class TaskTest < ActiveSupport::TestCase
     end
 
     should 'not send a notification email when the task is created if the assignee is blank' do
-      @task = Task.make_unsaved(:call_erich, :user => User.make)
+      user = User.make
+      lead = Lead.make :assignee => user
+      @task = Task.make_unsaved(:user => user, :asset => lead)
       ActionMailer::Base.deliveries.clear
       @task.save!
       assert_equal 0, ActionMailer::Base.deliveries.length

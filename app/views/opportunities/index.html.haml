@@ -1,0 +1,22 @@
+.title
+  %h2= t(:opportunities).titleize
+  = add_new t(:add_opportunity), new_opportunity_path
+
+= render :partial => @opportunities
+= will_paginate @opportunities
+- content_for :sidebar do
+  .gold.box
+    %h3= t(:filter)
+    = form_tag '', :method => :get do
+      %ul.checks.stacked
+        - @opportunity_stages.map(&:name).each do |stage|
+          %li
+            = check_box_tag 'stage_is[]', stage, params[:stage_is] && params[:stage_is].include?(stage), :id => "stage_is_#{stage}"
+            %label{ :for => "stage_is_#{stage}" }
+              = stage.capitalize
+              %span.count= "(#{@all_opportunities.stage_is(stage).size})"
+      %ul.checks.stacked
+        %li
+          = check_box_tag 'assigned_to', current_user.id, params[:assigned_to]
+          %label{ :for => 'assigned_to' }= t(:assigned_to_me)
+      .clear= submit_tag t(:filter), :id => 'filter'

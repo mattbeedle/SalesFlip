@@ -34,14 +34,14 @@ class LeadsController < InheritedResources::Base
 
   def create
     create! do |success, failure|
-      success.html { return_to_or_default leads_path }
+      success.html { return_to_or_default lead_path(resource) }
     end
   end
 
   def update
     params[:lead].merge!(:updater_id => current_user.id)
     update! do |success, failure|
-      success.html { return_to_or_default leads_path }
+      success.html { return_to_or_default lead_path(resource) }
     end
   end
 
@@ -54,12 +54,14 @@ class LeadsController < InheritedResources::Base
   def convert
     @account = current_user.accounts.new(:name => @lead.company)
     @contact = Contact.first(:conditions => { :email => @lead.email }) unless @lead.email.blank?
+    @opportunity = current_user.opportunities.build :assignee => current_user
+    @opportunity.attachments.build
   end
 
   def promote
     @lead.updater_id = current_user.id
-    @account, @contact = @lead.promote!(
-      params[:account_id].blank? ? params[:account_name] : params[:account_id])
+    @account, @contact, @opportunity = @lead.promote!(
+      params[:account_id].blank? ? params[:account_name] : params[:account_id], params)
     if @account.nil? && @contact.valid?
       redirect_to contact_path(@contact)
     elsif @account.valid? && @contact.valid?
@@ -107,8 +109,7 @@ protected
   end
 
   def build_resource
-    if params[:lead] && (ids = params[:lead][:permitted_user_ids]) &&
-      params[:lead][:permitted_user_ids].is_a?(String)
+    if params[:lead] && (ids = params[:lead][:permitted_user_ids]) && ids.is_a?(String)
       params[:lead][:permitted_user_ids] = ids.lines.to_a
     end
     @lead ||= Lead.new({ :updater => current_user, :user => current_user }.merge!(params[:lead] || {}))

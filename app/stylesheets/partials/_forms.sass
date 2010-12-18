@@ -1,3 +1,4 @@
+$field_padding : 10px
 //---------------------------------------------------
 // Fieldsets
 //---------------------------------------------------
@@ -15,10 +16,10 @@ fieldset
   div.a
     div
       padding-left: 0px
-      padding-right: 10px
+      padding-right: $field_padding
   div.z
     div
-      padding-left: 10px
+      padding-left: $field_padding
       padding-right: 0px
       select
         width: 100%
@@ -29,8 +30,8 @@ fieldset
   div
     padding: 0px
     div
-      padding-left: 10px
-      padding-right: 10px
+      padding-left: $field_padding
+      padding-right: $field_padding
       padding-bottom: 6px
 
 .toggle fieldset
@@ -44,7 +45,7 @@ label
   display: block
   font-size: 14px
   padding-bottom: 1px
-  color: #776d47
+  color: #6D6959
   +letterpress
   abbr
     border: none
@@ -59,7 +60,7 @@ body.index label
 //----------------------------------------------------
 // Inputs
 //----------------------------------------------------
-input, textarea, select
+input, textarea, select, div.mirror
   background: white
   border: 1px solid #aaaaaa
   +border-radius(4px)
@@ -70,7 +71,7 @@ input, textarea, select
   &[multiple="multiple"]
     width: auto
 
-input, textarea
+input, textarea, div.mirror
   +inset-box-shadow(#dddddd, 1px, 1px, 4px)
   padding: 5px 0px
   text-indent: 5px
@@ -104,6 +105,18 @@ ul
       padding-left: 0px
       margin-left: 0px
 
+//-------------------------------------------------------
+// Datepicker
+//-------------------------------------------------------
+form span.date
+  display: block
+  position: relative
+  a
+    position: absolute
+    top: 0px
+    right: 5%
+fieldset div.a div.rui-calendar
+  padding-left: 8px
 //---------------------------------------------------
 // Buttons
 //---------------------------------------------------
@@ -113,7 +126,6 @@ ul
     padding: 20px 0px 0px 0px
   input[type="submit"]
     font-size: 13px
-    float: right
   a
     float: right
 
@@ -123,7 +135,7 @@ input[type="submit"], a.button
   +box-shadow(#999, 0px, 1px,3px)
   :color #fff
   :cursor pointer
-  :font-size 14px
+  :font-size 12px
   :padding 4px 12px
   +shiny-button(!act_grad_1, !act_grad_2, !act_grad_3)
   +text-shadow(!act_grad_3 - 30, 2px, 2px,2px)
@@ -160,10 +172,18 @@ span.error
 
 .clear
   clear: both
-
+div.rui-re-anchor div.timepicker select
+  width: auto
 //---------------------------------------------------
 // Flash Message
 //---------------------------------------------------
+#flashes
+  &.fade
+    position: absolute
+    top: 12px
+    width: 96%
+    #flash
+      +box-shadow(#000)
 #flash
   +border-radius(5px)
   +box-shadow(#aaaaaa, 2px, 2px, 2px)
@@ -216,6 +236,9 @@ span.error
 .\35 0
   +field(50%)
 
+.\34 8
+  +field(48%)
+
 .\34 0
   +field(40%)
 
@@ -245,3 +268,45 @@ span.error
 
 .\35
   +field(5%)
+
+.col
+  width: 100%
+  float: left
+  display: block
+  &.ten
+    width: 10%
+  &.fifteen
+    width: 15%
+  &.twenty
+    width: 20%
+  &.twenty-five
+    width: 25%
+  &.thirty
+    width: 30%
+  &.thirty-three
+    width: 33%
+  &.forty
+    width: 40%
+  &.fifty
+    width: 50%
+  &.sixty
+    width: 60%
+  &.seventy
+    width: 70%
+  &.seventy-five
+    width: 75%
+  &.eighty
+    width: 80%
+  &.eighty-five
+    width: 85%
+  &.ninety
+    width: 90%
+  .wrap
+    padding: 0 $field_padding
+    display: block
+  &.first
+    .wrap
+      padding-left: 0px
+  &.last
+    .wrap
+      padding-right: 0px

@@ -1,0 +1,3 @@
+= simple_form_for [:administration, @opportunity_stage], :html => { :method => :delete } do |form|
+  = form.button :submit, t(:delete)
+  = link_to t(:cancel), :back

@@ -8,6 +8,7 @@ class Account
   include Trackable
   include Activities
   include Sunspot::Mongoid
+  include Assignable
 
   field :name
   field :email
@@ -26,17 +27,17 @@ class Account
   
   index :name
 
-  has_constant :accesses, lambda { I18n.t('access_levels') }
-  has_constant :account_types, lambda { I18n.t('account_types') }
+  has_constant :accesses, lambda { I18n.t(:access_levels) }
+  has_constant :account_types, lambda { I18n.t(:account_types) }
 
-  belongs_to_related :user, :index => true
-  belongs_to_related :assignee, :class_name => 'User', :index => true
-  belongs_to_related :parent, :class_name => 'Account', :index => true
+  referenced_in :user, :index => true
+  referenced_in :assignee, :class_name => 'User', :index => true
+  referenced_in :parent, :class_name => 'Account', :index => true
   
-  has_many_related   :contacts, :dependent => :nullify, :index => true
-  has_many_related   :tasks, :as => :asset, :index => true
-  has_many_related   :comments, :as => :commentable, :index => true
-  has_many_related   :children, :class_name => 'Account', :foreign_key => 'parent_id', :index => true
+  references_many   :contacts, :dependent => :nullify, :index => true
+  references_many   :tasks, :as => :asset, :index => true
+  references_many   :comments, :as => :commentable, :index => true
+  references_many   :children, :class_name => 'Account', :foreign_key => 'parent_id', :index => true
 
   validates_presence_of :user, :name
   validates_uniqueness_of :email, :allow_blank => true

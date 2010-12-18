@@ -1,7 +1,13 @@
 .contact_with_assets
   %h3.toggler.open
     = contact.full_name
-    %small= "Phone: #{contact.phone}" if contact.phone.present?
+    - if contact.phone.present? || contact.department.present?
+      %small
+        - info = []
+        - info << "@ #{contact.department}" if contact.department.present?
+        - info << "Phone: #{contact.phone}" 
+        = info.compact.join(' | ')
+        = " (do not call)" if contact.do_not_call
     %ul.actions
       %li
         = simple_form_for contact do |form|
@@ -12,9 +18,10 @@
           - else
             = hidden_field_tag 'contact[tracker_ids][]', current_user.id
             = form.button :submit, t(:keep_me_updated), :id => 'keep_me_updated'
-      %li.delete
-        = simple_form_for contact, :html => { :method => :delete } do |form|
-          = form.button :submit, t(:delete), :id => "delete_#{dom_id contact}"
+      - if can? :delete, contact
+        %li.delete
+          = simple_form_for contact, :html => { :method => :delete } do |form|
+            = form.button :submit, t(:delete), :id => "delete_#{dom_id contact}"
   .toggle
     .info
       -#----------------------------------------------------------------------
@@ -27,22 +34,52 @@
           = image_tag contact.gravatar_url
         .half
           %dl
-            - unless contact.do_not_call
-              = show_attribute(contact, 'mobile')
-            = show_attribute(contact, 'email', mail_to(contact.email, nil, :bcc => current_user.dropbox_email))
-            = show_attribute(contact, 'alt_email', mail_to(contact.alt_email, nil, :bcc => current_user.dropbox_email))
-            
+            = show_attribute(contact, 'mobile')
+            = show_attribute(contact, 'fax')
+            %dt= t('address')
+            %dd
+              - c, address = contact, []
+              - address << contact.address if contact.address.present?
+              - address << [c.postal_code, c.city, c.country].reject(&:blank?).join(', ')
+              = address.compact.join('<br/>').html_safe
+            = show_attribute(contact, 'source')
         .half
           %dl
-            %dt= t('social_media')
+            - if c.email.present? || c.alt_email.present?
+              %dt= t('email')
+              %dd
+                - emails = []
+                - emails << mail_to(c.email, t('primary_email'), :bcc => current_user.dropbox_email) if c.email.present?
+                - emails << mail_to(c.alt_email, t('alt_email'), :bcc => current_user.dropbox_email) if c.alt_email.present?
+                = emails.compact.join(', ').html_safe
+            - twit = c.website.blank?   ? nil : link_to('Twitter', c.website)
+            - link = c.linked_in.blank? ? nil : link_to('LinkedIn',c.linked_in)
+            - face = c.facebook.blank?  ? nil : link_to('Facebook',c.facebook)
+            - xing = c.xing.blank?      ? nil : link_to('Xing', c.xing)
+            - social_media = [twit, link, face, xing].reject(&:blank?)
+            - if social_media.any?
+              %dt= t('social_media')
+              %dd
+                - twit = c.website.blank?   ? nil : link_to('Twitter', c.website)
+                - link = c.linked_in.blank? ? nil : link_to('LinkedIn',c.linked_in)
+                - face = c.facebook.blank?  ? nil : link_to('Facebook',c.facebook)
+                - xing = c.xing.blank?      ? nil : link_to('Xing', c.xing)
+                = social_media.join(', ').html_safe
+            = show_attribute(contact, 'website', link_to(c.website))
+            
+            %dt Permissions
             %dd
-              - twit = contact.website.blank?   ? nil : link_to('Twitter', contact.website)
-              - link = contact.linked_in.blank? ? nil : link_to('LinkedIn',contact.linked_in)
-              - face = contact.facebook.blank?  ? nil : link_to('Facebook',contact.facebook)
-              - xing = contact.xing.blank?      ? nil : link_to('Xing', contact.xing)
-              = [twit, link, face, xing].compact.join(', ').html_safe
+              - permissions = []
+              - permissions << c.permission
+              - permissions << c.permitted_user_ids.map(&:to_s).join(',') if c.permitted_user_ids.any?
+              = permissions.compact.join(' | ')
         %small.timestamp
           = raw t(:added_ago_by, :time => l(contact.created_at, :format => :short), :by => contact.user.username)
+      .details
+        = render :partial => contact.opportunities
+        .add= link_to raw("<b>+</b>#{t(:add_opportunity)}"), new_opportunity_path(:contact_id => contact.id, :return_to => request.fullpath), :id => 'add_opportunity'
+        
+          
       -#----------------------------------------------------------------------
       -# Tasks for Contact
       -#----------------------------------------------------------------------

@@ -50,6 +50,52 @@ Feature: Manage leads
     And a created activity should exist for lead with first_name "Erich"
     And 0 emails should be delivered
 
+  Scenario: Trying to assign a new private lead
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And I am on the new lead page
+    When I fill in "Last Name" with "A test"
+    And I select "benjamin.pochhammer@1000jobboersen.de" from "lead_assignee_id"
+    And I select "Private" from "Permission"
+    And I press "Create Lead"
+    Then 0 leads should exist
+    And I should see "Cannot assign a private lead to another user, please change the permissions first"
+
+  Scenario: Trying to assign an existing private lead
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And a lead: "erich" exists with user: Annika, permission: "Private"
+    And I am on the lead's edit page
+    When I select "benjamin.pochhammer@1000jobboersen.de" from "lead_assignee_id"
+    And I press "Update Lead"
+    Then I should be on the lead's page
+    And I should see "Cannot assign a private lead to another user, please change the permissions first"
+    And 1 leads should exist with assignee_id: nil
+
+  Scenario: Trying to assign a new shared lead to a user it is not shared with
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And I am on the new lead page
+    When I fill in "Last Name" with "test"
+    And I select "Shared" from "Permission"
+    And I select "annika.fleischer@1000jobboersen.de" from "lead_permitted_user_ids"
+    And I select "benjamin.pochhammer@1000jobboersen.de" from "Assignee"
+    And I press "Create Lead"
+    Then 0 leads should exist
+    And I should see "Cannot assign a shared lead to a user it is not shared with. Please change the permissions first"
+
+  Scenario: Trying to assign an existing shared lead to a user it is not shared with
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And another user exists
+    And a lead exists with user: Annika
+    And the lead is shared with the other user
+    And I am on the lead's edit page
+    When I select "benjamin.pochhammer@1000jobboersen.de" from "lead_assignee_id"
+    And I press "Update Lead"
+    Then I should be on the lead's page
+    And I should see "Cannot assign a shared lead to a user it is not shared with. Please change the permissions first"
+
   Scenario: Logging activity
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -74,17 +120,16 @@ Feature: Manage leads
     And I should see "This is a good lead"
     And 1 comments should exist
 
-  # TODO seems to be a webrat bug breaking this feature
-  #Scenario: Adding an comment with an attachment
-  #  Given I am registered and logged in as annika
-  #  And a lead exists with user: annika
-  #  And I am on the lead's page
-  #  And I fill in "comment_text" with "Sent offer"
-  #  And I attach the file at "test/upload-files/erich_offer.pdf" to "Attachment"
-  #  When I press "comment_submit"
-  #  Then I should be on the lead page
-  #  And I should see "Sent offer"
-  #  And I should see "erich_offer.pdf"
+  Scenario: Adding an comment with an attachment
+    Given I am registered and logged in as annika
+    And a lead exists with user: annika
+    And I am on the lead's page
+    And I fill in "comment_text" with "Sent offer"
+    And I attach the file "test/upload-files/erich_offer.pdf" to "Attachment"
+    When I press "comment_submit"
+    Then I should be on the lead page
+    And I should see "Sent offer"
+    And I should see "erich_offer.pdf"
 
   Scenario: Editing a lead
     Given I am registered and logged in as annika
@@ -206,6 +251,7 @@ Feature: Manage leads
   Scenario: Adding a task to a lead
     Given I am registered and logged in as annika
     And a lead exists with user: annika
+    And a task exists with asset: lead, name: "Close the deal"
     And I am on the lead's page
     And all emails have been delivered
     And I follow "add_task"
@@ -215,8 +261,9 @@ Feature: Manage leads
     And I select "Call" from "task_category"
     When I press "task_submit"
     Then I should be on the lead's page
-    And a task should have been created
+    And 2 tasks should have been created
     And I should see "Call to get offer details"
+    And I should see "Close the deal"
     And 0 emails should be delivered
 
   Scenario: Adding a task to an unassigned lead
@@ -285,19 +332,21 @@ Feature: Manage leads
     And a new "Created" activity should have been created for "Contact" with "first_name" "Erich" and user: "annika"
     And a new "Converted" activity should have been created for "Lead" with "first_name" "Erich" and user: "annika"
     And a new "Created" activity should have been created for "Account" with "name" "World Dating" and user: "annika"
-  
-  Scenario: Converting lead comments
+    
+  Scenario: Converting a lead to a new account and with an opportunity
     Given I am registered and logged in as annika
     And Annika has invited Benny
     And a lead: "erich" exists with user: benny
     And I am on the lead's page
-    And I fill in "comment_text" with "This is a good lead"
-    And I press "comment_submit"
-    And I follow "Convert"
+    When I follow "Convert"
     And I fill in "account_name" with "World Dating"
+    And I fill in "opportunity_title" with "A great opportunity"
+    And I attach the file "test/support/AboutStacks.pdf" to "Attachment"
     And I press "convert"
-    Then I should see "This is a good lead"
-  
+    Then I should be on the account page
+    And 1 opportunities should exist with title: "A great opportunity"
+    And the newly created contact should have an opportunity
+
   Scenario: Converting a lead to an existing account
     Given I am registered and logged in as annika
     And a lead: "erich" exists with user: annika
@@ -362,6 +411,8 @@ Feature: Manage leads
     When I follow "Convert"
     And I press "convert"
     Then I should be on the lead's promote page
+    And I should see "Account Name"
+    And I should see "Attachment"
 
   Scenario: Private lead (in)visiblity on leads page
     Given I am registered and logged in as annika
@@ -444,7 +495,7 @@ Feature: Manage leads
     And a lead: "erich" exists with user: Annika
     When I am on the leads page
     Then I should not see "Export this list as a CSV"
-    
+
   Scenario: Leads index with format csv as a normal user
     Given I am registered and logged in as annika
     And a lead: "erich" exists with user: Annika

@@ -8,8 +8,8 @@ class Invitation
   field :code
   field :role,   :type => Integer
 
-  belongs_to_related :invited,  :class_name => 'User'
-  belongs_to_related :inviter,  :class_name => 'User'
+  referenced_in :invited,  :class_name => 'User'
+  referenced_in :inviter,  :class_name => 'User'
 
   validates_presence_of :inviter, :email, :code, :role
 

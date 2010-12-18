@@ -6,19 +6,19 @@ class Comment
   include Activities
   include Permission
   include ParanoidDelete
- 
+
   field :subject
   field :text
 
-  belongs_to_related :user, :index => true
-  belongs_to_related :commentable, :polymorphic => true, :index => true
+  referenced_in :user, :index => true
+  referenced_in :commentable, :polymorphic => true, :index => true
 
-  has_many_related :attachments, :as => :subject, :index => true
+  references_many :attachments, :as => :subject, :index => true
 
   validates_presence_of :commentable, :user, :text
 
   after_create :add_attachments
-  
+
   def self.sorted
     where.asc(:created_at)
   end
