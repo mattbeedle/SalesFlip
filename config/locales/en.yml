@@ -27,6 +27,9 @@ en:
   yes_use: "Yes, use"
   administration: Administration
   sales_site: Back to CRM
+  data_summary: Data Summary
+  status: Status
+  total: Total
 
   activemodel:
     errors:
