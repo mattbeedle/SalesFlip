@@ -12,6 +12,9 @@
 
     = check_box_tag 'search[collections][]', 'Account', (params[:search] && params[:search][:collections].try(:include?, 'Account')) || (!@search && params[:search].blank?) || (@search and @search.collections and @search.collections.include?('Account')), :id => 'search_collections_account'
     %label{ :for => 'search_collections_account' }= t(:accounts)
+
+    = check_box_tag 'search[collections][]', 'Opportunity', (params[:search] && params[:search][:collections].try(:include?, 'Opportunity')) || (!@search && params[:search].blank?) || (@search && @search.collections && @search.collections.include?('Opportunity')), :id => 'search_collections_opportunity'
+    %label{ :for => 'search_collections_opportunity' }= t(:opportunities)
   .clear
     - if controller_is(:searches)
       %span

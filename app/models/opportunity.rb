@@ -8,6 +8,7 @@ class Opportunity
   include ParanoidDelete
   include Activities
   include Permission
+  include Sunspot::Mongoid
 
   field :title
   field :close_on,        :type => Date,    :default => lambda { 1.month.from_now.utc }
@@ -30,6 +31,10 @@ class Opportunity
   before_save :set_probability
 
   alias :name :title
+
+  searchable do
+    text :title, :background_info
+  end
 
   def self.stage_is( stages )
     stages = stages.lines.to_a if stages.respond_to?(:lines)
