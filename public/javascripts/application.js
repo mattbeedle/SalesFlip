@@ -7,18 +7,38 @@ var Base = new Class({
     this.growTextAreas();
     this.truncateMessages();
     this.fadeFlashMessages();
+    this.watchPermissionSelects();
+    this.hideElements();
   },
-  
+
+  hideElements: function() {
+    $$('.hide-me').each('hide');
+  },
+
+  watchPermissionSelects: function() {
+    $$('.permission_select').each(function(elem) {
+      elem.on('change', function(e) {
+        if(elem.value() == 'Public') {
+          $$('.permitted_user_ids').each('hide');
+        } else if(elem.value() == 'Shared') {
+          $$('.permitted_user_ids').each('show');
+        } else if(elem.value() == 'Private') {
+          $$('.permitted_user_ids').each('hide');
+        }
+      });
+    });
+  },
+
   fadeFlashMessages: function() {
     function fadeOut(elem) { new Fx.Fade(elem,{duration:'long'}).start('out');}
     if ($('flashes') != null) {
       $('flashes').addClass('fade')
       $$('.fade').each(function(div) {
-        fadeOut.delay(3500, div);  
+        fadeOut.delay(3500, div);
       });
     }
   },
-  
+
   truncateMessages: function() {
     $$('div.message div.text').each(function(div) {
       var size = div.text().length;
@@ -29,7 +49,7 @@ var Base = new Class({
       }
     });
   },
-  
+
   growTextAreas: function() {
     $$('textarea').each(function(t) {
       t.parent().insert("<div class='mirror'></div>")
@@ -41,20 +61,20 @@ var Base = new Class({
         if (event.keyCode == 13) {var nu = this.value() + '\n'};
         mirror.update(text2html(nu));
         resizeMirror(this,mirror);
-      }); 
+      });
     });
     function resizeMirror(elem, mirror) {
       elem.setHeight(mirror.getStyle('height').replace(/px/, '').toInt() + 40);
       mirror.setWidth(elem.getStyle('width').replace(/px/, '').toInt());
     };
   },
-    
+
   hideActivityBodies: function() {
     $$('.item-body').each(function(item) {
       item.addClass('hide');
     });
   },
-  
+
   addRealTaskCalendar: function() {
     $$('.realdate').each(function(realdate) {
       var value_div = realdate.find('.value').first();
@@ -110,7 +130,7 @@ function text2html(string) {
 'a.see_more'.on('click', function(event) {
   if (this.hasClass('open')) {
     this.parent().find('.text').first().addClass('truncated');
-    this.update('See More').removeClass('open');  
+    this.update('See More').removeClass('open');
   }
   else {
     this.parent().find('.text').first().removeClass('truncated');

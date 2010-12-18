@@ -209,4 +209,18 @@ end
 Opportunity.blueprint do
   title { Sham.name }
   user { User.make }
+  stage { OpportunityStage.make }
+end
+
+OpportunityStage.blueprint do
+  name { 'prospecting' }
+  percentage { 10 }
+end
+
+OpportunityStage.blueprint(:prospecting) do
+  name { 'prospecting' }
+end
+
+OpportunityStage.blueprint(:negotiation) do
+  name { 'negotiation' }
 end

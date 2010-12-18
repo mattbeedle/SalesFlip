@@ -2,12 +2,11 @@ require 'test_helper'
 
 class OpportunityTest < ActiveSupport::TestCase
   context 'Class' do
-    should_have_key :title, :stage, :close_on, :probability, :amount, :discount,
+    should_have_key :title, :close_on, :probability, :amount, :discount,
       :background_info, :created_at, :updated_at
-    should_belong_to :assignee, :user, :contact
+    should_belong_to :assignee, :user, :contact, :stage
     should_have_many :comments, :tasks, :attachments
-    should_have_constant :stages
-    should_validate_presence_of :title, :user
+    should_validate_presence_of :title, :user, :stage
     should_act_as_paranoid
 
     context 'assigned_to' do
@@ -44,29 +43,51 @@ class OpportunityTest < ActiveSupport::TestCase
       end
     end
 
+    context 'stage_is' do
+      setup do
+        stage = OpportunityStage.make(:name => 'prospecting')
+        stage2 = OpportunityStage.make(:name => 'analysis')
+        @opportunity = Opportunity.make :stage_id => stage.id
+        @opportunity2 = Opportunity.make :stage_id => stage2.id
+      end
+
+      should 'only return opportunities with the corresponding stage' do
+        assert_equal [@opportunity], Opportunity.stage_is('prospecting').to_a
+        assert_equal [@opportunity2], Opportunity.stage_is('analysis').to_a
+      end
+
+      should 'work with arrays' do
+        assert_equal 2, Opportunity.stage_is(['prospecting', 'analysis']).count
+      end
+    end
+
     context 'create_for' do
       setup do
         @contact = Contact.make
       end
 
       should 'create an opportunity from the supplied contact' do
-        opportunity = Opportunity.create_for(@contact, :opportunity => { :title => 'An opportunity' })
+        opportunity = Opportunity.create_for(@contact, :opportunity => { :title => 'An opportunity',
+          :stage => OpportunityStage.first })
         assert_equal 1, Opportunity.count
         assert_equal 'An opportunity', Opportunity.first.title
       end
 
       should 'assign the opportunity to the supplied contact' do
-        opportunity = Opportunity.create_for(@contact, :opportunity => { :title => 'An opportunity' })
+        opportunity = Opportunity.create_for(@contact, :opportunity => { :title => 'An opportunity',
+          :stage => OpportunityStage.first })
         assert_equal 1, @contact.opportunities.count
       end
 
       should 'not create the opportunity if the supplied contact is invalid' do
-        opportunity = Opportunity.create_for(Contact.new, :opportunity => { :title => 'An opportunity' })
+        opportunity = Opportunity.create_for(Contact.new, :opportunity => { :title => 'An opportunity',
+          :stage => OpportunityStage.first })
         assert_equal 0, Opportunity.count
       end
 
       should 'not create the opportunity if the title is not supplied' do
-        opportunity = Opportunity.create_for(@contact, :opportunity => {})
+        opportunity = Opportunity.create_for(@contact, :opportunity => { :stage =>
+          OpportunityStage.first })
         assert_equal 0, Opportunity.count
         assert opportunity.errors.blank?
       end
@@ -78,6 +99,13 @@ class OpportunityTest < ActiveSupport::TestCase
       @opportunity = Opportunity.new
     end
 
+    should 'take probability from associated stage' do
+      opportunity = Opportunity.make
+      stage = OpportunityStage.make :percentage => 57
+      opportunity.update_attributes :stage => stage
+      assert_equal 57, opportunity.probability
+    end
+
     should 'calculate the weighted amount based on the amount, the discount and the probability' do
       @opportunity.attributes = { :amount => 200, :probability => 90 }
       assert_equal 180, @opportunity.weighted_amount
@@ -87,16 +115,6 @@ class OpportunityTest < ActiveSupport::TestCase
 
     should 'default close_on to 1 month from now' do
       assert_equal Date.parse(1.month.from_now.to_s), @opportunity.close_on
-    end
-
-    should 'have default stage of "prospecting"' do
-      @opportunity = Opportunity.make(:stage => nil)
-      assert_equal 'prospecting', @opportunity.stage
-    end
-
-    should 'not default stage to "prospecting" if stage is already set' do
-      @opportunity = Opportunity.make(:stage => 'negotiation')
-      assert_equal 'negotiation', @opportunity.stage
     end
 
     should 'alias title to name' do

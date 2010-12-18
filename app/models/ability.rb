@@ -1,10 +1,10 @@
 require 'lead'
 class Ability
   include CanCan::Ability
-  
+
   def initialize( user )
     user ||= User.new :role => 'Freelancer'
-    
+
     if user.role_is?('Administrator')
       can :manage, :all
     elsif user.role_is?('Sales Person') || user.role_is?('Service Person')

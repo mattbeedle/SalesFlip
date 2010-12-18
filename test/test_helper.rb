@@ -96,7 +96,7 @@ class ActiveSupport::TestCase
       should "have_one '#{arg}'" do
         has = false
         klass.associations.each do |name, assoc|
-          if assoc.association.to_s.match(/HasOneRelated/) and name == arg.to_s
+          if assoc.association.to_s.match(/ReferencesOne/) and name == arg.to_s
             has = true
           end
         end

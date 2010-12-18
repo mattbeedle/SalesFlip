@@ -1,10 +1,9 @@
 = hidden_field_tag :return_to, params[:return_to] if params[:return_to]
 %fieldset
   .75.a= form.input :title
-  .25.z= form.input :stage, :collection => Opportunity.stages, :include_blank => true
+  .25.z= form.input :stage_id, :collection => current_user.company.opportunity_stages.not_deleted, :include_blank => false
   .clear
   .25.a= datepicker_for(form, :close_on)
-  .25= form.input :probability
   .25= form.input :amount
   .25.z= form.input :discount
   .clear
@@ -17,9 +16,9 @@
       = attachment_form.input :attachment, :as => :file
   - if !defined?(convert) || (defined?(convert) && convert == false)
     %div.25
-      = form.input :permission, :collection => Lead.permissions, :include_blank => false
+      = form.input :permission, :collection => Lead.permissions, :include_blank => false, :input_html => { :class => 'permission_select' }
 
-    %div.25.z
+    %div.25.z.permitted_user_ids.hide-me
       = form.input :permitted_user_ids, :collection => current_user.company.users.asc(:email).map {|u| [u.email, u.id] }, :include_blank => false, :input_html => { :multiple => true, :size => 5 }
   .clear
 

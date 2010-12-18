@@ -24,4 +24,12 @@ Salesflip::Application.routes.draw do
   resources :accounts do
     get :export, :on => :collection
   end
+
+  namespace :administration do
+    root :to => 'pages#index'
+
+    resources :opportunity_stages do
+      get :confirm_delete, :on => :member
+    end
+  end
 end

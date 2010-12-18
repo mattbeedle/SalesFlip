@@ -19,7 +19,7 @@ class LeadTest < ActiveSupport::TestCase
         end
       end
     end
-    
+
     context 'for_company' do
       setup do
         @lead = Lead.make(:erich)
@@ -405,18 +405,20 @@ class LeadTest < ActiveSupport::TestCase
         @lead.promote!('A company', :permission => 'Object')
         assert_equal @user.id, @lead.reload.updater_id
       end
-      
+
       should 'create an opportunity if required' do
-        @lead.promote!('A company', :opportunity => { :title => 'An opportunity' })
+        @lead.promote!('A company', :opportunity => { :title => 'An opportunity', :stage =>
+          OpportunityStage.first })
         assert_equal 1, @lead.contact.opportunities.count
       end
-      
+
       should 'return an account, a contact and an opportunity' do
-        result = @lead.promote!('A company', :opportunity => { :title => 'An opportunity' })
+        result = @lead.promote!('A company', :opportunity => { :title => 'An opportunity',
+          :stage => OpportunityStage.first })
         assert_equal [@lead.contact.account, @lead.contact, @lead.contact.opportunities.first],
           result
       end
-      
+
       should 'return an account, a contact and an opportunity even when an opportunity is not created' do
         account, contact, opportunity = @lead.promote!('A company')
         assert account.is_a?(Account)
@@ -424,7 +426,7 @@ class LeadTest < ActiveSupport::TestCase
         assert opportunity.is_a?(Opportunity)
         assert opportunity.errors.blank?
       end
-      
+
       should 'still return an account if the contact exists, but it does not have an account' do
         @lead.update_attributes :email => 'florian.behn@careermee.com'
         @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
@@ -435,21 +437,21 @@ class LeadTest < ActiveSupport::TestCase
         assert result.first.is_a?(Account)
         assert result[1].is_a?(Contact)
       end
-      
+
       should 'return nil instead of account if the contact exists, but it does not have an account, and no name is specified' do
         @lead.update_attributes :email => 'florian.behn@careermee.com'
         @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
         result = @lead.promote!('')
         assert result.first.nil?
       end
-      
+
       should 'not set the contact account id if the contact exists without an account, and the new account is invalid' do
         @lead.update_attributes :email => 'florian.behn@careermee.com'
         @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
         @lead.promote!('')
         assert @contact.reload.account_id.blank?
       end
-      
+
       should 'not attempt to assign to a contact if the email is blank' do
         @lead.update_attributes :email => ''
         @contact = Contact.make(:florian, :email => '')

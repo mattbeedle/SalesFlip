@@ -30,6 +30,8 @@ Pickle.configure do |config|
   config.map '1000JobBoersen',          :to => 'company: "jobboersen"'
   config.map 'Carsten Werner',          :to => 'user: "carsten_werner"'
   config.map 'Matt',                    :to => 'user: "matt"'
+  config.map 'Prospecting stage',       :to => 'opportunity stage: "prospecting"'
+  config.map 'Negotiation stage',       :to => 'opportunity stage: "negotiation"'
 end
 require 'pickle/path/world'
 require 'pickle/email/world'

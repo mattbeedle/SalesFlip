@@ -2,7 +2,7 @@ Feature: Manage Opportunities
   In order to keep track of the different business opportunities they have
   A user
   Wants to manage their opportunities
-  
+
   Scenario: Creating an opportunity
     Given I am registered and logged in as annika
     And I am on the opportunities page
@@ -11,7 +11,6 @@ Feature: Manage Opportunities
     And I select "prospecting" from "Stage"
     And I fill in "Amount" with "1000"
     And I fill in "Discount" with "11"
-    And I fill in "Probability" with "20"
     And I select "annika.fleischer@1000jobboersen.de" from "Assignee"
     And I attach the file "test/support/AboutStacks.pdf" to "Attachment"
     And I press "Create Opportunity"
@@ -23,8 +22,7 @@ Feature: Manage Opportunities
     And I should see "11"
     And I should see "aboutstacks.pdf"
     And I should see "Prospecting"
-    And I should see "20%"
-    
+
   Scenario: Editing an opportunity
     Given I am registered and logged in as annika
     And an opportunity exists with title: "great opportunity", user: Annika
@@ -36,7 +34,7 @@ Feature: Manage Opportunities
     Then I should be on the opportunities page
     And I should see "changed opportunity"
     And I should not see "great opportunity"
-    
+
   Scenario: Creating an opportunity with missing attributes
     Given I am registered and logged in as annika
     And I am on the opportunities page
@@ -44,7 +42,7 @@ Feature: Manage Opportunities
     And I press "Create Opportunity"
     Then I should be on the opportunities page
     And 0 opportunities should exist
-    
+
   Scenario: Adding a comment
     Given I am registered and logged in as annika
     And an opportunity exists with user: annika
@@ -54,11 +52,13 @@ Feature: Manage Opportunities
     Then I should be on the opportunity's page
     And I should see "This is a good opportunity"
     And 1 comments should exist
-    
-  Scenario: Filtering Opportunities
+
+  Scenario: Filtering Opportunities by stage
     Given I am registered and logged in as annika
-    And an opportunity exists with user: Annika, stage: "prospecting", title: "Prospecting Opportunity"
-    And an opportunity exists with user: Annika, stage: "negotiation", title: "Opportunity in Negotiation"
+    And Prospecting stage exists
+    And an opportunity exists with user: Annika, stage: Prospecting stage, title: "Prospecting Opportunity"
+    And Negotiation stage exists
+    And an opportunity exists with user: Annika, stage: Negotiation stage, title: "Opportunity in Negotiation"
     And I am on the dashboard page
     When I follow "Opportunities"
     And I check "Prospecting"
@@ -66,12 +66,12 @@ Feature: Manage Opportunities
     Then I should be on the opportunities page
     And I should see "Prospecting Opportunity"
     And I should not see "Opportunity in Negotiation"
-    
+
   Scenario: Filtering opportunities assigned to me
     Given I am registered and logged in as annika
     And Annika has invited Benny
-    And an opportunity exists with user: Annika, stage: "prospecting", title: "Great Opportunity", assignee: Annika
-    And an opportunity exists with user: Annika, stage: "prospecting", title: "Benny's opportunity", assignee: Benny
+    And an opportunity exists with user: Annika, title: "Great Opportunity", assignee: Annika
+    And an opportunity exists with user: Annika, title: "Benny's opportunity", assignee: Benny
     And I am on the dashboard page
     When I follow "Opportunities"
     And I check "Assigned to me"
@@ -79,14 +79,14 @@ Feature: Manage Opportunities
     Then I should be on the opportunities page
     And I should see "Great Opportunity"
     And I should not see "Benny's opportunity"
-    
+
   Scenario: Deleted opportunities
     Given I am registered and logged in as annika
     And an opportunity exists with user: Annika, deleted_at: "01/01/10", title: "An opportunity"
     And I am on the dashboard page
     When I follow "Opportunities"
     Then I should not see "An opportunity"
-  
+
   Scenario: Viewing an opportunity
     Given I am registered and logged in as annika
     And an opportunity exists with user: Annika, title: "An opportunity"
@@ -95,7 +95,7 @@ Feature: Manage Opportunities
     Then I should be on the opportunity's page
     And I should see "An opportunity"
     And a view activity should have been created for opportunity with title "An opportunity"
-    
+
   Scenario: Adding a task to an opportunity
     Given I am registered and logged in as annika
     And an opportunity exists with user: annika
@@ -111,7 +111,7 @@ Feature: Manage Opportunities
     And a task should have been created
     And I should see "Call to get offer details"
     And 0 emails should be delivered
-    
+
   Scenario: Adding a task to an unassigned opportunity
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -129,7 +129,7 @@ Feature: Manage Opportunities
     And I should see "Call to get offer details"
     And 0 emails should be delivered
     And the opportunity should be assigned to Annika
-    
+
   Scenario: Private lead (in)visiblity on leads page
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -138,7 +138,7 @@ Feature: Manage Opportunities
     When I go to the opportunities page
     Then I should not see "Private Opportunity"
     And I should see "Public Opportunity"
-    
+
   Scenario: Shared opportunity visibility on leads page
     Given I am registered and logged in as benny
     And an opportunity exists with user: benny, permission: "Private", title: "Private Opportunity"
@@ -154,7 +154,7 @@ Feature: Manage Opportunities
     When I go to the opportunities page
     Then I should see "Shared Opportunity"
     And I should not see "Private Opportunity"
-    
+
   Scenario: Adding a contact to an opportunity
     Given I am registered and logged in as annika
     And an opportunity exists with user: Annika

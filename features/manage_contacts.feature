@@ -208,7 +208,7 @@ Feature: Manage contacts
     When I follow "florian-behn"
     Then I should be on the contact's page
     And I should see "Florian"
-  
+
   Scenario: Adding an opportunity to a contact
     Given I am registered and logged in as annika
     And a contact exists with user: Annika

@@ -22,9 +22,9 @@
       .20.a
         .string
           %label{ :for => 'permission' }= t('simple_form.labels.permission')
-          = select_tag :permission, options_for_select(Account.permissions, params[:permission]), :include_blank => false
+          = select_tag :permission, options_for_select(Account.permissions, params[:permission]), :include_blank => false, :class => 'permission_select'
       .80.z
-        .checks
+        .checks.permitted_user_ids.hide-me
           %label= "#{t('simple_form.labels.permitted_users')}:"
           = select_tag :permitted_user_ids, options_for_select(current_user.company.users.asc(:email).map { |u| [u.email, u.id] }, params[:permitted_user_ids]), :multiple => true, :size => 5
   = submit_tag t(:convert_lead), :id => 'convert'

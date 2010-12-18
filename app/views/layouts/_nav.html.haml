@@ -1,6 +1,9 @@
 #menus
   %p
     = t(:welcome, :user => current_user.full_name)
+    - if current_user.role_is?('Administrator')
+      |
+      = link_to t(:administration), administration_root_path
     |
     = link_to t(:my_profile), profile_path, :id => 'profile'
     |

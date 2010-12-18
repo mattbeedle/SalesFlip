@@ -10,7 +10,6 @@ class Opportunity
   include Permission
 
   field :title
-  field :stage,           :type => Integer
   field :close_on,        :type => Date,    :default => lambda { 1.month.from_now.utc }
   field :probability,     :type => Integer, :default => 100
   field :amount,          :type => Float,   :default => 0.0
@@ -19,19 +18,23 @@ class Opportunity
 
   referenced_in :contact
   referenced_in :user
+  referenced_in :stage, :class_name => 'OpportunityStage'
   references_many :comments, :as => :commentable, :dependent => :delete_all
   references_many :tasks, :as => :asset, :dependent => :delete_all
   references_many :attachments, :as => :subject, :index => true
 
-  validates_presence_of :title, :user
+  validates_presence_of :title, :user, :stage
 
   named_scope :for_company, lambda { |company| { :where => { :user_id.in => company.users.map(&:id) } } }
 
-  has_constant :stages, lambda { I18n.t(:opportunity_stages) }
-
-  before_create :init_stage
+  before_save :set_probability
 
   alias :name :title
+
+  def self.stage_is( stages )
+    stages = stages.lines.to_a if stages.respond_to?(:lines)
+    where(:stage_id.in => OpportunityStage.where(:name.in => stages).map(&:id))
+  end
 
   def weighted_amount
     ((amount || 0.0)  - (discount || 0.0)) * (probability || 0) / 100.0
@@ -52,8 +55,7 @@ class Opportunity
     opportunity
   end
 
-protected
-  def init_stage
-    self.stage = 'prospecting' if self.stage.blank?
+  def set_probability
+    self.probability = self.stage.percentage
   end
 end
