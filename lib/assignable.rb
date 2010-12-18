@@ -1,14 +1,14 @@
 module Assignable
   def self.included( base )
     base.class_eval do
-      belongs_to_related :assignee, :class_name => 'User'
-      
+      referenced_in :assignee, :class_name => 'User'
+
       validate :check_permissions
     end
     base.extend(ClassMethods)
     base.send(:include, InstanceMethods)
   end
-  
+
   module ClassMethods
     def assigned_to( user_id )
       if user_id.is_a?(String) && BSON::ObjectId.legal?(user_id)
@@ -17,7 +17,7 @@ module Assignable
       any_of({ :assignee_id => user_id }, { :assignee_id => nil, :user_id => user_id })
     end
   end
-  
+
   module InstanceMethods
     # TODO should probably refactor this method. It just checks to make sure that the assignable
     # object is not assigned to a user who does not have permission to view it, and if the

@@ -11,29 +11,30 @@
       %h3= t(:filter_by_status)
       = form_tag '', :method => :get do
         %ul.checks.stacked
-          - leads = Lead.for_company(current_user.company).not_deleted.permitted_for(current_user)
           - Lead.statuses.each do |status|
             %li
               = check_box_tag 'with_status[]', status, (params[:with_status] and params[:with_status].include?(status)), :id => "status_#{status}"
               %label{ :for => "status_#{status}" }
                 = status
-                %span.count= "(#{leads.status_is(status).size})"
+                %span.count= "(#{Lead.for_company(current_user.company).not_deleted.permitted_for(current_user).status_is(status).count})"
         %ul.checks.stacked
           %li
             = check_box_tag 'unassigned', true, params[:unassigned]
             %label{ :for => 'unassigned' }
               = t(:unassigned)
-              %span.count= "(#{leads.unassigned.size})"
+              %span.count= "(#{Lead.for_company(current_user.company).not_deleted.permitted_for(current_user).unassigned.count})"
           %li
             = check_box_tag 'assigned_to', current_user.id, params[:assigned_to]
-            %label{ :for => 'assigned_to' }= t(:assigned_to_me)
+            %label{ :for => 'assigned_to' }
+              = t(:assigned_to_me)
+              %span.count= "(#{Lead.for_company(current_user.company).not_deleted.permitted_for(current_user).assigned_to(current_user.id).count})"
         %ul.checks.stacked
           - Lead.sources.sort.each do |source|
             %li
               = check_box_tag 'source_is[]', source, (params[:source_is] and params[:source_is].include?(source)), :id => "source_#{source.parameterize}"
               %label{ :for => "source_#{source.parameterize}" }
                 = source
-                %span.count= "(#{leads.source_is(source).size})"
+                %span.count= "(#{Lead.for_company(current_user.company).not_deleted.permitted_for(current_user).source_is([source]).count})"
         .clear= submit_tag t(:filter), :id => 'filter'
   - if can? :export, current_user
     .gold.box
