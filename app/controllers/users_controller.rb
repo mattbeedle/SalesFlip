@@ -3,7 +3,7 @@ class UsersController < InheritedResources::Base
   skip_before_filter :authenticate_user!, :only => [ :new, :create ]
   skip_before_filter :log_viewed_item
   before_filter :invitation, :only => [ :new, :create ]
-  
+
   load_and_authorize_resource
 
   def create
@@ -30,9 +30,9 @@ protected
   end
 
   def collection
-    @users ||= current_user.company.users.order_by([:username, :asc])
+    @users ||= current_user.company.users.asc(:username)
   end
-  
+
   def load_current_user
     @user ||= current_user
   end

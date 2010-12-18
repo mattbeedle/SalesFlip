@@ -25,3 +25,23 @@
 %dl.profile
   %dt= t(:email_count)
   %dd= @user.emails.count
+
+%dl.profile
+  - assigned_leads = Lead.assigned_to(@user.id).status_is_not(['Rejected', 'Not Interested'])
+  - contacted_leads = Lead.assigned_to(@user.id).status_is('Contacted')
+  - converted_leads = Lead.assigned_to(@user.id).status_is('Converted')
+  %dt= t(:pipeline)
+  %dd
+    %table
+      %tr
+        %th= t(:assigned_leads)
+        %th= t(:contacted_leads)
+        %th= t(:converted_leads)
+        - current_user.company.opportunity_stages.not_deleted.each do |stage|
+          %th= stage.name
+        %tr
+          %td= link_to assigned_leads.count, leads_path(:assigned_to => current_user.id, :status_is_not => ['Rejected', 'Not Interested'])
+          %td= link_to "#{contacted_leads.count} (#{number_to_percentage((contacted_leads.count.to_f / assigned_leads.count) * 100, :precision => 2)})", leads_path(:assigned_to => @user.id, :status_is => ['Contacted'])
+          %td= link_to "#{converted_leads.count} (#{number_to_percentage((converted_leads.count.to_f / contacted_leads.count) * 100, :precision => 2)})", leads_path(:assigned_to => @user.id, :status_is => ['Converted'])
+          - @user.company.opportunity_stages.not_deleted.each do |stage|
+            %td= link_to Opportunity.assigned_to(@user.id).stage_is(stage.name).count, opportunities_path(:assigned_to => @user.id, :stage_is => [stage.name])

@@ -1,12 +1,42 @@
+%h2= t(:data_summary)
+%dl
+  %dt= t(:leads)
+  %dd
+    %table
+      %tr
+        %th= t(:status)
+        %th= t(:total)
+      - Lead.statuses.each do |status|
+        %tr
+          %td= status
+          %td= Lead.for_company(current_user.company).status_is(status).count
+      %tr
+        %td= t(:total)
+        %td= Lead.count
+  %dt= t(:accounts)
+  %dd
+    %table
+      %tr
+        %th= t(:account_type)
+        %th= t(:total)
+      - Account.account_types.each do |account_type|
+        %tr
+          %td= account_type
+          %td= Account.for_company(current_user.company).account_type_is(account_type).count
+  %dt= t(:contacts)
+  %dd= Contact.for_company(current_user.company).count
+
 %h2= t(:opportunity_stages_heading)
 = link_to t(:add_opportunity_stage), new_administration_opportunity_stage_path
 %table
   %tr
     %th= t(:name)
     %th= t(:percentage)
+    %th= t(:notes)
     %th= t(:actions)
   - @opportunity_stages.each do |stage|
     %tr
       %td= stage.name
       %td= number_to_percentage stage.percentage, :precision => 0 if stage.percentage
+      %td= stage.notes
       %td= link_to t(:delete), [:confirm_delete, :administration, stage]
