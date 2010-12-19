@@ -7,7 +7,8 @@ class Ability
 
     if user.role_is?('Administrator')
       can :manage, :all
-    elsif user.role_is?('Sales Person') || user.role_is?('Service Person')
+    elsif user.role_is?('Sales Person') || user.role_is?('Service Person') ||
+      user.role_is?('Key Account Manager')
       can :create, :all
       can :profile, User
       can :read, User
