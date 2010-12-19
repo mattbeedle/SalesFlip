@@ -487,7 +487,7 @@ Feature: Manage leads
 
   Scenario: Viewing activites on the show page
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika
+    And a lead: "erich" exists with user: Annika, assignee: Annika
     And I am on the lead's page
     And I follow the edit link for the lead
     Then I should be on the lead's edit page
