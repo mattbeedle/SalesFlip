@@ -1,6 +1,6 @@
 module Permission
   extend ActiveSupport::Concern
-  
+
   included do
     field :permission,          :type => Integer, :default => 0
     field :permitted_user_ids,  :type => Array,   :default => []
@@ -25,10 +25,10 @@ module Permission
 
     validates_presence_of :permission
     validate :require_permitted_users
-    
+
     has_constant :permissions, lambda { I18n.t(:permissions) }
   end
-  
+
   def permitted_user_ids=( permitted_user_ids )
     unless permitted_user_ids.blank?
       ids = permitted_user_ids.map do |id|
@@ -41,7 +41,7 @@ module Permission
       write_attribute :permitted_user_ids, ids
     end
   end
-  
+
   def require_permitted_users
     if I18n.locale_around(:en) { permission_is?('Shared') } and permitted_user_ids.blank?
       errors.add :permitted_user_ids, I18n.t('activerecord.errors.messages.blank')
