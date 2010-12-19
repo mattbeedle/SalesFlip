@@ -21,6 +21,13 @@ Feature: Manage leads
     Then I should be on the lead's page
     And the lead: "erich" should be assigned to annika
 
+  Scenario: Leads index when the leads are accepted
+    Given I am registered and logged in as annika
+    And a lead: "erich" exists with user: Annika, assignee: Annika
+    When I go to the leads page
+    Then I should not see "Accept"
+    And I should see "Edit"
+
   Scenario: Creating a lead
     Given I am registered and logged in as annika
     And I am on the leads page
@@ -133,7 +140,7 @@ Feature: Manage leads
 
   Scenario: Editing a lead
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika
+    And a lead: "erich" exists with user: annika, assignee: annika
     And I am on the leads page
     And I follow the edit link for the lead
     And I fill in "lead_phone" with "999"
@@ -146,7 +153,7 @@ Feature: Manage leads
     Given I am registered and logged in as annika
     And Annika has invited Benny
     And benny belongs to the same company as annika
-    And lead: "erich" exists with user: benny
+    And lead: "erich" exists with user: benny, assignee: annika
     And I am on the leads page
     When I follow the edit link for the lead
     Then I should be on the lead's edit page
@@ -308,7 +315,7 @@ Feature: Manage leads
   Scenario: Rejecting a lead
     Given I am registered and logged in as annika
     And Annika has invited Benny
-    And a lead: "erich" exists with user: benny
+    And a lead: "erich" exists with user: benny, assignee: Annika
     And I am on the lead's page
     When I press "Reject"
     Then I should be on the leads page
@@ -318,7 +325,7 @@ Feature: Manage leads
   Scenario: Converting a lead to a new account
     Given I am registered and logged in as annika
     And Annika has invited Benny
-    And a lead: "erich" exists with user: benny
+    And a lead: "erich" exists with user: benny, assignee: Annika
     And I am on the lead's page
     When I follow "Convert"
     And I fill in "account_name" with "World Dating"
@@ -332,11 +339,11 @@ Feature: Manage leads
     And a new "Created" activity should have been created for "Contact" with "first_name" "Erich" and user: "annika"
     And a new "Converted" activity should have been created for "Lead" with "first_name" "Erich" and user: "annika"
     And a new "Created" activity should have been created for "Account" with "name" "World Dating" and user: "annika"
-    
+
   Scenario: Converting a lead to a new account and with an opportunity
     Given I am registered and logged in as annika
     And Annika has invited Benny
-    And a lead: "erich" exists with user: benny
+    And a lead: "erich" exists with user: benny, assignee: Annika
     And I am on the lead's page
     When I follow "Convert"
     And I fill in "account_name" with "World Dating"
@@ -349,7 +356,7 @@ Feature: Manage leads
 
   Scenario: Converting a lead to an existing account
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika
+    And a lead: "erich" exists with user: annika, assignee: Annika
     And a account: "careermee" exists with user: annika
     And I am on the lead's page
     When I follow "Convert"
@@ -363,7 +370,7 @@ Feature: Manage leads
 
   Scenario: Converting a lead to an existing contact
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com"
+    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com", assignee: Annika
     And account: "careermee" exists with user: annika
     And contact: "florian" exists with email: "erich.feldmeier@gmail.com", account: careermee
     And I am on the lead's page
@@ -372,20 +379,20 @@ Feature: Manage leads
     Then I should be on the account page
     And I should see "CareerMee"
     And 1 contacts should exist
-    
+
   Scenario: Converting a lead to an existing contact that has no account
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com"
+    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com", assignee: Annika
     And contact: "florian" exists with email: "erich.feldmeier@gmail.com", account: nil, user: annika
     And I am on the lead's page
     When I follow "Convert"
     And I press "convert"
     Then I should be on the contact's page
     And 1 contacts should exist
-    
+
   Scenario: Converting a lead with a blank email when a contact already exists with a blank email
     Given I am registered and logged in as annika
-    And a lead exists with user: annika, email: ""
+    And a lead exists with user: annika, email: "", assignee: Annika
     And account: "careermee" exists with user: annika
     And contact: "florian" exists with email: "", account: careermee
     And I am on the lead's page
@@ -396,7 +403,7 @@ Feature: Manage leads
 
   Scenario: Convert page when converting to an existing account
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com"
+    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com", assignee: Annika
     And account: "careermee" exists with user: annika
     And contact: "florian" exists with email: "erich.feldmeier@gmail.com", account: careermee
     And I am on the lead's page
@@ -406,7 +413,7 @@ Feature: Manage leads
 
   Scenario: Trying to convert a lead without entering an account name
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika
+    And a lead: "erich" exists with user: annika, assignee: Annika
     And I am on the lead's page
     When I follow "Convert"
     And I press "convert"

@@ -25,7 +25,7 @@ Feature: Manage Opportunities
 
   Scenario: Editing an opportunity
     Given I am registered and logged in as annika
-    And an opportunity exists with title: "great opportunity", user: Annika
+    And an opportunity exists with title: "great opportunity", user: Annika, assignee: Annika
     And I am on the opportunities page
     When I follow "Opportunities"
     And I follow "Edit"
@@ -56,9 +56,9 @@ Feature: Manage Opportunities
   Scenario: Filtering Opportunities by stage
     Given I am registered and logged in as annika
     And Prospecting stage exists
-    And an opportunity exists with user: Annika, stage: Prospecting stage, title: "Prospecting Opportunity"
+    And an opportunity exists with user: Annika, stage: Prospecting stage, title: "Prospecting Opportunity", assignee: Annika
     And Negotiation stage exists
-    And an opportunity exists with user: Annika, stage: Negotiation stage, title: "Opportunity in Negotiation"
+    And an opportunity exists with user: Annika, stage: Negotiation stage, title: "Opportunity in Negotiation", assignee: Annika
     And I am on the dashboard page
     When I follow "Opportunities"
     And I check "Prospecting"

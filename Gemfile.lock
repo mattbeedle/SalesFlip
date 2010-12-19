@@ -29,6 +29,12 @@ GIT
       rack
 
 GIT
+  remote: git://github.com/mattbeedle/has_constant.git
+  revision: c8fa57435f5cfe312eeac8a54e299129f041d547
+  specs:
+    has_constant (0.3.0)
+
+GIT
   remote: git://github.com/mattbeedle/mongo_session_store.git
   revision: 860a47f900288b129f5a3a7ba142311bf83a0905
   specs:
@@ -120,7 +126,7 @@ GEM
       term-ansicolor (~> 1.0.5)
     cucumber-rails (0.3.2)
       cucumber (>= 0.8.0)
-    culerity (0.2.12)
+    culerity (0.2.13)
     daemons (1.1.0)
     database_cleaner (0.6.0)
     delayed_job (2.1.2)
@@ -146,8 +152,7 @@ GEM
       term-ansicolor (~> 1.0.5)
     git (1.2.5)
     gravtastic (3.1.0)
-    haml (3.0.24)
-    has_constant (0.2.9)
+    haml (3.0.25)
     has_scope (0.5.0)
     heroku (1.14.10)
       json_pure (>= 1.2.0, < 1.5.0)
@@ -303,7 +308,7 @@ DEPENDENCIES
   fakeweb
   gravtastic
   haml
-  has_constant
+  has_constant!
   has_scope
   hassle!
   heroku
