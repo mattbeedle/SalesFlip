@@ -3,7 +3,7 @@ require 'test_helper'
 class OpportunityTest < ActiveSupport::TestCase
   context 'Class' do
     should_have_key :title, :close_on, :probability, :amount, :discount,
-      :background_info, :created_at, :updated_at
+      :background_info, :created_at, :updated_at, :margin
     should_belong_to :assignee, :user, :contact, :stage
     should_have_many :comments, :tasks, :attachments
     should_validate_presence_of :title, :user, :stage
@@ -93,14 +93,14 @@ class OpportunityTest < ActiveSupport::TestCase
       end
     end
 
-    context 'between_dates' do
+    context 'closing_between_dates' do
       setup do
         @opportunity = Opportunity.make :close_on => Date.today
         @opportunity2 = Opportunity.make :close_on => Date.today + 1.month
       end
 
       should 'only return opportunities closing between the supplied dates' do
-        assert_equal [@opportunity], Opportunity.between_dates(Date.today - 1.day,
+        assert_equal [@opportunity], Opportunity.closing_between_dates(Date.today - 1.day,
                                                                Date.tomorrow).to_a
       end
     end
@@ -112,7 +112,32 @@ class OpportunityTest < ActiveSupport::TestCase
       end
 
       should 'only return opportunities closing between the supplied dates' do
-        assert_equal [@opportunity2], Opportunity.for_date(Date.yesterday).to_a
+        assert_equal [@opportunity2], Opportunity.closing_for_date(Date.yesterday).to_a
+      end
+    end
+
+    context 'certainty' do
+      setup do
+        @opportunity = Opportunity.make
+        @opportunity2 = Opportunity.make :stage => OpportunityStage.make(:percentage => 100)
+      end
+
+      should 'only return opportunities with a probability of 100%' do
+        assert_equal [@opportunity2], Opportunity.certainty.to_a
+      end
+    end
+
+    context 'created_on' do
+      setup do
+        @opportunity = Opportunity.make
+        Timecop.freeze(Date.yesterday) do
+          @opportunity2 = Opportunity.make
+        end
+      end
+
+      should 'only return opportunities created on the supplied date' do
+        assert_equal [@opportunity2], Opportunity.created_on(Date.yesterday).to_a
+        assert_equal [@opportunity], Opportunity.created_on(Date.today).to_a
       end
     end
   end
@@ -120,6 +145,20 @@ class OpportunityTest < ActiveSupport::TestCase
   context 'Instance' do
     setup do
       @opportunity = Opportunity.new
+    end
+
+    should 'update close date to the current date when the opportunity stage is set to 100%' do
+      opportunity = Opportunity.make
+      stage = OpportunityStage.make :percentage => 100
+      assert opportunity.close_on != Date.today
+      opportunity.update_attributes :stage => stage
+      assert_equal Date.today, opportunity.close_on
+    end
+
+    should 'not update close date when the opportunity was already closed in the past' do
+      opportunity = Opportunity.make :stage => OpportunityStage.make(:percentage => 100),
+        :close_on => Date.yesterday
+      assert_not_equal Date.today, opportunity.close_on
     end
 
     should 'take probability from associated stage' do

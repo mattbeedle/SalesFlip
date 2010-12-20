@@ -16,6 +16,7 @@ class Opportunity
   field :amount,          :type => Float,   :default => 0.0
   field :discount,        :type => Float,   :default => 0.0
   field :background_info
+  field :margin,          :type => Float
 
   referenced_in :contact
   referenced_in :user
@@ -27,11 +28,15 @@ class Opportunity
   validates_presence_of :title, :user, :stage
 
   named_scope :for_company, lambda { |company| where(:user_id.in => company.users.map(&:id)) }
-  named_scope :for_date, lambda { |date| where(:close_on => date) }
-  named_scope :between_dates, lambda { |start_date, end_date|
+  named_scope :closing_for_date, lambda { |date| where(:close_on => date) }
+  named_scope :closing_between_dates, lambda { |start_date, end_date|
     where(:close_on.gte => start_date, :close_on.lte => end_date) }
+  named_scope :certainty, where(:probability => 100)
+  named_scope :created_on, lambda { |date|
+    where(:created_at.gte => date.beginning_of_day.utc,
+          :created_at.lte => date.end_of_day.utc) }
 
-  before_save :set_probability
+  before_save :set_probability, :update_close_date
 
   alias :name :title
 
@@ -65,5 +70,11 @@ class Opportunity
 
   def set_probability
     self.probability = self.stage.percentage
+  end
+
+  def update_close_date
+    if self.probability == 100 && changed.include?('probability')
+      self.close_on = Date.today
+    end
   end
 end

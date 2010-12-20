@@ -1,0 +1,7 @@
+%table
+  %tr
+    %td
+      %strong= number_to_currency user.opportunities.certainty.closing_for_date(date).map(&:weighted_amount).compact.inject { |sum,n| sum += n } || 0, :precision => 2
+  - stages.each do |stage|
+    %tr
+      %td= user.opportunities.created_on(date).stage_is(stage.name).count

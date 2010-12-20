@@ -3,26 +3,48 @@
   = text_field_tag :end_date, @end_date.to_s, :id => 'end_date'
   = submit_tag t(:filter)
 
-%strong Estimated Income for this month
-%strong= number_to_currency Opportunity.between_dates(Date.today.beginning_of_month, Date.today.end_of_month).for_company(current_user.company).map(&:weighted_amount).compact.inject { |sum,n| sum += n } || 0, :precision => 2
+%strong
+  Estimated Income for this month
+  = "(#{Date.today.beginning_of_month.to_s} - #{Date.today.end_of_month.to_s})"
+%strong= number_to_currency Opportunity.closing_between_dates(Date.today.beginning_of_month, Date.today.end_of_month).for_company(current_user.company).map(&:weighted_amount).compact.inject { |sum,n| sum += n } || 0, :precision => 2
 
 %table
   %tr
-    %td= t(:username)
+    %th= t(:username)
+    - @days.to_i.times do |i|
+      - i += 1
+      %th= i
+  - current_user.company.users.asc(:username).each do |user|
+    %tr
+      %td
+        %strong= user.username
+      - @days.to_i.times do |i|
+        - i += 1
+        %td{ :rowspan => @stages.length + 1 }= render :partial => 'man_day', :locals => { :user => user, :date => @start_date + i.days, :stages => @stages }
+    - @stages.each do |stage|
+      %tr
+        %td= stage.name
+
+-#%table
+  %tr
+    %th= t(:username)
     - (@end_date - @start_date).to_i.times do |i|
-      %td= i
+      - i += 1
+      %th= i
   - current_user.company.users.asc(:username).each do |user|
     %tr
       %td
         %strong= user.username
       - (@end_date - @start_date).to_i.times do |i|
+        - i += 1
         %td
-          %strong= number_to_currency user.opportunities.for_date(@start_date + i.days).where(:percentage => 100).inject { |sum,n| sum += n } || 0, :precision => 2
+          %strong= number_to_currency user.opportunities.created_on(@start_date + i.days).certainty.map(&:weighted_amount).inject { |sum,n| sum += n } || 0, :precision => 2
       - @stages.each do |stage|
         %tr
           %td= stage.name
           - (@end_date - @start_date).to_i.times do |i|
-            %td= user.opportunities.for_date(@start_date + i.days).stage_is(stage.name).count
+            - i += 1
+            %td= user.opportunities.stage_is(stage.name).created_on(@start_date + i.days).count
   %tr
     %td= t(:total)
-    %td= number_to_currency Opportunity.for_company(current_user.company).where(:percentage => 100).inject { |sum,n| sum += n } || 0, :precision => 2
+    %td= number_to_currency Opportunity.certainty.for_company(current_user.company).map(&:weighted_amount).inject { |sum,n| sum += n } || 0, :precision => 2

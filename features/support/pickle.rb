@@ -32,6 +32,7 @@ Pickle.configure do |config|
   config.map 'Matt',                    :to => 'user: "matt"'
   config.map 'Prospecting stage',       :to => 'opportunity stage: "prospecting"'
   config.map 'Negotiation stage',       :to => 'opportunity stage: "negotiation"'
+  config.map 'Closed/Won stage',        :to => 'opportunity stage: "closed_won"'
 end
 require 'pickle/path/world'
 require 'pickle/email/world'

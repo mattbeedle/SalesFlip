@@ -212,6 +212,13 @@ Opportunity.blueprint do
   stage { OpportunityStage.make }
 end
 
+Opportunity.blueprint(:closed_today) do
+  title { Sham.name }
+  user { User.make }
+  stage { OpportunityStage.make(:closed_won) }
+  close_on { Date.today }
+end
+
 OpportunityStage.blueprint do
   name { 'prospecting' }
   percentage { 10 }
@@ -223,4 +230,9 @@ end
 
 OpportunityStage.blueprint(:negotiation) do
   name { 'negotiation' }
+end
+
+OpportunityStage.blueprint(:closed_won) do
+  name { 'closed/won' }
+  percentage { 100 }
 end
