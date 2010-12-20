@@ -92,6 +92,29 @@ class OpportunityTest < ActiveSupport::TestCase
         assert opportunity.errors.blank?
       end
     end
+
+    context 'between_dates' do
+      setup do
+        @opportunity = Opportunity.make :close_on => Date.today
+        @opportunity2 = Opportunity.make :close_on => Date.today + 1.month
+      end
+
+      should 'only return opportunities closing between the supplied dates' do
+        assert_equal [@opportunity], Opportunity.between_dates(Date.today - 1.day,
+                                                               Date.tomorrow).to_a
+      end
+    end
+
+    context 'for_date' do
+      setup do
+        @opportunity = Opportunity.make
+        @opportunity2 = Opportunity.make :close_on => Date.yesterday
+      end
+
+      should 'only return opportunities closing between the supplied dates' do
+        assert_equal [@opportunity2], Opportunity.for_date(Date.yesterday).to_a
+      end
+    end
   end
 
   context 'Instance' do

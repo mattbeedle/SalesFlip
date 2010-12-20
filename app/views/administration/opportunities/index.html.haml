@@ -1,0 +1,28 @@
+= form_tag request.fullpath, :method => :get do
+  = text_field_tag :start_date, @start_date.to_s, :id => 'start_date'
+  = text_field_tag :end_date, @end_date.to_s, :id => 'end_date'
+  = submit_tag t(:filter)
+
+%strong Estimated Income for this month
+%strong= number_to_currency Opportunity.between_dates(Date.today.beginning_of_month, Date.today.end_of_month).for_company(current_user.company).map(&:weighted_amount).compact.inject { |sum,n| sum += n } || 0, :precision => 2
+
+%table
+  %tr
+    %td= t(:username)
+    - (@end_date - @start_date).to_i.times do |i|
+      %td= i
+  - current_user.company.users.asc(:username).each do |user|
+    %tr
+      %td
+        %strong= user.username
+      - (@end_date - @start_date).to_i.times do |i|
+        %td
+          %strong= number_to_currency user.opportunities.for_date(@start_date + i.days).where(:percentage => 100).inject { |sum,n| sum += n } || 0, :precision => 2
+      - @stages.each do |stage|
+        %tr
+          %td= stage.name
+          - (@end_date - @start_date).to_i.times do |i|
+            %td= user.opportunities.for_date(@start_date + i.days).stage_is(stage.name).count
+  %tr
+    %td= t(:total)
+    %td= number_to_currency Opportunity.for_company(current_user.company).where(:percentage => 100).inject { |sum,n| sum += n } || 0, :precision => 2

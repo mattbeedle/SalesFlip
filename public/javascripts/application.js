@@ -9,6 +9,13 @@ var Base = new Class({
     this.fadeFlashMessages();
     this.watchPermissionSelects();
     this.hideElements();
+    this.opportunitiesAdminFilter();
+  },
+
+  opportunitiesAdminFilter: function() {
+    var format = "%Y-%m-%d";
+    new Calendar({ format: format }).assignTo($('start_date'));
+    new Calendar({ format: format }).assignTo($('end_date'));
   },
 
   hideElements: function() {

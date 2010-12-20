@@ -26,7 +26,10 @@ class Opportunity
 
   validates_presence_of :title, :user, :stage
 
-  named_scope :for_company, lambda { |company| { :where => { :user_id.in => company.users.map(&:id) } } }
+  named_scope :for_company, lambda { |company| where(:user_id.in => company.users.map(&:id)) }
+  named_scope :for_date, lambda { |date| where(:close_on => date) }
+  named_scope :between_dates, lambda { |start_date, end_date|
+    where(:close_on.gte => start_date, :close_on.lte => end_date) }
 
   before_save :set_probability
 
