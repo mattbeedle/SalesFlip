@@ -31,6 +31,11 @@ en:
   status: Status
   total: Total
 
+  mongoid:
+    errors:
+      messages:
+       calling_criteria_find_with_nil_is_invalid:
+          Calling Criteria#find with nil is invalid
   activemodel:
     errors:
       models:
@@ -467,7 +472,6 @@ en:
   company_info: Company Info
   country: Country
   social_media: Social Media
-  
   #--------------------------------------------------------------
   # Rails Date Defaults
   #--------------------------------------------------------------

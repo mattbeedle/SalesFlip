@@ -24,7 +24,12 @@ de:
   users: Users
   invitations: Invitations
   yes_use: "Yes, use"
-  
+
+  mongoid:
+    errors:
+      messages:
+       calling_criteria_find_with_nil_is_invalid:
+          Calling Criteria#find with nil is invalid
   activemodel:
     errors:
       models:
