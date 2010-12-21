@@ -14,6 +14,8 @@ class LeadsController < InheritedResources::Base
   has_scope :assigned_to
   has_scope :source_is,   :type => :array
 
+  helper_method :leads_index_cache_key
+
   def index
     index! do |format|
       format.html
@@ -76,17 +78,25 @@ class LeadsController < InheritedResources::Base
   end
 
 protected
+  def leads_index_cache_key
+    Digest::SHA1.hexdigest([
+      'leads', Lead.for_company(current_user.company).desc(:updated_at).first.
+      updated_at.to_i, params.flatten.join('-')].join('-'))
+  end
+
   def leads
     @leads = apply_scopes(Lead).for_company(current_user.company).not_deleted.
       permitted_for(current_user).desc(:status).desc(:created_at)
   end
 
   def collection
-    @page = params[:page] || 1
-    @per_page = 10
-    @leads ||= hook(:leads_collection, self, :pages => { :page => @page, :per_page => @per_page }).
-      last
-    @leads ||= leads.paginate(:per_page => @per_page, :page => @page)
+    unless read_fragment(leads_index_cache_key)
+      @page = params[:page] || 1
+      @per_page = 10
+      @leads ||= hook(:leads_collection, self, :pages => { :page => @page, :per_page => @per_page }).
+        last
+      @leads ||= leads.paginate(:per_page => @per_page, :page => @page)
+    end
   end
 
   def set_filters
