@@ -28,19 +28,20 @@
         #sidebar
           - if user_signed_in? && !action_is('new', 'create', 'update', 'edit')
             #search
-              = render :partial => "searches/form"
+              = render :partial => 'searches/form'
           = raw yield(:sidebar)
           - if action_is('index')
             #recent_items.box.ice
               %h3= t(:recent_items)
               %ul.plain
                 - current_user.recent_items.each do |item|
-                  %li
-                    %span== #{item.class.to_s}:
-                    - if item.instance_of?(Comment)
-                      = 'on ' + link_to(item.commentable.full_name, item.commentable)
-                    - elsif item.respond_to?(:deleted_at)
-                      = item.deleted_at.blank? ? link_to(item.name, item) : item.name
-                    - else
-                      = link_to(item.name, item)
+                  - cache("recent_item-#{item.updated_at.to_i}") do
+                    %li
+                      %span== #{item.class.to_s}:
+                      - if item.instance_of?(Comment)
+                        = 'on ' + link_to(item.commentable.full_name, item.commentable)
+                      - elsif item.respond_to?(:deleted_at)
+                        = item.deleted_at.blank? ? link_to(item.name, item) : item.name
+                      - else
+                        = link_to(item.name, item)
       .clear

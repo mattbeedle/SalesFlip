@@ -22,6 +22,8 @@ class TasksController < InheritedResources::Base
     scope.assigned_by(User.find(value))
   end
 
+  helper_method :tasks_index_cache_key
+
   def create
     create! do |success, failure|
       success.html { return_to_or_default tasks_path(:incomplete => true, :for => current_user.id) }
@@ -46,6 +48,12 @@ class TasksController < InheritedResources::Base
   end
 
 protected
+  def tasks_index_cache_key
+    Digest::SHA1.hexdigest([
+      'tasks', Task.for(current_user).desc(:created_at).first.try(:updated_at).
+      try(:to_i), params.flatten.join('-')].join('-'))
+  end
+
   def build_resource
     @task ||= begin_of_association_chain.tasks.build({ :assignee_id => current_user.id }.
                                                      merge(params[:task] || {}))
@@ -55,18 +63,20 @@ protected
   end
 
   def collection
-    if params[:scopes]
-      @tasks = {}
-      params[:scopes].keys.map(&:to_sym).each do |scope|
-        @tasks[scope] = apply_scopes(Task).asc(:due_at).send(scope)
+    unless read_fragment(tasks_index_cache_key)
+      if params[:scopes]
+        @tasks = {}
+        params[:scopes].keys.map(&:to_sym).each do |scope|
+          @tasks[scope] = apply_scopes(Task).asc(:due_at).send(scope)
+        end
+      else
+        @overdue ||= apply_scopes(Task).overdue.asc(:due_at)
+        @due_today ||= apply_scopes(Task).due_today.asc(:due_at)
+        @due_tomorrow ||= apply_scopes(Task).due_tomorrow.asc(:due_at)
+        @due_this_week ||= apply_scopes(Task).due_this_week.asc(:due_at)
+        @due_next_week ||= apply_scopes(Task).due_next_week.asc(:due_at)
+        @due_later ||= apply_scopes(Task).due_later.asc(:due_at)
       end
-    else
-      @overdue ||= apply_scopes(Task).overdue.asc(:due_at)
-      @due_today ||= apply_scopes(Task).due_today.asc(:due_at)
-      @due_tomorrow ||= apply_scopes(Task).due_tomorrow.asc(:due_at)
-      @due_this_week ||= apply_scopes(Task).due_this_week.asc(:due_at)
-      @due_next_week ||= apply_scopes(Task).due_next_week.asc(:due_at)
-      @due_later ||= apply_scopes(Task).due_later.asc(:due_at)
     end
   end
 

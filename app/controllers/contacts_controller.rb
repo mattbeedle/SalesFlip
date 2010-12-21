@@ -12,6 +12,8 @@ class ContactsController < InheritedResources::Base
   has_scope :source_is
   has_scope :name_like
 
+  helper_method :contacts_index_cache_key
+
   def index
     index! do |format|
       format.html
@@ -39,17 +41,26 @@ class ContactsController < InheritedResources::Base
   end
 
 protected
+  def contacts_index_cache_key
+    Digest::SHA1.hexdigest([
+      'contacts', Contact.permitted_for(current_user).not_deleted.
+      for_company(current_user.company).desc(:updated_at).first.
+      try(:updated_at).try(:to_i), params.flatten.join('-')].join('-'))
+  end
+
   def contacts
     apply_scopes(Contact).permitted_for(current_user).not_deleted.asc(:last_name).
       for_company(current_user.company)
   end
 
   def collection
-    @page ||= params[:page] || 1
-    @per_page = 10
-    @contacts ||= hook(:contacts_collection, self,
-                       :pages => { :page => @page, :per_page => @per_page }).last
-    @contacts ||= contacts.paginate(:per_page => @per_page, :page => @page)
+    unless read_fragment(contacts_index_cache_key)
+      @page ||= params[:page] || 1
+      @per_page = 10
+      @contacts ||= hook(:contacts_collection, self,
+                         :pages => { :page => @page, :per_page => @per_page }).last
+      @contacts ||= contacts.paginate(:per_page => @per_page, :page => @page)
+    end
   end
 
   def resource

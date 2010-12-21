@@ -1,24 +1,28 @@
-%dl.item
-  %dd
-    - if account.permitted_for?(current_user)
-      = link_to account.name, account, :id => account.name.parameterize, :class => 'account'
-    - else
-      = account.name
-    %small
-      = "Email: #{mail_to(account.email, nil, :bcc => current_user.dropbox_email)}" if account.email.present?
-      = raw " | Phone: <b>#{account.phone}</b>" if account.phone.present?
-      = raw " | Fax: <b>#{account.fax}</b>" if account.fax.present?
-    %br/
-    %em.timestamp
-      - account_time = l account.created_at, :format => :short
-      - if account.assignee_id.present?
-        = raw t(:assigned_ago_by, :time => account_time, :by => account.user.name, :for => User.find(account.assignee_id).full_name)
-      - else
-        = raw t(:added_ago_by, :time => account_time, :by => account.user.name)
+- cache_key = "account-#{account.updated_at.to_i}"
+- %w(comments tasks).each do |assoc|
+  - cache_key << "-#{account.send(assoc).desc(:updated_at).first.try(:updated_at).try(:to_i)}"
+- cache(cache_key) do
+  %dl.item
+    %dd
       - if account.permitted_for?(current_user)
-        = raw " : #{link_to(pluralize(account.comments.not_deleted.size, t(:comment)), account)}" if account.comments.not_deleted.any?
+        = link_to account.name, account, :id => account.name.parameterize, :class => 'account'
       - else
-        = pluralize(account.comments.not_deleted.size, t(:comment)) if account.comments.not_deleted.any?
-    - if account.permitted_for?(current_user)
-      %span.actions
-        = link_to t(:edit), [:edit, account], :id => "edit_#{dom_id(account)}"
+        = account.name
+      %small
+        = "Email: #{mail_to(account.email, nil, :bcc => current_user.dropbox_email)}" if account.email.present?
+        = raw " | Phone: <b>#{account.phone}</b>" if account.phone.present?
+        = raw " | Fax: <b>#{account.fax}</b>" if account.fax.present?
+      %br/
+      %em.timestamp
+        - account_time = l account.created_at, :format => :short
+        - if account.assignee_id.present?
+          = raw t(:assigned_ago_by, :time => account_time, :by => account.user.name, :for => User.find(account.assignee_id).full_name)
+        - else
+          = raw t(:added_ago_by, :time => account_time, :by => account.user.name)
+        - if account.permitted_for?(current_user)
+          = raw " : #{link_to(pluralize(account.comments.not_deleted.size, t(:comment)), account)}" if account.comments.not_deleted.any?
+        - else
+          = pluralize(account.comments.not_deleted.size, t(:comment)) if account.comments.not_deleted.any?
+      - if account.permitted_for?(current_user)
+        %span.actions
+          = link_to t(:edit), [:edit, account], :id => "edit_#{dom_id(account)}"

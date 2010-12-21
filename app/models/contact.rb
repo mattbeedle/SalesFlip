@@ -82,7 +82,15 @@ class Contact
       f.match(/access|permission|permitted_user_ids|tracker_ids/)
     end
   end
-  
+
+  def cache_key
+    key = "contact-#{updated_at.to_i}"
+    %w(comments tasks).each do |assoc|
+      key << "-#{send(assoc).desc(:updated_at).first.try(:updated_at).try(:to_i)}"
+    end
+    key
+  end
+
   def comments_including_leads
     Comment.any_of({ :commentable_type => self.class.name, :commentable_id => self.id },
       { :commentable_type => 'Lead', :commentable_id.in => self.leads.map(&:id) })
