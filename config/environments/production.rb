@@ -60,7 +60,7 @@ Salesflip::Application.configure do
     :max_dynos => 20,
     :queue_wait_low  => 100,  # milliseconds
     :queue_wait_high => 2000, # milliseconds
-    :min_frequency   => 10    # seconds
+    :min_frequency   => 60    # seconds
 
   config.action_mailer.delivery_method = :remail
   config.action_mailer.remail_settings = {
