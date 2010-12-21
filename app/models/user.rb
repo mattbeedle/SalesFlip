@@ -16,6 +16,8 @@ class User
   field :role,      :type => Integer
   field :type
 
+  index :email, :background => true
+
   attr_accessor :company_name
 
   references_many  :leads,       :index => true
@@ -34,7 +36,7 @@ class User
   before_validation :set_api_key, :create_company, :on => :create
   before_create :set_default_role
   after_create :update_invitation
-  
+
   has_constant :roles, ROLES
 
   validates_presence_of :company

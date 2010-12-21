@@ -1,6 +1,6 @@
 class ContactsController < InheritedResources::Base
   load_and_authorize_resource
-  
+
   before_filter :merge_updater_id, :only => [ :update ]
   before_filter :can_export?, :only => [ :index ]
 

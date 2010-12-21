@@ -10,8 +10,9 @@ class Activity
 
   belongs_to_related :user, :index => true
   belongs_to_related :subject, :polymorphic => true, :index => true
-  
-  index :action
+
+  index :action, :background => true
+  index [[ :created_at, Mongo::DESCENDING ]], :background => true
 
   validates_presence_of :subject, :user
 
