@@ -37,7 +37,7 @@ GIT
 
 GIT
   remote: git://github.com/mattbeedle/mongoid.git
-  revision: bae5ed827442341ad852022da8d6ccbec639c99b
+  revision: 61f460f051baa8015394f3a5d15a0b244f3f7ec8
   branch: development
   specs:
     mongoid (2.0.0.beta.20)
