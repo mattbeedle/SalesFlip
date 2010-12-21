@@ -16,4 +16,4 @@ Rails.configuration.after_initialize do
     add_method_tracer :distinct,        'Database/#{name}/distinct'
     add_method_tracer :count,           'Database/#{name}/count'
   end
-end
+end if Mongo::Collection.respond_to?(:add_method_tracer)
