@@ -14,7 +14,7 @@ class LeadsController < InheritedResources::Base
   has_scope :assigned_to
   has_scope :source_is,   :type => :array
 
-  helper_method :leads_index_cache_key, :lead_show_cache_key
+  helper_method :leads_index_cache_key
 
   def index
     index! do |format|
@@ -84,14 +84,6 @@ protected
       updated_at.to_i, params.flatten.join('-')].join('-'))
   end
 
-  def lead_show_cache_key
-    Digest::SHA1.hexdigest([
-      'lead', resource.updated_at.to_i,
-      resource.comments.any? ? resource.comments.desc(:updated_at).first.updated_at.to_i : nil,
-      resource.tasks.any? ? resource.tasks.desc(:updated_at).first.updated_at.to_i : nil,
-      params.flatten.to_s].join('-'))
-  end
-
   def leads
     @leads = apply_scopes(Lead).for_company(current_user.company).not_deleted.
       permitted_for(current_user).desc(:status).desc(:created_at)
@@ -131,7 +123,7 @@ protected
     end
     @lead ||= Lead.new({ :updater => current_user, :user => current_user }.merge!(params[:lead] || {}))
   end
-
+  
   def export_allowed?
     if request.format.csv?
       raise CanCan::AccessDenied unless can? :export, current_user
