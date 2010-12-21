@@ -6,31 +6,31 @@
   = render :partial => 'lead', :collection => @leads
   = will_paginate @leads
 
-  - content_for :sidebar do
-    - unless current_user.role_is?('Freelancer')
-      .gold.box
-        %h3= t(:filter_by_status)
-        = form_tag '', :method => :get do
-          %ul.checks.stacked
-            - Lead.statuses.each do |status|
-              %li
-                = check_box_tag 'with_status[]', status, (params[:with_status] and params[:with_status].include?(status)), :id => "status_#{status}"
-                %label{ :for => "status_#{status}" }= status
-          %ul.checks.stacked
+- content_for :sidebar do
+  - unless current_user.role_is?('Freelancer')
+    .gold.box
+      %h3= t(:filter_by_status)
+      = form_tag '', :method => :get do
+        %ul.checks.stacked
+          - Lead.statuses.each do |status|
             %li
-              = check_box_tag 'unassigned', true, params[:unassigned]
-              %label{ :for => 'unassigned' }= t(:unassigned)
+              = check_box_tag 'with_status[]', status, (params[:with_status] and params[:with_status].include?(status)), :id => "status_#{status}"
+              %label{ :for => "status_#{status}" }= status
+        %ul.checks.stacked
+          %li
+            = check_box_tag 'unassigned', true, params[:unassigned]
+            %label{ :for => 'unassigned' }= t(:unassigned)
+          %li
+            = check_box_tag 'assigned_to', current_user.id, params[:assigned_to]
+            %label{ :for => 'assigned_to' }= t(:assigned_to_me)
+        %ul.checks.stacked
+          - Lead.sources.sort.each do |source|
             %li
-              = check_box_tag 'assigned_to', current_user.id, params[:assigned_to]
-              %label{ :for => 'assigned_to' }= t(:assigned_to_me)
-          %ul.checks.stacked
-            - Lead.sources.sort.each do |source|
-              %li
-                = check_box_tag 'source_is[]', source, (params[:source_is] and params[:source_is].include?(source)), :id => "source_#{source.parameterize}"
-                %label{ :for => "source_#{source.parameterize}" }= source
-          .clear= submit_tag t(:filter), :id => 'filter'
-    - if can? :export, current_user
-      .gold.box
-        %h3= t(:data_actions)
-        %ul.plain
-          %li= link_to t(:export_as_csv), export_leads_path(@filters), :id => 'export_as_csv'
+              = check_box_tag 'source_is[]', source, (params[:source_is] and params[:source_is].include?(source)), :id => "source_#{source.parameterize}"
+              %label{ :for => "source_#{source.parameterize}" }= source
+        .clear= submit_tag t(:filter), :id => 'filter'
+  - if can? :export, current_user
+    .gold.box
+      %h3= t(:data_actions)
+      %ul.plain
+        %li= link_to t(:export_as_csv), export_leads_path(@filters), :id => 'export_as_csv'

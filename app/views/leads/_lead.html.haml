@@ -1,6 +1,6 @@
 - cache_key = "lead-#{lead.updated_at.to_i}"
 - %w(comments tasks).each do |assoc|
-  - cache_key << "-#{lead.send(assoc).desc(:updated_at).first.updated_at.to_i}"
+  - cache_key << "-#{lead.send(assoc).any? ? lead.send(assoc).desc(:updated_at).first.updated_at.to_i : ''}"
 - cache(cache_key) do
   %dl.item.lead
     %dt{ :class => lead.status.downcase }= lead.status
