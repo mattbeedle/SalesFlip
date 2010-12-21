@@ -1,7 +1,7 @@
 !!!
 %html
   %head
-    = javascript_include_tag 'right.js', 'right-calendar.js', 'right-autocompleter.js', 'searchhi_slim', 'application.js'
+    = javascript_include_tag 'right.js', 'right-calendar.js', 'right-autocompleter.js', 'searchhi_slim', 'application.js', :cache => true
     = yield(:javascripts)
     = stylesheet_link_tag 'application.css'
     = title_tag 'SalesFlip'
