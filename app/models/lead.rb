@@ -41,20 +41,19 @@ class Lead
   field :referred_by
   field :do_not_call,   :type => Boolean
 
-  
   field :twitter
   field :linked_in
   field :facebook
   field :xing
   field :identifier,    :type => Integer
-  
+
   index(
     [
       [ :first_name, Mongo::ASCENDING ],
       [ :last_name, Mongo::ASCENDING ]
     ],
   )
-    
+
   index(
     [
       [:status, Mongo::DESCENDING],
