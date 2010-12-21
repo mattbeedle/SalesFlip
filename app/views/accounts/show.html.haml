@@ -50,7 +50,7 @@
       = show_attribute(@account, 'billing_address')
       = show_attribute(@account, 'shipping_address')
       = show_attribute(@account, 'website', link_to(t(:visit_website), @account.website)) if @account.website
-  
+
   - if @account.children.any?
     %br/
     .box.ice
@@ -62,5 +62,3 @@
   #recent_activity.box.ice
     %h3= t(:recent_activity_for, :name => @account.full_name )
     = render :partial => 'shared/activity_for', :collection => @account.related_activities.limit(6), :as => :activity
-    
-  
