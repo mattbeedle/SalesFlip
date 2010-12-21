@@ -7,7 +7,11 @@ class PagesController < ApplicationController
 
 protected
   def dashboard_cache_key
-    "dashboard-#{current_user.id.to_s}-#{Activity.action_is_not('Viewed').count}"
+    Digest::SHA1.hexdigest([
+      'dashboard', current_user.id.to_s,
+      Activity.action_is_not('Viewed').desc(:updated_at).first.try(:updated_at).try(:to_i),
+      Task.for(current_user).incomplete.desc(:updated_at).first.try(:updated_at).try(:to_i)
+    ].join('-'))
   end
 
   def find_activities
