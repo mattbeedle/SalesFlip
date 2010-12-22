@@ -51,16 +51,16 @@ Salesflip::Application.configure do
     Sunspot.config.solr.url = ENV['WEBSOLR_URL']
   end
 
-  require 'heroku/autoscale'
-  config.middleware.use Heroku::Autoscale,
-    :username  => ENV["HEROKU_USERNAME"],
-    :password  => ENV["HEROKU_PASSWORD"],
-    :app_name  => ENV["HEROKU_APP_NAME"],
-    :min_dynos => 1,
-    :max_dynos => 20,
-    :queue_wait_low  => 100,  # milliseconds
-    :queue_wait_high => 2000, # milliseconds
-    :min_frequency   => 60    # seconds
+  # require 'heroku/autoscale'
+  # config.middleware.use Heroku::Autoscale,
+    # :username  => ENV["HEROKU_USERNAME"],
+    # :password  => ENV["HEROKU_PASSWORD"],
+    # :app_name  => ENV["HEROKU_APP_NAME"],
+    # :min_dynos => 1,
+    # :max_dynos => 20,
+    # :queue_wait_low  => 100,  # milliseconds
+    # :queue_wait_high => 2000, # milliseconds
+    # :min_frequency   => 60    # seconds
 
   config.action_mailer.delivery_method = :remail
   config.action_mailer.remail_settings = {
