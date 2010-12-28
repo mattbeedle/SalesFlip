@@ -13,7 +13,7 @@ module Trackable
 
   def trackers
     unless tracker_ids.nil?
-      User.where(:_id.in => tracker_ids.map { |id| BSON::ObjectId.from_string(id.to_s) })
+      User.all(:id => tracker_ids)
     end
   end
 

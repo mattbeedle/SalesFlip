@@ -58,7 +58,7 @@ class ActiveSupport::TestCase
     klass = self.name.gsub(/Test$/, '').constantize
     args.each do |arg|
       should "have_key '#{arg}'" do
-        assert klass.fields.map(&:first).include?(arg.to_s)
+        assert klass.properties.named?(arg)
       end
     end
   end
@@ -80,9 +80,9 @@ class ActiveSupport::TestCase
     args.each do |arg|
       should "have_many '#{arg}'" do
         has = false
-        klass.associations.each do |name, assoc|
-          if assoc.association.to_s.match(/ReferencesMany|EmbedsMany/) and name == arg.to_s
-            has = true
+        klass.relationships.each do |name, relationship|
+          if name == arg.to_s && relationship.class.name =~ /OneToMany/ && relationship.max == Infinity
+            break has = true
           end
         end
         assert has
@@ -110,9 +110,9 @@ class ActiveSupport::TestCase
     args.each do |arg|
       should "belong_to '#{arg}'" do
         has = false
-        klass.associations.each do |name, assoc|
-          if assoc.association.to_s.match(/ReferencedIn|EmbeddedIn/) and name == arg.to_s
-            has = true
+        klass.relationships.each do |name, relationship|
+          if name == arg.to_s && relationship.class =~ /ManyToOne/
+            break has = true
           end
         end
         assert has
@@ -130,8 +130,8 @@ class ActiveSupport::TestCase
   end
 
   setup do
-    Sham.reset
     DataMapper.auto_migrate!
+    Sham.reset
     FakeWeb.allow_net_connect = false
     ActionMailer::Base.deliveries.clear
     FakeWeb.register_uri(:post, 'http://localhost:8981/solr/update?wt=ruby', :body => '')

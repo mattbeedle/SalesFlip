@@ -98,7 +98,7 @@ Task.blueprint(:call_erich) do
   user { User.make(:annika) }
   name { 'Call erich to get offer details' }
   category { 'Call' }
-  asset { Lead.make(:erich) }
+  # asset { Lead.make(:erich) }
   due_at { 'due_today' }
 end
 

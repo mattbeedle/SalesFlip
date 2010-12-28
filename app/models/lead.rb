@@ -58,9 +58,9 @@ class Lead
 
   belongs_to   :user, :required => true
   belongs_to   :contact, :required => false
-  has n, :comments, :as => :commentable, :dependent => :delete_all
-  has n, :tasks, :as => :asset, :dependent => :delete_all
-  has n, :emails, :as => :commentable, :dependent => :delete_all
+  has n, :comments, :as => :commentable, :suffix => :type#, :dependent => :delete_all
+  has n, :tasks, :as => :asset, :suffix => :type#, :dependent => :delete_all
+  has n, :emails, :as => :commentable, :suffix => :type#, :dependent => :delete_all
 
   before :valid?, :set_initial_state
   before :create,     :set_identifier
@@ -69,16 +69,16 @@ class Lead
     notify_assignee unless do_not_notify
   end
 
-  def self.with_status(statuses)
-    all(:status.in => statuses.map { |status| Lead.statuses.index(status) })
-  end
+  # def self.with_status(statuses)
+    # all(:status => statuses.map { |status| Lead.statuses.index(status) })
+  # end
 
   def self.unassigned
     all(:assignee_id => nil)
   end
 
   def self.for_company(company)
-    all(:user_id.in => company.users.map(&:id))
+    all(:user_id => company.users.map(&:id))
   end
 
   # searchable do
@@ -89,12 +89,12 @@ class Lead
 
   def self.with_status( statuses )
     statuses = statuses.lines if statuses.respond_to?(:lines)
-    where(:status.in => statuses.map { |status| Lead.statuses.index(status) })
+    all(:status => statuses)
   end
 
   def self.exportable_fields
-    fields.map(&:first).sort.delete_if do |f|
-      f.match(/access|permission|permitted_user_ids|tracker_ids/)
+    properties.map(&:name).sort.delete_if do |f|
+      f.to_s.match(/access|permission|permitted_user_ids|tracker_ids/)
     end
   end
 
@@ -105,7 +105,7 @@ class Lead
 
   def promote!( account_name, options = {} )
     @recently_converted = true
-    if !self.email.blank? and (contact = Contact.first(:conditions => { :email => self.email }))
+    if !self.email.blank? and (contact = Contact.first(:email => self.email))
       I18n.locale_around(:en) { update :status => 'Converted', :contact_id => contact.id }
       if contact.account.blank? && !account_name.blank?
         account = Account.find_or_create_for(self, account_name, options)
@@ -116,7 +116,8 @@ class Lead
       contact = Contact.create_for(self, account)
       opportunity = Opportunity.create_for(contact, options)
       if [account, contact].all?(&:valid?)
-        I18n.locale_around(:en) { update :status => 'Converted', :contact_id => contact.id }
+        self.attributes = {:status => 'Converted', :contact_id => contact.id}
+        save
       end
     end
     return account || contact.account, contact, opportunity

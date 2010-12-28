@@ -25,8 +25,8 @@ class User
   has n,  :contacts
   has n,  :activities
   has n,  :searches
-  has n,  :invitations, :as => :inviter, :dependent => :destroy
-  has 1,   :invitation,  :as => :invited
+  has n,  :invitations, :as => :inviter, :suffix => :type#, :dependent => :destroy
+  has 1,   :invitation,  :as => :invited, :suffix => :type
   has n,  :opportunities
   has n,  :assigned_opportunities, foreign_key: 'assignee_id',
     model: 'Opportunity'
@@ -47,7 +47,7 @@ class User
   has_constant :roles, ROLES
 
   def invitation_code=( invitation_code )
-    if @invitation = Invitation.first(:conditions => { :code => invitation_code })
+    if @invitation = Invitation.first(:code => invitation_code)
       self.company_id = @invitation.inviter.company_id
       self.username = @invitation.email.split('@').first if self.username.blank?
       self.email = @invitation.email if self.email.blank?
@@ -67,9 +67,10 @@ class User
   alias :name :full_name
 
   def recent_items
-    Activity.where(:user_id => self.id,
-                   :action => I18n.locale_around(:en) { Activity.actions.index('Viewed') }).
-                   desc(:updated_at).limit(5).map(&:subject)
+    Activity.all(:user_id => self.id,
+                 :action => Activity.actions.index('Viewed'),
+                 :order => :updated_at.desc,
+                 :limit => 5).map(&:subject)
   end
 
   def tracked_items

@@ -18,10 +18,10 @@ class Task
     required: true
 
   belongs_to :user, :required => true
-  # belongs_to :asset, :polymorphic => true, :required => false
+  belongs_to :asset, :polymorphic => true, :required => false, suffix: 'type'
   belongs_to :completed_by, :model => 'User', :required => false
 
-  has n, :activities, :as => :subject, :dependent => :destroy
+  has n, :activities, :as => :subject, :suffix => :type#, :dependent => :destroy
 
   before :create, :set_recently_created
   before :update, :log_reassignment
@@ -48,11 +48,11 @@ class Task
   end
 
   def self.assigned
-    all(:assignee_id.ne => nil)
+    all(:assignee_id.not => nil)
   end
 
   def self.completed
-    all(:completed_at.ne => nil)
+    all(:completed_at.not => nil)
   end
 
   def self.overdue

@@ -49,14 +49,14 @@ class Contact
   belongs_to :assignee, :model => 'User', :required => false
   belongs_to :lead, :required => false
 
-  has n, :tasks, :as => :asset, :dependent => :destroy
-  has n, :comments, :as => :commentable, :dependent => :delete_all
-  has n, :leads, :dependent => :destroy
-  has n, :emails, :as => :commentable, :dependent => :delete_all
-  has n, :opportunities, :dependent => :destroy
+  has n, :tasks, :as => :asset, :suffix => :type#, :dependent => :destroy
+  has n, :comments, :as => :commentable, :suffix => :type#, :dependent => :delete_all
+  has n, :leads#, :dependent => :destroy
+  has n, :emails, :as => :commentable, :suffix => :type#, :dependent => :delete_all
+  has n, :opportunities#, :dependent => :destroy
 
   def self.for_company(company)
-    all(:user_id.in => company.users.map(&:id))
+    all(:user_id => company.users.map(&:id))
   end
 
   def self.name_like(name)
@@ -81,7 +81,7 @@ class Contact
   
   def comments_including_leads
     Comment.any_of({ :commentable_type => self.class.name, :commentable_id => self.id },
-      { :commentable_type => 'Lead', :commentable_id.in => self.leads.map(&:id) })
+      { :commentable_type => 'Lead', :commentable_id => self.leads.map(&:id) })
   end
 
   def full_name
@@ -94,14 +94,13 @@ class Contact
   end
 
   def self.create_for( lead, account )
-    contact = account.contacts.build :user => lead.updater_or_user, :permission => account.permission,
+    contact = account.contacts.new :user => lead.updater_or_user, :permission => account.permission,
       :permitted_user_ids => account.permitted_user_ids
-    Lead.fields.map(&:first).delete_if do |k|
-      %w(identifier _id user_id permission permitted_user_ids _sphinx_id created_at updated_at deleted_at tracker_ids updater_id).
-        include?(k)
-    end.each do |key|
-      if contact.fields.map(&:first).include?(key)
-        contact.send("#{key}=", lead.send(key))
+
+    lead.attributes.each do |key, value|
+      next if %w(identifier id user_id permission permitted_user_ids _sphinx_id created_at updated_at deleted_at tracker_ids updater_id).include?(key)
+      if contact.respond_to?("#{key}=")
+        contact.send("#{key}=", value)
       end
     end
     if account.valid? and contact.valid?

@@ -2,12 +2,12 @@ module Activities
   extend ActiveSupport::Concern
 
   included do
-    has n, :activities,
-      child_key: [ :subject_id ],
+    # has n, :activities,
+      # child_key: [ :subject_id ],
       # dependent: :destroy,
-      subject_type: self
+      # subject_type: self
 
-    # has n, :activities, :as => :subject, :dependent => :destroy
+    has n, :activities, :as => :subject, :suffix => :type# , :dependent => :destroy
 
     after :create, :log_creation
     after :update, :log_update
@@ -41,19 +41,19 @@ module Activities
 
   def related_activities
     @activities ||=
-      Activity.any_of({ :subject_type.in => %w(Lead Account Contact), :subject_id => self.id },
-                      { :subject_type.in => %w(Comment Email), :subject_id.in => comments.map(&:id) },
-                      { :subject_type => 'Task', :subject_id.in => tasks.map(&:id) }).desc(:updated_at)
+      Activity.any_of({ :subject_type => %w(Lead Account Contact), :subject_id => self.id },
+                      { :subject_type => %w(Comment Email), :subject_id => comments.map(&:id) },
+                      { :subject_type => 'Task', :subject_id => tasks.map(&:id) }).desc(:updated_at)
     if self.respond_to?(:contacts)
       @activities = @activities.any_of(
-        { :subject_type => 'Contact', :subject_id.in => self.contacts.map(&:id) },
+        { :subject_type => 'Contact', :subject_id => self.contacts.map(&:id) },
         { :subject_type => 'Lead',
-          :subject_id.in => self.leads.flatten.map(&:id) },
+          :subject_id => self.leads.flatten.map(&:id) },
         { :subject_type => 'Task',
-          :subject_id.in => self.contacts.map(&:tasks).flatten.map(&:id) +
+          :subject_id => self.contacts.map(&:tasks).flatten.map(&:id) +
           self.contacts.map(&:leads).flatten.map(&:tasks).flatten.map(&:id) },
-        { :subject_type.in => %w(Comment Email),
-          :subject_id.in => self.contacts.map(&:comments).flatten.map(&:id) +
+        { :subject_type => %w(Comment Email),
+          :subject_id => self.contacts.map(&:comments).flatten.map(&:id) +
           self.contacts.map(&:emails).flatten.map(&:id) +
           self.leads.map(&:comments).flatten.map(&:id) +
           self.leads.map(&:emails).flatten.map(&:id) })

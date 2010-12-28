@@ -21,12 +21,12 @@ class Opportunity
   belongs_to :contact, :required => false
   belongs_to :user, :required => true
   belongs_to :stage, :model => 'OpportunityStage', :required => true
-  has n, :comments, :as => :commentable, :dependent => :delete_all
-  has n, :tasks, :as => :asset, :dependent => :delete_all
-  has n, :attachments, :as => :subject
+  has n, :comments, :as => :commentable, :suffix => :type#, :dependent => :delete_all
+  has n, :tasks, :as => :asset, :suffix => :type#, :dependent => :delete_all
+  has n, :attachments, :as => :subjec, :suffix => :typet
 
   def self.for_company(company)
-    all(:user_id.in => company.users.map(&:id))
+    all(:user_id => company.users.map(&:id))
   end
 
   def self.closing_for_date(date)
@@ -57,7 +57,7 @@ class Opportunity
 
   def self.stage_is( stages )
     stages = stages.lines.to_a if stages.respond_to?(:lines)
-    where(:stage_id.in => OpportunityStage.where(:name.in => stages).map(&:id))
+    all(:stage_id => OpportunityStage.all(:name => stages).map(&:id))
   end
 
   def weighted_amount
@@ -73,7 +73,7 @@ class Opportunity
 
   def self.create_for( contact, options = {} )
     attributes = options[:opportunity] || {}
-    opportunity = contact.opportunities.build attributes.merge(:user => contact.user,
+    opportunity = contact.opportunities.new attributes.merge(:user => contact.user,
       :assignee => contact.assignee)
     opportunity.save if contact.valid? && !opportunity.title.blank?
     opportunity

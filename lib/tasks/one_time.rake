@@ -85,7 +85,7 @@ namespace(:one_time) do
       next if index == 0
       row = line.split("\t")
       next unless row[1].blank?
-      u = User.where(:email => /beedle/i).first
+      u = User.first(:email => /beedle/i)
       l = u.leads.build :source => 'Imported', :rating => 2, :do_not_log => true, :first_name => 'n/a',
         :last_name => 'n/a'
       
@@ -100,7 +100,7 @@ namespace(:one_time) do
       end.select { |similarity| similarity.last > 0.9 }.map(&:first)
       
       unless ids.blank?
-        accounts = Account.where(:_id.in => ids)
+        accounts = Account.all(:_id => ids)
         puts "skipped: #{l.company} (#{accounts.map(&:name).inspect})"
         next
       end
@@ -110,7 +110,7 @@ namespace(:one_time) do
       end.select { |similarity| similarity.last > 0.9 }.map(&:first)
       
       unless ids.blank?
-        leads = Lead.where(:_id.in => ids)
+        leads = Lead.all(:_id => ids)
         puts "skipped: #{l.company} (#{leads.map(&:company).inspect})"
         next
       end

@@ -2,7 +2,7 @@ namespace :db do
   
   desc 'Import leads csv'
   task :import_leads_csv => :environment do
-    user = User.where(:email => /beedle/i).first
+    user = User.first(:email => /beedle/i)
     data = {}
     File.open('leads.csv', 'r').each_with_index do |line, index|
       next if index == 0
@@ -32,7 +32,7 @@ namespace :db do
               url.match(/@/)
             }.map { |url| "<a href='#{url}' target='_blank'>#{url}</a>" }.join('<br/>'),
             :source => 'Other'
-          next if Lead.where(:email => /#{lead.email}/i).first
+          next if Lead.first(:email => /#{lead.email}/i)
 
           ids = Account.only(:id, :name).map do |account|
             [account.id, lead.company.levenshtein_similar(account.name)]
@@ -40,7 +40,7 @@ namespace :db do
 
           unless ids.blank?
             puts "Skipped lead #{lead.name} (#{lead.company})"
-            puts "Similar accounts: #{Account.where(:_id.in => ids).map(&:name).join(', ')}"
+            puts "Similar accounts: #{Account.all(:_id => ids).map(&:name).join(', ')}"
             next
           end
 
@@ -50,7 +50,7 @@ namespace :db do
 
           unless ids.blank?
             puts "Skipped lead #{lead.name}, (#{lead.company})"
-            puts "Similar leads: #{Lead.where(:_id.in => ids).map(&:company).join(', ')}"
+            puts "Similar leads: #{Lead.all(:_id => ids).map(&:company).join(', ')}"
             next
           end
           if lead.save

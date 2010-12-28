@@ -18,7 +18,7 @@ class Invitation
   has_constant :roles, ROLES
 
   def self.by_company(company)
-    all(:inviter_id.in => company.users.map(&:id))
+    all(:inviter_id => company.users.map(&:id))
   end
 
 protected

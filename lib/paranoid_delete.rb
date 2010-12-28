@@ -14,7 +14,7 @@ module ParanoidDelete
     end
 
     def deleted
-      all(:deleted_at.ne => nil)
+      all(:deleted_at.not => nil)
     end
   end
 

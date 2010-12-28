@@ -7,12 +7,13 @@ module Permission
     validates_with_method :permitted_user_ids, :method => :require_permitted_users
 
     has_constant :permissions, I18n.t(:permissions),
-      default: 0, required: true
+      default: 'Public', required: true, auto_validation: true
   end
 
   module ClassMethods
 
     def permitted_for(user)
+      return all
       # if !user.role_is?('Freelancer')
         # { :where => {
           # '$where' => "this.user_id == '#{user.id}' || this.permission == '#{Contact.permissions.index('Public')}' || " +

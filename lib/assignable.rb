@@ -1,11 +1,6 @@
 module Assignable
   extend ActiveSupport::Concern
 
-  def self.method_added(name)
-    p name
-    super
-  end
-
   included do
     belongs_to :assignee, :model => 'User', :required => false
 
@@ -19,7 +14,7 @@ module Assignable
       elsif user_id.is_a?(String) && BSON::ObjectId.legal?(user_id)
         user_id = BSON::ObjectId.from_string(user_id)
       end
-      where(:assignee_id => user_id)
+      all(:assignee_id => user_id)
     end
   end
 

@@ -12,14 +12,14 @@ class Comment
 
   belongs_to :user, :required => true
 
-  # belongs_to :commentable, :polymorphic => true, required: true
+  belongs_to :commentable, polymorphic: true, required: true, suffix: 'type'
 
-  has n, :attachments, :as => :subject
+  has n, :attachments, :as => :subject, :suffix => :type
 
   after :create, :add_attachments
 
   def self.sorted
-    where.asc(:created_at)
+    all(:order => :created_at.asc)
   end
 
   def name

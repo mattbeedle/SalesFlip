@@ -7,8 +7,7 @@ class Activity
   property :info, String
   property :notified_user_ids, Object, :default => []
 
-  property :subject_id, Integer, required: true
-  property :subject_type, String, required: true
+  belongs_to :subject, :polymorphic => true, :suffix => :type
 
   belongs_to :user, :required => true
 
@@ -33,7 +32,7 @@ class Activity
   end
 
   def self.not_notified(user)
-    all(:notified_user_ids.ne => user.id)
+    all(:notified_user_ids.not => user.id)
   end
 
   has_constant :actions, lambda { I18n.t(:activity_actions) }
@@ -53,7 +52,7 @@ class Activity
   end
 
   def self.update_activity( user, subject, action )
-    activity = Activity.where(:user_id => user.id, :subject_id => subject.id,
+    activity = Activity.all(:user_id => user.id, :subject_id => subject.id,
                               :subject_type => subject.class.name,
                               :action => Activity.actions.index(action)).first
     if activity
@@ -66,7 +65,7 @@ class Activity
 
   class << self
     def visible_to(user)
-      where.to_a.delete_if do |activity|
+      all.to_a.delete_if do |activity|
         begin
           (activity.subject.permission_is?('Private') && activity.subject.user != user) ||
           (activity.subject.permission_is?('Shared') &&
@@ -79,7 +78,7 @@ class Activity
     end
 
     def not_restored
-      where.to_a.delete_if { |activity| activity.subject.deleted_at.nil? }
+      all.to_a.delete_if { |activity| activity.subject.deleted_at.nil? }
     end
   end
 end

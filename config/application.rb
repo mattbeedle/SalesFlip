@@ -9,6 +9,8 @@ require "rails/test_unit/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)
 
+DataMapper::Property::String.length(255)
+
 module Salesflip
   class Application < Rails::Application
     I18n.load_path += Dir[Rails.root + 'config/locales/*.{rb,yml}']

@@ -5,10 +5,10 @@ class DeletedItemsController < ApplicationController
 
   def index
     @items ||= [
-      Lead.permitted_for(current_user).where(:deleted_at.ne => nil) +
-      Contact.permitted_for(current_user).where(:deleted_at.ne => nil) +
-      Account.permitted_for(current_user).where(:deleted_at.ne => nil) +
-      Comment.permitted_for(current_user).where(:deleted_at.ne => nil)
+      Lead.permitted_for(current_user).where(:deleted_at.not => nil) +
+      Contact.permitted_for(current_user).where(:deleted_at.not => nil) +
+      Account.permitted_for(current_user).where(:deleted_at.not => nil) +
+      Comment.permitted_for(current_user).where(:deleted_at.not => nil)
     ].flatten.sort_by(&:deleted_at)
   end
 

@@ -16,7 +16,7 @@ module Mongoid
       def handle_multiparameter_attributes
         multiparameter_attributes = []
         self.attributes.each_pair do |attr_name, value|
-          multiparameter_attributes << [attr_name, value] if attr_name.include?("(")
+          multiparameter_attributes << [attr_name, value] if attr_name.to_s.include?("(")
         end
         assign_multiparameter_attributes(multiparameter_attributes) if multiparameter_attributes.any?
       end

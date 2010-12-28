@@ -2,12 +2,6 @@ class Account
 
   include DataMapper::Resource
   include DataMapper::Timestamps
-
-  def self.property(name, *args)
-    puts caller(0) if name == :account_id
-    super
-  end
-
   include HasConstant::Orm::DataMapper
   include ParanoidDelete
   include Permission
@@ -28,24 +22,20 @@ class Account
   property :xing, String
   property :billing_address, String
   property :shipping_address, String
-  property :identifier, Integer
   
   has_constant :accesses, lambda { I18n.t(:access_levels) }
   has_constant :account_types, lambda { I18n.t(:account_types) }
 
-  belongs_to :user, required: true
-  belongs_to :assignee, model: 'User', required: false
+  belongs_to :user, required: false
   belongs_to :parent, model: 'Account', required: false
   
-  has n,   :contacts, :dependent => :nullify
-  has n,   :tasks, :as => :asset
-  has n,   :comments, :as => :commentable
+  has n,   :contacts#, :dependent => :nullify
+  has n,   :tasks, :as => :asset, :suffix => :type
+  has n,   :comments, :as => :commentable, :suffix => :type
   has n,   :children, :model => 'Account', :child_key => 'parent_id'
 
-  before :create, :set_identifier
-
   def self.for_company(company)
-    all(:user_id.in => company.users.map(&:id))
+    all(:user_id => company.users.map(&:id))
   end
 
   def self.unassigned
@@ -61,15 +51,14 @@ class Account
   # end
 
   def self.assigned_to( user_id )
-    user_id = BSON::ObjectId.from_string(user_id) if user_id.is_a?(String)
-    any_of({ :assignee_id => user_id }, { :user_id => user_id, :assignee_id => nil })
+    all ["assignee_id = ? OR (user_id = ? and assignee_id is null)", user_id, user_id]
   end
   
   def self.similar_accounts( name )
     ids = Account.only(:id, :name).map do |account|
       [account.id, name.levenshtein_similar(account.name)]
     end.select { |similarity| similarity.last > 0.5 }.map(&:first)
-    Account.where(:_id.in => ids)
+    Account.all(:_id => ids)
   end
 
   def self.exportable_fields
@@ -90,10 +79,9 @@ class Account
   end
 
   def self.find_or_create_for( object, name_or_id, options = {} )
-    account = Account.find(BSON::ObjectId.from_string(name_or_id.to_s))
-  rescue BSON::InvalidObjectId => e
-    account = Account.first(:conditions => { :name => name_or_id })
-    account = create_for(object, name_or_id, options) unless account
+    account = Account.get name_or_id
+    account ||= Account.first(:name => name_or_id)
+    account ||= create_for(object, name_or_id, options)
     account
   end
 
@@ -113,8 +101,4 @@ class Account
     fields.map { |field| self.send(field) }.join(deliminator)
   end
 
-protected
-  def set_identifier
-    self.identifier = Identifier.next_account
-  end
 end

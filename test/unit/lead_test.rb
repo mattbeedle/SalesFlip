@@ -10,7 +10,8 @@ class LeadTest < ActiveSupport::TestCase
     should_have_many :comments, :tasks, :activities, :emails
 
     should 'know which fields may be exported' do
-      Lead.fields.map(&:first).each do |field|
+      Lead.properties.map(&:name).each do |field|
+        field = field.to_s
         unless field == 'access' || field == 'permission' ||
           field == 'permitted_user_ids' || field == 'tracker_ids'
           assert Lead.exportable_fields.include?(field)
@@ -276,7 +277,7 @@ class LeadTest < ActiveSupport::TestCase
       end
 
       should 'log an activity when updated' do
-        @lead = Lead.find(@lead.id)
+        @lead = Lead.get(@lead.id)
         @lead.update :first_name => 'test'
         assert @lead.activities.any? {|a| a.action == 'Updated' }
       end
@@ -288,38 +289,38 @@ class LeadTest < ActiveSupport::TestCase
       end
 
       should 'log an activity when destroyed' do
-        @lead = Lead.find(@lead.id)
+        @lead = Lead.get(@lead.id)
         @lead.destroy
         assert @lead.activities.any? {|a| a.action == 'Deleted' }
       end
 
       should 'log an activity when converted' do
-        @lead = Lead.find(@lead.id)
+        @lead = Lead.get(@lead.id)
         @lead.promote!('A new company')
         assert @lead.activities.any? {|a| a.action == 'Converted' }
       end
 
       should 'not log an update activity when converted' do
-        @lead = Lead.find(@lead.id)
+        @lead = Lead.get(@lead.id)
         @lead.promote!('A company')
         assert !@lead.activities.any? {|a| a.action == 'Updated' }
       end
 
       should 'log an activity when rejected' do
-        @lead = Lead.find(@lead.id)
+        @lead = Lead.get(@lead.id)
         @lead.reject!
         assert @lead.activities.any? {|a| a.action == 'Rejected' }
       end
 
       should 'not log an update activity when rejected' do
-        @lead = Lead.find(@lead.id)
+        @lead = Lead.get(@lead.id)
         @lead.reject!
         assert !@lead.activities.any? {|a| a.action == 'Updated' }
       end
 
       should 'log an activity when restored' do
         @lead.destroy
-        @lead = Lead.find(@lead.id)
+        @lead = Lead.get(@lead.id)
         @lead.update :deleted_at => nil
         assert @lead.activities.any? {|a| a.action == 'Restored' }
       end
