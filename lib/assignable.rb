@@ -3,9 +3,9 @@ module Assignable
 
   included do
      class_eval do
-      referenced_in :assignee, :class_name => 'User'
+      belongs_to :assignee, :model => 'User'
 
-      validate :check_permissions
+      validates_with_method :check_permissions
     end
   end
 

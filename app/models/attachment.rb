@@ -1,13 +1,14 @@
 class Attachment
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include DataMapper::Resource
+  include DataMapper::Timestamps
 
-  field :attachment
+  property :id, Serial
+  property :attachment, String
 
-  referenced_in :subject, :polymorphic => true, :index => true
+  # belongs_to :subject, :polymorphic => true
+  # validates_presence_of :subject
 
-  validates_presence_of :subject
-  validate :validate_attachment
+  validates_with_method :validate_attachment
 
   mount_uploader :attachment, AttachmentUploader
 

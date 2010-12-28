@@ -1,8 +1,8 @@
 class Email < Comment
-  field :received_at,   :type => Time
-  field :from
+  property :received_at, Time, :required => true
+  property :from, String, :required => true
 
-  validates_presence_of :subject, :received_at, :from
+  # validates_presence_of :subject
 
   alias :name :subject
 end

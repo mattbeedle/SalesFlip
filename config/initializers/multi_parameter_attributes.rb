@@ -2,7 +2,7 @@ module Mongoid
   module Rails
     module MultiParameterAttributes
       def self.included(base)
-        base.before_validation :handle_multiparameter_attributes
+        base.before :valid?, :handle_multiparameter_attributes
 
         base.class_eval do
           include InstanceMethods

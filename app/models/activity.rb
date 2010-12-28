@@ -1,24 +1,30 @@
 class Activity
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include DataMapper::Resource
+  include DataMapper::Timestamps
   include HasConstant
-  include HasConstant::Orm::Mongoid
+  # include HasConstant::Orm::Mongoid
 
-  field :action,            :type => Integer
-  field :info
-  field :notified_user_ids, :type => Array
+  property :id, Serial
+  property :action, Integer
+  property :info, String
+  property :notified_user_ids, Object, :default => []
 
-  referenced_in :user, :index => true
-  referenced_in :subject, :polymorphic => true, :index => true
+  belongs_to :user, :required => true
 
-  index :action
+  # belongs_to :subject, :polymorphic => true
+  # validates_presence_of :subject
 
-  validates_presence_of :subject, :user
+  def self.for_subject(subject)
+    all(:subject_id => subject.id, :subject_type => subject.class.to_s)
+  end
 
-  named_scope :for_subject, lambda { |subject| {
-    :where => { :subject_id => subject.id, :subject_type => subject.class.to_s } } }
-  named_scope :already_notified, lambda { |user| { :where => { :notified_user_ids => user.id } } }
-  named_scope :not_notified, lambda { |user| { :where => { :notified_user_ids.ne => user.id } } }
+  def self.already_notified(user)
+    all(:notified_user_ids => user.id)
+  end
+
+  def self.not_notified(user)
+    all(:notified_user_ids.ne => user.id)
+  end
 
   has_constant :actions, lambda { I18n.t(:activity_actions) }
 

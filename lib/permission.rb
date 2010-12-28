@@ -2,31 +2,35 @@ module Permission
   extend ActiveSupport::Concern
 
   included do
-    field :permission,          :type => Integer, :default => 0
-    field :permitted_user_ids,  :type => Array,   :default => []
-
-    named_scope :permitted_for, lambda { |user|
-      if !user.role_is?('Freelancer')
-        { :where => {
-          '$where' => "this.user_id == '#{user.id}' || this.permission == '#{Contact.permissions.index('Public')}' || " +
-          "this.assignee_id == '#{user.id}' || " +
-          "(this.permission == '#{Contact.permissions.index('Shared')}' && contains(this.permitted_user_ids, '#{user.id}')) || " +
-          "(this.permission == '#{Contact.permissions.index('Private')}' && this.assignee_id == '#{user.id}')"
-        } }
-      else
-        { :where => {
-        '$where' => "this.user_id == '#{user.id}' || " +
-          "(this.assignee_id == '#{user.id}' && this.permission == '#{Contact.permissions.index('Public')}') || " +
-          "(this.assignee_id == '#{user.id}' && this.permission == '#{Contact.permissions.index('Private')}') || " +
-          "(this.permission == '#{Contact.permissions.index('Shared')}' && contains(this.permitted_user_ids, '#{user.id}'))"
-      } }
-      end
-    }
+    property :permission, Integer, :default => 0
+    property :permitted_user_ids, Object, :default => []
 
     validates_presence_of :permission
-    validate :require_permitted_users
+    validates_with_method :require_permitted_users
 
     has_constant :permissions, lambda { I18n.t(:permissions) }
+  end
+
+  module ClassMethods
+
+    def permitted_for(user)
+      # if !user.role_is?('Freelancer')
+        # { :where => {
+          # '$where' => "this.user_id == '#{user.id}' || this.permission == '#{Contact.permissions.index('Public')}' || " +
+          # "this.assignee_id == '#{user.id}' || " +
+          # "(this.permission == '#{Contact.permissions.index('Shared')}' && contains(this.permitted_user_ids, '#{user.id}')) || " +
+          # "(this.permission == '#{Contact.permissions.index('Private')}' && this.assignee_id == '#{user.id}')"
+        # } }
+      # else
+        # { :where => {
+        # '$where' => "this.user_id == '#{user.id}' || " +
+          # "(this.assignee_id == '#{user.id}' && this.permission == '#{Contact.permissions.index('Public')}') || " +
+          # "(this.assignee_id == '#{user.id}' && this.permission == '#{Contact.permissions.index('Private')}') || " +
+          # "(this.permission == '#{Contact.permissions.index('Shared')}' && contains(this.permitted_user_ids, '#{user.id}'))"
+      # } }
+      # end
+    end
+
   end
 
   def permitted_user_ids=( permitted_user_ids )

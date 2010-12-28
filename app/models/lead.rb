@@ -1,96 +1,91 @@
 class Lead
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include DataMapper::Resource
+  include DataMapper::Timestamps
   include HasConstant
-  include HasConstant::Orm::Mongoid
+  # include HasConstant::Orm::Mongoid
   include ParanoidDelete
   include Permission
   include Trackable
   include Activities
-  include Sunspot::Mongoid
+  # include Sunspot::Mongoid
   include Assignable
   include Gravtastic
   is_gravtastic
 
-  field :first_name
-  field :last_name
-  field :email
-  field :phone
-  field :status,        :type => Integer
-  field :source,        :type => Integer
-  field :rating,        :type => Integer
-  field :notes
+  property :id, Serial
+  property :first_name, String
+  property :last_name, String, :required => true
+  property :email, String
+  property :phone, String
+  property :status, Integer
+  property :source, Integer
+  property :rating, Integer
+  property :notes, String
 
-  field :title,         :type => Integer
-  field :salutation,    :type => Integer
-  field :company
-  field :company_phone
-  field :company_blog
-  field :company_facebook
-  field :company_twitter
-  field :website
-  field :career_site
-  field :job_title
-  field :department
-  field :alternative_email
-  field :fax
-  field :mobile
-  field :address
-  field :city
-  field :postal_code
-  field :country
-  field :referred_by
-  field :do_not_call,   :type => Boolean
+  property :title, Integer
+  property :salutation, Integer
+  property :company, String
+  property :company_phone, String
+  property :company_blog, String
+  property :company_facebook, String
+  property :company_twitter, String
+  property :website, String
+  property :career_site, String
+  property :job_title, String
+  property :department, String
+  property :alternative_email, String
+  property :fax, String
+  property :mobile, String
+  property :address, String
+  property :city, String
+  property :postal_code, String
+  property :country, String
+  property :referred_by, String
+  property :do_not_call, Boolean
 
-  field :twitter
-  field :linked_in
-  field :facebook
-  field :xing
-  field :identifier,    :type => Integer
-
-  index(
-    [
-      [ :first_name, Mongo::ASCENDING ],
-      [ :last_name, Mongo::ASCENDING ]
-    ],
-  )
-
-  index(
-    [
-      [:status, Mongo::DESCENDING],
-      [:created_at, Mongo::DESCENDING]
-    ]
-  )
-
-  validates_presence_of :user, :last_name
+  property :twitter, String
+  property :linked_in, String
+  property :facebook, String
+  property :xing, String
+  property :identifier, Integer
 
   attr_accessor :do_not_notify
 
-  referenced_in   :user
-  referenced_in   :contact
-  references_many :comments, :as => :commentable, :dependent => :delete_all
-  references_many :tasks, :as => :asset, :dependent => :delete_all
-  references_many :emails, :as => :commentable, :dependent => :delete_all
+  belongs_to   :user, :required => true
+  belongs_to   :contact
+  has n, :comments, :as => :commentable, :dependent => :delete_all
+  has n, :tasks, :as => :asset, :dependent => :delete_all
+  has n, :emails, :as => :commentable, :dependent => :delete_all
 
-  before_validation :set_initial_state
-  before_create     :set_identifier, :set_recently_created
-  after_save        :notify_assignee, :unless => :do_not_notify
+  before :valid?, :set_initial_state
+  before :create,     :set_identifier
+  before :create,     :set_recently_created
+  after  :save do
+    notify_assignee unless do_not_notify
+  end
 
   has_constant :titles,       lambda { I18n.t(:titles) }
   has_constant :statuses,     lambda { I18n.t(:lead_statuses) }
   has_constant :sources,      lambda { I18n.t(:lead_sources) }
   has_constant :salutations,  lambda { I18n.t(:salutations) }
 
-  named_scope :with_status, lambda { |statuses| { :where => {
-    :status.in => statuses.map { |status| Lead.statuses.index(status) } } } }
-  named_scope :unassigned, :where => { :assignee_id => nil }
-  named_scope :for_company, lambda { |company| { :where => { :user_id.in => company.users.map(&:id) } } }
-
-  searchable do
-    text :first_name, :last_name, :email, :phone, :notes, :company, :alternative_email, :mobile,
-      :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing
+  def self.with_status(statuses)
+    all(:status.in => statuses.map { |status| Lead.statuses.index(status) })
   end
-  handle_asynchronously :solr_index
+
+  def self.unassigned
+    all(:assignee_id => nil)
+  end
+
+  def self.for_company(company)
+    all(:user_id.in => company.users.map(&:id))
+  end
+
+  # searchable do
+    # text :first_name, :last_name, :email, :phone, :notes, :company, :alternative_email, :mobile,
+      # :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing
+  # end
+  # handle_asynchronously :solr_index
 
   def self.with_status( statuses )
     statuses = statuses.lines if statuses.respond_to?(:lines)

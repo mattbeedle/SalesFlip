@@ -2,12 +2,12 @@ module Activities
   extend ActiveSupport::Concern
 
   included do
-    references_many :activities, :as => :subject, :dependent => :destroy
+    has n, :activities, :as => :subject, :dependent => :destroy
 
-    after_create  :log_creation
-    after_update  :log_update
+    after :create, :log_creation
+    after :update, :log_update
 
-    belongs_to_related :updater, :class_name => 'User'
+    belongs_to :updater, :model => 'User'
 
     attr_accessor :do_not_log
   end

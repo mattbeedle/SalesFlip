@@ -1,48 +1,60 @@
 class Opportunity
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include DataMapper::Resource
+  include DataMapper::Timestamps
   include HasConstant
-  include HasConstant::Orm::Mongoid
+  # include HasConstant::Orm::Mongoid
   include Mongoid::Rails::MultiParameterAttributes
   include Assignable
   include ParanoidDelete
   include Activities
   include Permission
-  include Sunspot::Mongoid
+  # include Sunspot::Mongoid
 
-  field :title
-  field :close_on,        :type => Date,    :default => lambda { 1.month.from_now.utc }
-  field :probability,     :type => Integer, :default => 100
-  field :amount,          :type => Float,   :default => 0.0
-  field :discount,        :type => Float,   :default => 0.0
-  field :background_info
-  field :margin,          :type => Float
+  property :id, Serial
+  property :title, String, :required => true
+  property :close_on, Date,    :default => lambda { 1.month.from_now.utc }
+  property :probability, Integer, :default => 100
+  property :amount, Float,   :default => 0.0
+  property :discount, Float,   :default => 0.0
+  property :background_info, String
+  property :margin, Float
 
-  referenced_in :contact
-  referenced_in :user
-  referenced_in :stage, :class_name => 'OpportunityStage'
-  references_many :comments, :as => :commentable, :dependent => :delete_all
-  references_many :tasks, :as => :asset, :dependent => :delete_all
-  references_many :attachments, :as => :subject, :index => true
+  belongs_to :contact
+  belongs_to :user, :required => true
+  belongs_to :stage, :model => 'OpportunityStage', :required => true
+  has n, :comments, :as => :commentable, :dependent => :delete_all
+  has n, :tasks, :as => :asset, :dependent => :delete_all
+  has n, :attachments, :as => :subject
 
-  validates_presence_of :title, :user, :stage
+  def self.for_company(company)
+    all(:user_id.in => company.users.map(&:id))
+  end
 
-  named_scope :for_company, lambda { |company| where(:user_id.in => company.users.map(&:id)) }
-  named_scope :closing_for_date, lambda { |date| where(:close_on => date) }
-  named_scope :closing_between_dates, lambda { |start_date, end_date|
-    where(:close_on.gte => start_date, :close_on.lte => end_date) }
-  named_scope :certainty, where(:probability => 100)
-  named_scope :created_on, lambda { |date|
-    where(:created_at.gte => date.beginning_of_day.utc,
-          :created_at.lte => date.end_of_day.utc) }
+  def self.closing_for_date(date)
+    all(:close_on => date)
+  end
 
-  before_save :set_probability, :update_close_date
+  def self.closing_between_dates(start_date, end_date)
+    all(:close_on.gte => start_date, :close_on.lte => end_date)
+  end
+
+  def self.certainty
+    all(:probability => 100)
+  end
+
+  def self.created_on(date)
+    all(:created_at.gte => date.beginning_of_day.utc,
+        :created_at.lte => date.end_of_day.utc)
+  end
+
+  before :save, :set_probability
+  before :save, :update_close_date
 
   alias :name :title
 
-  searchable do
-    text :title, :background_info
-  end
+  # searchable do
+    # text :title, :background_info
+  # end
 
   def self.stage_is( stages )
     stages = stages.lines.to_a if stages.respond_to?(:lines)

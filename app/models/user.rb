@@ -1,8 +1,8 @@
 class User
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include DataMapper::Resource
+  include DataMapper::Timestamps
   include HasConstant
-  include HasConstant::Orm::Mongoid
+  # include HasConstant::Orm::Mongoid
   include Gravtastic
   is_gravtastic
 
@@ -11,36 +11,40 @@ class User
   devise :database_authenticatable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable
 
-  field :username
-  field :api_key
-  field :role,      :type => Integer
-  field :type
+  property :id, Serial
+  property :username, String
+  property :api_key, String
+  property :role, Integer
+  property :type, String
 
   attr_accessor :company_name
 
-  references_many  :leads,       :index => true
-  references_many  :comments,    :index => true
-  references_many  :emails,      :index => true
-  references_many  :tasks,       :index => true
-  references_many  :accounts,    :index => true
-  references_many  :contacts,    :index => true
-  references_many  :activities,  :index => true
-  references_many  :searches,    :index => true
-  references_many  :invitations, :as => :inviter, :dependent => :destroy, :index => true
-  references_one   :invitation,  :as => :invited, :index => true
-  references_many  :opportunities, :index => true
-  references_many  :assigned_opportunities, :foreign_key => 'assignee_id',
-    :class_name => 'Opportunity', :index => true
+  has n,  :leads
+  has n,  :comments
+  has n,  :emails
+  has n,  :tasks
+  has n,  :accounts
+  has n,  :contacts
+  has n,  :activities
+  has n,  :searches
+  has n,  :invitations, :as => :inviter, :dependent => :destroy
+  has 1,   :invitation,  :as => :invited
+  has n,  :opportunities
+  has n,  :assigned_opportunities, :foreign_key => 'assignee_id',
+    :model => 'Opportunity'
 
-  referenced_in :company
+  belongs_to :company, :required => true
 
-  before_validation :set_api_key, :create_company, :on => :create
-  before_create :set_default_role
-  after_create :update_invitation
+  before :valid? do
+    set_api_key if new_record?
+  end
+  before :valid? do
+    create_company if new_record?
+  end
+  before :create, :set_default_role
+  after :create, :update_invitation
 
   has_constant :roles, ROLES
-
-  validates_presence_of :company
 
   def invitation_code=( invitation_code )
     if @invitation = Invitation.first(:conditions => { :code => invitation_code })

@@ -1,16 +1,16 @@
 class OpportunityStage
-  include Mongoid::Document
-  include Mongoid::Timestamps
-  include Mongoid::I18n
+  include DataMapper::Resource
+  include DataMapper::Timestamps
+  # include Mongoid::I18n
   include ParanoidDelete
 
-  localized_field :name
-  field :percentage,    :type => Integer
-  field :notes
+  # localized_field :name
+  property :id, Serial
+  property :percentage, Integer, :required => true
+  property :notes, String, :required => true
 
-  referenced_in :company
-  references_many :opportunities
+  belongs_to :company
+  has n, :opportunities
 
-  validates_presence_of :name, :percentage
   validates_numericality_of :percentage, :allow_blank => true
 end

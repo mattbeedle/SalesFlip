@@ -1,78 +1,77 @@
 class Contact
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include DataMapper::Resource
+  include DataMapper::Timestamps
   include HasConstant
-  include HasConstant::Orm::Mongoid
+  # include HasConstant::Orm::Mongoid
   include ParanoidDelete
   include Permission
   include Trackable
   include Activities
-  include Sunspot::Mongoid
+  # include Sunspot::Mongoid
   include Assignable
   include Gravtastic
   is_gravtastic
 
-  field :first_name
-  field :last_name
-  field :full_name
-  field :access,              :type => Integer
-  field :title,               :type => Integer
-  field :salutation,          :type => Integer
-  field :department
-  field :source,              :type => Integer
-  field :email
-  field :alt_email
-  field :phone
-  field :mobile
-  field :fax
-  field :website
-  field :linked_in
-  field :facebook
-  field :twitter
-  field :xing
-  field :address
-  field :born_on,             :type => Date
-  field :do_not_call,         :type => Boolean
-  field :deleted_at,          :type => Time
-  field :identifier,          :type => Integer
-  field :city
-  field :country
-  field :postal_code
-  field :job_title
-  
-  index :first_name
-  index :last_name
+  property :id, Serial
+  property :first_name, String
+  property :last_name, String, :required => true
+  property :full_name, String
+  property :access, Integer
+  property :title, Integer
+  property :salutation, Integer
+  property :department, String
+  property :source, Integer
+  property :email, String, :unique => true, :allow_blank => true
+  property :alt_email, String
+  property :phone, String
+  property :mobile, String
+  property :fax, String
+  property :website, String
+  property :linked_in, String
+  property :facebook, String
+  property :twitter, String
+  property :xing, String
+  property :address, String
+  property :born_on, Date
+  property :do_not_call, Boolean
+  property :deleted_at, Time
+  property :identifier, Integer
+  property :city, String
+  property :country, String
+  property :postal_code, String
+  property :job_title, String
 
-  validates_presence_of :user, :last_name
-  validates_uniqueness_of :email, :allow_blank => true
-
-  before_create :set_identifier
-  before_save   :set_full_name
+  before :create, :set_identifier
+  before :save,   :set_full_name
 
   has_constant :accesses,     lambda { I18n.t(:access_levels) }
   has_constant :titles,       lambda { I18n.t(:titles) }
   has_constant :sources,      lambda { I18n.t(:lead_sources) }
   has_constant :salutations,  lambda { I18n.t(:salutations) }
 
-  referenced_in :account, :index => true
-  referenced_in :user, :index => true
-  referenced_in :assignee, :class_name => 'User', :index => true
-  referenced_in :lead, :index => true
+  belongs_to :account
+  belongs_to :user, :required => true
+  belongs_to :assignee, :model => 'User'
+  belongs_to :lead
 
-  references_many :tasks, :as => :asset, :dependent => :destroy, :index => true
-  references_many :comments, :as => :commentable, :dependent => :delete_all, :index => true
-  references_many :leads, :dependent => :destroy, :index => true
-  references_many :emails, :as => :commentable, :dependent => :delete_all, :index => true
-  references_many :opportunities, :dependent => :destroy, :index => true
+  has n, :tasks, :as => :asset, :dependent => :destroy
+  has n, :comments, :as => :commentable, :dependent => :delete_all
+  has n, :leads, :dependent => :destroy
+  has n, :emails, :as => :commentable, :dependent => :delete_all
+  has n, :opportunities, :dependent => :destroy
 
-  named_scope :for_company, lambda { |company| {
-    :where => { :user_id.in => company.users.map(&:id) } } }
-  named_scope :name_like, lambda { |name| { :where => { :full_name => /#{name}/i } } }
-
-  searchable do
-    text :first_name, :last_name, :department, :email, :alt_email, :phone, :mobile,
-      :fax, :website, :linked_in, :facebook, :twitter, :xing, :address
+  def self.for_company(company)
+    all(:user_id.in => company.users.map(&:id))
   end
+
+  def self.name_like(name)
+    all(:full_name => /#{name}/i)
+  end
+
+  # searchable do
+    # text :first_name, :last_name, :department, :email, :alt_email, :phone, :mobile,
+      # :fax, :website, :linked_in, :facebook, :twitter, :xing, :address
+  # end
 
   def self.assigned_to( user_id )
     user_id = BSON::ObjectId.from_string(user_id) if user_id.is_a?(String)

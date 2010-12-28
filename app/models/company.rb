@@ -1,16 +1,14 @@
 class Company
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include DataMapper::Resource
+  include DataMapper::Timestamps
 
-  field :name
+  property :id, Serial
+  property :name, String, :required => true, :unique => true
 
-  references_many :users, :index => true
-  references_many :opportunity_stages, :default_order => :percentage.asc
+  has n, :users
+  has n, :opportunity_stages, :default_order => :percentage.asc
 
-  validates_presence_of :name
-  validates_uniqueness_of :name
-
-  before_create :init_opportunity_stages
+  before :create, :init_opportunity_stages
 
 protected
   def init_opportunity_stages

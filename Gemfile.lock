@@ -12,15 +12,6 @@ GIT
       activesupport (~> 3.0)
 
 GIT
-  remote: git://github.com/jugyo/sunspot_mongoid.git
-  revision: aad55650ef68da428178f76b0e42428e1c8b64ef
-  specs:
-    sunspot_mongoid (0.3.2)
-      mongoid
-      sunspot (>= 1.1.0)
-      sunspot_rails (>= 1.1.0)
-
-GIT
   remote: git://github.com/koppen/hassle.git
   revision: a08c757bce033cebc7ef8a4a3a831127afcb956a
   specs:
@@ -34,37 +25,9 @@ GIT
   specs:
     has_constant (0.3.0)
 
-GIT
-  remote: git://github.com/mattbeedle/mongo_session_store.git
-  revision: 860a47f900288b129f5a3a7ba142311bf83a0905
-  specs:
-    mongo_session_store (1.1.2)
-      actionpack (>= 2.3)
-
-GIT
-  remote: git://github.com/mattbeedle/mongoid.git
-  revision: bae5ed827442341ad852022da8d6ccbec639c99b
-  branch: development
-  specs:
-    mongoid (2.0.0.beta.20)
-      activemodel (~> 3.0)
-      mongo (~> 1.1)
-      tzinfo (~> 0.3.22)
-      will_paginate (~> 3.0.pre)
-
-GIT
-  remote: git://github.com/mattbeedle/rack-gridfs.git
-  revision: 98010f7dd10659b2f4d4ce2f7db962c99314a336
-  specs:
-    rack-gridfs (0.2.0)
-      activesupport (>= 3.0.0)
-      mongo (>= 1.0.8)
-      rack
-
 GEM
   remote: http://rubygems.org/
   specs:
-    ZenTest (4.4.2)
     abstract (1.0.0)
     actionmailer (3.0.0)
       actionpack (= 3.0.0)
@@ -92,15 +55,12 @@ GEM
       activemodel (= 3.0.0)
       activesupport (= 3.0.0)
     activesupport (3.0.0)
+    addressable (2.2.2)
     amatch (0.2.5)
     arel (1.0.1)
       activesupport (~> 3.0.0)
-    autotest-rails (4.1.0)
-      ZenTest
     bcrypt-ruby (2.1.2)
     beanstalk-client (1.1.0)
-    bson (1.1.5)
-    bson_ext (1.1.5)
     builder (2.1.2)
     cancan (1.4.1)
     capybara (0.4.0)
@@ -128,29 +88,74 @@ GEM
       cucumber (>= 0.8.0)
     culerity (0.2.13)
     daemons (1.1.0)
+    data_objects (0.10.2)
+      addressable (~> 2.1)
     database_cleaner (0.6.0)
     delayed_job (2.1.2)
       activesupport (~> 3.0)
       daemons
-    delayed_job_mongoid (1.0.1)
-      delayed_job (~> 2.1.1)
-      mongoid (~> 2.0)
     devise (1.1.5)
       bcrypt-ruby (~> 2.1.2)
       warden (~> 1.0.2)
     diff-lcs (1.1.2)
+    dm-active_model (1.0.3)
+      activemodel (~> 3.0.0)
+      dm-core (~> 1.0.2)
+    dm-core (1.0.2)
+      addressable (~> 2.2)
+      extlib (~> 0.9.15)
+    dm-devise (1.1.5)
+      bcrypt-ruby (~> 2.1.2)
+      devise (~> 1.1.0)
+      dm-core (~> 1.0.0)
+      dm-migrations (~> 1.0.0)
+      dm-rails (>= 1.0.3)
+      dm-serializer (~> 1.0.0)
+      dm-timestamps (~> 1.0.0)
+      sugar-high (~> 0.2.10)
+    dm-do-adapter (1.0.2)
+      data_objects (~> 0.10.2)
+      dm-core (~> 1.0.2)
+    dm-migrations (1.0.2)
+      dm-core (~> 1.0.2)
+    dm-postgres-adapter (1.0.2)
+      dm-do-adapter (~> 1.0.2)
+      do_postgres (~> 0.10.2)
+    dm-rails (1.0.4)
+      actionpack (~> 3.0.0)
+      activesupport (~> 3.0.0)
+      dm-active_model (~> 1.0.3)
+      dm-core (~> 1.0.0)
+      railties (~> 3.0.0)
+    dm-serializer (1.0.2)
+      dm-core (~> 1.0.2)
+      fastercsv (~> 1.5.3)
+      json_pure (~> 1.4)
+    dm-timestamps (1.0.2)
+      dm-core (~> 1.0.2)
+    dm-types (1.0.2)
+      dm-core (~> 1.0.2)
+      fastercsv (~> 1.5.3)
+      json_pure (~> 1.4)
+      stringex (~> 1.1.0)
+      uuidtools (~> 2.1.1)
+    dm-validations (1.0.2)
+      dm-core (~> 1.0.2)
+    do_postgres (0.10.2)
+      data_objects (= 0.10.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
     escape (0.0.4)
     eventmachine (0.12.10)
+    extlib (0.9.15)
     faker (0.3.1)
     fakeweb (1.3.0)
+    fastercsv (1.5.3)
     ffi (0.6.3)
       rake (>= 0.8.7)
     gherkin (2.3.2)
       json (~> 1.4.6)
       term-ansicolor (~> 1.0.5)
-    git (1.2.5)
     gravtastic (3.1.0)
     haml (3.0.25)
     has_scope (0.5.0)
@@ -162,10 +167,6 @@ GEM
     inherited_resources (1.1.2)
       has_scope (~> 0.5.0)
       responders (~> 0.6.0)
-    jeweler (1.5.1)
-      bundler (~> 1.0.0)
-      git (>= 1.2.5)
-      rake
     json (1.4.6)
     json_pure (1.4.6)
     launchy (0.3.7)
@@ -173,8 +174,6 @@ GEM
       rake (>= 0.8.1)
     macaddr (1.0.0)
     machinist (1.0.6)
-    machinist_mongo (1.1.1)
-      machinist (~> 1.0.4)
     mail (2.2.12)
       activesupport (>= 2.3.6)
       i18n (>= 0.4.0)
@@ -188,16 +187,6 @@ GEM
     mime-types (1.16)
     mocha (0.9.10)
       rake
-    mongo (1.1.5)
-      bson (>= 1.1.5)
-    mongoid_i18n (0.1.8)
-      bson_ext
-      bundler
-      jeweler
-      mocha
-      mongoid (>= 2.0.0.beta.20)
-      mongoid (>= 2.0.0.beta.9)
-      rspec (>= 2.0.0.beta.8)
     navvy (0.3.1)
     nokogiri (1.4.4)
     notifier (0.1.1)
@@ -206,9 +195,6 @@ GEM
       rake
       rspec (>= 1.3)
       yard
-    pickle-mongoid (0.1.7)
-      mongoid (>= 2.0.0.beta.20)
-      pickle (>= 0.3.0)
     polyglot (0.3.1)
     rack (1.2.1)
     rack-mount (0.6.13)
@@ -231,6 +217,7 @@ GEM
     rake (0.8.7)
     remail (0.0.3)
       activeresource
+    require_all (1.2.0)
     responders (0.6.2)
     rest-client (1.6.1)
       mime-types (>= 1.16)
@@ -257,6 +244,10 @@ GEM
     smurf (1.0.4)
     spork (0.8.4)
     sqlite3-ruby (1.3.2)
+    stringex (1.1.0)
+    sugar-high (0.2.12)
+      mocha (~> 0.9.8)
+      require_all (~> 1.2.0)
     sunspot (1.1.0)
       escape (= 0.0.4)
       rsolr (= 0.12.1)
@@ -276,6 +267,7 @@ GEM
     tzinfo (0.3.23)
     uuid (2.3.1)
       macaddr (~> 1.0)
+    uuidtools (2.1.1)
     warden (1.0.3)
       rack (>= 1.0.0)
     will_paginate (3.0.pre)
@@ -290,10 +282,7 @@ PLATFORMS
 DEPENDENCIES
   aaronh-chronic!
   amatch
-  autotest-rails
   beanstalk-client
-  bson
-  bson_ext
   cancan
   capybara
   carrierwave!
@@ -302,8 +291,14 @@ DEPENDENCIES
   cucumber-rails
   database_cleaner
   delayed_job
-  delayed_job_mongoid
   devise
+  dm-devise
+  dm-migrations
+  dm-postgres-adapter
+  dm-rails
+  dm-timestamps
+  dm-types
+  dm-validations
   faker
   fakeweb
   gravtastic
@@ -314,19 +309,13 @@ DEPENDENCIES
   heroku
   inherited_resources
   launchy
-  machinist_mongo
+  machinist
   mail
   mbeedle-heroku-autoscale
   memcached
   mocha
-  mongo
-  mongo_session_store!
-  mongoid!
-  mongoid_i18n
   navvy
   pickle
-  pickle-mongoid
-  rack-gridfs!
   rails (= 3.0.0)
   remail
   riddle
@@ -336,7 +325,6 @@ DEPENDENCIES
   spork
   sqlite3-ruby
   sunspot
-  sunspot_mongoid!
   sunspot_rails
   test_notifier
   thin

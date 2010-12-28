@@ -2,8 +2,13 @@ module Trackable
   extend ActiveSupport::Concern
   
   included do
-    field :tracker_ids, :type => Array
-    named_scope :tracked_by, lambda { |user| { :where => { :tracker_ids => user.id } } }
+    property :tracker_ids, Object, :default => []
+  end
+
+  module ClassMethods
+    def tracked_by(user)
+      all(:tracker_ids => user.id)
+    end
   end
 
   def trackers

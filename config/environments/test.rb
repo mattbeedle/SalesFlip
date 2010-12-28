@@ -32,6 +32,6 @@ Salesflip::Application.configure do
 
   config.active_support.deprecation = :log
   
-  config.middleware.use Rack::GridFS, :hostname => 'localhost',
-    :port => 27017, :database => 'salesflip_test', :prefix => 'uploads'
+  # config.middleware.use Rack::GridFS, :hostname => 'localhost',
+    # :port => 27017, :database => 'salesflip_test', :prefix => 'uploads'
 end

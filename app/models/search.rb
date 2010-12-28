@@ -1,14 +1,15 @@
 class Search
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include DataMapper::Resource
+  include DataMapper::Timestamps
 
-  field :terms
-  field :collections, :type => Array
-  field :company
+  property :id, Serial
+  property :terms, String
+  property :collections, Object, :default => []
+  property :company, String
 
-  referenced_in :user, :index => true
+  belongs_to :user
 
-  validate :criteria_entered?
+  validates_with_method :criteria_entered?
 
   def results
     unless company.blank?

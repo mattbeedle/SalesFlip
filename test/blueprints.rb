@@ -1,5 +1,5 @@
 # encoding: utf-8
-require 'machinist/mongoid'
+require 'machinist/data_mapper'
 require 'sham'
 require 'faker'
 
