@@ -3,13 +3,13 @@ class Search
   include DataMapper::Timestamps
 
   property :id, Serial
-  property :terms, String
   property :collections, Object, :default => []
-  property :company, String
+  property :terms, String,
+    required: true, message: I18n.t('activemodel.errors.messages.blank')
+  property :company, String,
+    required: true, message: I18n.t('activemodel.errors.messages.blank')
 
-  belongs_to :user
-
-  validates_with_method :criteria_entered?
+  belongs_to :user, :required => false
 
   def results
     unless company.blank?
@@ -19,14 +19,6 @@ class Search
       @results ||= Sunspot.search(collections.map(&:constantize) || [Account, Contact, Lead]) do
         keywords terms
       end.results
-    end
-  end
-
-private
-  def criteria_entered?
-    if self.terms.blank? and self.company.blank?
-      self.errors.add :terms, I18n.t('activemodel.errors.messages.blank')
-      self.errors.add :company, I18n.t('activemodel.errors.messages.blank')
     end
   end
 end

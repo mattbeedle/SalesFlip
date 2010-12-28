@@ -2,13 +2,12 @@ module Permission
   extend ActiveSupport::Concern
 
   included do
-    property :permission, Integer, :default => 0
     property :permitted_user_ids, Object, :default => []
 
-    validates_presence_of :permission
-    validates_with_method :require_permitted_users
+    validates_with_method :permitted_user_ids, :method => :require_permitted_users
 
-    has_constant :permissions, lambda { I18n.t(:permissions) }
+    has_constant :permissions, I18n.t(:permissions),
+      default: 0, required: true
   end
 
   module ClassMethods
@@ -42,13 +41,15 @@ module Permission
            id
          end
       end.to_a
-      write_attribute :permitted_user_ids, ids
+      attribute_set :permitted_user_ids, ids
     end
   end
 
   def require_permitted_users
     if I18n.locale_around(:en) { permission_is?('Shared') } and permitted_user_ids.blank?
-      errors.add :permitted_user_ids, I18n.t('activerecord.errors.messages.blank')
+      [false, I18n.t('activerecord.errors.messages.blank')]
+    else
+      true
     end
   end
 

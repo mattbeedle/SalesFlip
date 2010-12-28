@@ -1,8 +1,7 @@
 class User
   include DataMapper::Resource
   include DataMapper::Timestamps
-  include HasConstant
-  # include HasConstant::Orm::Mongoid
+  include HasConstant::Orm::DataMapper
   include Gravtastic
   is_gravtastic
 
@@ -14,7 +13,6 @@ class User
   property :id, Serial
   property :username, String
   property :api_key, String
-  property :role, Integer
   property :type, String
 
   attr_accessor :company_name
@@ -30,17 +28,19 @@ class User
   has n,  :invitations, :as => :inviter, :dependent => :destroy
   has 1,   :invitation,  :as => :invited
   has n,  :opportunities
-  has n,  :assigned_opportunities, :foreign_key => 'assignee_id',
-    :model => 'Opportunity'
+  has n,  :assigned_opportunities, foreign_key: 'assignee_id',
+    model: 'Opportunity'
 
   belongs_to :company, :required => true
 
   before :valid? do
-    set_api_key if new_record?
+    set_api_key if new?
   end
+
   before :valid? do
-    create_company if new_record?
+    create_company if new?
   end
+
   before :create, :set_default_role
   after :create, :update_invitation
 
@@ -82,7 +82,7 @@ class User
       UserMailer.tracked_items_update(user).deliver if user.new_activity?
       user.tracked_items.each do |item|
         item.related_activities.not_notified(user).each do |activity|
-          activity.update_attributes :notified_user_ids => (activity.notified_user_ids || []) << user.id
+          activity.update :notified_user_ids => (activity.notified_user_ids || []) << user.id
         end
       end
     end
@@ -109,7 +109,7 @@ protected
   end
 
   def update_invitation
-    @invitation.update_attributes :invited_id => self.id unless @invitation.nil?
+    @invitation.update :invited_id => self.id unless @invitation.nil?
   end
 
   def set_default_role

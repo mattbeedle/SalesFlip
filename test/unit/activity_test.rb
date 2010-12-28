@@ -84,7 +84,7 @@ class ActivityTest < ActiveSupport::TestCase
         Activity.delete_all
         @activity1 = Activity.log(@user, @lead, 'Created')
         @activity2 = Activity.log(@user, @contact, 'Created')
-        @activity2.update_attributes :notified_user_ids => [@user.id]
+        @activity2.update :notified_user_ids => [@user.id]
       end
 
       should 'return activities where the supplied user has already been notified' do
@@ -102,7 +102,7 @@ class ActivityTest < ActiveSupport::TestCase
         Activity.delete_all
         @activity1 = Activity.log(@user, @lead, 'Created')
         @activity2 = Activity.log(@user, @contact, 'Created')
-        @activity2.update_attributes :notified_user_ids => [@user.id]
+        @activity2.update :notified_user_ids => [@user.id]
       end
 
       should 'return activities where the supplied user needs to be notified' do
@@ -119,7 +119,7 @@ class ActivityTest < ActiveSupport::TestCase
         @restored = Lead.make
         @restored.destroy
         @restored = Lead.find(@restored.id)
-        @restored.update_attributes :deleted_at => nil
+        @restored.update :deleted_at => nil
       end
 
       should 'only return activities where the subject deleted_at is not nil' do
@@ -145,24 +145,24 @@ class ActivityTest < ActiveSupport::TestCase
       end
 
       should 'return activities where subject user is owner' do
-        @contact.update_attributes :user_id => @benny.id, :permission => 'Public'
+        @contact.update :user_id => @benny.id, :permission => 'Public'
         assert Activity.visible_to(@benny).include?(@activity)
       end
 
       should 'return activities where subject permission is public' do
-        @contact.update_attributes :permission => 'Public'
+        @contact.update :permission => 'Public'
         assert Activity.visible_to(@benny).include?(@activity)
         assert Activity.visible_to(@annika).include?(@activity)
       end
 
       should 'return activities where subject permission is shared and user is in subjects permitted user list' do
-        @contact.update_attributes :permission => 'Shared', :permitted_user_ids => [@benny.id]
+        @contact.update :permission => 'Shared', :permitted_user_ids => [@benny.id]
         assert Activity.visible_to(@benny).include?(@activity)
         assert Activity.visible_to(@annika).include?(@activity)
       end
 
       should 'NOT return activities where subject permission is shared and user is NOT in subjects permitted user list' do
-        @contact.update_attributes :permission => 'Shared', :permitted_user_ids => [@annika.id]
+        @contact.update :permission => 'Shared', :permitted_user_ids => [@annika.id]
         assert Activity.visible_to(@annika).include?(@activity)
         assert !Activity.visible_to(@benny).include?(@activity)
       end

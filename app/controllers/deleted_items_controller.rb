@@ -13,7 +13,7 @@ class DeletedItemsController < ApplicationController
   end
 
   def update
-    @item.update_attributes :deleted_at => nil
+    @item.update :deleted_at => nil
     redirect_to deleted_items_path
   end
 

@@ -1,8 +1,7 @@
 class Task
   include DataMapper::Resource
   include DataMapper::Timestamps
-  include HasConstant
-  # include HasConstant::Orm::Mongoid
+  include HasConstant::Orm::DataMapper
   include Permission
   include Mongoid::Rails::MultiParameterAttributes
   include Activities
@@ -11,16 +10,16 @@ class Task
   property :id, Serial
   property :name, String, :required => true
   property :due_at, Time, :required => true
-  property :category, Integer, :required => true
   property :priority, Integer
   property :completed_at, Time
   property :deleted_at, Time
 
-  has_constant :categories, lambda { I18n.t(:task_categories) }
+  has_constant :categories, I18n.t(:task_categories),
+    required: true
 
   belongs_to :user, :required => true
-  # belongs_to :asset, :polymorphic => true
-  belongs_to :completed_by, :model => 'User'
+  # belongs_to :asset, :polymorphic => true, :required => false
+  belongs_to :completed_by, :model => 'User', :required => false
 
   has n, :activities, :as => :subject, :dependent => :destroy
 
@@ -129,8 +128,8 @@ class Task
   def completed_by_id=( user_id )
     if user_id and not completed?
       @recently_completed = true
-      write_attribute :completed_at, Time.zone.now
-      write_attribute :completed_by_id, user_id
+      attribute_set :completed_at, Time.zone.now
+      attribute_set :completed_by_id, user_id
     end
   end
 
@@ -139,15 +138,15 @@ class Task
   end
 
   def assignee_id=( assignee_id )
-    old_assignee_id = read_attribute(:assignee_id)
-    if old_assignee_id != assignee_id && !assignee_id.blank? && !new_record?
+    old_assignee_id = attribute_get(:assignee_id)
+    if old_assignee_id != assignee_id && !assignee_id.blank? && !new?
       @reassigned = true
     end
-    write_attribute :assignee_id, assignee_id
+    attribute_set :assignee_id, assignee_id
   end
 
   def due_at=( due )
-    write_attribute :due_at,
+    attribute_set :due_at,
       case due
       when 'overdue'
         Time.zone.now.yesterday.end_of_day.utc
@@ -209,7 +208,7 @@ protected
 
   def assign_unassigned_asset
     if asset && (asset.is_a?(Lead) || asset.is_a?(Opportunity)) && asset.assignee.blank?
-      asset.update_attributes :assignee => self.user
+      asset.update :assignee => self.user
     end
   end
 

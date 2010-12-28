@@ -1,8 +1,7 @@
 class Contact
   include DataMapper::Resource
   include DataMapper::Timestamps
-  include HasConstant
-  # include HasConstant::Orm::Mongoid
+  include HasConstant::Orm::DataMapper
   include ParanoidDelete
   include Permission
   include Trackable
@@ -16,11 +15,7 @@ class Contact
   property :first_name, String
   property :last_name, String, :required => true
   property :full_name, String
-  property :access, Integer
-  property :title, Integer
-  property :salutation, Integer
   property :department, String
-  property :source, Integer
   property :email, String, :unique => true, :allow_blank => true
   property :alt_email, String
   property :phone, String
@@ -49,10 +44,10 @@ class Contact
   has_constant :sources,      lambda { I18n.t(:lead_sources) }
   has_constant :salutations,  lambda { I18n.t(:salutations) }
 
-  belongs_to :account
+  belongs_to :account, :required => false
   belongs_to :user, :required => true
-  belongs_to :assignee, :model => 'User'
-  belongs_to :lead
+  belongs_to :assignee, :model => 'User', :required => false
+  belongs_to :lead, :required => false
 
   has n, :tasks, :as => :asset, :dependent => :destroy
   has n, :comments, :as => :commentable, :dependent => :delete_all
@@ -126,6 +121,6 @@ protected
   end
 
   def set_full_name
-    write_attribute :full_name, "#{first_name} #{last_name}"
+    attribute_set :full_name, "#{first_name} #{last_name}"
   end
 end

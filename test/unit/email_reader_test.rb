@@ -122,7 +122,7 @@ class EmailReaderTest < ActiveSupport::TestCase
 
         context 'when lead is new' do
           setup do
-            @lead.update_attributes :status => 'New'
+            @lead.update :status => 'New'
             EmailReader.parse_email(@email)
           end
 
@@ -138,7 +138,7 @@ class EmailReaderTest < ActiveSupport::TestCase
 
         context 'when lead is converted' do
           setup do
-            @lead.update_attributes :status => 'Converted'
+            @lead.update :status => 'Converted'
             EmailReader.parse_email(@email)
           end
 

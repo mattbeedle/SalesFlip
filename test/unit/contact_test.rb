@@ -70,7 +70,7 @@ class ContactTest < ActiveSupport::TestCase
         5.times do
           Identifier.next_contact
         end
-        @lead.update_attributes :phone => '1234567890', :salutation => 'Mr',
+        @lead.update :phone => '1234567890', :salutation => 'Mr',
           :department => 'a test department', :source => 'Website', :address => 'an address',
           :website => 'www.test.com', :linked_in => 'linkedin', :facebook => 'facebook',
           :xing => 'xing', :do_not_call => true
@@ -133,7 +133,7 @@ class ContactTest < ActiveSupport::TestCase
     
     should 'not be able to assign to another user if the permission is private' do
       @contact.save!
-      @contact.update_attributes :permission => 'Private'
+      @contact.update :permission => 'Private'
       assert @contact.valid?
       @contact.assignee = @user
       assert !@contact.valid?
@@ -143,7 +143,7 @@ class ContactTest < ActiveSupport::TestCase
     should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
       @contact.save!
       user = User.make
-      @contact.update_attributes :permission => 'Shared', :permitted_user_ids => [user.id]
+      @contact.update :permission => 'Shared', :permitted_user_ids => [user.id]
       assert @contact.valid?
       @contact.assignee = @user
       assert !@contact.valid?
@@ -198,22 +198,22 @@ class ContactTest < ActiveSupport::TestCase
       end
 
       should 'return all contacts belonging to the user' do
-        @florian.update_attributes :permission => 'Private'
+        @florian.update :permission => 'Private'
         assert Contact.permitted_for(@annika).include?(@florian)
       end
 
       should 'NOT return private contacts belonging to another user' do
-        @steven.update_attributes :permission => 'Private'
+        @steven.update :permission => 'Private'
         assert !Contact.permitted_for(@annika).include?(@steven)
       end
 
       should 'return shared contacts where the user is in the permitted users list' do
-        @steven.update_attributes :permission => 'Shared', :permitted_user_ids => [@florian.user_id]
+        @steven.update :permission => 'Shared', :permitted_user_ids => [@florian.user_id]
         assert Contact.permitted_for(@annika).include?(@steven)
       end
 
       should 'NOT return shared contacts where the user is not in the permitted users list' do
-        @steven.update_attributes :permission => 'Shared', :permitted_user_ids => [@steven.user_id]
+        @steven.update :permission => 'Shared', :permitted_user_ids => [@steven.user_id]
         assert !Contact.permitted_for(@annika).include?(@steven)
       end
     end
@@ -229,12 +229,12 @@ class ContactTest < ActiveSupport::TestCase
       end
 
       should 'log an activity when updated' do
-        @contact.update_attributes :first_name => 'test'
+        @contact.update :first_name => 'test'
         assert @contact.activities.any? {|a| a.action == 'Updated' }
       end
 
       should 'not log an "update" activity when do_not_log is set' do
-        @contact.update_attributes :first_name => 'test', :do_not_log => true
+        @contact.update :first_name => 'test', :do_not_log => true
         assert !@contact.activities.any? {|a| a.action == 'Updated' }
       end
 
@@ -251,7 +251,7 @@ class ContactTest < ActiveSupport::TestCase
         @contact.destroy
         @contact.activities.each(&:destroy)
         @contact = Contact.find(@contact.id)
-        @contact.update_attributes :deleted_at => nil
+        @contact.update :deleted_at => nil
         assert @contact.activities.any? {|a| a.action == 'Restored' }
       end
     end

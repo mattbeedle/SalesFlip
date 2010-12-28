@@ -22,11 +22,11 @@ module Trackable
   end
 
   def tracker_ids=( ids )
-    write_attribute :tracker_ids, ids.map { |id| BSON::ObjectId.from_string(id.to_s) } if ids
+    attribute_set :tracker_ids, ids.map { |id| BSON::ObjectId.from_string(id.to_s) } if ids
   end
 
   def remove_tracker_ids=( ids )
-    olds_ids = read_attribute(:tracker_ids) || []
-    write_attribute :tracker_ids, olds_ids.map(&:to_s) - ids.map(&:to_s)
+    olds_ids = attribute_get(:tracker_ids) || []
+    attribute_set :tracker_ids, olds_ids.map(&:to_s) - ids.map(&:to_s)
   end
 end

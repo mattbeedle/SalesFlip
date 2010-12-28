@@ -8,9 +8,9 @@ class EmailsController < ApplicationController
     else
       @queued_mail = MailQueue.create :mail => params[:email][:raw]
       if UserMailer.receive(Mail.new(@queued_mail.mail))
-        @queued_mail.update_attributes :status => 'Success'
+        @queued_mail.update :status => 'Success'
       else
-        @queued_mail.update_attributes :status => 'Failed'
+        @queued_mail.update :status => 'Failed'
       end
     end
   rescue

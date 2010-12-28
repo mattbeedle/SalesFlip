@@ -6,7 +6,7 @@ class Company
   property :name, String, :required => true, :unique => true
 
   has n, :users
-  has n, :opportunity_stages, :default_order => :percentage.asc
+  has n, :opportunity_stages, :order => :percentage.asc
 
   before :create, :init_opportunity_stages
 

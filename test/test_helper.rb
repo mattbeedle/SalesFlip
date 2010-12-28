@@ -10,7 +10,7 @@ class ActiveSupport::TestCase
   #
   # Note: You'll currently still have to declare fixtures explicitly in integration tests
   # -- they do not yet inherit this setting
-  fixtures :all
+  # fixtures :all
 
   # Add more helper methods to be used by all tests here...
 
@@ -131,12 +131,7 @@ class ActiveSupport::TestCase
 
   setup do
     Sham.reset
-    Mongoid.database.collections.each do |collection|
-      begin
-        collection.drop
-      rescue
-      end
-    end
+    DataMapper.auto_migrate!
     FakeWeb.allow_net_connect = false
     ActionMailer::Base.deliveries.clear
     FakeWeb.register_uri(:post, 'http://localhost:8981/solr/update?wt=ruby', :body => '')

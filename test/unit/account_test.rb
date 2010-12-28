@@ -125,7 +125,7 @@ class AccountTest < ActiveSupport::TestCase
 
       context 'when lead does not have updater' do
         setup do
-          @lead.update_attributes :updater_id => nil
+          @lead.update :updater_id => nil
           Account.create_for(@lead, 'CareerMee')
         end
 
@@ -136,7 +136,7 @@ class AccountTest < ActiveSupport::TestCase
 
       context 'when lead has updater' do
         setup do
-          @lead.update_attributes :updater_id => @benny.id
+          @lead.update :updater_id => @benny.id
           Account.create_for(@lead, 'CareerMee')
         end
 
@@ -147,7 +147,7 @@ class AccountTest < ActiveSupport::TestCase
 
       context 'when lead permission is specified' do
         setup do
-          @lead.update_attributes :permission => 'Private'
+          @lead.update :permission => 'Private'
           Account.create_for(@lead, 'CareerMee', :permission => 'Object')
         end
 
@@ -217,7 +217,7 @@ class AccountTest < ActiveSupport::TestCase
     
     should 'not be able to assign to another user if the permission is private' do
       @account.save!
-      @account.update_attributes :permission => 'Private'
+      @account.update :permission => 'Private'
       assert @account.valid?
       @account.assignee = @user
       assert !@account.valid?
@@ -227,7 +227,7 @@ class AccountTest < ActiveSupport::TestCase
     should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
       @account.save!
       user = User.make
-      @account.update_attributes :permission => 'Shared', :permitted_user_ids => [user.id]
+      @account.update :permission => 'Shared', :permitted_user_ids => [user.id]
       assert @account.valid?
       @account.assignee = @user
       assert !@account.valid?
@@ -333,22 +333,22 @@ class AccountTest < ActiveSupport::TestCase
       end
 
       should 'return all contacts belonging to the user' do
-        @careermee.update_attributes :permission => 'Private'
+        @careermee.update :permission => 'Private'
         assert Account.permitted_for(@annika).include?(@careermee)
       end
 
       should 'NOT return private contacts belonging to another user' do
-        @world_dating.update_attributes :permission => 'Private'
+        @world_dating.update :permission => 'Private'
         assert !Account.permitted_for(@annika).include?(@world_dating)
       end
 
       should 'return shared contacts where the user is in the permitted users list' do
-        @world_dating.update_attributes :permission => 'Shared', :permitted_user_ids => [@annika.id]
+        @world_dating.update :permission => 'Shared', :permitted_user_ids => [@annika.id]
         assert Account.permitted_for(@annika).include?(@world_dating)
       end
 
       should 'NOT return shared contacts where the user is not in the permitted users list' do
-        @world_dating.update_attributes :permission => 'Shared', :permitted_user_ids => [@world_dating.id]
+        @world_dating.update :permission => 'Shared', :permitted_user_ids => [@world_dating.id]
         assert !Account.permitted_for(@annika).include?(@world_dating)
       end
     end
@@ -363,7 +363,7 @@ class AccountTest < ActiveSupport::TestCase
       end
 
       should 'log an activity when updated' do
-        @account.update_attributes :name => 'an update test'
+        @account.update :name => 'an update test'
         assert_equal 2, @account.activities.count
         assert @account.activities.any? {|a| a.action == 'Updated' }
       end
@@ -380,7 +380,7 @@ class AccountTest < ActiveSupport::TestCase
       should 'log an activity when restored' do
         @account.destroy
         @account = Account.last
-        @account.update_attributes :deleted_at => nil
+        @account.update :deleted_at => nil
         assert @account.activities.any? {|a| a.action == 'Restored' }
       end
     end

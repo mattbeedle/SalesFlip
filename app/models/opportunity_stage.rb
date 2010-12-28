@@ -4,12 +4,12 @@ class OpportunityStage
   # include Mongoid::I18n
   include ParanoidDelete
 
-  # localized_field :name
   property :id, Serial
+  property :name, String # should be 'localized_field'
   property :percentage, Integer, :required => true
-  property :notes, String, :required => true
+  property :notes, String
 
-  belongs_to :company
+  belongs_to :company, :required => false
   has n, :opportunities
 
   validates_numericality_of :percentage, :allow_blank => true

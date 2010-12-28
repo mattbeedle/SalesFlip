@@ -1,19 +1,17 @@
 class Invitation
   include DataMapper::Resource
   include DataMapper::Timestamps
-  include HasConstant
-  # include HasConstant::Orm::Mongoid
+  include HasConstant::Orm::DataMapper
 
   property :id, Serial
   property :email, String, :required => true
   property :code, String, :required => true
-  property :role, Integer, :required => true
 
-  belongs_to :invited, :model => 'User'
+  belongs_to :invited, :model => 'User', :required => false
   belongs_to :inviter, :model => 'User', :required => true
 
   before :valid? do
-    generate_code if new_record?
+    generate_code if new?
   end
   after :create, :send_invitation
 

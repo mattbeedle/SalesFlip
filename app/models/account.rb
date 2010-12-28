@@ -1,8 +1,14 @@
 class Account
+
   include DataMapper::Resource
   include DataMapper::Timestamps
-  include HasConstant
-  # include HasConstant::Orm::Mongoid
+
+  def self.property(name, *args)
+    puts caller(0) if name == :account_id
+    super
+  end
+
+  include HasConstant::Orm::DataMapper
   include ParanoidDelete
   include Permission
   include Trackable
@@ -13,7 +19,6 @@ class Account
   property :id, Serial
   property :name, String, :required => true
   property :email, String, :unique => true, :allow_blank => true
-  property :access, Integer
   property :website, String
   property :phone, String
   property :fax, String
@@ -24,19 +29,18 @@ class Account
   property :billing_address, String
   property :shipping_address, String
   property :identifier, Integer
-  property :account_type, Integer
   
   has_constant :accesses, lambda { I18n.t(:access_levels) }
   has_constant :account_types, lambda { I18n.t(:account_types) }
 
-  belongs_to :user, :required => true
-  belongs_to :assignee, :model => 'User'
-  belongs_to :parent, :model => 'Account'
+  belongs_to :user, required: true
+  belongs_to :assignee, model: 'User', required: false
+  belongs_to :parent, model: 'Account', required: false
   
   has n,   :contacts, :dependent => :nullify
   has n,   :tasks, :as => :asset
   has n,   :comments, :as => :commentable
-  has n,   :children, :model => 'Account', :foreign_key => 'parent_id'
+  has n,   :children, :model => 'Account', :child_key => 'parent_id'
 
   before :create, :set_identifier
 
@@ -82,7 +86,7 @@ class Account
 
   def website=( website )
     website = "http://#{website}" if !website.nil? and !website.match(/^http:\/\//)
-    write_attribute :website, website
+    attribute_set :website, website
   end
 
   def self.find_or_create_for( object, name_or_id, options = {} )

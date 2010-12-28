@@ -1,8 +1,7 @@
 class Opportunity
   include DataMapper::Resource
   include DataMapper::Timestamps
-  include HasConstant
-  # include HasConstant::Orm::Mongoid
+  include HasConstant::Orm::DataMapper
   include Mongoid::Rails::MultiParameterAttributes
   include Assignable
   include ParanoidDelete
@@ -19,7 +18,7 @@ class Opportunity
   property :background_info, String
   property :margin, Float
 
-  belongs_to :contact
+  belongs_to :contact, :required => false
   belongs_to :user, :required => true
   belongs_to :stage, :model => 'OpportunityStage', :required => true
   has n, :comments, :as => :commentable, :dependent => :delete_all

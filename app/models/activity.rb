@@ -1,18 +1,28 @@
 class Activity
   include DataMapper::Resource
   include DataMapper::Timestamps
-  include HasConstant
-  # include HasConstant::Orm::Mongoid
+  include HasConstant::Orm::DataMapper
 
   property :id, Serial
-  property :action, Integer
   property :info, String
   property :notified_user_ids, Object, :default => []
 
+  property :subject_id, Integer, required: true
+  property :subject_type, String, required: true
+
   belongs_to :user, :required => true
 
-  # belongs_to :subject, :polymorphic => true
-  # validates_presence_of :subject
+  def subject
+    subject_type.constantize.get(subject_id) if subject_type
+  end
+
+  def subject=(new_subject)
+    if new_subject
+      self.attributes = {subject_id: new_subject.id, subject_type: new_subject.class}
+    else
+      self.attributes = {subject_id: nil, subject_type: nil}
+    end
+  end
 
   def self.for_subject(subject)
     all(:subject_id => subject.id, :subject_type => subject.class.to_s)
@@ -47,7 +57,7 @@ class Activity
                               :subject_type => subject.class.name,
                               :action => Activity.actions.index(action)).first
     if activity
-      activity.update_attributes(:updated_at => Time.zone.now, :user_id => user.id)
+      activity.update(:updated_at => Time.zone.now, :user_id => user.id)
     else
       create_activity(user, subject, action)
     end

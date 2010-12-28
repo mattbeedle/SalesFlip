@@ -1,8 +1,7 @@
 class Comment
   include DataMapper::Resource
   include DataMapper::Timestamps
-  include HasConstant
-  # include HasConstant::Orm::Mongoid
+  include HasConstant::Orm::DataMapper
   include Activities
   include Permission
   include ParanoidDelete
@@ -13,8 +12,7 @@ class Comment
 
   belongs_to :user, :required => true
 
-  # belongs_to :commentable, :polymorphic => true
-  # validates_presence_of :commentable
+  # belongs_to :commentable, :polymorphic => true, required: true
 
   has n, :attachments, :as => :subject
 

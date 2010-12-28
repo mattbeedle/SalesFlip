@@ -151,7 +151,7 @@ class OpportunityTest < ActiveSupport::TestCase
       opportunity = Opportunity.make
       stage = OpportunityStage.make :percentage => 100
       assert opportunity.close_on != Date.today
-      opportunity.update_attributes :stage => stage
+      opportunity.update :stage => stage
       assert_equal Date.today, opportunity.close_on
     end
 
@@ -164,7 +164,7 @@ class OpportunityTest < ActiveSupport::TestCase
     should 'take probability from associated stage' do
       opportunity = Opportunity.make
       stage = OpportunityStage.make :percentage => 57
-      opportunity.update_attributes :stage => stage
+      opportunity.update :stage => stage
       assert_equal 57, opportunity.probability
     end
 
@@ -194,7 +194,7 @@ class OpportunityTest < ActiveSupport::TestCase
       end
 
       should 'log an activity when updated' do
-        @opportunity.update_attributes :name => 'an update test'
+        @opportunity.update :name => 'an update test'
         assert_equal 2, @opportunity.activities.count
         assert @opportunity.activities.any? {|a| a.action == 'Updated' }
       end
@@ -211,7 +211,7 @@ class OpportunityTest < ActiveSupport::TestCase
       should 'log an activity when restored' do
         @opportunity.destroy
         @opportunity = Opportunity.last
-        @opportunity.update_attributes :deleted_at => nil
+        @opportunity.update :deleted_at => nil
         assert @opportunity.activities.any? {|a| a.action == 'Restored' }
       end
     end

@@ -3,19 +3,10 @@ class Attachment
   include DataMapper::Timestamps
 
   property :id, Serial
-  property :attachment, String
+  property :attachment, String,
+    required: true, message: I18n.t('active_record.errors.messages.blank')
 
-  # belongs_to :subject, :polymorphic => true
-  # validates_presence_of :subject
-
-  validates_with_method :validate_attachment
+  # belongs_to :subject, :polymorphic => true, required: true
 
   mount_uploader :attachment, AttachmentUploader
-
-protected
-  def validate_attachment
-    if self.attachment.blank?
-      self.errors.add :attachment, I18n.t('active_record.errors.messages.blank')
-    end
-  end
 end

@@ -32,7 +32,7 @@ class TaskTest < ActiveSupport::TestCase
 
       should 'scope tasks to the supplied scope' do
         @task3 = Task.make :due_at => 'due_next_week'
-        @task3.update_attributes :completed_by_id => @task3.user_id
+        @task3.update :completed_by_id => @task3.user_id
         result = Task.grouped_by_scope(['due_next_week'], :target => Task.incomplete)
         assert result[:due_next_week].include?(@task)
         assert !result[:due_next_week].include?(@task3)
@@ -58,8 +58,8 @@ class TaskTest < ActiveSupport::TestCase
       end
 
       should 'not send an email if there are no tasks due' do
-        @call_erich.update_attributes :due_at => 'due_next_week'
-        @call_markus.update_attributes :due_at => 'due_next_week'
+        @call_erich.update :due_at => 'due_next_week'
+        @call_markus.update :due_at => 'due_next_week'
         ActionMailer::Base.deliveries.clear
         Task.daily_email
         assert_equal 0, ActionMailer::Base.deliveries.length
@@ -76,7 +76,7 @@ class TaskTest < ActiveSupport::TestCase
       end
 
       should 'send a summary email to each user, with all tasks in one email' do
-        @call_markus.update_attributes :user_id => @call_erich.user_id
+        @call_markus.update :user_id => @call_erich.user_id
         Task.daily_email
         assert_sent_email do |email|
           email.to.include?(@call_markus.user.email) && email.body.match(/#{@call_markus.name}/) &&
@@ -85,13 +85,13 @@ class TaskTest < ActiveSupport::TestCase
       end
 
       should 'only send tasks for the current day or overdue' do
-        @call_erich.update_attributes :due_at => 'due_next_week'
+        @call_erich.update :due_at => 'due_next_week'
         Task.daily_email
         assert_sent_email do |email|
           email.to.include?(@call_markus.user.email) && email.body.match(/#{@call_markus.name}/) &&
             !email.body.match(/#{@call_erich.name}/)
         end
-        @call_erich.update_attributes :due_at => 'overdue'
+        @call_erich.update :due_at => 'overdue'
         Task.daily_email
         assert_sent_email do |email|
           email.to.include?(@call_erich.user.email) && email.body.match(/#{@call_erich.name}/)
@@ -108,7 +108,7 @@ class TaskTest < ActiveSupport::TestCase
     context 'assigned_by' do
       setup do
         @task2 = Task.make(:user_id => @task.user.id)
-        @task2.update_attributes :assignee => User.make
+        @task2.update :assignee => User.make
       end
 
       should 'return all tasks assigned to anyone except the task creator' do
@@ -118,7 +118,7 @@ class TaskTest < ActiveSupport::TestCase
 
     context 'overdue' do
       setup do
-        @task.update_attributes :due_at => 'due_next_week'
+        @task.update :due_at => 'due_next_week'
         @task2 = Task.make :due_at => 'overdue'
       end
 
@@ -129,7 +129,7 @@ class TaskTest < ActiveSupport::TestCase
 
     context 'due_today' do
       setup do
-        @task.update_attributes :due_at => 'overdue'
+        @task.update :due_at => 'overdue'
         @task2 = Task.make :due_at => 'due_today'
       end
 
@@ -140,7 +140,7 @@ class TaskTest < ActiveSupport::TestCase
 
     context 'due_tomorrow' do
       setup do
-        @task.update_attributes :due_at => 'overdue'
+        @task.update :due_at => 'overdue'
         @task2 = Task.make :due_at => 'due_tomorrow'
       end
 
@@ -151,7 +151,7 @@ class TaskTest < ActiveSupport::TestCase
 
     context 'due_next_week' do
       setup do
-        @task.update_attributes :due_at => 'overdue'
+        @task.update :due_at => 'overdue'
         @task2 = Task.make :due_at => 'due_next_week'
       end
 
@@ -162,7 +162,7 @@ class TaskTest < ActiveSupport::TestCase
 
     context 'due_later' do
       setup do
-        @task.update_attributes :due_at => 'overdue'
+        @task.update :due_at => 'overdue'
         @task2 = Task.make :due_at => 6.months.from_now
       end
 
@@ -174,8 +174,8 @@ class TaskTest < ActiveSupport::TestCase
     context 'completed_today' do
       setup do
         @task2 = Task.make
-        @task2.update_attributes :completed_by_id => @task2.user_id
-        @task2.update_attributes :completed_at => Time.zone.now
+        @task2.update :completed_by_id => @task2.user_id
+        @task2.update :completed_at => Time.zone.now
       end
 
       should 'return tasks which were completed today' do
@@ -186,8 +186,8 @@ class TaskTest < ActiveSupport::TestCase
     context 'completed_yesterday' do
       setup do
         @task2 = Task.make
-        @task2.update_attributes :completed_by_id => @task2.user_id
-        @task2.update_attributes :completed_at => Time.zone.now.yesterday.utc
+        @task2.update :completed_by_id => @task2.user_id
+        @task2.update :completed_at => Time.zone.now.yesterday.utc
       end
 
       should 'return tasks which were completed yesterday' do
@@ -198,8 +198,8 @@ class TaskTest < ActiveSupport::TestCase
     context 'completed_last_week' do
       setup do
         @task2 = Task.make
-        @task2.update_attributes :completed_by_id => @task2.user_id
-        @task2.update_attributes :completed_at => Time.zone.now.beginning_of_week.utc - 7.days
+        @task2.update :completed_by_id => @task2.user_id
+        @task2.update :completed_at => Time.zone.now.beginning_of_week.utc - 7.days
       end
 
       should 'return tasks which where completed last week' do
@@ -210,8 +210,8 @@ class TaskTest < ActiveSupport::TestCase
     context 'completed_last_month' do
       setup do
         @task2 = Task.make
-        @task2.update_attributes :completed_by_id => @task2.user_id
-        @task2.update_attributes :completed_at => (Time.zone.now.beginning_of_month.utc + 1.day) - 1.month
+        @task2.update :completed_by_id => @task2.user_id
+        @task2.update :completed_at => (Time.zone.now.beginning_of_month.utc + 1.day) - 1.month
       end
 
       should 'return tasks which where completed last month' do
@@ -222,7 +222,7 @@ class TaskTest < ActiveSupport::TestCase
     context 'completed' do
       setup do
         @task = Task.make(:call_erich)
-        @task.update_attributes :completed_by_id => @task.user.id
+        @task.update :completed_by_id => @task.user.id
         @incomplete = Task.make
       end
 
@@ -235,7 +235,7 @@ class TaskTest < ActiveSupport::TestCase
       setup do
         @benny = User.make(:benny)
         @assigned = Task.make(:call_erich)
-        @assigned.update_attributes :assignee_id => @benny.id
+        @assigned.update :assignee_id => @benny.id
         @unassigned = Task.make
       end
 
@@ -251,12 +251,12 @@ class TaskTest < ActiveSupport::TestCase
 
       should 'return all tasks assigned to the current user' do
         @benny = User.make(:benny)
-        @task.update_attributes :assignee_id => @benny.id
+        @task.update :assignee_id => @benny.id
         assert_equal [@task], Task.for(@benny).to_a
       end
 
       should 'not return tasks which were created by the supplied user, but are assigned to someone else' do
-        @task.update_attributes :assignee => User.make(:benny)
+        @task.update :assignee => User.make(:benny)
         assert_equal [], Task.for(@task.user).to_a
       end
 
@@ -277,7 +277,7 @@ class TaskTest < ActiveSupport::TestCase
 
     context 'due_today' do
       setup do
-        @task.update_attributes :due_at => 'due_today'
+        @task.update :due_at => 'due_today'
         @call_markus = Task.make(:call_markus, :due_at => 'overdue')
       end
 
@@ -296,7 +296,7 @@ class TaskTest < ActiveSupport::TestCase
       user = User.make
       @task.save!
       lead = Lead.make :permission => 'Private', :user => @task.user #lead belongs to same user as task does
-      @task.update_attributes :asset => lead
+      @task.update :asset => lead
       assert @task.valid?
       @task.assignee = user
       assert !@task.valid?
@@ -309,7 +309,7 @@ class TaskTest < ActiveSupport::TestCase
       user = User.make
       @task.save!
       account = Account.make :permission => 'Private', :user => @task.user #lead belongs to same user as task does
-      @task.update_attributes :asset => account
+      @task.update :asset => account
       assert @task.valid?
       @task.assignee = user
       assert !@task.valid?
@@ -322,7 +322,7 @@ class TaskTest < ActiveSupport::TestCase
       user = User.make
       @task.save!
       contact = Contact.make :permission => 'Private', :user => @task.user #lead belongs to same user as task does
-      @task.update_attributes :asset => contact
+      @task.update :asset => contact
       assert @task.valid?
       @task.assignee = user
       assert !@task.valid?
@@ -335,7 +335,7 @@ class TaskTest < ActiveSupport::TestCase
       user = User.make
       @task.save!
       lead = Lead.make :permission => 'Shared', :permitted_user_ids => [User.make.id], :user => @task.user
-      @task.update_attributes :asset => lead
+      @task.update :asset => lead
       assert @task.valid?
       @task.assignee = user
       assert !@task.valid?
@@ -348,7 +348,7 @@ class TaskTest < ActiveSupport::TestCase
       user = User.make
       @task.save!
       account = Account.make :permission => 'Shared', :permitted_user_ids => [User.make.id], :user => @task.user
-      @task.update_attributes :asset => account
+      @task.update :asset => account
       assert @task.valid?
       @task.assignee = user
       assert !@task.valid?
@@ -397,7 +397,7 @@ class TaskTest < ActiveSupport::TestCase
       end
 
       should 'log activity when update' do
-        @task.update_attributes :name => 'test update'
+        @task.update :name => 'test update'
         assert @task.activities.any? {|a| a.action == 'Updated' }
       end
 
@@ -406,12 +406,12 @@ class TaskTest < ActiveSupport::TestCase
       end
 
       should 'log activity when re-assigned' do
-        @task.update_attributes :assignee_id => User.make(:benny).id
+        @task.update :assignee_id => User.make(:benny).id
         assert @task.activities.any? {|a| a.action == 'Re-assigned' }
       end
 
       should 'not log update activity when re-assigned' do
-        @task.update_attributes :assignee_id => User.make(:benny).id
+        @task.update :assignee_id => User.make(:benny).id
         assert !@task.activities.any? {|a| a.action == 'Updated' }
       end
 
@@ -427,7 +427,7 @@ class TaskTest < ActiveSupport::TestCase
       @task.save!
       @benny = User.make(:benny)
       ActionMailer::Base.deliveries.clear
-      @task.update_attributes :assignee_id => @benny.id
+      @task.update :assignee_id => @benny.id
       assert_sent_email do |email|
         email.to.include?(@benny.email) && email.body.match(/\/tasks\//) &&
           email.subject.match(/You have been assigned a new task/)
@@ -437,7 +437,7 @@ class TaskTest < ActiveSupport::TestCase
     should 'not send a notification email if the assignee was not changed' do
       @task.save!
       ActionMailer::Base.deliveries.clear
-      @task.update_attributes :assignee_id => @task.assignee_id
+      @task.update :assignee_id => @task.assignee_id
       assert_equal 0, ActionMailer::Base.deliveries.length
     end
 

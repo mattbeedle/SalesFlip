@@ -28,6 +28,6 @@ class Identifier
   end
 
   def increment!( key )
-    update_attributes key => self.send(key) + 1
+    update key => self.send(key) + 1
   end
 end

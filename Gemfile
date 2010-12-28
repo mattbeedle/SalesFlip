@@ -11,6 +11,7 @@ gem 'devise'
 
 gem 'dm-devise'
 gem 'dm-migrations'
+# gem 'dm-polymorphic', '0.10.3',       :git => 'git://github.com/hassox/dm-polymorphic.git'
 gem 'dm-postgres-adapter'
 gem 'dm-rails'
 gem 'dm-timestamps'
@@ -50,6 +51,7 @@ group :production do
 end
 
 group :development do
+  gem 'ruby-debug19'
   gem 'wirble'
   gem 'heroku'
   gem 'thin'
@@ -66,7 +68,7 @@ group :test do
   gem 'fakeweb'
   gem 'machinist'
   gem 'mocha'
-  gem 'faker'
+  gem 'faker', '0.3.1'
   gem 'shoulda'
   gem 'database_cleaner'
   # gem 'mbeedle-heroku-autoscale', :require => 'heroku/autoscale'

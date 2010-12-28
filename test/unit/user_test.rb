@@ -174,7 +174,7 @@ class UserTest < ActiveSupport::TestCase
 
     context 'full_name' do
       should 'return username if present' do
-        @user.update_attributes(:username => 'annie')
+        @user.update(:username => 'annie')
         @user.save!
         assert_equal @user.full_name, "annie"
       end

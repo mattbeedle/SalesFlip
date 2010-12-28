@@ -1,8 +1,7 @@
 class Lead
   include DataMapper::Resource
   include DataMapper::Timestamps
-  include HasConstant
-  # include HasConstant::Orm::Mongoid
+  include HasConstant::Orm::DataMapper
   include ParanoidDelete
   include Permission
   include Trackable
@@ -17,13 +16,19 @@ class Lead
   property :last_name, String, :required => true
   property :email, String
   property :phone, String
-  property :status, Integer
-  property :source, Integer
   property :rating, Integer
   property :notes, String
 
-  property :title, Integer
-  property :salutation, Integer
+  # has_constant
+  # property :title, DataMapper::Property::Enum, :flags => I18n.t(:titles)
+  has_constant :titles,       lambda { I18n.t(:titles) }
+  # property :salutation, DataMapper::Property::Enum, :flags => I18n.t(:salutations)
+  has_constant :salutations,  lambda { I18n.t(:salutations) }
+  # property :status, DataMapper::Property::Enum, :flags => I18n.t(:lead_statuses)
+  has_constant :statuses,     lambda { I18n.t(:lead_statuses) }
+  # property :source, DataMapper::Property::Enum, :flags => I18n.t(:lead_sources)
+  has_constant :sources,      lambda { I18n.t(:lead_sources) }
+
   property :company, String
   property :company_phone, String
   property :company_blog, String
@@ -52,7 +57,7 @@ class Lead
   attr_accessor :do_not_notify
 
   belongs_to   :user, :required => true
-  belongs_to   :contact
+  belongs_to   :contact, :required => false
   has n, :comments, :as => :commentable, :dependent => :delete_all
   has n, :tasks, :as => :asset, :dependent => :delete_all
   has n, :emails, :as => :commentable, :dependent => :delete_all
@@ -63,11 +68,6 @@ class Lead
   after  :save do
     notify_assignee unless do_not_notify
   end
-
-  has_constant :titles,       lambda { I18n.t(:titles) }
-  has_constant :statuses,     lambda { I18n.t(:lead_statuses) }
-  has_constant :sources,      lambda { I18n.t(:lead_sources) }
-  has_constant :salutations,  lambda { I18n.t(:salutations) }
 
   def self.with_status(statuses)
     all(:status.in => statuses.map { |status| Lead.statuses.index(status) })
@@ -106,17 +106,17 @@ class Lead
   def promote!( account_name, options = {} )
     @recently_converted = true
     if !self.email.blank? and (contact = Contact.first(:conditions => { :email => self.email }))
-      I18n.locale_around(:en) { update_attributes :status => 'Converted', :contact_id => contact.id }
+      I18n.locale_around(:en) { update :status => 'Converted', :contact_id => contact.id }
       if contact.account.blank? && !account_name.blank?
         account = Account.find_or_create_for(self, account_name, options)
-        contact.update_attributes :account => account if account.valid?
+        contact.update :account => account if account.valid?
       end
     else
       account = Account.find_or_create_for(self, account_name, options)
       contact = Contact.create_for(self, account)
       opportunity = Opportunity.create_for(contact, options)
       if [account, contact].all?(&:valid?)
-        I18n.locale_around(:en) { update_attributes :status => 'Converted', :contact_id => contact.id }
+        I18n.locale_around(:en) { update :status => 'Converted', :contact_id => contact.id }
       end
     end
     return account || contact.account, contact, opportunity
@@ -124,7 +124,7 @@ class Lead
 
   def reject!
     @recently_rejected = true
-    I18n.locale_around(:en) { update_attributes :status => 'Rejected' }
+    I18n.locale_around(:en) { update :status => 'Rejected' }
   end
 
   def deliminated( deliminator, fields )
@@ -145,7 +145,7 @@ protected
   end
 
   def set_initial_state
-    I18n.locale_around(:en) { self.status = 'New' unless self.status } if self.new_record?
+    I18n.locale_around(:en) { self.status = 'New' unless self.status } if self.new?
   end
 
   def log_update
