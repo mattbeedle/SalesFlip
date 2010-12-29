@@ -2,7 +2,7 @@ module ParanoidDelete
   extend ActiveSupport::Concern
   
   included do
-    property :deleted_at, DataMapper::Property::ParanoidDateTime
+    property :deleted_at, DateTime
 
     alias_method_chain :destroy, :paranoid
     before :save, :recently_restored?

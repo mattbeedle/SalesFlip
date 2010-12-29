@@ -9,6 +9,11 @@ class Comment
   property :id, Serial
   property :subject, String
   property :text, String, :required => true
+  property :type, Discriminator
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
   belongs_to :user, :required => true
 

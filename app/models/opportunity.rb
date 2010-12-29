@@ -11,12 +11,16 @@ class Opportunity
 
   property :id, Serial
   property :title, String, :required => true
-  property :close_on, Date,    :default => lambda { 1.month.from_now.utc }
+  property :close_on, Date,    :default => lambda { |*| 1.month.from_now.utc }
   property :probability, Integer, :default => 100
   property :amount, Float,   :default => 0.0
   property :discount, Float,   :default => 0.0
   property :background_info, String
   property :margin, Float
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
   belongs_to :contact, :required => false
   belongs_to :user, :required => true

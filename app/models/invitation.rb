@@ -6,6 +6,10 @@ class Invitation
   property :id, Serial
   property :email, String, :required => true
   property :code, String, :required => true
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
   belongs_to :invited, :model => 'User', :required => false
   belongs_to :inviter, :model => 'User', :required => true

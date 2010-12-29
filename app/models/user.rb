@@ -14,6 +14,10 @@ class User
   property :username, String
   property :api_key, String
   property :type, String
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
   attr_accessor :company_name
 

@@ -13,6 +13,10 @@ class Task
   property :priority, Integer
   property :completed_at, Time
   property :deleted_at, Time
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
   has_constant :categories, I18n.t(:task_categories),
     required: true

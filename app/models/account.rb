@@ -22,6 +22,10 @@ class Account
   property :xing, String
   property :billing_address, String
   property :shipping_address, String
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
   
   has_constant :accesses, lambda { I18n.t(:access_levels) }
   has_constant :account_types, lambda { I18n.t(:account_types) }
@@ -90,7 +94,7 @@ class Account
       permission = object.permission
       permitted = object.permitted_user_ids
     else
-      permission = options[:permission] || 0
+      permission = options[:permission] || 'Public'
       permitted = options[:permitted_user_ids]
     end
     account = object.updater_or_user.accounts.create :permission => permission,

@@ -8,6 +8,10 @@ class Search
     required: true, message: I18n.t('activemodel.errors.messages.blank')
   property :company, String,
     required: true, message: I18n.t('activemodel.errors.messages.blank')
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
   belongs_to :user, :required => false
 

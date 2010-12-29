@@ -3,9 +3,22 @@ class Activity
   include DataMapper::Timestamps
   include HasConstant::Orm::DataMapper
 
+  def self.any_of(*args)
+    conditions_statements, bind_values = args.map do |condition|
+      query = DataMapper::Query.new(repository, self, condition)
+      repository.adapter.send(:conditions_statement, query.conditions, query.links.any?)
+    end.transpose
+
+    all :conditions => [conditions_statements.join(" OR "), *bind_values.flatten(1)]
+  end
+
   property :id, Serial
   property :info, String
   property :notified_user_ids, Object, :default => []
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
   belongs_to :subject, :polymorphic => true, :suffix => :type
 

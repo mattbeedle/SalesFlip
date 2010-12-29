@@ -16,7 +16,7 @@ class Contact
   property :last_name, String, :required => true
   property :full_name, String
   property :department, String
-  property :email, String, :unique => true, :allow_blank => true
+  property :email, String
   property :alt_email, String
   property :phone, String
   property :mobile, String
@@ -35,6 +35,12 @@ class Contact
   property :country, String
   property :postal_code, String
   property :job_title, String
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
+
+  validates_uniqueness_of :email, allow_blank: true
 
   before :create, :set_identifier
   before :save,   :set_full_name
@@ -98,11 +104,12 @@ class Contact
       :permitted_user_ids => account.permitted_user_ids
 
     lead.attributes.each do |key, value|
-      next if %w(identifier id user_id permission permitted_user_ids _sphinx_id created_at updated_at deleted_at tracker_ids updater_id).include?(key)
+      next if %w(identifier id user_id permission permitted_user_ids _sphinx_id created_at updated_at deleted_at tracker_ids updater_id).include?(key.to_s)
       if contact.respond_to?("#{key}=")
         contact.send("#{key}=", value)
       end
     end
+
     if account.valid? and contact.valid?
       contact.save
       contact.leads << lead
