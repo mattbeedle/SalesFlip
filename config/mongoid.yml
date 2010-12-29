@@ -22,16 +22,16 @@ cucumber:
 staging:
   <<: *defaults
   database: salesflip_staging
-  port: <%= ENV['MONGOHQ_PORT'] %>
-  username: <%= ENV['MONGOHQ_USER'] %>
-  password: <%= ENV['MONGOHQ_PASSWORD'] %>
-  database: <%= ENV['MONGOHQ_DATABASE'] %>
+  host: <%= ENV['MONGODB_HOST'] %>
+  port: <%= ENV['MONGODB_STAGING_PORT'] %>
+  username: <%= ENV['MONGODB_STAGING_USER'] %>
+  password: <%= ENV['MONGODB_STAGING_PASSWORD'] %>
 
 # set these environment variables on your prod server
 production:
   <<: *defaults
-  host: swan.mongohq.com
-  port: 27093
-  username: <%= ENV['MONGOHQ_USER'] %>
-  password: <%= ENV['MONGOHQ_PASSWORD'] %>
+  host: <%= ENV['MONGODB_HOST'] %>
+  port: <%= ENV['MONGODB_PORT'] %>
+  username: <%= ENV['MONGODB_USER'] %>
+  password: <%= ENV['MONGODB_PASSWORD'] %>
   database: salesflip

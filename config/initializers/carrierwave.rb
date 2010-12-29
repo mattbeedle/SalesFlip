@@ -12,6 +12,6 @@ CarrierWave.configure do |config|
   config.grid_fs_access_url   = '/uploads'
   config.grid_fs_host         = db_config[Rails.env]['host']
   config.grid_fs_port         = db_config[Rails.env]['port']
-  config.grid_fs_username     = ENV['MONGOHQ_USER']
-  config.grid_fs_password     = ENV['MONGOHQ_PASSWORD']
+  config.grid_fs_username     = db_config[Rails.env]['username']
+  config.grid_fs_password     = db_config[Rails.env]['password']
 end

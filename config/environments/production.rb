@@ -42,9 +42,10 @@ Salesflip::Application.configure do
 
   config.active_support.deprecation = :log
 
-  config.middleware.use Rack::GridFS, :hostname => 'swan.mongohq.com', :port => 27093,
-    :database => 'salesflip', :prefix => 'uploads', :user => ENV['MONGOHQ_USER'],
-    :password => ENV['MONGOHQ_PASSWORD']
+  config.middleware.use Rack::GridFS, :hostname => ENV['MONGODB_HOST'],
+    :port => ENV['MONGODB_PORT'], :database => 'salesflip',
+    :prefix => 'uploads', :user => ENV['MONGODB_USER'],
+    :password => ENV['MONGODB_PASSWORD']
 
   config.after_initialize do
     require 'sunspot/rails'

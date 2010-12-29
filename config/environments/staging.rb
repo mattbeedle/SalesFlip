@@ -42,26 +42,26 @@ Salesflip::Application.configure do
 
   config.active_support.deprecation = :log
 
-  config.middleware.use Rack::GridFS, :hostname => ENV['MONGOHQ_STAGING_HOST'],
-    :port => ENV['MONGOHQ_STAGING_PORT'],
-    :database => 'salesflip', :prefix => 'uploads', :user => ENV['MONGOHQ_STAGING_USER'],
-    :password => ENV['MONGOHQ_STAGING_PASSWORD']
+  config.middleware.use Rack::GridFS, :hostname => ENV['MONGODB_STAGING_HOST'],
+    :port => ENV['MONGODB_STAGING_PORT'],
+    :database => 'salesflip', :prefix => 'uploads', :user => ENV['MONGODB_STAGING_USER'],
+    :password => ENV['MONGODB_STAGING_PASSWORD']
 
   config.after_initialize do
     require 'sunspot/rails'
     Sunspot.config.solr.url = ENV['WEBSOLR_URL']
   end
 
-  require 'heroku/autoscale'
-  config.middleware.use Heroku::Autoscale,
-    :username  => ENV['HEROKU_USERNAME'],
-    :password  => ENV['HEROKU_PASSWORD'],
-    :app_name  => ENV['HEROKU_STAGING_APP_NAME'],
-    :min_dynos => 1,
-    :max_dynos => 20,
-    :queue_wait_low  => 100,  # milliseconds
-    :queue_wait_high => 2000, # milliseconds
-    :min_frequency   => 10    # seconds
+  #require 'heroku/autoscale'
+  #config.middleware.use Heroku::Autoscale,
+  #  :username  => ENV['HEROKU_USERNAME'],
+  #  :password  => ENV['HEROKU_PASSWORD'],
+  #  :app_name  => ENV['HEROKU_STAGING_APP_NAME'],
+  #  :min_dynos => 1,
+  #  :max_dynos => 20,
+  #  :queue_wait_low  => 100,  # milliseconds
+  #  :queue_wait_high => 2000, # milliseconds
+  #  :min_frequency   => 10    # seconds
 
   config.action_mailer.delivery_method = :remail
   config.action_mailer.remail_settings = {
