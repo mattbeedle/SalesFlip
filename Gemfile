@@ -48,8 +48,9 @@ end
 
 group :development do
   gem 'wirble'
-  gem 'heroku'
-  gem 'thin'
+  gem 'heroku',     :require => nil
+  gem 'thin',       :require => nil
+  gem 'capistrano', :require => nil
 end
 
 group :test do
