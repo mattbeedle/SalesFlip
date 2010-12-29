@@ -22,7 +22,7 @@ cucumber:
 staging:
   <<: *defaults
   database: salesflip_staging
-  host: <%= ENV['MONGODB_HOST'] %>
+  host: <%= ENV['MONGODB_STAGING_HOST'] %>
   port: <%= ENV['MONGODB_STAGING_PORT'] %>
   username: <%= ENV['MONGODB_STAGING_USER'] %>
   password: <%= ENV['MONGODB_STAGING_PASSWORD'] %>
