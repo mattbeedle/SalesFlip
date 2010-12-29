@@ -20,3 +20,5 @@ log/*
 solr/data/*
 .sass-cache/*
 public/javascripts/all.js
+doc/*
+.yardoc/*
