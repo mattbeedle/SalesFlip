@@ -15,5 +15,6 @@ namespace :salesflip do
     Activity.all.each do |activity|
       activity.subject rescue activity.destroy
     end
+
   end
 end
