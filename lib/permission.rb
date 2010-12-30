@@ -13,22 +13,23 @@ module Permission
   module ClassMethods
 
     def permitted_for(user)
-      return all
-      # if !user.role_is?('Freelancer')
-        # { :where => {
-          # '$where' => "this.user_id == '#{user.id}' || this.permission == '#{Contact.permissions.index('Public')}' || " +
-          # "this.assignee_id == '#{user.id}' || " +
-          # "(this.permission == '#{Contact.permissions.index('Shared')}' && contains(this.permitted_user_ids, '#{user.id}')) || " +
-          # "(this.permission == '#{Contact.permissions.index('Private')}' && this.assignee_id == '#{user.id}')"
-        # } }
-      # else
-        # { :where => {
-        # '$where' => "this.user_id == '#{user.id}' || " +
-          # "(this.assignee_id == '#{user.id}' && this.permission == '#{Contact.permissions.index('Public')}') || " +
-          # "(this.assignee_id == '#{user.id}' && this.permission == '#{Contact.permissions.index('Private')}') || " +
+      if !user.role_is?('Freelancer')
+        any_of(
+          { user_id: user.id },
+          { permission: 'Public' },
+          { assignee_id: user.id }
+        )
+
+                    # "(this.permission == '#{Contact.permissions.index('Shared')}' && contains(this.permitted_user_ids, '#{user.id}')) || " +
+                    # "(this.permission == '#{Contact.permissions.index('Private')}' && this.assignee_id == '#{user.id}')"
+      else
+        any_of(
+          { user_id: user.id },
+          { assignee_id: user.id, permission: 'Public' },
+          { assignee_id: user.id, permission: 'Private'}
+        )
           # "(this.permission == '#{Contact.permissions.index('Shared')}' && contains(this.permitted_user_ids, '#{user.id}'))"
-      # } }
-      # end
+      end
     end
 
   end

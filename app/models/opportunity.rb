@@ -24,7 +24,8 @@ class Opportunity
 
   belongs_to :contact, :required => false
   belongs_to :user, :required => true
-  belongs_to :stage, :model => 'OpportunityStage', :required => true
+  belongs_to :stage, model: 'OpportunityStage'
+
   has n, :comments, :as => :commentable, :suffix => :type#, :dependent => :delete_all
   has n, :tasks, :as => :asset, :suffix => :type#, :dependent => :delete_all
   has n, :attachments, :as => :subjec, :suffix => :typet

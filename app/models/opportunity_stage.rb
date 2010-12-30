@@ -14,7 +14,7 @@ class OpportunityStage
   property :updated_on, Date
 
   belongs_to :company, :required => false
-  has n, :opportunities
+  has n, :opportunities, child_key: :stage_id
 
   validates_numericality_of :percentage, :allow_blank => true
 end

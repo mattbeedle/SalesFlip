@@ -97,8 +97,8 @@ class Lead
   end
 
   def self.exportable_fields
-    properties.map(&:name).sort.delete_if do |f|
-      f.to_s.match(/access|permission|permitted_user_ids|tracker_ids/)
+    properties.map { |p| p.name.to_s }.sort.delete_if do |f|
+      f.match(/access|permission|permitted_user_ids|tracker_ids/)
     end
   end
 

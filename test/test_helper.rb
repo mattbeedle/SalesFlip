@@ -18,9 +18,9 @@ class ActiveSupport::TestCase
     klass = self.name.gsub(/Test$/, '').constantize
     args.each do |arg|
       should "have_constant '#{arg}'" do
-        assert klass.new.respond_to?(arg.to_s.singularize)
-        assert klass.respond_to?(arg.to_s)
-        assert klass.new.respond_to?("#{arg.to_s.singularize}_is?")
+        assert_respond_to klass.new, arg.to_s.singularize
+        assert_respond_to klass, arg.to_s
+        assert_respond_to klass.new, "#{arg.to_s.singularize}_is?"
       end
     end
   end
@@ -28,29 +28,29 @@ class ActiveSupport::TestCase
   def self.should_act_as_paranoid
     klass = self.name.gsub(/Test$/, '').constantize
     should 'act as paranoid' do
-      assert klass.new.respond_to?('deleted_at')
-      assert klass.respond_to?('not_deleted')
-      assert klass.respond_to?('deleted')
-      assert klass.not_deleted.blank?
-      assert klass.deleted.blank?
+      assert_respond_to klass.new, 'deleted_at'
+      assert_respond_to klass, 'not_deleted'
+      assert_respond_to klass, 'deleted'
+      assert_blank klass.not_deleted
+      assert_blank klass.deleted
       obj = klass.make
-      assert klass.not_deleted.include?(obj)
+      assert_includes klass.not_deleted, obj
       obj.destroy
       assert obj.deleted_at
-      assert klass.deleted.include?(obj)
-      assert klass.not_deleted.blank?
+      assert_includes klass.deleted, obj
+      assert_blank klass.not_deleted
     end
   end
 
   def self.should_be_trackable
     klass = self.name.gsub(/Test$/, '').constantize
     should 'be trackable' do
-      assert klass.new.respond_to?('tracker_ids')
-      assert klass.new.respond_to?('trackers')
-      assert klass.new.respond_to?('tracker_ids=')
-      assert klass.new.respond_to?('tracked_by?')
-      assert klass.new.respond_to?('remove_tracker_ids=')
-      assert klass.respond_to?('tracked_by')
+      assert_respond_to klass.new, 'tracker_ids'
+      assert_respond_to klass.new, 'trackers'
+      assert_respond_to klass.new, 'tracker_ids='
+      assert_respond_to klass.new, 'tracked_by?'
+      assert_respond_to klass.new, 'remove_tracker_ids='
+      assert_respond_to klass, 'tracked_by'
     end
   end
 
@@ -70,7 +70,7 @@ class ActiveSupport::TestCase
         obj = klass.new
         obj.send("#{arg.to_sym}=", nil)
         obj.valid?
-        assert !obj.errors[arg.to_sym].blank?
+        refute_blank obj.errors[arg.to_sym]
       end
     end
   end
@@ -111,7 +111,7 @@ class ActiveSupport::TestCase
       should "belong_to '#{arg}'" do
         has = false
         klass.relationships.each do |name, relationship|
-          if name == arg.to_s && relationship.class =~ /ManyToOne/
+          if name == arg.to_s && relationship.class.name =~ /ManyToOne/
             break has = true
           end
         end
@@ -124,7 +124,7 @@ class ActiveSupport::TestCase
     klass = self.name.gsub(/Test$/, '').constantize
     args.each do |arg|
       should "have_uploader '#{arg}'" do
-        assert klass.new.send(arg).is_a?(CarrierWave::Uploader::Base)
+        assert_instance_of CarrierWave::Uploader::Base, klass.new.send(arg)
       end
     end
   end
@@ -135,6 +135,14 @@ class ActiveSupport::TestCase
     FakeWeb.allow_net_connect = false
     ActionMailer::Base.deliveries.clear
     FakeWeb.register_uri(:post, 'http://localhost:8981/solr/update?wt=ruby', :body => '')
+  end
+
+  setup do
+    DataMapper::Repository.context << repository
+  end
+
+  teardown do
+    DataMapper::Repository.context.pop
   end
 
   def assert_add_job_email_sent(posting)

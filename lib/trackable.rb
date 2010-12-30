@@ -1,19 +1,15 @@
 module Trackable
   extend ActiveSupport::Concern
-  
+
   included do
-    property :tracker_ids, Object, :default => []
+    has n, :trackers,
+      model: 'User',
+      through: ::DataMapper::Resource
   end
 
   module ClassMethods
     def tracked_by(user)
-      all(:tracker_ids => user.id)
-    end
-  end
-
-  def trackers
-    unless tracker_ids.nil?
-      User.all(:id => tracker_ids)
+      all(trackers.id => user.id)
     end
   end
 
@@ -22,7 +18,7 @@ module Trackable
   end
 
   def tracker_ids=( ids )
-    attribute_set :tracker_ids, ids.map { |id| BSON::ObjectId.from_string(id.to_s) } if ids
+    self.trackers = User.all(:id => ids)
   end
 
   def remove_tracker_ids=( ids )

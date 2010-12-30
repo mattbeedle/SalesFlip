@@ -11,7 +11,7 @@ class Account
   include Assignable
 
   property :id, Serial
-  property :name, String, :required => true
+  property :name, String, required: true
   property :email, String, :unique => true, :allow_blank => true
   property :website, String
   property :phone, String

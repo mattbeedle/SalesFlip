@@ -14,9 +14,9 @@ class LeadTest < ActiveSupport::TestCase
         field = field.to_s
         unless field == 'access' || field == 'permission' ||
           field == 'permitted_user_ids' || field == 'tracker_ids'
-          assert Lead.exportable_fields.include?(field)
+          assert_includes Lead.exportable_fields, field
         else
-          assert !Lead.exportable_fields.include?(field)
+          refute_includes Lead.exportable_fields, field
         end
       end
     end
@@ -82,8 +82,8 @@ class LeadTest < ActiveSupport::TestCase
       should 'return leads with any of the supplied statuses' do
         assert_equal [@new], Lead.with_status('New').to_a
         assert_equal [@rejected], Lead.with_status('Rejected').to_a
-        assert Lead.with_status(['New', 'Rejected']).include?(@new)
-        assert Lead.with_status(['New', 'Rejected']).include?(@rejected)
+        assert_includes Lead.with_status(%w(New Rejected)), @new
+        assert_includes Lead.with_status(%w(New Rejected)), @rejected
         assert_equal 2, Lead.with_status(['New', 'Rejected']).count
       end
     end
@@ -97,7 +97,7 @@ class LeadTest < ActiveSupport::TestCase
 
       should 'return all leads which are not deleted' do
         assert_equal 2, Lead.not_deleted.count
-        assert !Lead.not_deleted.include?(@deleted)
+        refute_includes Lead.not_deleted, @deleted
       end
     end
 
@@ -108,33 +108,33 @@ class LeadTest < ActiveSupport::TestCase
       end
 
       should 'return all public leads' do
-        assert Lead.permitted_for(@erich.user).include?(@erich)
-        assert Lead.permitted_for(@erich.user).include?(@markus)
+        assert_includes Lead.permitted_for(@erich.user), @erich
+        assert_includes Lead.permitted_for(@erich.user), @markus
       end
 
       should 'return all leads belonging to the user' do
         @erich.update :permission => 'Private'
-        assert Lead.permitted_for(@erich.user).include?(@erich)
+        assert_includes Lead.permitted_for(@erich.user), @erich
       end
 
       should 'NOT return private leads belonging to another user' do
         @markus.update :permission => 'Private'
-        assert !Lead.permitted_for(@erich.user).include?(@markus)
+        refute_includes Lead.permitted_for(@erich.user), @markus
       end
 
       should 'return private leads when assigned to this user' do
         @markus.update :permission => 'Private', :assignee => @erich.user
-        assert Lead.permitted_for(@erich.user).include?(@markus)
+        assert_includes Lead.permitted_for(@erich.user), @markus
       end
 
       should 'return shared leads where the user is in the permitted user list' do
         @markus.update :permission => 'Shared', :permitted_user_ids => [@markus.user.id, @erich.user.id]
-        assert Lead.permitted_for(@erich.user).include?(@markus)
+        assert_includes Lead.permitted_for(@erich.user), @markus
       end
 
       should 'NOT return shared leads where the user is not in the permitted user list' do
         @markus.update :permission => 'Shared', :permitted_user_ids => [@markus.user.id]
-        assert !Lead.permitted_for(@erich.user).include?(@markus)
+        refute_includes Lead.permitted_for(@erich.user), @markus
       end
 
       context 'when freelancer' do
@@ -143,27 +143,27 @@ class LeadTest < ActiveSupport::TestCase
         end
 
         should 'not return all public leads' do
-          assert Lead.permitted_for(@freelancer).blank?
+          assert_blank Lead.permitted_for(@freelancer)
         end
 
         should 'return all leads belonging to the user' do
           @erich.update :user_id => @freelancer.id, :permission => 'Private'
-          assert Lead.permitted_for(@freelancer).include?(@erich)
+          assert_includes Lead.permitted_for(@freelancer), @erich
         end
 
         should 'NOT return private leads belonging to another user' do
           @markus.update :permission => 'Private'
-          assert Lead.permitted_for(@freelancer).blank?
+          assert_blank Lead.permitted_for(@freelancer)
         end
 
         should 'return shared leads where the user is in the permitted user list' do
           @markus.update :permission => 'Shared', :permitted_user_ids => [@markus.user_id, @freelancer.id]
-          assert Lead.permitted_for(@freelancer).include?(@markus)
+          assert_includes Lead.permitted_for(@freelancer), @markus
         end
 
         should 'NOT return shared leads where the user is not in the permitted user list' do
           @markus.update :permission => 'Shared', :permitted_user_ids => [@markus.user_id]
-          assert !Lead.permitted_for(@erich.user).include?(@markus)
+          refute_includes Lead.permitted_for(@erich.user), @markus
         end
       end
     end
@@ -184,22 +184,22 @@ class LeadTest < ActiveSupport::TestCase
     end
     
     should 'not be able to assign to another user if the permission is private' do
-      @lead.save!
+      @lead.save
       @lead.update :permission => 'Private'
       assert @lead.valid?
       @lead.assignee = @user
-      assert !@lead.valid?
-      assert @lead.errors[:base].include?('Cannot assign a private lead to another user, please change the permissions first')
+      refute @lead.valid?
+      assert_includes @lead.errors[:base], 'Cannot assign a private lead to another user, please change the permissions first'
     end
     
     should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
-      @lead.save!
+      @lead.save
       user = User.make
       @lead.update :permission => 'Shared', :permitted_user_ids => [user.id]
       assert @lead.valid?
       @lead.assignee = @user
-      assert !@lead.valid?
-      assert @lead.errors[:base].include?('Cannot assign a shared lead to a user it is not shared with. Please change the permissions first')
+      refute @lead.valid?
+      assert_includes @lead.errors[:base], 'Cannot assign a shared lead to a user it is not shared with. Please change the permissions first'
     end
 
     should 'be able to get fields in pipe deliminated format' do
@@ -207,32 +207,32 @@ class LeadTest < ActiveSupport::TestCase
     end
 
     should 'be assigned an identifier on creation' do
-      assert @lead.identifier.nil?
-      @lead.save!
+      assert_nil @lead.identifier
+      @lead.save
       assert @lead.identifier
     end
 
     should 'be assigned consecutive identifiers' do
-      @lead.save!
+      @lead.save
       assert_equal 1, @lead.identifier
       @lead2 = Lead.make_unsaved
-      assert @lead2.identifier.nil?
-      @lead2.save!
+      assert_nil @lead2.identifier
+      @lead2.save
       assert_equal 2, @lead2.identifier
     end
 
     context 'changing the assignee' do
       should 'notify assignee' do
         @lead.assignee = User.make
-        @lead.save!
+        @lead.save
         ActionMailer::Base.deliveries.clear
-        @lead.update! :assignee => @user
+        @lead.update :assignee => @user
         assert_sent_email { |email| email.to.include?(@user.email) }
       end
 
       should 'not notify assignee if do_not_notify is set' do
         @lead.assignee = User.make
-        @lead.save!
+        @lead.save
         ActionMailer::Base.deliveries.clear
         @lead.update :assignee_id => @user.id, :do_not_notify => true
         assert_equal 0, ActionMailer::Base.deliveries.length
@@ -240,7 +240,7 @@ class LeadTest < ActiveSupport::TestCase
 
       should 'not try to send an email if the assignee is blank' do
         @lead.assignee_id = @user.id
-        @lead.save!
+        @lead.save
         ActionMailer::Base.deliveries.clear
         @lead.update :assignee => nil
         assert_equal 0, ActionMailer::Base.deliveries.length
@@ -249,20 +249,20 @@ class LeadTest < ActiveSupport::TestCase
       should 'not notify the assignee if the lead is a new record' do
         ActionMailer::Base.deliveries.clear
         @lead.assignee_id = @lead.user.id
-        @lead.save!
+        @lead.save
         assert_equal 0, ActionMailer::Base.deliveries.length
       end
 
       should 'set the assignee_id' do
         @lead.assignee_id = @user.id
-        @lead.save!
+        @lead.save
         assert_equal @lead.assignee, @user
       end
     end
 
     context 'activity logging' do
       setup do
-        @lead.save!
+        @lead.save
         @lead.reload
       end
 
@@ -303,7 +303,7 @@ class LeadTest < ActiveSupport::TestCase
       should 'not log an update activity when converted' do
         @lead = Lead.get(@lead.id)
         @lead.promote!('A company')
-        assert !@lead.activities.any? {|a| a.action == 'Updated' }
+        refute @lead.activities.any? {|a| a.action == 'Updated' }
       end
 
       should 'log an activity when rejected' do
@@ -315,7 +315,7 @@ class LeadTest < ActiveSupport::TestCase
       should 'not log an update activity when rejected' do
         @lead = Lead.get(@lead.id)
         @lead.reject!
-        assert !@lead.activities.any? {|a| a.action == 'Updated' }
+        refute @lead.activities.any? {|a| a.action == 'Updated' }
       end
 
       should 'log an activity when restored' do
@@ -326,20 +326,20 @@ class LeadTest < ActiveSupport::TestCase
       end
 
       should 'have related activities' do
-        @lead.comments.create! :subject => 'afefa', :text => 'asfewfewa', :user => @lead.user
-        assert @lead.related_activities.include?(@lead.comments.first.activities.first)
+        @lead.comments.create :subject => 'afefa', :text => 'asfewfewa', :user => @lead.user
+        assert_includes @lead.related_activities, @lead.comments.first.activities.first
       end
     end
 
     context 'promote!' do
       setup do
-        @lead.save!
+        @lead.save
       end
 
       should 'create a new account (account_type: "Prospect") and contact when a new account is specified' do
         @lead.promote!('Super duper company')
-        assert account = Account.first(:conditions => { :name => 'Super duper company',
-          :account_type => Account.account_types.index('Prospect') })
+        assert account = Account.first(:name => 'Super duper company',
+                                       :account_type => Account.account_types.index('Prospect'))
         assert account.contacts.any? {|c| c.first_name == @lead.first_name &&
           c.last_name == @lead.last_name }
       end
@@ -351,7 +351,7 @@ class LeadTest < ActiveSupport::TestCase
 
       should 'assign lead to contact' do
         @lead.promote!('company name')
-        assert Account.first(:conditions => { :name => 'company name' }).contacts.first.leads.include?(@lead)
+        assert_includes Account.first(:conditions => { :name => 'company name' }).contacts.first.leads, @lead
         assert_equal @lead.reload.contact, Account.first(:conditions => { :name => 'company name' }).contacts.first
       end
 
@@ -380,7 +380,7 @@ class LeadTest < ActiveSupport::TestCase
 
       should 'return an invalid account without an account name' do
         account, contact = @lead.promote!('')
-        assert !account.errors.blank?
+        refute account.errors.blank?
       end
 
       should 'not create a contact when account is invalid' do
@@ -422,35 +422,35 @@ class LeadTest < ActiveSupport::TestCase
 
       should 'return an account, a contact and an opportunity even when an opportunity is not created' do
         account, contact, opportunity = @lead.promote!('A company')
-        assert account.is_a?(Account)
-        assert contact.is_a?(Contact)
-        assert opportunity.is_a?(Opportunity)
-        assert opportunity.errors.blank?
+        assert_kind_of Account, account
+        assert_kind_of Contact, contact
+        assert_kind_of Opportunity, opportunity
+        assert_blank opportunity.errors
       end
 
       should 'still return an account if the contact exists, but it does not have an account' do
         @lead.update :email => 'florian.behn@careermee.com'
         @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
-        assert @contact.account.blank?
+        assert_blank @contact.account
         result = @lead.promote!('New Account')
         assert_equal 1, Account.count
-        assert !@contact.reload.account.blank?
-        assert result.first.is_a?(Account)
-        assert result[1].is_a?(Contact)
+        refute @contact.reload.account.blank?
+        assert_kind_of Account, result.first
+        assert_kind_of Contact, result[1]
       end
 
       should 'return nil instead of account if the contact exists, but it does not have an account, and no name is specified' do
         @lead.update :email => 'florian.behn@careermee.com'
         @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
         result = @lead.promote!('')
-        assert result.first.nil?
+        assert_nil result.first
       end
 
       should 'not set the contact account id if the contact exists without an account, and the new account is invalid' do
         @lead.update :email => 'florian.behn@careermee.com'
         @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
         @lead.promote!('')
-        assert @contact.reload.account_id.blank?
+        assert_blank @contact.reload.account_id
       end
 
       should 'not attempt to assign to a contact if the email is blank' do
@@ -458,25 +458,25 @@ class LeadTest < ActiveSupport::TestCase
         @contact = Contact.make(:florian, :email => '')
         @lead.promote!('an account')
         assert_equal 2, Contact.count
-        assert !@contact.leads.include?(@lead)
+        refute_includes @contact.leads, @lead
       end
     end
 
     should 'require last name' do
       @lead.last_name = nil
-      assert !@lead.valid?
+      refute @lead.valid?
       assert @lead.errors[:last_name]
     end
 
     should 'require user id' do
       @lead.user = nil
-      assert !@lead.valid?
+      refute @lead.valid?
       assert @lead.errors[:user]
     end
 
     should 'require at least one permitted user if permission is "Shared"' do
       @lead.permission = 'Shared'
-      assert !@lead.valid?
+      refute @lead.valid?
       assert @lead.errors[:permitted_user_ids]
     end
 
