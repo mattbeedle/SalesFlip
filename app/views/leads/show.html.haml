@@ -75,7 +75,7 @@
         = show_attribute(@lead, 'facebook', link_to('Facebook', @lead.facebook))
         = show_attribute(@lead, 'xing', link_to('Xing', @lead.xing))
         = show_attribute(@lead, 'referred_by')
-    - else
+    - elsif @lead.assignee.blank?
       = simple_form_for @lead, :html => { :class => 'accept' } do |form|
         = form.hidden_field :do_not_notify, :value => true
         = form.hidden_field :assignee_id, :value => current_user.id
