@@ -2,17 +2,12 @@ module Activities
   extend ActiveSupport::Concern
 
   included do
-    # has n, :activities,
-      # child_key: [ :subject_id ],
-      # dependent: :destroy,
-      # subject_type: self
-
     has n, :activities, :as => :subject, :suffix => :type# , :dependent => :destroy
 
     after :create, :log_creation
     after :update, :log_update
 
-    belongs_to :updater, :model => 'User', :required => false
+    belongs_to :updater, model: 'User', required: false
 
     attr_accessor :do_not_log
   end
@@ -40,10 +35,12 @@ module Activities
   end
 
   def related_activities
-    @activities ||=
-      Activity.any_of({ :subject_type => %w(Lead Account Contact), :subject_id => self.id },
-                      { :subject_type => %w(Comment Email), :subject_id => comments.map(&:id) },
-                      { :subject_type => 'Task', :subject_id => tasks.map(&:id) }).all(:order => :updated_at.desc)
+    @activities ||= Activity.any_of(
+      { :subject_type => %w(Lead Account Contact), :subject_id => self.id },
+      { :subject_type => %w(Comment Email), :subject_id => comments.map(&:id) },
+      { :subject_type => 'Task', :subject_id => tasks.map(&:id) }
+    ).all(:order => :updated_at.desc)
+
     if self.respond_to?(:contacts)
       @activities = @activities.any_of(
         { :subject_type => 'Contact', :subject_id => self.contacts.map(&:id) },

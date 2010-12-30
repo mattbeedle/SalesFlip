@@ -72,7 +72,7 @@ class User
 
   def recent_items
     Activity.all(:user_id => self.id,
-                 :action => Activity.actions.index('Viewed'),
+                 :action => 'Viewed',
                  :order => :updated_at.desc,
                  :limit => 5).map(&:subject)
   end

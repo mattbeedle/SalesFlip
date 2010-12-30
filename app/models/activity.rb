@@ -58,7 +58,7 @@ class Activity
   def self.update_activity( user, subject, action )
     activity = Activity.all(:user_id => user.id, :subject_id => subject.id,
                               :subject_type => subject.class.name,
-                              :action => Activity.actions.index(action)).first
+                              :action => action).first
     if activity
       activity.update(:updated_at => Time.zone.now, :user_id => user.id)
     else

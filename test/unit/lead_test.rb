@@ -273,13 +273,17 @@ class LeadTest < ActiveSupport::TestCase
 
       should 'log an activity when created' do
         assert_equal 1, @lead.activities.count
-        assert @lead.activities.any? {|a| a.action == 'Created' }
+
+        actions = @lead.activities.map &:action
+        assert_includes actions, 'Created'
       end
 
       should 'log an activity when updated' do
         @lead = Lead.get(@lead.id)
         @lead.update :first_name => 'test'
-        assert @lead.activities.any? {|a| a.action == 'Updated' }
+
+        actions = @lead.activities.map &:action
+        assert_includes actions, 'Updated'
       end
 
       should 'not log an "updated" activity when do_not_log is set' do
@@ -291,38 +295,50 @@ class LeadTest < ActiveSupport::TestCase
       should 'log an activity when destroyed' do
         @lead = Lead.get(@lead.id)
         @lead.destroy
-        assert @lead.activities.any? {|a| a.action == 'Deleted' }
+
+        actions = @lead.activities.map &:action
+        assert_includes actions, 'Deleted'
       end
 
       should 'log an activity when converted' do
         @lead = Lead.get(@lead.id)
         @lead.promote!('A new company')
-        assert @lead.activities.any? {|a| a.action == 'Converted' }
+
+        actions = @lead.activities.map &:action
+        assert_includes actions, 'Converted'
       end
 
       should 'not log an update activity when converted' do
         @lead = Lead.get(@lead.id)
         @lead.promote!('A company')
-        refute @lead.activities.any? {|a| a.action == 'Updated' }
+
+        actions = @lead.activities.map &:action
+        refute_includes actions, 'Updated'
       end
 
       should 'log an activity when rejected' do
         @lead = Lead.get(@lead.id)
         @lead.reject!
-        assert @lead.activities.any? {|a| a.action == 'Rejected' }
+
+        actions = @lead.activities.map &:action
+        assert_includes actions, 'Rejected'
       end
 
       should 'not log an update activity when rejected' do
         @lead = Lead.get(@lead.id)
         @lead.reject!
-        refute @lead.activities.any? {|a| a.action == 'Updated' }
+
+        actions = @lead.activities.map &:action
+        refute_includes actions, 'Updated'
       end
 
       should 'log an activity when restored' do
         @lead.destroy
         @lead = Lead.get(@lead.id)
         @lead.update :deleted_at => nil
-        assert @lead.activities.any? {|a| a.action == 'Restored' }
+
+        actions = @lead.activities.map &:action
+        assert_includes actions, 'Restored'
       end
 
       should 'have related activities' do
@@ -338,10 +354,16 @@ class LeadTest < ActiveSupport::TestCase
 
       should 'create a new account (account_type: "Prospect") and contact when a new account is specified' do
         @lead.promote!('Super duper company')
-        assert account = Account.first(:name => 'Super duper company',
-                                       :account_type => Account.account_types.index('Prospect'))
-        assert account.contacts.any? {|c| c.first_name == @lead.first_name &&
-          c.last_name == @lead.last_name }
+
+        account = Account.first(
+          :name => 'Super duper company',
+          :account_type => 'Prospect'
+        )
+
+        refute_nil account
+
+        contacts = account.contacts.map { |c| [c.first_name, c.last_name] }
+        assert_includes contacts, [@lead.first_name, @lead.last_name]
       end
 
       should 'change the lead status to "converted"' do

@@ -1,6 +1,6 @@
 module ParanoidDelete
   extend ActiveSupport::Concern
-  
+
   included do
     property :deleted_at, DateTime
 
@@ -20,11 +20,15 @@ module ParanoidDelete
 
   def destroy_with_paranoid
     @recently_destroyed = true
+    @recently_restored = false
     update :deleted_at => Time.now
     comments.all.each(&:destroy_without_paranoid) if self.respond_to?(:comments)
   end
 
   def recently_restored?
-    @recently_restored = true if attribute_dirty?(:deleted_at) && !self.deleted_at
+    if attribute_dirty?(:deleted_at) && !self.deleted_at
+      @recently_destroyed = false
+      @recently_restored = true
+    end
   end
 end

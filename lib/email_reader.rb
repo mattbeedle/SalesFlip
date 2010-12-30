@@ -63,7 +63,7 @@ protected
   end
 
   def self.find_target( email )
-    target = Lead.first(:conditions => { :email => /#{find_target_email(email)}/i, :status => Lead.statuses.index('New') })
+    target = Lead.first(:conditions => { :email => /#{find_target_email(email)}/i, :status => 'New' })
     target = Contact.first(:conditions => { :email => /#{find_target_email(email)}/i }) unless target
     target = Account.first(:conditions => { :email => /#{find_target_email(email)}/i }) unless target
     target = Lead.first(:conditions => { :email => /#{find_target_email(email)}/i }) unless target
