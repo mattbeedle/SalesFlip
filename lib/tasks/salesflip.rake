@@ -6,4 +6,14 @@ namespace :salesflip do
       :password_confirmation => 'password'
     user.confirm!
   end
+
+  desc 'Clear old invalid data'
+  task :cleanup => :environment do
+    Task.all.each do |task|
+      task.asset rescue task.destroy
+    end
+    Activity.all.each do |activity|
+      activity.subject rescue activity.destroy
+    end
+  end
 end
