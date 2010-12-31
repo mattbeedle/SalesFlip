@@ -5,8 +5,8 @@ class OpportunityStage
   include ParanoidDelete
 
   property :id, Serial
-  property :name, String # should be 'localized_field'
-  property :percentage, Integer, :required => true
+  property :name, String, required: true # should be 'localized_field'
+  property :percentage, Integer, required: true
   property :notes, String
   property :created_at, DateTime
   property :created_on, Date
