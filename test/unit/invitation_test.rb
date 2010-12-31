@@ -36,13 +36,13 @@ class InvitationTest < ActiveSupport::TestCase
 
     should 'generate code on creation' do
       @invitation.code = nil
-      @invitation.save!
+      @invitation.save
       assert @invitation.code
     end
 
     should 'send invitation email after creation' do
       ActionMailer::Base.deliveries.clear
-      @invitation.save!
+      @invitation.save
       assert_equal 1, ActionMailer::Base.deliveries.length
     end
   end

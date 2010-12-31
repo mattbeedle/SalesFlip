@@ -132,7 +132,7 @@ class ContactTest < ActiveSupport::TestCase
     end
     
     should 'not be able to assign to another user if the permission is private' do
-      @contact.save!
+      @contact.save
       @contact.update :permission => 'Private'
       assert @contact.valid?
       @contact.assignee = @user
@@ -141,7 +141,7 @@ class ContactTest < ActiveSupport::TestCase
     end
     
     should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
-      @contact.save!
+      @contact.save
       user = User.make
       @contact.update :permission => 'Shared', :permitted_user_ids => [user.id]
       assert @contact.valid?
@@ -151,7 +151,7 @@ class ContactTest < ActiveSupport::TestCase
     end
     
     should 'be able to get all comments including those for any associated leads' do
-      @contact.save!
+      @contact.save
       lead = Lead.make :contact => @contact
       comment = Comment.make :commentable => lead
       assert @contact.comments_including_leads.include?(comment)
@@ -163,22 +163,22 @@ class ContactTest < ActiveSupport::TestCase
 
     should 'be assigned an identifier on creation' do
       assert @contact.identifier.nil?
-      @contact.save!
+      @contact.save
       assert @contact.identifier
     end
 
     should 'be assigned consecutive identifiers' do
-      @contact.save!
+      @contact.save
       assert_equal 1, @contact.identifier
       @contact2 = Contact.make_unsaved
       assert @contact2.identifier.nil?
-      @contact2.save!
+      @contact2.save
       assert_equal 2, @contact2.reload.identifier
     end
 
     should 'validate uniqueness of email' do
       @contact.email = 'florian.behn@careermee.com'
-      @contact.save!
+      @contact.save
       c = Contact.make_unsaved(:florian, :email => @contact.email)
       assert !c.valid?
       assert c.errors[:email]
@@ -220,7 +220,7 @@ class ContactTest < ActiveSupport::TestCase
 
     context 'activity logging' do
       setup do
-        @contact.save!
+        @contact.save
         @contact = Contact.find(@contact.id)
       end
 

@@ -294,7 +294,7 @@ class TaskTest < ActiveSupport::TestCase
     
     should 'not be able to assign a task to someone else when the task has a lead associated, and the lead is private' do
       user = User.make
-      @task.save!
+      @task.save
       lead = Lead.make :permission => 'Private', :user => @task.user #lead belongs to same user as task does
       @task.update :asset => lead
       assert @task.valid?
@@ -307,7 +307,7 @@ class TaskTest < ActiveSupport::TestCase
     
     should 'not be able to assign a task to someone else when the task has an account associated, and the account is private' do
       user = User.make
-      @task.save!
+      @task.save
       account = Account.make :permission => 'Private', :user => @task.user #lead belongs to same user as task does
       @task.update :asset => account
       assert @task.valid?
@@ -320,7 +320,7 @@ class TaskTest < ActiveSupport::TestCase
     
     should 'not be able to assign a task to someone else when the task has a contact associated, and the contact is private' do
       user = User.make
-      @task.save!
+      @task.save
       contact = Contact.make :permission => 'Private', :user => @task.user #lead belongs to same user as task does
       @task.update :asset => contact
       assert @task.valid?
@@ -333,7 +333,7 @@ class TaskTest < ActiveSupport::TestCase
     
     should 'not be able to assign a task to someone else when the task has a lead associated, and the lead is shared, but not with that user' do
       user = User.make
-      @task.save!
+      @task.save
       lead = Lead.make :permission => 'Shared', :permitted_user_ids => [User.make.id], :user => @task.user
       @task.update :asset => lead
       assert @task.valid?
@@ -346,7 +346,7 @@ class TaskTest < ActiveSupport::TestCase
     
     should 'not be able to assign a task to someone else when the task has an account associated, and the account is shared, but not with that user' do
       user = User.make
-      @task.save!
+      @task.save
       account = Account.make :permission => 'Shared', :permitted_user_ids => [User.make.id], :user => @task.user
       @task.update :asset => account
       assert @task.valid?
@@ -364,7 +364,7 @@ class TaskTest < ActiveSupport::TestCase
       end
 
       should 'assign the lead to the user who created the task' do
-        @lead.tasks.create! :user => @user, :name => 'test', :due_at => Time.zone.now,
+        @lead.tasks.create :user => @user, :name => 'test', :due_at => Time.zone.now,
           :category => Task.categories.first
         assert_equal @lead.reload.assignee, @user
       end
@@ -377,7 +377,7 @@ class TaskTest < ActiveSupport::TestCase
       end
       
       should 'assign the opportunity to the user who create the task' do
-        @opportunity.tasks.create! :user => @user, :name => 'test', :due_at => Time.zone.now,
+        @opportunity.tasks.create :user => @user, :name => 'test', :due_at => Time.zone.now,
           :category => Task.categories.first
         assert_equal @opportunity.reload.assignee, @user
       end
@@ -389,7 +389,7 @@ class TaskTest < ActiveSupport::TestCase
 
     context 'activity logging' do
       setup do
-        @task.save!
+        @task.save
       end
 
       should 'log activity when created' do
@@ -417,14 +417,14 @@ class TaskTest < ActiveSupport::TestCase
 
       should 'log activity when completed' do
         @task.completed_by_id = @task.user.id
-        @task.save!
+        @task.save
         assert @task.activities.any? {|a| a.action == 'Completed' }
       end
     end
 
 
     should 'send a notification email to the assignee if the assignee is changed' do
-      @task.save!
+      @task.save
       @benny = User.make(:benny)
       ActionMailer::Base.deliveries.clear
       @task.update :assignee_id => @benny.id
@@ -435,7 +435,7 @@ class TaskTest < ActiveSupport::TestCase
     end
 
     should 'not send a notification email if the assignee was not changed' do
-      @task.save!
+      @task.save
       ActionMailer::Base.deliveries.clear
       @task.update :assignee_id => @task.assignee_id
       assert_equal 0, ActionMailer::Base.deliveries.length
@@ -446,14 +446,14 @@ class TaskTest < ActiveSupport::TestCase
       lead = Lead.make :assignee => user
       @task = Task.make_unsaved(:user => user, :asset => lead)
       ActionMailer::Base.deliveries.clear
-      @task.save!
+      @task.save
       assert_equal 0, ActionMailer::Base.deliveries.length
     end
 
     context 'completed?' do
       should 'be true when task has been completed' do
         @task.completed_by_id = @task.user_id
-        @task.save!
+        @task.save
         assert @task.completed?
       end
 
@@ -464,7 +464,7 @@ class TaskTest < ActiveSupport::TestCase
 
     context 'completed_by_id=' do
       setup do
-        @task.save!
+        @task.save
       end
 
       should 'set the task completed at time' do

@@ -7,21 +7,21 @@ class Identifier
   property :lead_identifier, Integer, :default => 0, :required => true
 
   def self.next_account
-    Identifier.create! unless Identifier.count > 0
+    Identifier.create unless Identifier.count > 0
     identifier = first
     first.increment!(:account_identifier)
     first.account_identifier
   end
 
   def self.next_contact
-    Identifier.create! unless Identifier.count > 0
+    Identifier.create unless Identifier.count > 0
     identifier = first
     first.increment!(:contact_identifier)
     first.contact_identifier
   end
 
   def self.next_lead
-    Identifier.create! unless Identifier.count > 0
+    Identifier.create unless Identifier.count > 0
     identifier = first
     first.increment!(:lead_identifier)
     first.lead_identifier

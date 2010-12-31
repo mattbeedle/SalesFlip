@@ -24,8 +24,8 @@ class AssignableTest < ActiveSupport::TestCase
     context 'assigned_to' do
       setup do
         @user = User.make
-        @assignable1 = AssignableClass.create! :assignee => @user
-        @assignable2 = AssignableClass.create!
+        @assignable1 = AssignableClass.create :assignee => @user
+        @assignable2 = AssignableClass.create
       end
 
       should 'be able to find all assignable models assigned to a user' do

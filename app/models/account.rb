@@ -30,7 +30,7 @@ class Account
   has_constant :accesses, lambda { I18n.t(:access_levels) }
   has_constant :account_types, lambda { I18n.t(:account_types) }
 
-  belongs_to :user, required: false
+  belongs_to :user, required: true
   belongs_to :parent, model: 'Account', required: false
   
   has n,   :contacts#, :dependent => :nullify
@@ -55,18 +55,17 @@ class Account
   # end
 
   def self.assigned_to( user_id )
-    all ["assignee_id = ? OR (user_id = ? and assignee_id is null)", user_id, user_id]
+    all(assignee_id: user_id) | all(user_id: user_id, assignee_id: nil)
   end
   
   def self.similar_accounts( name )
-    ids = Account.only(:id, :name).map do |account|
-      [account.id, name.levenshtein_similar(account.name)]
-    end.select { |similarity| similarity.last > 0.5 }.map(&:first)
-    Account.all(:_id => ids)
+    Account.all(:fields => [:id, :name]).select do |account|
+      name.levenshtein_similar(account.name) > 0.5
+    end
   end
 
   def self.exportable_fields
-    fields.map(&:first).sort.delete_if do |f|
+    properties.map { |p| p.name.to_s }.sort.delete_if do |f|
       f.match(/access|permission|permitted_user_ids|tracker_ids/)
     end
   end

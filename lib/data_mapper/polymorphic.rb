@@ -10,14 +10,19 @@ module DataMapper
           name = name.to_s
           suffix = 'type'
 
-          opts[:child_key] = ["#{as}_id".to_sym]
-          opts["#{as}_#{suffix}".to_sym] = self
+          opts[:child_key] = [:"#{as}_id"]
 
           child_model_name = opts[:model] || opts[:class_name] || name.classify
           child_klass      = child_model_name.constantize
-          belongs_to_name  = name.demodulize.underscore
+          belongs_to_name  = self.name.demodulize.underscore
 
           has_without_polymorphism cardinality, name, *(args + [opts])
+
+          class_eval <<-EVIL, __FILE__, __LINE__+1
+            def #{name}
+              super.all(:#{as}_type => self.class.name)
+            end
+          EVIL
 
           child_klass.belongs_to "_#{as}_#{belongs_to_name}".to_sym, :child_key => opts[:child_key], :model => self
 

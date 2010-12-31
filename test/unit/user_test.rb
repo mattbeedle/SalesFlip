@@ -15,14 +15,14 @@ class UserTest < ActiveSupport::TestCase
         @user = User.make(:annika)
         @benny = User.make(:benny)
         @lead = Lead.make(:erich, :user => @user, :tracker_ids => [@benny.id])
-        @comment = @lead.comments.create! :user => @user, :subject => 'a comment',
+        @comment = @lead.comments.create :user => @user, :subject => 'a comment',
           :text => 'This is a good lead'
-        @email = Email.create! :user => @benny, :subject => 'an offer',
+        @email = Email.create :user => @benny, :subject => 'an offer',
           :text => 'Here is your offer', :commentable => @lead, :from => 'test@test.com',
           :received_at => Time.zone.now
-        @attachment = @email.attachments.create! :subject => @email,
+        @attachment = @email.attachments.create :subject => @email,
           :attachment => File.open('test/upload-files/erich_offer.pdf')
-        @task = @lead.tasks.create! :name => 'Call this guy', :due_at => 'due_today',
+        @task = @lead.tasks.create :name => 'Call this guy', :due_at => 'due_today',
           :category => 'Call', :user => @user
         ActionMailer::Base.deliveries.clear
       end
@@ -50,7 +50,7 @@ class UserTest < ActiveSupport::TestCase
 
       should 'not include activities in the email which have already been sent in a previous email' do
         User.send_tracked_items_mail
-        comment2 = @lead.comments.create! :subject => 'another comment',
+        comment2 = @lead.comments.create :subject => 'another comment',
           :text => 'a second comment', :user => @user
         ActionMailer::Base.deliveries.clear
         User.send_tracked_items_mail
@@ -85,7 +85,7 @@ class UserTest < ActiveSupport::TestCase
 
     # TODO, decide what to do about dropbox integration (e.g google app engine, postfix, some other solution...)
     #should 'add user to postfix after creation' do
-    #  @user.save!
+    #  @user.save
     #  assert Domain.find_by_domain("#{@user.api_key}.salesflip.com")
     #  assert Alias.find_by_mail_and_destination("@#{@user.api_key}.salesflip.com",
     #                                            'catch.all@salesflip.com')
@@ -93,31 +93,31 @@ class UserTest < ActiveSupport::TestCase
     
     should 'default role to "Sales Person"' do
       @user.role = nil
-      @user.save!
+      @user.save
       assert @user.role_is?('Sales Person')
     end
     
     should 'not default role to "Sales Person" if a role is already set' do
       @user.role = 'Freelancer'
-      @user.save!
+      @user.save
       assert @user.role_is?('Freelancer')
     end
 
     should 'create company from company name' do
       @user = User.new User.plan(:annika, :company_name => 'A test company', :company => nil)
-      @user.save!
+      @user.save
       assert Company.first(:conditions => { :name => 'A test company' })
       assert_equal 'A test company', @user.company.name
     end
 
     should 'have dropbox email' do
-      @user.save!
+      @user.save
       assert_equal "#{@user.api_key}@salesflip.appspotmail.com", @user.dropbox_email
     end
 
     context 'when invited' do
       setup do
-        @user.save!
+        @user.save
         @invitation = Invitation.make :inviter => @user, :role => 'Freelancer',
           :email => 'test@test.com'
       end
@@ -139,13 +139,13 @@ class UserTest < ActiveSupport::TestCase
       should 'update invitation with invited id after creation' do
         user = User.new :invitation_code => @invitation.code, :password => 'password',
           :password_confirmation => 'password'
-        user.save!
+        user.save
         assert user.invitation
       end
     end
 
     should 'update invitation with invited id after create' do
-      @user.save!
+      @user.save
     end
 
     context 'deleted_items_count' do
@@ -175,19 +175,19 @@ class UserTest < ActiveSupport::TestCase
     context 'full_name' do
       should 'return username if present' do
         @user.update(:username => 'annie')
-        @user.save!
+        @user.save
         assert_equal @user.full_name, "annie"
       end
 
       should 'return email username if username is not present' do
-        @user.save!
+        @user.save
         assert_equal @user.full_name, "annika.fleischer1"
       end
     end
 
     context 'tracked_items' do
       setup do
-        @user.save!
+        @user.save
       end
 
       should 'return all tracked leads' do
@@ -235,7 +235,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     should 'have uuid after creation' do
-      @user.save!
+      @user.save
       assert !@user.api_key.blank?
     end
   end

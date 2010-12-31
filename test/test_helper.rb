@@ -66,11 +66,12 @@ class ActiveSupport::TestCase
   def self.should_require_key(*args)
     klass = self.name.gsub(/Test$/, '').constantize
     args.each do |arg|
+      key = klass.relationships.has_key?(arg) ? :"#{arg}_id" : arg
       should "require key '#{arg}'" do
         obj = klass.new
-        obj.send("#{arg.to_sym}=", nil)
+        obj.send("#{key}=", nil)
         obj.valid?
-        refute_blank obj.errors[arg.to_sym]
+        assert_present obj.errors[key]
       end
     end
   end

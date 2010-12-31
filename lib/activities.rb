@@ -43,17 +43,17 @@ module Activities
 
     if self.respond_to?(:contacts)
       @activities = @activities.any_of(
-        { :subject_type => 'Contact', :subject_id => self.contacts.map(&:id) },
+        { :subject_type => 'Contact', :subject_id => contacts.map(&:id) },
         { :subject_type => 'Lead',
-          :subject_id => self.leads.flatten.map(&:id) },
+          :subject_id => leads.flatten.map(&:id) },
         { :subject_type => 'Task',
-          :subject_id => self.contacts.map(&:tasks).flatten.map(&:id) +
-          self.contacts.map(&:leads).flatten.map(&:tasks).flatten.map(&:id) },
+          :subject_id => contacts.map(&:tasks).flatten.map(&:id) +
+          contacts.map(&:leads).flatten.map(&:tasks).flatten.map(&:id) },
         { :subject_type => %w(Comment Email),
-          :subject_id => self.contacts.map(&:comments).flatten.map(&:id) +
-          self.contacts.map(&:emails).flatten.map(&:id) +
-          self.leads.map(&:comments).flatten.map(&:id) +
-          self.leads.map(&:emails).flatten.map(&:id) })
+          :subject_id => contacts.map(&:comments).flatten.map(&:id) +
+          contacts.map(&:emails).flatten.map(&:id) +
+          leads.map(&:comments).flatten.map(&:id) +
+          leads.map(&:emails).flatten.map(&:id) })
     end
     @activities
   end
