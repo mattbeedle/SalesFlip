@@ -54,7 +54,8 @@ class Opportunity
   before :save, :set_probability
   before :save, :update_close_date
 
-  alias :name :title
+  alias :name  :title
+  alias :name= :title=
 
   # searchable do
     # text :title, :background_info

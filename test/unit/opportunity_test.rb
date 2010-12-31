@@ -6,7 +6,7 @@ class OpportunityTest < ActiveSupport::TestCase
       :background_info, :created_at, :updated_at, :margin
     should_belong_to :assignee, :user, :contact, :stage
     should_have_many :comments, :tasks, :attachments
-    should_validate_presence_of :title, :user, :stage
+    should_require_key :title, :user, :stage
     should_act_as_paranoid
 
     context 'assigned_to' do

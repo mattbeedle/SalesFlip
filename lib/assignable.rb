@@ -9,11 +9,6 @@ module Assignable
 
   module ClassMethods
     def assigned_to( user_id )
-      if user_id.respond_to?(:collection_name)
-        user_id = user_id.id
-      elsif user_id.is_a?(String) && BSON::ObjectId.legal?(user_id)
-        user_id = BSON::ObjectId.from_string(user_id)
-      end
       all(:assignee_id => user_id)
     end
   end
