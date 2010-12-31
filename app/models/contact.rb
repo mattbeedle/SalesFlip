@@ -55,10 +55,10 @@ class Contact
   belongs_to :assignee, :model => 'User', :required => false
   belongs_to :lead, :required => false
 
-  has n, :tasks, :as => :asset, :suffix => :type#, :dependent => :destroy
-  has n, :comments, :as => :commentable, :suffix => :type#, :dependent => :delete_all
+  has n, :tasks, :as => :asset#, :dependent => :destroy
+  has n, :comments, :as => :commentable#, :dependent => :delete_all
   has n, :leads#, :dependent => :destroy
-  has n, :emails, :as => :commentable, :suffix => :type#, :dependent => :delete_all
+  has n, :emails, :as => :commentable#, :dependent => :delete_all
   has n, :opportunities#, :dependent => :destroy
 
   def self.for_company(company)

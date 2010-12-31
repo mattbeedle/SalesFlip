@@ -26,9 +26,9 @@ class Opportunity
   belongs_to :user, :required => true
   belongs_to :stage, model: 'OpportunityStage'
 
-  has n, :comments, :as => :commentable, :suffix => :type#, :dependent => :delete_all
-  has n, :tasks, :as => :asset, :suffix => :type#, :dependent => :delete_all
-  has n, :attachments, :as => :subjec, :suffix => :typet
+  has n, :comments, :as => :commentable#, :dependent => :delete_all
+  has n, :tasks, :as => :asset#, :dependent => :delete_all
+  has n, :attachments, :as => :subject
 
   def self.for_company(company)
     all(:user_id => company.users.map(&:id))

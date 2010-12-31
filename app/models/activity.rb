@@ -11,7 +11,7 @@ class Activity
   property :updated_at, DateTime
   property :updated_on, Date
 
-  belongs_to :subject, :polymorphic => true, :suffix => :type
+  belongs_to :subject, :polymorphic => true
 
   belongs_to :user
 

@@ -34,8 +34,8 @@ class Account
   belongs_to :parent, model: 'Account', required: false
   
   has n,   :contacts#, :dependent => :nullify
-  has n,   :tasks, :as => :asset, :suffix => :type
-  has n,   :comments, :as => :commentable, :suffix => :type
+  has n,   :tasks, :as => :asset
+  has n,   :comments, :as => :commentable
   has n,   :children, :model => 'Account', :child_key => 'parent_id'
 
   def self.for_company(company)

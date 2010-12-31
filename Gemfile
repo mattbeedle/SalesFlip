@@ -11,7 +11,6 @@ gem 'devise'
 
 gem 'dm-devise'
 gem 'dm-migrations'
-gem 'dm-polymorphic', '0.10.3',       :git => 'git://github.com/hassox/dm-polymorphic.git'
 gem 'dm-postgres-adapter'
 gem 'dm-rails'
 gem 'dm-timestamps'

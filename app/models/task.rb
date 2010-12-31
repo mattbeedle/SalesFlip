@@ -25,7 +25,7 @@ class Task
   belongs_to :asset, :polymorphic => true, :required => false, suffix: 'type'
   belongs_to :completed_by, :model => 'User', :required => false
 
-  has n, :activities, :as => :subject, :suffix => :type#, :dependent => :destroy
+  has n, :activities, :as => :subject#, :dependent => :destroy
 
   before :create, :set_recently_created
   before :update, :log_reassignment

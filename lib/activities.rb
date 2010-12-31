@@ -2,7 +2,7 @@ module Activities
   extend ActiveSupport::Concern
 
   included do
-    has n, :activities, :as => :subject, :suffix => :type# , :dependent => :destroy
+    has n, :activities, :as => :subject# , :dependent => :destroy
 
     after :create, :log_creation
     after :update, :log_update

@@ -19,7 +19,7 @@ class Comment
 
   belongs_to :commentable, polymorphic: true, required: true, suffix: 'type'
 
-  has n, :attachments, :as => :subject, :suffix => :type
+  has n, :attachments, :as => :subject
 
   after :create, :add_attachments
 

@@ -62,9 +62,9 @@ class Lead
 
   belongs_to   :user, :required => true
   belongs_to   :contact, :required => false
-  has n, :comments, :as => :commentable, :suffix => :type#, :dependent => :delete_all
-  has n, :tasks, :as => :asset, :suffix => :type#, :dependent => :delete_all
-  has n, :emails, :as => :commentable, :suffix => :type#, :dependent => :delete_all
+  has n, :comments, :as => :commentable#, :dependent => :delete_all
+  has n, :tasks, :as => :asset#, :dependent => :delete_all
+  has n, :emails, :as => :commentable#, :dependent => :delete_all
 
   before :valid?, :set_initial_state
   before :create,     :set_identifier

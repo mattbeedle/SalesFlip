@@ -2,9 +2,22 @@ module Permission
   extend ActiveSupport::Concern
 
   included do
-    property :permitted_user_ids, Object, :default => []
+    singular_name = name.downcase
+    through_relationship_name = :"#{singular_name}_permitted_users"
 
-    validates_with_method :permitted_user_ids, :method => :require_permitted_users
+    through_model = DataMapper::Model.new
+
+    Object.const_set("#{name}PermittedUser", through_model)
+
+    through_model.belongs_to :permitted_user, User, :key => true
+    through_model.belongs_to :"#{singular_name}", :key => true
+
+    has n, through_relationship_name
+    has n, :permitted_users, User,
+      through: through_relationship_name
+
+    validates_presence_of :permitted_users,
+      if: lambda {|model| model.permission_is?('Shared')}
 
     has_constant :permissions, I18n.t(:permissions),
       default: 'Public', required: true, auto_validation: true
@@ -17,45 +30,31 @@ module Permission
         any_of(
           { user_id: user.id },
           { permission: 'Public' },
-          { assignee_id: user.id }
+          { assignee_id: user.id },
+          { permission: 'Shared', permitted_users.id => user.id },
+          { permission: 'Private', permitted_users.id => user.id }
         )
-
-                    # "(this.permission == '#{Contact.permissions.index('Shared')}' && contains(this.permitted_user_ids, '#{user.id}')) || " +
-                    # "(this.permission == '#{Contact.permissions.index('Private')}' && this.assignee_id == '#{user.id}')"
       else
         any_of(
           { user_id: user.id },
           { assignee_id: user.id, permission: 'Public' },
-          { assignee_id: user.id, permission: 'Private'}
+          { assignee_id: user.id, permission: 'Private'},
+          { permission: 'Shared', permitted_users.id => user.id }
         )
-          # "(this.permission == '#{Contact.permissions.index('Shared')}' && contains(this.permitted_user_ids, '#{user.id}'))"
       end
     end
 
   end
 
-  def permitted_user_ids=( permitted_user_ids )
-    unless permitted_user_ids.blank?
-      ids = permitted_user_ids.map do |id|
-         if id.is_a?(String)
-           BSON::ObjectId.from_string(id)
-         else
-           id
-         end
-      end.to_a
-      attribute_set :permitted_user_ids, ids
-    end
+  def permitted_user_ids=(permitted_user_ids)
+    permitted_users.replace(User.all(id: permitted_user_ids))
   end
 
-  def require_permitted_users
-    if I18n.locale_around(:en) { permission_is?('Shared') } and permitted_user_ids.blank?
-      [false, I18n.t('activerecord.errors.messages.blank')]
-    else
-      true
-    end
+  def permitted_user_ids
+    permitted_users.map &:id
   end
 
-  def permitted_for?( user )
+  def permitted_for?(user)
     I18n.locale_around(:en) do
       if !user.role_is?('Freelancer')
         user_id == user.id || permission == 'Public' || assignee_id == user.id ||

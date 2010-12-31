@@ -29,8 +29,8 @@ class User
   has n,  :contacts
   has n,  :activities
   has n,  :searches
-  has n,  :invitations, :as => :inviter, :suffix => :type#, :dependent => :destroy
-  has 1,   :invitation,  :as => :invited, :suffix => :type
+  has n,  :invitations, :as => :inviter#, :dependent => :destroy
+  has 1,   :invitation,  :as => :invited
   has n,  :opportunities
   has n,  :assigned_opportunities, foreign_key: 'assignee_id',
     model: 'Opportunity'

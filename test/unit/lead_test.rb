@@ -189,7 +189,7 @@ class LeadTest < ActiveSupport::TestCase
       assert @lead.valid?
       @lead.assignee = @user
       refute @lead.valid?
-      assert_includes @lead.errors[:base], 'Cannot assign a private lead to another user, please change the permissions first'
+      assert_includes @lead.errors[:permission], 'Cannot assign a private lead to another user, please change the permissions first'
     end
     
     should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
@@ -199,7 +199,7 @@ class LeadTest < ActiveSupport::TestCase
       assert @lead.valid?
       @lead.assignee = @user
       refute @lead.valid?
-      assert_includes @lead.errors[:base], 'Cannot assign a shared lead to a user it is not shared with. Please change the permissions first'
+      assert_includes @lead.errors[:permission], 'Cannot assign a shared lead to a user it is not shared with. Please change the permissions first'
     end
 
     should 'be able to get fields in pipe deliminated format' do
@@ -498,7 +498,7 @@ class LeadTest < ActiveSupport::TestCase
 
     should 'require at least one permitted user if permission is "Shared"' do
       @lead.permission = 'Shared'
-      refute @lead.valid?
+      refute @lead.valid?, "Expected lead to be invalid, but was valid"
       assert @lead.errors[:permitted_user_ids]
     end
 

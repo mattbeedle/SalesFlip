@@ -5,12 +5,6 @@ GIT
     aaronh-chronic (0.3.9)
 
 GIT
-  remote: git://github.com/hassox/dm-polymorphic.git
-  revision: b5886d90676f78dd7098ffdc4807b8ce00dba645
-  specs:
-    dm-polymorphic (0.10.3)
-
-GIT
   remote: git://github.com/jnicklas/carrierwave.git
   revision: 85ddee1014806dd4ccea7d122fe23d14f0adc43e
   specs:
@@ -313,7 +307,6 @@ DEPENDENCIES
   devise
   dm-devise
   dm-migrations
-  dm-polymorphic (= 0.10.3)!
   dm-postgres-adapter
   dm-rails
   dm-timestamps
