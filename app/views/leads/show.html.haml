@@ -54,26 +54,33 @@
 - content_for :sidebar do
   .box.gold
     %h3= t(:contact_info)
-    %dl.info
-      = show_attribute(@lead, 'identifier')
-      = show_attribute(@lead, 'company')
-      = show_attribute(@lead, 'job_title')
-      = show_attribute(@lead, 'department')
-      = show_attribute(@lead, 'email', mail_to(@lead.email, nil, :bcc => current_user.dropbox_email))
-      = show_attribute(@lead, 'alternative_email', mail_to(@lead.alternative_email, nil, :bcc => current_user.dropbox_email))
-      - unless @lead.do_not_call
-        = show_attribute(@lead, 'phone')
-        = show_attribute(@lead, 'mobile')
-      = show_attribute(@lead, 'address')
-      = show_attribute(@lead, 'city')
-      = show_attribute(@lead, 'postal_code')
-      = show_attribute(@lead, 'referred_by')
-      = show_attribute(@lead, 'website', link_to(t(:visit_website), @lead.website))
-      = show_attribute(@lead, 'twitter', link_to('Twitter', @lead.website))
-      = show_attribute(@lead, 'linked_in', link_to('LinkedIn', @lead.linked_in))
-      = show_attribute(@lead, 'facebook', link_to('Facebook', @lead.facebook))
-      = show_attribute(@lead, 'xing', link_to('Xing', @lead.xing))
-      = show_attribute(@lead, 'referred_by')
+    - if @lead.assigned_to?(current_user)
+      %dl.info
+        = show_attribute(@lead, 'identifier')
+        = show_attribute(@lead, 'company')
+        = show_attribute(@lead, 'job_title')
+        = show_attribute(@lead, 'department')
+        = show_attribute(@lead, 'email', mail_to(@lead.email, nil, :bcc => current_user.dropbox_email))
+        = show_attribute(@lead, 'alternative_email', mail_to(@lead.alternative_email, nil, :bcc => current_user.dropbox_email))
+        - unless @lead.do_not_call
+          = show_attribute(@lead, 'phone')
+          = show_attribute(@lead, 'mobile')
+        = show_attribute(@lead, 'address')
+        = show_attribute(@lead, 'city')
+        = show_attribute(@lead, 'postal_code')
+        = show_attribute(@lead, 'referred_by')
+        = show_attribute(@lead, 'website', link_to(t(:visit_website), @lead.website))
+        = show_attribute(@lead, 'twitter', link_to('Twitter', @lead.website))
+        = show_attribute(@lead, 'linked_in', link_to('LinkedIn', @lead.linked_in))
+        = show_attribute(@lead, 'facebook', link_to('Facebook', @lead.facebook))
+        = show_attribute(@lead, 'xing', link_to('Xing', @lead.xing))
+        = show_attribute(@lead, 'referred_by')
+    - elsif @lead.assignee.blank?
+      = simple_form_for @lead, :html => { :class => 'accept' } do |form|
+        = form.hidden_field :do_not_notify, :value => true
+        = form.hidden_field :assignee_id, :value => current_user.id
+        = hidden_field_tag :return_to, request.fullpath
+        = form.button :submit, t(:accept).capitalize, :id => 'accept'
   #recent_activity.box.ice
     %h3= t(:recent_activity_for, :name => @lead.full_name )
     = render :partial => 'shared/activity_for', :collection => @lead.related_activities.desc(:updated_at).limit(6), :as => :activity
