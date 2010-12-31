@@ -136,6 +136,10 @@ class Lead
     fields.map { |field| self.send(field) }.join(deliminator)
   end
 
+  def assigned_to?( user )
+    assignee_id == user.id
+  end
+
 protected
   def set_recently_created
     @recently_created = true
