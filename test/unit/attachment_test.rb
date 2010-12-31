@@ -11,7 +11,7 @@ class AttachmentTest < ActiveSupport::TestCase
     end
 
     should 'be valid with all required attributes' do
-      assert @attachment.valid?
+      assert_valid @attachment
     end
 
     should 'not be valid without subject' do

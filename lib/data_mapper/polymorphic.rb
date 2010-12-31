@@ -63,8 +63,8 @@ module DataMapper
                 self.#{name}_#{suffix} = object.class.name                                        #     self.commentable_type = object.class.name
                 self.send('_#{name}_' + object.class.name.demodulize.underscore + '=', object)    #     self.send('_commentable_' + object.class.name.demoduleize.underscore + '=', object)
               else                                                                                #   else
-                self.subject_id = nil                                                             #     self.subject_id = nil
-                self.subject_type = nil                                                           #     self.subject_type = nil
+                self.#{name}_id = nil                                                             #     self.commentable_id = nil
+                self.#{name}_#{suffix} = nil                                                      #     self.commentable_type = nil
               end                                                                                 #   end
             end                                                                                   # end
           EVIL

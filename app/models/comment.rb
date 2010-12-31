@@ -16,8 +16,7 @@ class Comment
   property :updated_on, Date
 
   belongs_to :user, :required => true
-
-  belongs_to :commentable, polymorphic: true, required: true, suffix: 'type'
+  belongs_to :commentable, polymorphic: true, required: true
 
   has n, :attachments, :as => :subject
 

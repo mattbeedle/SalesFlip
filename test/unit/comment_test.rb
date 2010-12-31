@@ -2,7 +2,7 @@ require 'test_helper.rb'
 
 class CommentTest < ActiveSupport::TestCase
   context 'Class' do
-    should_require_key :user, :commentable
+    should_require_key :user, :commentable_id
   end
 
   context 'Named Scopes' do
@@ -21,12 +21,8 @@ class CommentTest < ActiveSupport::TestCase
       @comment = Comment.make_unsaved(:made_offer_to_erich)
     end
 
-    should 'return first 60 characters of text for name' do
+    should 'return first 30 characters of text for name' do
       assert_equal "#{@comment.text[0..30]}...", @comment.name
-    end
-
-    should 'be valid with all required attributes' do
-      assert @comment.valid?
     end
   end
 end
