@@ -71,7 +71,7 @@ class ActiveSupport::TestCase
         obj = klass.new
         obj.send("#{key}=", nil)
         obj.valid?
-        assert_present obj.errors[key]
+        assert_present obj.errors[key], "expected error on #{key} but got: #{obj.errors.to_hash.inspect}"
       end
     end
   end
@@ -144,6 +144,10 @@ class ActiveSupport::TestCase
 
   teardown do
     DataMapper::Repository.context.pop
+  end
+
+  def assert_valid(model)
+    assert model.valid?, "Expected #{model.class} to be valid, but got: #{model.errors.full_messages.join(", ")}"
   end
 
   def assert_add_job_email_sent(posting)

@@ -1,3 +1,10 @@
+class ActivityUser
+  include DataMapper::Resource
+
+  belongs_to :notified_user, User, key: true
+  belongs_to :activity, key: true
+end
+
 class Activity
   include DataMapper::Resource
   include DataMapper::Timestamps
@@ -5,41 +12,30 @@ class Activity
 
   property :id, Serial
   property :info, String
-  property :notified_user_ids, Object, :default => []
   property :created_at, DateTime
   property :created_on, Date
   property :updated_at, DateTime
   property :updated_on, Date
 
-  belongs_to :subject, :polymorphic => true
+  has n, :activity_users
+  has n, :notified_users, User, through: Resource
 
   belongs_to :user
+  belongs_to :subject, polymorphic: true, required: true
 
-  def subject
-    subject_type.constantize.get(subject_id) if subject_type
-  end
-
-  def subject=(new_subject)
-    if new_subject
-      self.attributes = {subject_id: new_subject.id, subject_type: new_subject.class}
-    else
-      self.attributes = {subject_id: nil, subject_type: nil}
-    end
-  end
+  has_constant :actions, lambda { I18n.t(:activity_actions) }
 
   def self.for_subject(subject)
     all(:subject_id => subject.id, :subject_type => subject.class.to_s)
   end
 
   def self.already_notified(user)
-    all(:notified_user_ids => user.id)
+    all(notified_users.id => user.id)
   end
 
   def self.not_notified(user)
-    all(:notified_user_ids.not => user.id)
+    all - already_notified(user)
   end
-
-  has_constant :actions, lambda { I18n.t(:activity_actions) }
 
   def self.log( user, subject, action )
     if %w(Created Deleted).include?(action)
@@ -65,6 +61,14 @@ class Activity
       create_activity(user, subject, action)
     end
     activity
+  end
+
+  def notified_user_ids=(notified_user_ids)
+    notified_users.replace(User.all(id: notified_user_ids))
+  end
+
+  def notified_user_ids
+    notified_users.map &:id
   end
 
   class << self

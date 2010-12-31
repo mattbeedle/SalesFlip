@@ -7,10 +7,15 @@ module HasConstant
         def has_constant(name, values, options = {})
           singular = (options.delete(:accessor) || name.to_s.singularize).to_sym
 
-          (class << self; self; end).instance_eval do
-            define_method(name.to_s, values) if values.respond_to?(:call)
-            define_method(name.to_s, lambda { values }) unless values.respond_to?(:call)
+          class_eval do
+            values = values.respond_to?(:call) ? values.call : values
+
+            property singular, ::DataMapper::Property::Enum,
+              {flags: values, auto_validation: false}.merge(options)
+
+            validates_within :set => [nil, *values]
           end
+
 
           define_method("#{singular}_is?") do |value|
             send(singular) == value.to_s
@@ -28,13 +33,9 @@ module HasConstant
             !send("#{singular}_in?", value_list)
           end
 
-          class_eval do
-            values = values.respond_to?(:call) ? values.call : values
-
-            property singular, ::DataMapper::Property::Enum,
-              {flags: values, auto_validation: false}.merge(options)
-
-            validates_within :set => [nil, *values]
+          (class << self; self; end).instance_eval do
+            define_method(name.to_s, values) if values.respond_to?(:call)
+            define_method(name.to_s, lambda { values }) unless values.respond_to?(:call)
 
             def by_constant(constant, value)
               all(constant.to_sym => value)
