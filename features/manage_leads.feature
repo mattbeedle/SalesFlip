@@ -421,6 +421,18 @@ Feature: Manage leads
     And I should see "Account Name"
     And I should see "Attachment"
 
+  Scenario: Viewing a converted lead
+    Given I am registered and logged in as annika
+    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com", assignee: Annika
+    And account: "careermee" exists with user: annika
+    And contact: "florian" exists with email: "erich.feldmeier@gmail.com", account: careermee
+    And I am on the lead's page
+    When I follow "Convert"
+    And I press "Convert Lead"
+    And I go to the lead's page
+    Then I should see "This lead was converted by annika.fleischer"
+    And I should see "Comments are closed"
+
   Scenario: Private lead (in)visiblity on leads page
     Given I am registered and logged in as annika
     And user: "benny" exists
@@ -474,6 +486,7 @@ Feature: Manage leads
   Scenario: Actions for a converted lead
     Given I am registered and logged in as annika
     And a lead: "erich" exists with user: annika, status: "Converted"
+    And an activity exists with action: "Converted", user: annika, subject: lead
     When I am on the lead's page
     Then I should not see "Convert" within "a"
     And I should not see "Reject" within "a"
