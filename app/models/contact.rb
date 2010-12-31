@@ -75,12 +75,11 @@ class Contact
   # end
 
   def self.assigned_to( user_id )
-    user_id = BSON::ObjectId.from_string(user_id) if user_id.is_a?(String)
     any_of({ :assignee_id => user_id }, { :user_id => user_id, :assignee_id => nil })
   end
 
   def self.exportable_fields
-    fields.map(&:first).sort.delete_if do |f|
+    properties.map { |p| p.name.to_s }.sort.delete_if do |f|
       f.match(/access|permission|permitted_user_ids|tracker_ids/)
     end
   end

@@ -150,6 +150,10 @@ class ActiveSupport::TestCase
     assert model.valid?, "Expected #{model.class} to be valid, but got: #{model.errors.full_messages.join(", ")}"
   end
 
+  def refute_valid(model)
+    refute model.valid?, "Expected #{model.class} to be invalid, but was valid"
+  end
+
   def assert_add_job_email_sent(posting)
     assert_sent_email do |email|
       email.subject == "Neue Stellenanzeige von #{posting.job.company_name}" and

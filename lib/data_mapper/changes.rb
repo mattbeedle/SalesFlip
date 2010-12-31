@@ -7,10 +7,6 @@ module DataMapper
     Model.append_inclusions self
 
     included do
-      before :attribute_set do |property,_|
-        changed << property.to_s
-      end
-
       after :save do |*args|
         changed.clear if clean?
       end
@@ -20,5 +16,18 @@ module DataMapper
       @changed ||= Set.new
     end
 
+  end
+end
+
+module DataMapper
+  module Resource
+    class State
+      class Dirty
+        include DataMapper::Hook
+        before :set do |property,_|
+          resource.changed << property.name.to_s
+        end
+      end
+    end
   end
 end
