@@ -19,7 +19,7 @@ class Task
   property :updated_on, Date
 
   has_constant :categories, I18n.t(:task_categories),
-    required: true
+    required: true, auto_validation: true
 
   belongs_to :user, :required => true
   belongs_to :asset, :polymorphic => true, :required => false, suffix: 'type'
@@ -28,8 +28,9 @@ class Task
   has n, :activities, :as => :subject#, :dependent => :destroy
 
   before :create, :set_recently_created
-  before :update, :log_reassignment
+  after :update, :log_reassignment
   before :save,   :log_recently_changed
+
   after :create,  :assign_unassigned_asset
   after :update,  :log_update
   after :save,    :notify_assignee
@@ -44,7 +45,7 @@ class Task
   end
 
   def self.assigned_by(user)
-    all(:user_id => user.id, :assignee_id.nin => [nil, user.id])
+    all(:user_id => user.id, :assignee_id.not => [nil, user.id])
   end
 
   def self.pending
@@ -230,6 +231,6 @@ protected
   end
 
   def log_reassignment
-    Activity.log(self.user, self, 'Re-assigned') if @reassigned and valid?
+    Activity.log(self.user, self, 'Re-assigned') if @reassigned
   end
 end

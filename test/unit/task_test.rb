@@ -302,7 +302,7 @@ class TaskTest < ActiveSupport::TestCase
       assert !@task.valid?
       message = 'Cannot assign this task to anyone else because the lead that it is associated ' +
         'with is private. Please change the lead permission first'
-      assert @task.errors[:base].include?(message)
+      assert @task.errors[:permission].include?(message)
     end
     
     should 'not be able to assign a task to someone else when the task has an account associated, and the account is private' do
@@ -315,7 +315,7 @@ class TaskTest < ActiveSupport::TestCase
       assert !@task.valid?
       message = 'Cannot assign this task to anyone else because the account that it is associated ' +
         'with is private. Please change the account permission first'
-      assert @task.errors[:base].include?(message)
+      assert @task.errors[:permission].include?(message)
     end
     
     should 'not be able to assign a task to someone else when the task has a contact associated, and the contact is private' do
@@ -328,7 +328,7 @@ class TaskTest < ActiveSupport::TestCase
       assert !@task.valid?
       message = 'Cannot assign this task to anyone else because the contact that it is associated ' +
         'with is private. Please change the contact permission first'
-      assert @task.errors[:base].include?(message)
+      assert @task.errors[:permission].include?(message)
     end
     
     should 'not be able to assign a task to someone else when the task has a lead associated, and the lead is shared, but not with that user' do
@@ -341,7 +341,7 @@ class TaskTest < ActiveSupport::TestCase
       assert !@task.valid?
       message = "Cannot assign this task to #{user.email} because the lead associated with it " +
         "is not shared with that user"
-      assert @task.errors[:base].include?(message)
+      assert @task.errors[:permission].include?(message)
     end
     
     should 'not be able to assign a task to someone else when the task has an account associated, and the account is shared, but not with that user' do
@@ -354,7 +354,7 @@ class TaskTest < ActiveSupport::TestCase
       assert !@task.valid?
       message = "Cannot assign this task to #{user.email} because the account associated with it " +
         "is not shared with that user"
-      assert @task.errors[:base].include?(message)
+      assert @task.errors[:permission].include?(message)
     end
 
     context 'when created against an unassigned lead' do
