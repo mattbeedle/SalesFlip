@@ -44,6 +44,7 @@ gem 'salesflip-lead_notifications', :require => 'lead_notifications'
 group :production do
   gem 'smurf'
   gem 'mbeedle-heroku-autoscale', :require => 'heroku/autoscale'
+  gem 'mysql2'
 end
 
 group :development do
