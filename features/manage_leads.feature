@@ -88,7 +88,7 @@ Feature: Manage leads
 
   Scenario: Editing a lead
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika
+    And a lead: "erich" exists with user: annika, assignee: annika
     And I am on the leads page
     And I follow the edit link for the lead
     And I fill in "lead_phone" with "999"
@@ -101,7 +101,7 @@ Feature: Manage leads
     Given I am registered and logged in as annika
     And Annika has invited Benny
     And benny belongs to the same company as annika
-    And lead: "erich" exists with user: benny
+    And lead: "erich" exists with user: benny, assignee: annika
     And I am on the leads page
     When I follow the edit link for the lead
     Then I should be on the lead's edit page

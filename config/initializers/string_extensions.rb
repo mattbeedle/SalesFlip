@@ -6,4 +6,8 @@ class String
   def strip_html
     self.gsub(/<\/?[^>]*>/, "") if self
   end
+  
+  def break
+    self.gsub(/\r\n/,'<br/>').html_safe
+  end
 end

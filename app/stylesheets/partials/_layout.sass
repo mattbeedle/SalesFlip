@@ -138,21 +138,18 @@ div#main
         &:hover
           color: black
   h3
-    color: white
-    +border-radius(3px)
-    +h-grad(#444444, white)
-    background-color: #444444
+    color: #333
     margin-right: 2px
-    margin: 10px 0px
-    padding: 5px 10px
+    margin: 10px 0px 0px 0px
+    padding: 5px 0px 0px 0px
     cursor: pointer
     &.toggler
       +silver-button
       +letterpress(white)
       text-align: left
-      margin-bottom: 0px
-      margin-right: 2px
-      margin-top: 12px
+      margin: 12px 0px 5px 0px
+      padding: 5px 8px
+      +border-radius(5px)
     &.open
       +border-bottom-radius(0px)
       text-align: left
@@ -180,26 +177,29 @@ div.item
   :width 100%
   :position relative
 dl.item
+  border-bottom: 1px solid #cccccc
   margin: 0px
+  +clearfix
   dt, dd
     clear: none
     display: block
     float: left
   dt
-    border-bottom: 1px solid #cccccc
-    +border-radius(3px)
-    font-size: 11px
-    margin-top: 2px
-    padding: 4px 6px 4px 0px
-    text-align: center
-    width: 12%
+    width: 16%
+    span
+      +border-radius(3px)
+      display: block
+      font-size: 11px
+      margin-top: 12px
+      padding: 4px 6px
+      text-align: center
     &.category
       font-size: 9px
   dd
-    border-bottom: 1px solid #cccccc
     margin-left: 0px
     padding: 3px 0px
-    width: 87%
+    width: 83%
+    margin-left: 1%
     position: relative
     span.item_name
       form
@@ -283,11 +283,10 @@ div.item, dl.item dd
     width: 100%
     +silver-tabs
   .box
-    +border-radius(5px)
+    +border-radius(3px)
+    +box-shadow(#666)
     padding: 12px
     &.gold
-      border-bottom: 1px solid white
-      border-top: 1px solid #{$gold - 50}
       background: $gold
       margin-bottom: 20px
       h3
@@ -319,9 +318,9 @@ div.item, dl.item dd
           margin-left: 2%
           width: 24%
     &.ice
-      border-bottom: 1px solid white
-      border-top: 1px solid #{$ice - 50}
       background: $ice
+      dl.info dt
+        color: $ice - 70
     &#recent_items
       ul
         color: $ice - 90
