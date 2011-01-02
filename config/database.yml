@@ -17,9 +17,5 @@ cucumber:
   <<: *base
 
 production:
-  database: maildb
-  encoding: utf8
-  user: mail
-  password: 8arcelona
-  adapter: mysql
-  socket: /tmp/mysql.sock
+  database: db/salesflip_production.sqlite3
+  <<: *base
