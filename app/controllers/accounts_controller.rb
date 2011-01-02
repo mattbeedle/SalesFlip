@@ -101,7 +101,7 @@ protected
       render :action => :did_you_mean if @similar_accounts.any?
     end
   end
-  
+
   def export_allowed?
     if request.format.csv?
       raise CanCan::AccessDenied unless can? :export, current_user
