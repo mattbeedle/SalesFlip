@@ -2,10 +2,12 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-  protect_from_forgery
-  
+
+  # internal application, doesn't really need forgery protection
+  #protect_from_forgery
+
   layout 'application'
-  
+
   rescue_from CanCan::AccessDenied do |exception|
     flash[:error] = 'Access denied.'
     redirect_to root_url

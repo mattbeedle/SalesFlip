@@ -10,6 +10,7 @@ class Lead
   include Sunspot::Mongoid
   include Assignable
   include Gravtastic
+  include ActiveModel::Observing
   is_gravtastic
 
   field :first_name
@@ -134,6 +135,10 @@ class Lead
 
   def deliminated( deliminator, fields )
     fields.map { |field| self.send(field) }.join(deliminator)
+  end
+
+  def assigned_to?( user )
+    assignee_id == user.id
   end
 
 protected

@@ -5,6 +5,8 @@ class LeadsController < InheritedResources::Base
   before_filter :set_filters, :only => [ :index, :export ]
   before_filter :export_allowed?, :only => [ :index ]
 
+  cache_sweeper :lead_sweeper
+
   respond_to :html
   respond_to :xml, :only => [ :new, :create, :index, :show ]
   respond_to :csv, :only => [ :index ]
@@ -13,6 +15,8 @@ class LeadsController < InheritedResources::Base
   has_scope :unassigned,  :type => :boolean
   has_scope :assigned_to
   has_scope :source_is,   :type => :array
+
+  helper_method :leads_index_cache_key
 
   def index
     index! do |format|
@@ -78,17 +82,25 @@ class LeadsController < InheritedResources::Base
   end
 
 protected
+  def leads_index_cache_key
+    Digest::SHA1.hexdigest([
+      'leads', Lead.for_company(current_user.company).desc(:updated_at).
+      first.try(:updated_at).try(:to_i), params.flatten.join('-')].join('-'))
+  end
+
   def leads
     @leads = apply_scopes(Lead).for_company(current_user.company).not_deleted.
       permitted_for(current_user).desc(:status).desc(:created_at)
   end
 
   def collection
-    @page = params[:page] || 1
-    @per_page = 10
-    @leads ||= hook(:leads_collection, self, :pages => { :page => @page, :per_page => @per_page }).
-      last
-    @leads ||= leads.paginate(:per_page => @per_page, :page => @page)
+    unless read_fragment(leads_index_cache_key)
+      @page = params[:page] || 1
+      @per_page = 10
+      @leads ||= hook(:leads_collection, self, :pages => { :page => @page, :per_page => @per_page }).
+        last
+      @leads ||= leads.paginate(:per_page => @per_page, :page => @page)
+    end
   end
 
   def set_filters
@@ -114,7 +126,7 @@ protected
     end
     @lead ||= Lead.new({ :updater => current_user, :user => current_user }.merge!(params[:lead] || {}))
   end
-  
+
   def export_allowed?
     if request.format.csv?
       raise CanCan::AccessDenied unless can? :export, current_user

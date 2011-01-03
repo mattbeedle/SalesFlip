@@ -10,6 +10,7 @@ class Contact
   include Sunspot::Mongoid
   include Assignable
   include Gravtastic
+  include ActiveModel::Observing
   is_gravtastic
 
   field :first_name
@@ -39,9 +40,9 @@ class Contact
   field :country
   field :postal_code
   field :job_title
-  
-  index :first_name
-  index :last_name
+
+  index :first_name, :background => true
+  index :last_name, :background => true
 
   validates_presence_of :user, :last_name
   validates_uniqueness_of :email, :allow_blank => true

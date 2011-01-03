@@ -4,7 +4,7 @@ module ApplicationHelper
   def add_new( text, path )
     "<a href='#{path}' id='new'><b>+</b>#{text}</a>".html_safe
   end
-  
+
   def show_attribute( object, attribute, custom = false )
     if object.send(attribute).present?
       att = ""
@@ -15,7 +15,7 @@ module ApplicationHelper
       att.html_safe
     end
   end
-  
+
   def rating_for( object )
     rating = "<span class='rating'>"
     if object.rating.present?
@@ -27,7 +27,7 @@ module ApplicationHelper
     rating << "</span>"
     rating.html_safe
   end
-  
+
   def activity_icon(string)
     icon = case string
     when "created"; "&#9998;";
@@ -42,9 +42,8 @@ module ApplicationHelper
     end
     icon.html_safe
   end
-  
+
   def br(attribute)
     attribute.present? ? attribute.break : nil
   end
-     
 end

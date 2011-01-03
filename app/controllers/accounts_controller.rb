@@ -1,10 +1,12 @@
 class AccountsController < InheritedResources::Base
   load_and_authorize_resource
-  
+
   before_filter :merge_updater_id, :only => [ :update ]
   before_filter :parent_account, :only => [ :new ]
   before_filter :similarity_check, :only => [ :create ]
   before_filter :export_allowed?, :only => [ :index ]
+
+  cache_sweeper :account_sweeper
 
   respond_to :html
   respond_to :xml
@@ -13,6 +15,8 @@ class AccountsController < InheritedResources::Base
   has_scope :assigned_to
   has_scope :account_type_is
   has_scope :name_like
+
+  helper_method :accounts_index_cache_key
 
   def index
     index! do |format|
@@ -48,17 +52,26 @@ class AccountsController < InheritedResources::Base
   end
 
 protected
+  def accounts_index_cache_key
+    Digest::SHA1.hexdigest([
+      'accounts', Account.for_company(current_user.company).
+      permitted_for(current_user).desc(:updated_at).first.try(:updated_at).
+      try(:to_i), params.flatten.join('-')].join('-'))
+  end
+
   def accounts
     @accounts = apply_scopes(Account).for_company(current_user.company).permitted_for(current_user).
       not_deleted.asc(:name)
   end
 
   def collection
-    @page = params[:page] || 1
-    @per_page = 10
-    @accounts ||= hook(:accounts_collection, self,
-                       :pages => { :page => @page, :per_page => @per_page }).last
-    @accounts ||= accounts.paginate(:per_page => @per_page, :page => @page)
+    unless read_fragment(accounts_index_cache_key)
+      @page = params[:page] || 1
+      @per_page = 10
+      @accounts ||= hook(:accounts_collection, self,
+                         :pages => { :page => @page, :per_page => @per_page }).last
+      @accounts ||= accounts.paginate(:per_page => @per_page, :page => @page)
+    end
   end
 
   def resource
@@ -90,7 +103,7 @@ protected
       render :action => :did_you_mean if @similar_accounts.any?
     end
   end
-  
+
   def export_allowed?
     if request.format.csv?
       raise CanCan::AccessDenied unless can? :export, current_user

@@ -3,6 +3,7 @@ class Activity
   include Mongoid::Timestamps
   include HasConstant
   include HasConstant::Orm::Mongoid
+  include ActiveModel::Observing
 
   field :action,            :type => Integer
   field :info
@@ -11,7 +12,8 @@ class Activity
   referenced_in :user, :index => true
   referenced_in :subject, :polymorphic => true, :index => true
 
-  index :action
+  index :action, :background => true
+  index [[ :created_at, Mongo::DESCENDING ]], :background => true
 
   validates_presence_of :subject, :user
 

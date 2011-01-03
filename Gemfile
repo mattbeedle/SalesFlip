@@ -1,6 +1,6 @@
 source :gemcutter
 
-gem 'rails', '3.0.0'
+gem 'rails'
 
 gem 'sqlite3-ruby',         :require => 'sqlite3'
 
@@ -45,12 +45,15 @@ gem 'mongoid_i18n', :require => 'mongoid/i18n'
 group :production do
   gem 'smurf'
   gem 'mbeedle-heroku-autoscale', :require => 'heroku/autoscale'
+  gem 'mysql2'
+  gem 'newrelic_rpm'
 end
 
 group :development do
   gem 'wirble'
-  gem 'heroku'
-  gem 'thin'
+  gem 'heroku',     :require => nil
+  gem 'thin',       :require => nil
+  gem 'capistrano', :require => nil
 end
 
 group :test do

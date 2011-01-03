@@ -16,6 +16,8 @@ class User
   field :role,      :type => Integer
   field :type
 
+  index :email, :background => true
+
   attr_accessor :company_name
 
   references_many  :leads,       :index => true

@@ -7,6 +7,7 @@ class Task
   include Mongoid::Rails::MultiParameterAttributes
   include Activities
   include Assignable
+  include ActiveModel::Observing
 
   field :name
   field :due_at,          :type => Time
@@ -33,6 +34,8 @@ class Task
   after_save    :notify_assignee
 
   named_scope :incomplete, :where => { :completed_at => nil }
+
+  index [[ :due_at, Mongo::ASCENDING ]], :background => true
 
   def self.for( user )
     any_of({ :user_id => user.id, :assignee_id => user.id }, { :assignee_id => user.id },

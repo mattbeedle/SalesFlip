@@ -1,16 +1,17 @@
-%h2.title
-  = t(:tasks)
-  = add_new t(:add_task), new_task_path
-- if defined?(@overdue)
-  - %w(overdue due_today due_tomorrow due_this_week due_next_week due_later).each do |deadline|
-    - tasks = instance_variable_get(:"@#{deadline}")
-    - if tasks.any?
-      %h3.deadline{ :id => "#{deadline}_tasks" }= "#{t(deadline)} (#{tasks.count})"
-      = render :partial => 'task', :collection => tasks
-- if @tasks.is_a?(Hash)
-  - @tasks.each do |key, value|
-    - unless value.blank?
-      = key
-      = render :partial => 'task', :collection => value
+- cache(tasks_index_cache_key) do
+  %h2.title
+    = t(:tasks)
+    = add_new t(:add_task), new_task_path
+  - if defined?(@overdue)
+    - %w(overdue due_today due_tomorrow due_this_week due_next_week due_later).each do |deadline|
+      - tasks = instance_variable_get(:"@#{deadline}")
+      - if tasks.any?
+        %h3.deadline{ :id => "#{deadline}_tasks" }= "#{t(deadline)} (#{tasks.count})"
+        = render :partial => 'task', :collection => tasks
+  - if @tasks.is_a?(Hash)
+    - @tasks.each do |key, value|
+      - unless value.blank?
+        = key
+        = render :partial => 'task', :collection => value
 - content_for :sidebar do
   = render :partial => 'filters'

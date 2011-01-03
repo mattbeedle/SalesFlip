@@ -6,6 +6,7 @@ class Comment
   include Activities
   include Permission
   include ParanoidDelete
+  include ActiveModel::Observing
 
   field :subject
   field :text
@@ -18,6 +19,8 @@ class Comment
   validates_presence_of :commentable, :user, :text
 
   after_create :add_attachments
+
+  index :created_at, :background => true
 
   def self.sorted
     where.asc(:created_at)

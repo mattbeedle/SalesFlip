@@ -1,26 +1,27 @@
-%dl.item.task{ :class => task.completed? ? 'completed' : nil }
-  %dt.category
-    %span{ :class => task.category.downcase }= task.category
-  %dd
-    %span.item_name
-      - if task.completed?
-        %label= task.name
-      - else
-        = simple_form_for task do |form|
-          = hidden_field_tag :return_to, request.fullpath
-          %span.boolean= check_box_tag 'task[completed_by_id]', current_user.id, false, :id => "task_#{task.id}"
-          %label{ :for => "task_#{task.id}" }= task.name
-          %small= "(#{task.due_at_in_words})"
-          %span.save
-            = form.button :submit, t('save')
-          -#%small.asset= task_asset_link(task) unless task.asset.nil?
-        %span.actions
-          %b.divider= '|'
-          = link_to t('edit'), edit_task_path(task,:return_to => request.fullpath), :id => "edit_#{dom_id task}"
-          %b.divider= '|'
-          = simple_form_for task, :html => { :method => :delete } do |form|
+- cache("task_partial-#{task.id}") do
+  %dl.item.task{ :class => task.completed? ? 'completed' : nil }
+    %dt.category
+      %span{ :class => task.category.downcase }= task.category
+    %dd
+      %span.item_name
+        - if task.completed?
+          %label= task.name
+        - else
+          = simple_form_for task do |form|
             = hidden_field_tag :return_to, request.fullpath
-            = form.button :submit, raw(t('delete_icon')), :class => 'delete', :id => "delete_#{dom_id task}"
-      - unless task.asset.blank?
-        = task_asset_info(task, link_to(task.asset.name, task.asset))
-.clear
+            %span.boolean= check_box_tag 'task[completed_by_id]', current_user.id, false, :id => "task_#{task.id}"
+            %label{ :for => "task_#{task.id}" }= task.name
+            %small= "(#{task.due_at_in_words})"
+            %span.save
+              = form.button :submit, t(:save)
+            -#%small.asset= task_asset_link(task) unless task.asset.nil?
+          %span.actions
+            %b.divider= '|'
+            = link_to t(:edit), edit_task_path(task, :return_to => request.fullpath), :id => "edit_#{dom_id task}"
+            %b.divider= '|'
+            = simple_form_for task, :html => { :method => :delete } do |form|
+              = hidden_field_tag :return_to, request.fullpath
+              = form.button :submit, raw(t(:delete_icon)), :class => 'delete', :id => "delete_#{dom_id task}"
+        - unless task.asset.blank?
+          = task_asset_info(task, link_to(task.asset.name, task.asset))
+  .clear
