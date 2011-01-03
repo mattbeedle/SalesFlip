@@ -16,7 +16,7 @@ log/*
 *.sqlite3-journal
 .autotest
 .bundle
-solr/data/production
+solr/*
 .sass-cache/*
 public/javascripts/all.js
 doc/*
