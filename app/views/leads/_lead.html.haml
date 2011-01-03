@@ -1,6 +1,4 @@
-- comment = lead.comments.desc(:updated_at).limit(1).first
-- task = lead.tasks.desc(:updated_at).limit(1).first
-- cache("lead_partial-#{lead.updated_at.to_i}-#{comment.try(:updated_at).try(:to_i)}-#{task.try(:updated_at).try(:to_i)}") do
+- cache("lead_partial-#{lead.id}") do
   %dl.item.lead
     %dt
       %span{ :class => lead.status.downcase }= lead.status

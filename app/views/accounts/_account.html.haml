@@ -1,6 +1,4 @@
-- comment = account.comments.desc(:updated_at).limit(1).first
-- task = account.tasks.desc(:updated_at).limit(1).first
-- cache("account_partial-#{account.updated_at.to_i}-#{comment.try(:updated_at).try(:to_i)}-#{task.try(:updated_at).try(:to_i)}") do
+- cache("account_partial-#{account.id}") do
   %dl.item
     %dd
       - if account.permitted_for?(current_user)

@@ -8,6 +8,7 @@ class Account
   include Trackable
   include Activities
   include Sunspot::Mongoid
+  include ActiveModel::Observing
 
   field :name
   field :email

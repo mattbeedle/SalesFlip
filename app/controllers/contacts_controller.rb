@@ -4,6 +4,8 @@ class ContactsController < InheritedResources::Base
   before_filter :merge_updater_id, :only => [ :update ]
   before_filter :can_export?, :only => [ :index ]
 
+  cache_sweeper :contact_sweeper, :activity_sweeper
+
   respond_to :html
   respond_to :xml
 

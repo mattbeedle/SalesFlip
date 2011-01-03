@@ -1,6 +1,4 @@
-- comment = @account.comments.desc(:updated_at).limit(1).first
-- task = @account.tasks.desc(:updated_at).limit(1).first
-- cache("account-#{@account.updated_at.to_i}-#{comment.try(:updated_at).try(:to_i)}-#{task.try(:updated_at).try(:to_i)}") do
+- cache("account_show-#{@account.id}") do
   .title
     %h2= @account.name
     %ul.actions

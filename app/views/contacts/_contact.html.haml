@@ -1,6 +1,4 @@
-- comment = contact.comments.desc(:updated_at).limit(1).first
-- task = contact.tasks.desc(:updated_at).limit(1).first
-- cache("contact_partial-#{contact.updated_at.to_i}-#{comment.try(:updated_at).try(:to_i)}-#{task.try(:updated_at).try(:to_i)}") do
+- cache("contact_partial-#{contact.id}") do
   %dl.item.contact
     %dt
       %span{ :class => contact.source.present? ? contact.source.downcase : 'no-source' }

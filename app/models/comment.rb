@@ -6,6 +6,7 @@ class Comment
   include Activities
   include Permission
   include ParanoidDelete
+  include ActiveModel::Observing
 
   field :subject
   field :text

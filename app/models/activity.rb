@@ -3,6 +3,7 @@ class Activity
   include Mongoid::Timestamps
   include HasConstant
   include HasConstant::Orm::Mongoid
+  include ActiveModel::Observing
 
   field :action,            :type => Integer
   field :info

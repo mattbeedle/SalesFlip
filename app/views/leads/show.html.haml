@@ -1,4 +1,4 @@
-- cache(lead_show_cache_key) do
+- cache("lead_show-#{@lead.id}") do
   .title
     %h2
       = @lead.full_name

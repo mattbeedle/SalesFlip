@@ -35,7 +35,7 @@
               %h3= t(:recent_items)
               %ul.plain
                 - current_user.recent_items.each do |item|
-                  - cache("recent_item-#{item.updated_at.to_i}") do
+                  - cache("recent_item-#{item.id}") do
                     %li
                       %span== #{item.class.to_s}:
                       - if item.instance_of?(Comment)

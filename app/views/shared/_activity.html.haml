@@ -1,4 +1,4 @@
-- cache("activity-#{activity.updated_at.to_i}") do
+- cache("activity-#{activity.id}") do
   .item{ :class => activity.action.downcase }
     %span.icon= activity_icon(activity.action.downcase)
     = raw "#{link_to activity.user.username.present? ? activity.user.username : activity.user.email, activity.user} #{activity.action.downcase} #{activity.subject_type.downcase}"

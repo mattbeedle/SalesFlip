@@ -9,6 +9,7 @@ class Lead
   include Activities
   include Sunspot::Mongoid
   include Gravtastic
+  include ActiveModel::Observing
   is_gravtastic
 
   field :first_name

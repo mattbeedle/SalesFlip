@@ -6,6 +6,8 @@ class AccountsController < InheritedResources::Base
   before_filter :similarity_check, :only => [ :create ]
   before_filter :export_allowed?, :only => [ :index ]
 
+  cache_sweeper :account_sweeper
+
   respond_to :html
   respond_to :xml
 

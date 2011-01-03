@@ -1,6 +1,8 @@
 class TasksController < InheritedResources::Base
   load_and_authorize_resource
 
+  cache_sweeper :task_sweeper
+
   has_scope :assigned,              :type => :boolean
   has_scope :completed,             :type => :boolean
   has_scope :incomplete,            :type => :boolean

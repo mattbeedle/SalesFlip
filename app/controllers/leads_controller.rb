@@ -5,6 +5,8 @@ class LeadsController < InheritedResources::Base
   before_filter :set_filters, :only => [ :index, :export ]
   before_filter :export_allowed?, :only => [ :index ]
 
+  cache_sweeper :lead_sweeper
+
   respond_to :html
   respond_to :xml, :only => [ :new, :create, :index, :show ]
   respond_to :csv, :only => [ :index ]
@@ -14,7 +16,7 @@ class LeadsController < InheritedResources::Base
   has_scope :assigned_to
   has_scope :source_is,   :type => :array
 
-  helper_method :leads_index_cache_key, :lead_show_cache_key
+  helper_method :leads_index_cache_key
 
   def index
     index! do |format|
@@ -82,14 +84,6 @@ protected
     Digest::SHA1.hexdigest([
       'leads', Lead.for_company(current_user.company).desc(:updated_at).
       first.try(:updated_at).try(:to_i), params.flatten.join('-')].join('-'))
-  end
-
-  def lead_show_cache_key
-    Digest::SHA1.hexdigest([
-      'lead', resource.updated_at.to_i,
-      resource.comments.any? ? resource.comments.desc(:updated_at).first.updated_at.to_i : nil,
-      resource.tasks.any? ? resource.tasks.desc(:updated_at).first.updated_at.to_i : nil,
-      params.flatten.to_s].join('-'))
   end
 
   def leads

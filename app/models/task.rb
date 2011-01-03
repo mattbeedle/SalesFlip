@@ -6,6 +6,7 @@ class Task
   include Permission
   include Mongoid::Rails::MultiParameterAttributes
   include Activities
+  include ActiveModel::Observing
 
   field :name
   field :due_at,          :type => Time

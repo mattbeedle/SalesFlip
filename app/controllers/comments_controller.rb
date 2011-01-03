@@ -1,5 +1,7 @@
 class CommentsController < InheritedResources::Base
 
+  cache_sweeper :comment_sweeper
+
   respond_to :html
   respond_to :xml
 
