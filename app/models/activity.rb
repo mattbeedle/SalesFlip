@@ -74,14 +74,10 @@ class Activity
   class << self
     def visible_to(user)
       all.to_a.delete_if do |activity|
-        begin
-          (activity.subject.permission_is?('Private') && activity.subject.user != user) ||
-          (activity.subject.permission_is?('Shared') &&
-          !activity.subject.permitted_user_ids.include?(user.id) &&
-          activity.subject.user != user)
-        rescue StandardError => e
-          true
-        end
+        (activity.subject.permission_is?('Private') && activity.subject.user != user) ||
+        (activity.subject.permission_is?('Shared') &&
+        !activity.subject.permitted_user_ids.include?(user.id) &&
+        activity.subject.user != user)
       end
     end
 

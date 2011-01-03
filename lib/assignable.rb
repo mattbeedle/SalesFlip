@@ -8,8 +8,13 @@ module Assignable
   end
 
   module ClassMethods
-    def assigned_to( user_id )
-      all(:assignee_id => user_id)
+    def assigned_to(user_or_user_id)
+      case user_or_user_id
+      when DataMapper::Resource
+        all(:assignee => user_or_user_id)
+      else
+        all(:assignee_id => user_or_user_id)
+      end
     end
   end
 

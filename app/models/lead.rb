@@ -142,11 +142,9 @@ protected
   end
 
   def notify_assignee
-    if assignee && changed.include?('assignee_id') || @recently_created && assignee_id != user_id
+    if assignee && (changed.include?('assignee_id') || @recently_created && assignee_id != user_id)
       UserMailer.lead_assignment_notification(self).deliver
     end
-  rescue
-    nil
   end
 
   def set_initial_state

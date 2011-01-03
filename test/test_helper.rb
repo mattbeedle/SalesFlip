@@ -55,7 +55,11 @@ class ActiveSupport::TestCase
   end
 
   def self.should_have_key(*args)
-    klass = self.name.gsub(/Test$/, '').constantize
+    if args.first.is_a? Class
+      klass = args.shift
+    else
+      klass = self.name.gsub(/Test$/, '').constantize
+    end
     args.each do |arg|
       should "have_key '#{arg}'" do
         assert klass.properties.named?(arg)
@@ -107,7 +111,7 @@ class ActiveSupport::TestCase
   end
 
   def self.should_belong_to(*args)
-    klass = self.name.gsub(/Test$/, '').constantize
+    klass = args.first.is_a?(Class) ? args.shift : self.name.gsub(/Test$/, '').constantize
     args.each do |arg|
       should "belong_to '#{arg}'" do
         has = false
@@ -126,6 +130,15 @@ class ActiveSupport::TestCase
     args.each do |arg|
       should "have_uploader '#{arg}'" do
         assert_instance_of CarrierWave::Uploader::Base, klass.new.send(arg)
+      end
+    end
+  end
+
+  def self.should_have_instance_methods(*args)
+    klass = self.name.gsub(/Test$/, '').constantize
+    args.each do |arg|
+      should "have instance method '#{arg}'" do
+        assert_respond_to klass.new, arg
       end
     end
   end

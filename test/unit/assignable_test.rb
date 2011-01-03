@@ -1,25 +1,19 @@
 require 'test_helper'
 
 class AssignableClass
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include DataMapper::Resource
+  property :id, Serial
 end
 
 class AssignableTest < ActiveSupport::TestCase
   context 'Class' do
     setup do
       AssignableClass.send(:include, Assignable)
+      AssignableClass.auto_migrate!
     end
 
-    should 'have field "assignee_id"' do
-      assert AssignableClass.fields.map(&:first).include?('assignee_id')
-    end
-
-    should 'have belong to "assignee"' do
-      assert AssignableClass.associations.any? do |name, association|
-        association.to_s.match(/ReferencedIn/) && name == arg.to_s
-      end
-    end
+    should_have_key AssignableClass, 'assignee_id'
+    should_belong_to AssignableClass, 'assignee'
 
     context 'assigned_to' do
       setup do

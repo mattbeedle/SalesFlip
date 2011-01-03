@@ -29,8 +29,8 @@ class User
   has n,  :contacts
   has n,  :activities
   has n,  :searches
-  has n,  :invitations, :as => :inviter#, :dependent => :destroy
-  has 1,   :invitation,  :as => :invited
+  has n,  :invitations, :inverse => :inviter#, :dependent => :destroy
+  has 1,  :invitation,  :inverse => :invited
   has n,  :opportunities
   has n,  :assigned_opportunities, foreign_key: 'assignee_id',
     model: 'Opportunity'
@@ -51,11 +51,11 @@ class User
   has_constant :roles, ROLES
 
   def invitation_code=( invitation_code )
-    if @invitation = Invitation.first(:code => invitation_code)
-      self.company_id = @invitation.inviter.company_id
-      self.username = @invitation.email.split('@').first if self.username.blank?
-      self.email = @invitation.email if self.email.blank?
-      self.role = @invitation.role
+    if invitation = Invitation.first(:code => invitation_code)
+      self.company_id = invitation.inviter.company_id
+      self.username = invitation.email.split('@').first if self.username.blank?
+      self.email = invitation.email if self.email.blank?
+      self.role = invitation.role
     end
   end
 
@@ -78,8 +78,10 @@ class User
   end
 
   def tracked_items
-    (Lead.tracked_by(self) + Contact.tracked_by(self) + Account.tracked_by(self)).
-      sort_by(&:created_at)
+    (Lead.tracked_by(self).entries +
+     Contact.tracked_by(self).entries +
+     Account.tracked_by(self).entries
+    ).sort_by &:created_at
   end
 
   def self.send_tracked_items_mail
@@ -114,7 +116,7 @@ protected
   end
 
   def update_invitation
-    @invitation.update :invited_id => self.id unless @invitation.nil?
+    invitation.update :invited_id => self.id if invitation
   end
 
   def set_default_role

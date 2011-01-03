@@ -104,8 +104,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     should 'create company from company name' do
-      @user = User.new User.plan(:annika, :company_name => 'A test company', :company => nil)
-      @user.save
+      @user = User.make(:annika, :company_name => 'A test company', :company => nil)
       assert Company.first(:conditions => { :name => 'A test company' })
       assert_equal 'A test company', @user.company.name
     end
@@ -174,8 +173,7 @@ class UserTest < ActiveSupport::TestCase
 
     context 'full_name' do
       should 'return username if present' do
-        @user.update(:username => 'annie')
-        @user.save
+        @user.username = 'annie'
         assert_equal @user.full_name, "annie"
       end
 

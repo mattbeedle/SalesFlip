@@ -31,7 +31,7 @@ class EmailReaderTest < ActiveSupport::TestCase
     end
     
     should 'encode the subject line correctly' do
-      EmailReader.parse_email(@email)
+      comment = EmailReader.parse_email(@email)
       assert_equal 'Ärsche gibte hier genug!', Email.first.subject
     end
   end
@@ -62,7 +62,7 @@ class EmailReaderTest < ActiveSupport::TestCase
 
       context 'when receiver exists as a lead' do
         setup do
-          @lead = Lead.make(:erich, :email => 'Test@Test.com')
+          @lead = Lead.make(:erich, :email => 'test@test.com')
           EmailReader.parse_email(@email)
         end
 
@@ -80,10 +80,6 @@ class EmailReaderTest < ActiveSupport::TestCase
 
         should 'save attachments against comment' do
           assert_equal 1, @lead.comments.first.attachments.length
-        end
-
-        should 'mark comment as "from_email"' do
-          assert @lead.comments.first.from_email
         end
       end
 

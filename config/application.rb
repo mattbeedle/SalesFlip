@@ -10,6 +10,7 @@ require "rails/test_unit/railtie"
 Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 DataMapper::Property::String.length(255)
+DataMapper::Property::Text.length(65535)
 
 module Salesflip
   class Application < Rails::Application

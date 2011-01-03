@@ -10,7 +10,7 @@ class Attachment
   property :updated_at, DateTime
   property :updated_on, Date
 
-  belongs_to :subject, :polymorphic => true, required: true, suffix: 'type'
+  belongs_to :subject, :polymorphic => true, required: true
 
   mount_uploader :attachment, AttachmentUploader
 end

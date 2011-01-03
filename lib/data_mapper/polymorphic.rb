@@ -11,19 +11,13 @@ module DataMapper
           suffix = 'type'
 
           opts[:child_key] = [:"#{as}_id"]
-          opts[:"#{as}_type"] = [self, *descendants]
+          opts[:"#{as}_type"] = self
 
           child_model_name = opts[:model] || opts[:class_name] || name.classify
           child_klass      = child_model_name.constantize
           belongs_to_name  = self.name.demodulize.underscore
 
           has_without_polymorphism cardinality, name, *(args + [opts])
-
-          # class_eval <<-EVIL, __FILE__, __LINE__+1
-            # def #{name}
-              # super.all(:#{as}_type => self.class.name)
-            # end
-          # EVIL
 
           child_klass.belongs_to "_#{as}_#{belongs_to_name}".to_sym, :child_key => opts[:child_key], :model => self
 
@@ -60,8 +54,9 @@ module DataMapper
 
             def #{name}=(object)                                                                  # def commentable=(object)
               if object                                                                           #   if object
-                self.#{name}_#{suffix} = object.class.name                                        #     self.commentable_type = object.class.name
-                self.send('_#{name}_' + object.class.name.demodulize.underscore + '=', object)    #     self.send('_commentable_' + object.class.name.demoduleize.underscore + '=', object)
+                self.#{name}_#{suffix} = object.class.base_model.name                             #     self.commentable_type = object.class.base_model.name
+                resource_name = object.class.base_model.name.demodulize.underscore               #     resource_name = object.class.base_model.name.demodulize.underscore
+                self.send('_#{name}_' + resource_name + '=', object)                              #     self.send('_commentable_' + resource_name + '=', object)
               else                                                                                #   else
                 self.#{name}_id = nil                                                             #     self.commentable_id = nil
                 self.#{name}_#{suffix} = nil                                                      #     self.commentable_type = nil

@@ -219,8 +219,6 @@ protected
 
   def notify_assignee
     TaskMailer.assignment_notification(self).deliver if reassigned?
-  rescue
-    nil
   end
 
   def log_update
