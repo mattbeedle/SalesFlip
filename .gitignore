@@ -19,3 +19,5 @@ log/*
 .bundle
 solr/data/*
 .sass-cache/*
+doc/*
+.yardoc/*
