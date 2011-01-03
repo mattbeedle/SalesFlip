@@ -37,4 +37,8 @@ namespace :deploy do
   task :bundle, :roles => :app do
     run "cd #{release_path} && bundle install --without development test"
   end
+
+  task :delayed_job, :roles => :app do
+    run "cd #{release_path} && ./script/delayed_job restart"
+  end
 end
