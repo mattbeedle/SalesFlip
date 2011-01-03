@@ -13,7 +13,7 @@ CarrierWave.configure do |config|
   config.grid_fs_host         = Mongoid.config.database.connection.host_to_try.first
   config.grid_fs_port         = Mongoid.config.database.connection.host_to_try.last
   unless Mongoid.config.database.connection.auths.blank?
-    config.grid_fs_username     = Mongoid.config.database.connection.auths['username']
-    config.grid_fs_password     = Mongoid.config.database.connection.auths['password']
+    config.grid_fs_username     = Mongoid.config.database.connection.auths.first['username']
+    config.grid_fs_password     = Mongoid.config.database.connection.auths.first['password']
   end
 end
