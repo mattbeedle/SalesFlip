@@ -35,6 +35,7 @@ class Opportunity
   searchable do
     text :title, :background_info
   end
+  handle_asynchronously :solr_index
 
   def self.stage_is( stages )
     stages = stages.lines.to_a if stages.respond_to?(:lines)
