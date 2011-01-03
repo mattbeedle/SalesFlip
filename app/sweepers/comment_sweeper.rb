@@ -11,6 +11,7 @@ class CommentSweeper < ActionController::Caching::Sweeper
 
   def after_destroy(comment)
     expire_cache_for(comment)
+    expire_fragment('deleted_items_nav_link')
   end
 
   private

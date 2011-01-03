@@ -7,6 +7,7 @@ class AccountSweeper < ActionController::Caching::Sweeper
 
   def after_destroy(account)
     expire_cache_for(account)
+    expire_fragment('deleted_items_nav_link')
   end
 
   private

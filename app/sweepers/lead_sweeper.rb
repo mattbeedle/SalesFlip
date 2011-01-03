@@ -1,12 +1,17 @@
 class LeadSweeper < ActionController::Caching::Sweeper
   observe Lead
 
+  def after_create(lead)
+    expire_cache_for(lead)
+  end
+
   def after_update(lead)
     expire_cache_for(lead)
   end
 
-  def after_create(lead)
+  def after_destroy(lead)
     expire_cache_for(lead)
+    expire_fragment('deleted_items_nav_link')
   end
 
   private

@@ -11,6 +11,7 @@ class ContactSweeper < ActionController::Caching::Sweeper
 
   def after_destroy(contact)
     expire_cache_for(contact)
+    expire_fragment('deleted_items_nav_link')
   end
 
   private

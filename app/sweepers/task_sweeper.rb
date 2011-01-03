@@ -1,12 +1,17 @@
 class TaskSweeper < ActionController::Caching::Sweeper
   observe Task
 
+  def after_create(task)
+    expire_cache_for(task)
+  end
+
   def after_update(task)
     expire_cache_for(task)
   end
 
   def after_destroy(task)
     expire_cache_for(task)
+    expire_fragment('deleted_items_nav_link')
   end
 
   private
