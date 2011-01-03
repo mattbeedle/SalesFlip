@@ -73,6 +73,7 @@ class Contact
     text :first_name, :last_name, :department, :email, :alt_email, :phone, :mobile,
       :fax, :website, :linked_in, :facebook, :twitter, :xing, :address
   end
+  handle_asynchronously :solr_index
 
   def self.assigned_to( user_id )
     user_id = BSON::ObjectId.from_string(user_id) if user_id.is_a?(String)
@@ -84,7 +85,7 @@ class Contact
       f.match(/access|permission|permitted_user_ids|tracker_ids/)
     end
   end
-  
+
   def comments_including_leads
     Comment.any_of({ :commentable_type => self.class.name, :commentable_id => self.id },
       { :commentable_type => 'Lead', :commentable_id.in => self.leads.map(&:id) })

@@ -41,7 +41,7 @@ var Base = new Class({
     if ($('flashes') != null) {
       $('flashes').addClass('fade')
       $$('.fade').each(function(div) {
-        fadeOut.delay(3500, div);
+        fadeOut.delay(1500, div);
       });
     }
   },

@@ -24,7 +24,7 @@ class Account
   field :shipping_address
   field :identifier,        :type => Integer
   field :account_type,      :type => Integer
-  
+
   index :name
 
   has_constant :accesses, lambda { I18n.t(:access_levels) }
@@ -33,7 +33,7 @@ class Account
   referenced_in :user, :index => true
   referenced_in :assignee, :class_name => 'User', :index => true
   referenced_in :parent, :class_name => 'Account', :index => true
-  
+
   references_many   :contacts, :dependent => :nullify, :index => true
   references_many   :tasks, :as => :asset, :index => true
   references_many   :comments, :as => :commentable, :index => true
@@ -51,12 +51,13 @@ class Account
   searchable do
     text :name, :email, :phone, :website, :fax
   end
+  handle_asynchronously :solr_index
 
   def self.assigned_to( user_id )
     user_id = BSON::ObjectId.from_string(user_id) if user_id.is_a?(String)
     any_of({ :assignee_id => user_id }, { :user_id => user_id, :assignee_id => nil })
   end
-  
+
   def self.similar_accounts( name )
     ids = Account.only(:id, :name).map do |account|
       [account.id, name.levenshtein_similar(account.name)]

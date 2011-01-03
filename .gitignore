@@ -17,6 +17,7 @@ log/*
 *.sqlite3-journal
 .autotest
 .bundle
-solr/data/*
+solr/*
 .sass-cache/*
 doc/*
+.yardoc/*
