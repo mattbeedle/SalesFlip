@@ -187,7 +187,7 @@ GEM
     mongo (1.1.5)
       bson (>= 1.1.5)
     mysql2 (0.2.6)
-    navvy (0.3.1)
+    navvy (0.3.2)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-sftp (2.0.5)
@@ -195,6 +195,7 @@ GEM
     net-ssh (2.0.23)
     net-ssh-gateway (1.0.1)
       net-ssh (>= 1.99.1)
+    newrelic_rpm (2.13.4)
     nokogiri (1.4.4)
     pickle (0.4.4)
       cucumber (>= 0.8)
@@ -209,7 +210,7 @@ GEM
     rack (1.2.1)
     rack-mount (0.6.13)
       rack (>= 1.0.0)
-    rack-test (0.5.6)
+    rack-test (0.5.7)
       rack (>= 1.0)
     rails (3.0.3)
       actionmailer (= 3.0.3)
@@ -233,14 +234,14 @@ GEM
     riddle (1.2.2)
     rsolr (0.12.1)
       builder (>= 2.1.2)
-    rspec (2.3.0)
-      rspec-core (~> 2.3.0)
-      rspec-expectations (~> 2.3.0)
-      rspec-mocks (~> 2.3.0)
-    rspec-core (2.3.1)
-    rspec-expectations (2.3.0)
+    rspec (2.4.0)
+      rspec-core (~> 2.4.0)
+      rspec-expectations (~> 2.4.0)
+      rspec-mocks (~> 2.4.0)
+    rspec-core (2.4.0)
+    rspec-expectations (2.4.0)
       diff-lcs (~> 1.1.2)
-    rspec-mocks (2.3.0)
+    rspec-mocks (2.4.0)
     rubyzip (0.9.4)
     salesflip-lead_notifications (0.0.11)
     selenium-webdriver (0.1.2)
@@ -323,6 +324,7 @@ DEPENDENCIES
   mongoid!
   mysql2
   navvy
+  newrelic_rpm
   pickle
   pickle-mongoid
   rack-gridfs!

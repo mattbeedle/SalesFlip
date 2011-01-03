@@ -45,6 +45,7 @@ group :production do
   gem 'smurf'
   gem 'mbeedle-heroku-autoscale', :require => 'heroku/autoscale'
   gem 'mysql2'
+  gem 'newrelic_rpm'
 end
 
 group :development do
