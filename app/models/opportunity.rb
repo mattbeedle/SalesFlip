@@ -2,7 +2,6 @@ class Opportunity
   include DataMapper::Resource
   include DataMapper::Timestamps
   include HasConstant::Orm::DataMapper
-  include Mongoid::Rails::MultiParameterAttributes
   include Assignable
   include ParanoidDelete
   include Activities

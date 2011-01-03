@@ -52,6 +52,7 @@ class User
 
   def invitation_code=( invitation_code )
     if invitation = Invitation.first(:code => invitation_code)
+      self.invitation = invitation
       self.company_id = invitation.inviter.company_id
       self.username = invitation.email.split('@').first if self.username.blank?
       self.email = invitation.email if self.email.blank?
@@ -116,7 +117,7 @@ protected
   end
 
   def update_invitation
-    invitation.update :invited_id => self.id if invitation
+    # invitation.update :invited_id => self.id if invitation
   end
 
   def set_default_role

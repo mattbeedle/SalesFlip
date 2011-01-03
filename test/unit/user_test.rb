@@ -37,7 +37,7 @@ class UserTest < ActiveSupport::TestCase
         assert_sent_email do |email|
           email.body =~ /#{@lead.name}/ && email.body =~ /#{@comment.text}/ &&
             email.body =~ /#{@email.text}/ && email.body =~ /#{@task.name}/ &&
-            email.body =~ /#{@attachment.attachment_filename}/ && email.to.include?(@benny.email)
+            email.body =~ /#{@attachment.attachment.filename}/ && email.to.include?(@benny.email)
         end
       end
 
@@ -57,7 +57,7 @@ class UserTest < ActiveSupport::TestCase
         assert_sent_email do |email|
           email.body.match(/#{@lead.name}/) && !email.body.match(/#{@comment.text}/) &&
             !email.body.match(/#{@email.text}/) && !email.body.match(/#{@task.name}/) &&
-            !email.body.match(/#{@attachment.attachment_filename}/) &&
+            !email.body.match(/#{@attachment.attachment.filename}/) &&
             email.to.include?(@benny.email) && email.body.match(/#{comment2.text}/)
         end
       end

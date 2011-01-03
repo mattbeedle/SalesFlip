@@ -31,7 +31,7 @@ class InvitationTest < ActiveSupport::TestCase
 
   context 'Instance' do
     setup do
-      @invitation = Invitation.make_unsaved
+      @invitation = Invitation.make_unsaved(:inviter => User.make)
     end
 
     should 'generate code on creation' do

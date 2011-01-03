@@ -19,7 +19,8 @@ class Invitation
   end
   after :create, :send_invitation
 
-  has_constant :roles, ROLES
+  has_constant :roles, ROLES,
+    required: true, auto_validation: true
 
   def self.by_company(company)
     all(:inviter_id => company.users.map(&:id))

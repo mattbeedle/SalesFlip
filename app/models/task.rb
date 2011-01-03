@@ -3,7 +3,6 @@ class Task
   include DataMapper::Timestamps
   include HasConstant::Orm::DataMapper
   include Permission
-  include Mongoid::Rails::MultiParameterAttributes
   include Activities
   include Assignable
 
@@ -45,7 +44,7 @@ class Task
   end
 
   def self.assigned_by(user)
-    all(:user_id => user.id, :assignee_id.not => [nil, user.id])
+    all(:user_id => user.id, :assignee_id.not => user.id)
   end
 
   def self.pending
@@ -123,7 +122,7 @@ class Task
   def self.grouped_by_scope( scopes, options = {} )
     tasks = {}
     scopes.each do |scope|
-      if self.scopes.map(&:first).include?(scope.to_sym)
+      if methods(false).include?(scope.to_sym)
         tasks[scope.to_sym] = (options[:target] || self).send(scope.to_sym)
       end
     end

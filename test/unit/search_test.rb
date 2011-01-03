@@ -17,7 +17,7 @@ class SearchTest < ActiveSupport::TestCase
       assert !@search.valid?
       assert @search.errors[:terms]
       @search.company = 'asfefa'
-      assert @search.valid?
+      assert_valid @search
     end
 
     should 'require company if no terms set' do
@@ -26,7 +26,7 @@ class SearchTest < ActiveSupport::TestCase
       assert !@search.valid?
       assert @search.errors[:company]
       @search.terms = 'asfef'
-      assert @search.valid?
+      assert_valid @search
     end
   end
 end

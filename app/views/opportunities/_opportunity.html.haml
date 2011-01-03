@@ -14,6 +14,6 @@
       - if opportunity.attachments.any?
         %br/
         - opportunity.attachments.each do |attachment|
-          = link_to attachment.attachment_filename, attachment.attachment.url
+          = link_to attachment.attachment.filename, attachment.attachment.url
     %span.actions
       = link_to t(:edit), edit_opportunity_path(opportunity)

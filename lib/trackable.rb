@@ -2,12 +2,24 @@ module Trackable
   extend ActiveSupport::Concern
 
   included do
-    has n, :trackers, User, through: ::DataMapper::Resource
+    singular_name = name.downcase
+    through_relationship_name = :"#{singular_name}_trackers"
+
+    through_model = DataMapper::Model.new
+
+    Object.const_set("#{name}Tracker", through_model)
+
+    through_model.belongs_to :tracker, User, :key => true
+    through_model.belongs_to :"#{singular_name}", :key => true
+
+    has n, through_relationship_name
+    has n, :trackers, User,
+      through: through_relationship_name
   end
 
   module ClassMethods
     def tracked_by(user)
-      all(trackers: { id: user.id })
+      all(trackers.id => user.id)
     end
   end
 

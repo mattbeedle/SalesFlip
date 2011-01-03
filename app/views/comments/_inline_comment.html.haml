@@ -11,7 +11,7 @@
       .text= raw comment.text.break
       .attachments
         - comment.attachments.each do |attachment|
-          = link_to attachment.attachment_filename, attachment.attachment.url
+          = link_to attachment.attachment.filename, attachment.attachment.url
   - else
     .message
       .user
@@ -20,7 +20,7 @@
       .text= raw comment.text.break
       .attachments
         - comment.attachments.each do |attachment|
-          = link_to attachment.attachment_filename, attachment.attachment.url
+          = link_to attachment.attachment.filename, attachment.attachment.url
       
       %span.right
         - if comment.is_a?(Email)

@@ -156,10 +156,8 @@ protected
     case
     when @recently_converted then Activity.log(updater_or_user, self, 'Converted')
     when @recently_rejected then Activity.log(updater_or_user, self, 'Rejected')
-    when @recently_destroyed then Activity.log(updater_or_user, self, 'Deleted')
-    when @recently_restored then Activity.log(updater_or_user, self, 'Restored')
     else
-      Activity.log(updater_or_user, self, 'Updated')
+      super
     end
   end
 

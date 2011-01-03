@@ -24,6 +24,7 @@ module Activities
 
   def log_update
     return if self.do_not_log
+
     case
     when changed.include?('deleted_at') && deleted_at
       Activity.log(updater_or_user, self, 'Deleted')

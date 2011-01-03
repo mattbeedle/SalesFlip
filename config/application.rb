@@ -25,6 +25,7 @@ module Salesflip
 
     require 'data_mapper/any_of'
     require 'data_mapper/changes'
+    require 'data_mapper/multiparameter_attribute_support'
     require 'data_mapper/polymorphic'
 
     # Only load the plugins named here, in the order given (default is alphabetical).

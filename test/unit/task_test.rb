@@ -107,7 +107,7 @@ class TaskTest < ActiveSupport::TestCase
 
     context 'assigned_by' do
       setup do
-        @task2 = Task.make(:user_id => @task.user.id)
+        @task2 = Task.make(:user => @task.user)
         @task2.update :assignee => User.make
       end
 
@@ -383,10 +383,6 @@ class TaskTest < ActiveSupport::TestCase
       end
     end
 
-    should 'be valid with all required attributes' do
-      assert @task.valid?
-    end
-
     context 'activity logging' do
       setup do
         @task.save
@@ -451,9 +447,12 @@ class TaskTest < ActiveSupport::TestCase
     end
 
     context 'completed?' do
+      setup do
+        @task.save
+      end
+
       should 'be true when task has been completed' do
         @task.completed_by_id = @task.user_id
-        @task.save
         assert @task.completed?
       end
 
@@ -469,7 +468,7 @@ class TaskTest < ActiveSupport::TestCase
 
       should 'set the task completed at time' do
         assert @task.completed_at.nil?
-        @task.completed_by_id= @task.user_id
+        @task.completed_by_id = @task.user_id
         assert !@task.completed_at.nil?
       end
 
@@ -495,11 +494,6 @@ class TaskTest < ActiveSupport::TestCase
         @task.due_at = Time.zone.now.tomorrow.end_of_day
         assert_equal 'due_tomorrow', @task.due_at_in_words
       end
-
-      #should 'return "due_this_week" when due_at is at the end of a day and some time this week, but further away than tomorrow' do
-      #  @task.due_at = Time.zone.now.end_of_week - 1.second
-      #  assert_equal 'due_this_week', @task.due_at_in_words
-      #end
 
       should 'return "due_next_week" when due_at is at the end of a day sometime during the following week' do
         @task.due_at = Time.zone.now.next_week.end_of_week

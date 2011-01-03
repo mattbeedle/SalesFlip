@@ -4,14 +4,15 @@ class Search
 
   property :id, Serial
   property :collections, Object, :default => []
-  property :terms, String,
-    required: true, message: I18n.t('activemodel.errors.messages.blank')
-  property :company, String,
-    required: true, message: I18n.t('activemodel.errors.messages.blank')
+  property :terms, String
+  property :company, String
   property :created_at, DateTime
   property :created_on, Date
   property :updated_at, DateTime
   property :updated_on, Date
+
+  validates_presence_of :terms, :if => lambda { |search| search.company.blank? }
+  validates_presence_of :company, :if => lambda { |search| search.terms.blank? }
 
   belongs_to :user, :required => false
 
