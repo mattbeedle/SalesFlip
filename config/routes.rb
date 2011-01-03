@@ -31,6 +31,5 @@ Salesflip::Application.routes.draw do
     resources :opportunity_stages do
       get :confirm_delete, :on => :member
     end
-    resources :opportunities, :only => [ :index ]
   end
 end

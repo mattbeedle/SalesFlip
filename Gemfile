@@ -40,7 +40,7 @@ gem 'cancan'
 gem 'mongoid_i18n', :require => 'mongoid/i18n'
 
 # Plugins
-#gem 'salesflip-lead_notifications', :require => 'lead_notifications'
+gem 'salesflip-lead_notifications', :require => 'lead_notifications'
 
 group :production do
   gem 'smurf'
