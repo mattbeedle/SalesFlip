@@ -33,7 +33,7 @@ class Account
   belongs_to_related :user, :index => true
   belongs_to_related :assignee, :class_name => 'User', :index => true
   belongs_to_related :parent, :class_name => 'Account', :index => true
-  
+
   has_many_related   :contacts, :dependent => :nullify, :index => true
   has_many_related   :tasks, :as => :asset, :index => true
   has_many_related   :comments, :as => :commentable, :index => true
@@ -56,7 +56,7 @@ class Account
     user_id = BSON::ObjectId.from_string(user_id) if user_id.is_a?(String)
     any_of({ :assignee_id => user_id }, { :user_id => user_id, :assignee_id => nil })
   end
-  
+
   def self.similar_accounts( name )
     ids = Account.only(:id, :name).map do |account|
       [account.id, name.levenshtein_similar(account.name)]
