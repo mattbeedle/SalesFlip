@@ -31,7 +31,7 @@ namespace :deploy do
   end
 
   task :symlinks, :roles => :app do
-    run "ln -s #{shared_path}/solr #{current_path}/solr/data/production"
+    run "ln -s #{shared_path}/solr #{current_path}/solr"
   end
 
   task :bundle, :roles => :app do
