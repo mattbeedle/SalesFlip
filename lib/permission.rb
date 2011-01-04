@@ -2,7 +2,7 @@ module Permission
   extend ActiveSupport::Concern
 
   included do
-    singular_name = name.downcase
+    singular_name = name.underscore
     through_relationship_name = :"#{singular_name}_permitted_users"
 
     through_model = DataMapper::Model.new
@@ -26,21 +26,16 @@ module Permission
   module ClassMethods
 
     def permitted_for(user)
-      if !user.role_is?('Freelancer')
-        any_of(
-          { user_id: user.id },
-          { permission: 'Public' },
-          { assignee_id: user.id },
-          { permission: 'Shared', permitted_users.id => user.id },
-          { permission: 'Private', permitted_users.id => user.id }
-        )
+      scope = any_of(
+        { user_id: user.id },
+        { assignee_id: user.id },
+        { permission: 'Shared', permitted_users.id => user.id }
+      )
+
+      if user.role_is?('Freelancer')
+        scope
       else
-        any_of(
-          { user_id: user.id },
-          { assignee_id: user.id, permission: 'Public' },
-          { assignee_id: user.id, permission: 'Private'},
-          { permission: 'Shared', permitted_users.id => user.id }
-        )
+        scope | all(permission: 'Public')
       end
     end
 
