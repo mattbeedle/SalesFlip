@@ -51,9 +51,10 @@ class TasksController < InheritedResources::Base
 
 protected
   def tasks_index_cache_key
+    tasks = Task.for(current_user)
     Digest::SHA1.hexdigest([
-      'tasks', Task.for(current_user).desc(:updated_at).first.try(:updated_at).
-      try(:to_i), params.flatten.join('-')].join('-'))
+      'tasks', tasks.desc(:updated_at).first.try(:updated_at).
+      try(:to_i), tasks.count, params.flatten.join('-')].join('-'))
   end
 
   def build_resource
