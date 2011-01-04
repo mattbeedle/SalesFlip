@@ -9,6 +9,14 @@ class AssignableModel
   belongs_to :user, required: false
 end
 
+class NotAssignableModel
+  include DataMapper::Resource
+  include HasConstant::Orm::DataMapper
+  include Permission
+  property :id, Serial
+  belongs_to :user, required: false
+end
+
 class PermissionTest < ActiveSupport::TestCase
   context '.permitted_for' do
     context 'when model is assignable' do
@@ -98,6 +106,14 @@ class PermissionTest < ActiveSupport::TestCase
           item = subject.create(permission: 'Shared', permitted_users: [other_user])
           refute_includes subject.permitted_for(@user), item
         end
+      end
+    end
+
+    context 'when model is not assignable' do
+      subject { NotAssignableModel }
+
+      should 'not attempt to scope by assignee_id' do
+        assert_nothing_raised { subject.permitted_for(User.make) }
       end
     end
   end

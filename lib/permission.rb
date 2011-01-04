@@ -26,11 +26,12 @@ module Permission
   module ClassMethods
 
     def permitted_for(user)
-      scope = any_of(
-        { user_id: user.id },
-        { assignee_id: user.id },
-        { permission: 'Shared', permitted_users.id => user.id }
-      )
+      scope =  all(user_id: user.id)
+      scope |= all(permission: 'Shared', permitted_users.id => user.id)
+
+      if Assignable > self
+        scope |= all(assignee_id: user.id)
+      end
 
       if user.role_is?('Freelancer')
         scope
