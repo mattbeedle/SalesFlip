@@ -153,7 +153,7 @@ protected
   end
 
   def notify_assignee
-    UserMailer.lead_assignment_notification(self).deliver if reassigned?
+    UserMailer.delay.lead_assignment_notification(self) if reassigned? && !self.do_not_notify
   end
 
   def set_initial_state
