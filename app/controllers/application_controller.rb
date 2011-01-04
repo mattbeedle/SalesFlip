@@ -12,7 +12,6 @@ class ApplicationController < ActionController::Base
   end
 
   before_filter :authenticate_user!
-  before_filter :bson_ids
   before_filter :fix_array_params
   before_filter "hook(:app_before_filter, self)"
   after_filter  "hook(:app_after_filter, self)"
@@ -21,14 +20,6 @@ class ApplicationController < ActionController::Base
   helper :all
   
 protected
-  def bson_ids
-    params.each do |key, value|
-      if key.to_s.match(/_id$/) || key.to_s.match(/^id$/) and BSON::ObjectId.legal?(value.to_s)
-        params[key] = BSON::ObjectId.from_string(value.to_s)
-      end
-    end
-  end
-
   def fix_array_params
     [:lead, :contact, :account, :opportunity].each do |type|
       if params[type] && params[type][:permitted_user_ids] && params[type][:permitted_user_ids].is_a?(String)

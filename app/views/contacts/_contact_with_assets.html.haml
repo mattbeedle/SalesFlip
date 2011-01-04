@@ -129,7 +129,7 @@
             - contact_time = l(contact.created_at, :format => :short)
             %em.timestamp
               - if contact.assignee_id.present?
-                = t(:assigned_ago_by, :time => contact_time, :by => contact.user.username, :for => User.find(contact.assignee_id).full_name)
+                = t(:assigned_ago_by, :time => contact_time, :by => contact.user.username, :for => contact.assignee.full_name)
               - else
                 = t(:added_ago_by, :time => contact_time, :by => contact.user.username)
           %span.actions

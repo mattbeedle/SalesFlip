@@ -33,10 +33,8 @@ module Permission
         scope |= all(assignee_id: user.id)
       end
 
-      if user.role_is?('Freelancer')
-        scope
-      else
-        scope | all(permission: 'Public')
+      unless user.role_is?('Freelancer')
+        scope |= all(permission: 'Public')
       end
     end
 

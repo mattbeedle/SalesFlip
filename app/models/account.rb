@@ -22,6 +22,7 @@ class Account
   property :xing, String
   property :billing_address, String
   property :shipping_address, String
+  property :identifier, Integer
   property :created_at, DateTime
   property :created_on, Date
   property :updated_at, DateTime
@@ -37,6 +38,8 @@ class Account
   has n,   :tasks, :as => :asset
   has n,   :comments, :as => :commentable
   has n,   :children, :model => 'Account', :child_key => 'parent_id'
+
+  before :create,     :set_identifier
 
   def self.for_company(company)
     all(:user_id => company.users.map(&:id))
@@ -54,7 +57,8 @@ class Account
     # text :name, :email, :phone, :website, :fax
   # end
 
-  def self.assigned_to( user_id )
+  def self.assigned_to(user_or_user_id)
+    user_id = DataMapper::Resource === user_or_user_id ? user_or_user_id.id : user_or_user_id
     all(assignee_id: user_id) | all(user_id: user_id, assignee_id: nil)
   end
   
@@ -102,6 +106,10 @@ class Account
 
   def deliminated( deliminator, fields )
     fields.map { |field| self.send(field) }.join(deliminator)
+  end
+
+  def set_identifier
+    self.identifier = Identifier.next_account
   end
 
 end

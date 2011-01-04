@@ -38,7 +38,7 @@ class Task
     all({ :completed_at => nil })
   end
 
-  def self.for( user )
+  def self.for(user)
     any_of({ :user_id => user.id, :assignee_id => user.id }, { :assignee_id => user.id },
            { :user_id => user.id, :assignee_id => nil })
   end

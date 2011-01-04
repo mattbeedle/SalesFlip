@@ -62,14 +62,9 @@ end
 require "#{Rails.root.to_s}/test/blueprints"
 
 Before do
-  Mongoid.database.collections.each do |collection|
-    begin
-      collection.drop
-    rescue
-    end
-  end
+  DataMapper.auto_migrate!
   ActionMailer::Base.deliveries.clear
   Sham.reset
   FakeWeb.allow_net_connect = false
-  Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
+  # Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
 end

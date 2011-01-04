@@ -63,7 +63,7 @@ protected
 
   def resource
     @account ||= hook(:accounts_resource, self).last
-    @account ||= Account.for_company(current_user.company).where(:_id => params[:id]).first
+    @account ||= Account.for_company(current_user.company).where(:id => params[:id]).first
   end
 
   def begin_of_association_chain
@@ -75,12 +75,12 @@ protected
   end
 
   def build_resource
-    @account ||= begin_of_association_chain.accounts.build({ :assignee_id => current_user.id }.
+    @account ||= begin_of_association_chain.accounts.new({ :assignee_id => current_user.id }.
                                                            merge(params[:account] || {}))
   end
 
   def parent_account
-    @parent_account ||= Account.find(params[:account_id]) if params[:account_id]
+    @parent_account ||= Account.get(params[:account_id]) if params[:account_id]
   end
 
   def similarity_check

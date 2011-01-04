@@ -17,7 +17,7 @@
       %br/
       %em.timestamp
         = raw t(:added_ago_by, :time => l(lead.created_at, :format => :short), :by => lead.user.username)
-        = raw " : #{t(:assigned_to, :user => User.find(lead.assignee_id).full_name) if lead.assignee_id.present?}"
+        = raw " : #{t(:assigned_to, :user => lead.assignee.full_name) if lead.assignee_id.present?}"
         - if lead.permitted_for?(current_user)
           = raw " : #{link_to(pluralize(lead.comments.size, t('comment')), lead)}" if lead.comments.any?
         - else

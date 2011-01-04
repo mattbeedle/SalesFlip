@@ -16,10 +16,10 @@ class TasksController < InheritedResources::Base
   has_scope :completed_this_month,  :type => :boolean
   has_scope :completed_last_month,  :type => :boolean
   has_scope :for do |controller, scope, value|
-    scope.for(User.find(BSON::ObjectId.from_string(value)))
+    scope.for(User.get(value))
   end
   has_scope :assigned_by do |controller, scope, value|
-    scope.assigned_by(User.find(value))
+    scope.assigned_by(User.get(value))
   end
 
   def create
@@ -47,7 +47,7 @@ class TasksController < InheritedResources::Base
 
 protected
   def build_resource
-    @task ||= begin_of_association_chain.tasks.build({ :assignee_id => current_user.id }.
+    @task ||= begin_of_association_chain.tasks.new({ :assignee_id => current_user.id }.
                                                      merge(params[:task] || {}))
     @task.asset_id = params[:asset_id] if params[:asset_id]
     @task.asset_type = params[:asset_type] if params[:asset_type]
@@ -71,7 +71,7 @@ protected
   end
 
   def resource
-    @task ||= Task.for(current_user).where(:_id => params[:id]).first
+    @task ||= Task.for(current_user).where(:id => params[:id]).first
   end
 
   def begin_of_association_chain

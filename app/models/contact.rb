@@ -29,7 +29,6 @@ class Contact
   property :address, String
   property :born_on, Date
   property :do_not_call, Boolean
-  property :deleted_at, Time
   property :identifier, Integer
   property :city, String
   property :country, String
