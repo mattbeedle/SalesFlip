@@ -1,9 +1,10 @@
 class LeadsController < InheritedResources::Base
   load_and_authorize_resource
 
-  before_filter :resource, :only => [ :convert, :promote, :reject ]
-  before_filter :set_filters, :only => [ :index, :export ]
-  before_filter :export_allowed?, :only => [ :index ]
+  before_filter :resource,          :only => [ :convert, :promote, :reject ]
+  before_filter :set_filters,       :only => [ :index, :export ]
+  before_filter :export_allowed?,   :only => [ :index ]
+  before_filter :already_assigned?, :only => [ :update ]
 
   cache_sweeper :lead_sweeper
 
@@ -129,6 +130,15 @@ protected
   def export_allowed?
     if request.format.csv?
       raise CanCan::AccessDenied unless can? :export, current_user
+    end
+  end
+
+  def already_assigned?
+    if !resource.assignee.blank? && resource.assignee != current_user
+      flash[:error] = "This lead was just accepted by \
+        #{resource.assignee.full_name}, you can no longer accept it"
+      redirect_to :back
+      return false
     end
   end
 end

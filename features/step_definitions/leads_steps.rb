@@ -59,6 +59,10 @@ Given /^inspect #{capture_model}$/ do |model|
   puts m.inspect
 end
 
+Given /^#{capture_model} accepts the lead$/ do |model|
+  Lead.last.update_attributes :assignee => model!(model)
+end
+
 Then /^an activity should have been created with for lead: "([^\"]*)" and user: "([^\"]*)"$/ do |arg1, arg2|
   lead = model!(arg1)
   user = model!(arg2)

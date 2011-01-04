@@ -21,6 +21,16 @@ Feature: Manage leads
     Then I should be on the lead's page
     And the lead: "erich" should be assigned to annika
 
+  Scenario: Trying to accept a lead when it has already been accepted, but the UI has not updated
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And a lead: "erich" exists with user: Annika
+    When I go to the leads page
+    And Benny accepts the lead
+    And I press "accept"
+    Then I should be on the leads page
+    And I should see "This lead was just accepted by benjamin.pochhammer@1000jobboersen.de, you can no longer accept it"
+
   Scenario: Creating a lead
     Given I am registered and logged in as annika
     And I am on the leads page
