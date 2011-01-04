@@ -364,7 +364,9 @@ class TaskTest < ActiveSupport::TestCase
     end
 
     should 'not send a notification email when the task is created if the assignee is blank' do
-      @task = Task.make_unsaved(:call_erich, :user => User.make)
+      user = User.make
+      lead = Lead.make(:user => user, :assignee => user)
+      @task = Task.make_unsaved(:call_erich, :user => user, :asset => lead)
       ActionMailer::Base.deliveries.clear
       @task.save!
       assert_equal 0, ActionMailer::Base.deliveries.length

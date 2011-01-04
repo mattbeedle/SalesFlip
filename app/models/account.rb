@@ -44,12 +44,15 @@ class Account
 
   before_create :set_identifier
 
-  named_scope :for_company, lambda { |company| { :where => { :user_id.in => company.users.map(&:id) } } }
-  named_scope :unassigned, :where => { :assignee_id => nil }
-  named_scope :name_like, lambda { |name| { :where => { :name => /#{name}/i } } }
+  named_scope :unassigned, where(:assignee_id => nil)
+  named_scope :name_like, lambda { |name| where(:name => /#{name}/i) }
 
   searchable do
     text :name, :email, :phone, :website, :fax
+  end
+
+  def self.for_company(company)
+    where(:user_id.in => company.users.map(&:id))
   end
 
   def self.assigned_to( user_id )

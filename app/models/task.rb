@@ -192,14 +192,12 @@ protected
 
   def assign_unassigned_lead
     if asset and asset.is_a?(Lead) and asset.assignee.blank?
-      asset.update_attributes :assignee => self.user
+      asset.update_attributes :assignee => self.user, :do_not_notify => true
     end
   end
 
   def notify_assignee
     TaskMailer.assignment_notification(self).deliver if reassigned?
-  rescue
-    nil
   end
 
   def log_update

@@ -200,6 +200,7 @@ class LeadTest < ActiveSupport::TestCase
       should 'notify assignee' do
         @lead.assignee = User.make
         @lead.save!
+        @lead = Lead.find(@lead.id)
         ActionMailer::Base.deliveries.clear
         @lead.update_attributes! :assignee => @user
         assert_sent_email { |email| email.to.include?(@user.email) }

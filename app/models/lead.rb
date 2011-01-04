@@ -75,12 +75,13 @@ class Lead
 
   before_validation :set_initial_state
   before_create     :set_identifier, :set_recently_created
+  before_save       :log_recently_changed
   after_save        :notify_assignee, :unless => :do_not_notify
 
-  has_constant :titles, lambda { I18n.t('titles') }
-  has_constant :statuses, lambda { I18n.t('lead_statuses') }
-  has_constant :sources, lambda { I18n.t('lead_sources') }
-  has_constant :salutations, lambda { I18n.t('salutations') }
+  has_constant :titles, lambda { I18n.t(:titles) }
+  has_constant :statuses, lambda { I18n.t(:lead_statuses) }
+  has_constant :sources, lambda { I18n.t(:lead_sources) }
+  has_constant :salutations, lambda { I18n.t(:salutations) }
 
   named_scope :with_status, lambda { |statuses| { :where => {
     :status.in => statuses.map { |status| Lead.statuses.index(status) } } } }
@@ -93,7 +94,7 @@ class Lead
       :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing
   end
   handle_asynchronously :solr_index
-  
+
   def self.with_status( statuses )
     statuses = statuses.lines if statuses.respond_to?(:lines)
     where(:status.in => statuses.map { |status| Lead.statuses.index(status) })
@@ -112,7 +113,7 @@ class Lead
 
   def promote!( account_name, options = {} )
     @recently_converted = true
-    if !self.email.blank? and (contact = Contact.first(:conditions => { :email => self.email }))
+    if !self.email.blank? and (contact = Contact.where(:email => self.email).first)
       I18n.locale_around(:en) { update_attributes :status => 'Converted', :contact_id => contact.id }
       if contact.account.blank? && !account_name.blank?
         account = Account.find_or_create_for(self, account_name, options)
@@ -141,17 +142,18 @@ class Lead
     assignee_id == user.id
   end
 
+  def reassigned?
+    !assignee.blank? && ((@recently_changed.include?('assignee_id') && !@recently_created) ||
+                         @recently_created && assignee_id != user_id)
+  end
+
 protected
   def set_recently_created
     @recently_created = true
   end
 
   def notify_assignee
-    if !assignee.blank? && (changed.include?('assignee_id') || @recently_created && assignee_id != user_id)
-      UserMailer.lead_assignment_notification(self).deliver
-    end
-  rescue
-    nil
+    UserMailer.lead_assignment_notification(self).deliver if reassigned?
   end
 
   def set_initial_state
@@ -172,5 +174,9 @@ protected
 
   def set_identifier
     self.identifier = Identifier.next_lead
+  end
+
+  def log_recently_changed
+    @recently_changed = changed
   end
 end
