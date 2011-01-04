@@ -58,6 +58,7 @@ Feature: Manage tasks
     When I select "benjamin.pochhammer@1000jobboersen.de" from "task_assignee_id"
     And I select "Today" from "task_due_at"
     And I press "update_task"
+    And all delayed jobs have finished
     Then I should be on the tasks page
     And I should see "Task has been re-assigned"
     And a task re-assignment email should have been sent to "benjamin.pochhammer@1000jobboersen.de"
