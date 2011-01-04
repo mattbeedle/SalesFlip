@@ -1,6 +1,6 @@
 = hidden_field_tag :return_to, params[:return_to]
-%h2.title= t('add_lead')
-%h3.toggler.open= t('contact_info')
+%h2.title= t(:add_lead)
+%h3.toggler.open= t(:contact_info)
 .toggle
   %fieldset
     .16.a= form.input :salutation, :as => :select, :collection => Lead.salutations.map(&:to_s)
@@ -24,12 +24,12 @@
     .50.z= form.input :facebook
     .50.a= form.input :linked_in
     .50.z= form.input :twitter
-    
-    
-%h3.toggler.open= t('company_info')
+
+
+%h3.toggler.open= t(:company_info)
 .toggle
   %fieldset
-    .100= form.input :company    
+    .100= form.input :company
     .clear
     .60.a= form.input :address
     .20= form.input :fax
@@ -38,7 +38,7 @@
     .10.a= form.input :postal_code
     .50= form.input :city
     .40.z
-      %label{ :for => 'lead_country' }= t('country')
+      %label{ :for => 'lead_country' }= t(:country)
       = localized_country_select :lead, :country, TOP_COUNTRIES
     .clear
     .50.a=  form.input :website
@@ -48,18 +48,16 @@
     .33=  form.input :company_twitter, :label => 'Twitter'
     .33.z= form.input :company_blog, :label => 'Blog'
 
-%h3.toggler.open=raw "#{t('tracking')} &amp; #{t('simple_form.labels.permissions')}"
+%h3.toggler.open=raw "#{t(:tracking)} &amp; #{t('simple_form.labels.permissions')}"
 .toggle
   %fieldset
     %span.col.seventy-five.first
       %span.wrap
-        .33.a= form.input :source, :collection => t('lead_sources')
-        .33= form.input :permission, :collection => Lead.permissions, :include_blank => false
-        .33.z= form.input :assignee_id, :collection => current_user.company.users.map {|u| [u.full_name, u.id]}
+        .50.a= form.input :source, :collection => Lead.sources
+        .50.z= form.input :assignee_id, :collection => current_user.company.users.map {|u| [u.full_name, u.id]}
 
-        .20.a= form.input :status, :as => :select, :collection => Lead.statuses.map(&:to_s), :include_blank => false
-        .60= form.input :assignee_id, :collection => current_user.company.users.map {|a| [a.email, a.id] }, :include_blank => true, :required => true
-        .20.z= form.input :permission, :collection => Lead.permissions, :include_blank => false
+        .50.a= form.input :status, :as => :select, :collection => Lead.statuses.map(&:to_s), :include_blank => false
+        .50.z= form.input :permission, :collection => Lead.permissions, :include_blank => false
 
         .33.a= form.input :rating, :as => :select, :collection => 1..5
         .33= form.input :source, :as => :select, :collection => Lead.sources.map(&:to_s)
@@ -69,7 +67,7 @@
       %span.wrap
         .100= form.input :permitted_user_ids, :collection => current_user.company.users.asc(:email).map {|u| [u.email, u.id] }, :include_blank => false, :input_html => { :multiple => true, :size => 8 }
 
-%h3.toggler.open=t('notes')
+%h3.toggler.open= t(:notes)
 .toggle
   %fieldset
     .100
@@ -77,9 +75,6 @@
 .clear
 
 .act.pad
-  = form.submit t('save_lead'), :id => "lead_submit"
-  = t('or')
-  = link_to t('back'), :back
-
-// Eliminates style flicker, but makes Matt very, very sad
-=# javascript_tag "new Base().initialize;"
+  = form.submit t(:save_lead), :id => 'lead_submit'
+  = t(:or)
+  = link_to t(:back), :back
