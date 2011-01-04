@@ -37,7 +37,7 @@
             %dl
               = show_attribute(contact, 'mobile')
               = show_attribute(contact, 'fax')
-              %dt= t('address')
+              %dt= t(:address)
               %dd
                 - c, address = contact, []
                 - address << contact.address if contact.address.present?
@@ -46,13 +46,13 @@
               = show_attribute(contact, 'source')
           .half
             %dl
-              %dt= t('email')
+              %dt= t(:email)
               %dd
                 - emails = []
-                - emails << mail_to(c.email, t('primary_email'), :bcc => current_user.dropbox_email) if c.email.present?
-                - emails << mail_to(c.alt_email, t('alt_email'), :bcc => current_user.dropbox_email) if c.alt_email.present?
+                - emails << mail_to(c.email, t(:primary_email), :bcc => current_user.dropbox_email) if c.email.present?
+                - emails << mail_to(c.alt_email, t(:alt_email), :bcc => current_user.dropbox_email) if c.alt_email.present?
                 = emails.compact.join(', ').html_safe
-              %dt= t('social_media')
+              %dt= t(:social_media)
               %dd
                 - twit = c.website.blank?   ? nil : link_to('Twitter', c.website)
                 - link = c.linked_in.blank? ? nil : link_to('LinkedIn',c.linked_in)
@@ -60,7 +60,7 @@
                 - xing = c.xing.blank?      ? nil : link_to('Xing', c.xing)
                 = [twit, link, face, xing].compact.join(', ').html_safe
               = show_attribute(contact, 'website', link_to(c.website))
-              
+
               %dt Permissions
               %dd
                 - permissions = []
@@ -73,11 +73,11 @@
         -# Tasks for Contact
         -#----------------------------------------------------------------------
         .details
-          = render :partial => 'tasks/task', :collection => contact.tasks
+          = render :partial => 'tasks/task', :collection => contact.tasks.for(current_user).incomplete
           - if !contact.lead_id.blank?
-            = render :partial => 'tasks/task', :collection => contact.lead.tasks
+            = render :partial => 'tasks/task', :collection => contact.lead.tasks.for(current_user).incomplete
           .add
-            = link_to raw("<b>+</b>#{t('add_task')}"), new_task_path(:asset_id => contact.id, :asset_type => "Contact", :return_to => request.fullpath), :id => "add_task_for_#{dom_id contact}", :class => 'add_task' 
+            = link_to raw("<b>+</b>#{t(:add_task)}"), new_task_path(:asset_id => contact.id, :asset_type => 'Contact', :return_to => request.fullpath), :id => "add_task_for_#{dom_id contact}", :class => 'add_task'
         -#----------------------------------------------------------------------
         -# Comments for Contact
         -#----------------------------------------------------------------------
@@ -90,9 +90,9 @@
         .add-comment
           = simple_form_for @comment || Comment.new, :html => { :multipart => true } do |form|
             = hidden_field_tag :return_to, request.fullpath
-            = form.hidden_field :commentable_type, :value => "Contact"
+            = form.hidden_field :commentable_type, :value => 'Contact'
             = form.hidden_field :commentable_id, :value => contact.id
-            = form.input :text, :as => :text, :input_html => { :rows => 2 }, :label => t('add_comment')
+            = form.input :text, :as => :text, :input_html => { :rows => 2 }, :label => t(:add_comment)
             .50.a
               .string
                 = form.simple_fields_for 'attachments_attributes[]', Attachment.new do |attachment_form|
