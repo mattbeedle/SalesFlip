@@ -1,23 +1,24 @@
-.comment{ :class => !comment.is_a?(Email) ? 'email' : nil  }
-  - if comment.is_a?(Email)
-    .message
-      .user
-        = mail_to comment.from, nil, :bcc => current_user.dropbox_email
-        %span.icon= raw t('icons.email')
-        %strong
-          == raw #{t('subject')}:
-          = raw comment.subject
-        %small.acted= raw t('email_sent_ago', :time => l(comment.created_at, :format => :short))
-      .text= raw comment.text.gsub(/\n/, '<br />')
-      .attachments
-        - comment.attachments.each do |attachment|
-          = link_to attachment.attachment_filename, attachment.attachment.url
-  - else
-    .message
-      .user
-        = link_to comment.user.email, comment.user
-        %small.acted= raw t('wrote_ago', :time => l(comment.created_at, :format => :short))
-      .text= raw comment.text.gsub(/\n/, '<br />')
-      .attachments
-        - comment.attachments.each do |attachment|
-          = link_to attachment.attachment_filename, attachment.attachment.url
+- cache("comment_partial-#{comment.id}") do
+  .comment{ :class => !comment.is_a?(Email) ? 'email' : nil  }
+    - if comment.is_a?(Email)
+      .message
+        .user
+          = mail_to comment.from, nil, :bcc => current_user.dropbox_email
+          %span.icon= raw t('icons.email')
+          %strong
+            == raw #{t(:subject)}:
+            = raw comment.subject
+          %small.acted= raw t(:email_sent_ago, :time => l(comment.created_at, :format => :short))
+        = raw comment.text.gsub(/\n/, '<br />')
+        .attachments
+          - comment.attachments.each do |attachment|
+            = link_to attachment.attachment_filename, attachment.attachment.url
+    - else
+      .message
+        .user
+          = link_to comment.user.email, comment.user
+          %small.acted= raw t(:wrote_ago, :time => l(comment.created_at, :format => :short))
+        = raw comment.text
+        .attachments
+          - comment.attachments.each do |attachment|
+            = link_to attachment.attachment_filename, attachment.attachment.url
