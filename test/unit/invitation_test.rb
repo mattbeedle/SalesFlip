@@ -41,8 +41,10 @@ class InvitationTest < ActiveSupport::TestCase
     end
 
     should 'send invitation email after creation' do
+      Delayed::Worker.new.work_off
       ActionMailer::Base.deliveries.clear
       @invitation.save!
+      Delayed::Worker.new.work_off
       assert_equal 1, ActionMailer::Base.deliveries.length
     end
   end
