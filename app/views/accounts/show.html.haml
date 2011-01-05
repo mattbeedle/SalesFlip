@@ -27,7 +27,7 @@
 .clear
 = render :partial => 'tasks/add_task', :locals => { :object => @account }
 .clear
-= render :partial => 'comments/comments', :locals => { :object => @account, :comments => @account.comments }
+= render :partial => 'comments/comments', :locals => { :object => @account, :comments => @account.comments.desc(:created_at) }
 
 - content_for :sidebar do
   .box.ice
