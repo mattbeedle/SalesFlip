@@ -319,7 +319,7 @@ Feature: Manage leads
     And I am on the lead's page
     When I press "Reject"
     Then I should be on the leads page
-    And lead "erich" should exist with status: 3
+    And lead "erich" should exist with status: "Rejected"
     And a new "Rejected" activity should have been created for "Lead" with "first_name" "Erich" and user: "annika"
 
   Scenario: Converting a lead to a new account
@@ -333,9 +333,9 @@ Feature: Manage leads
     Then I should be on the account page
     And I should see "World Dating"
     And I should see "Erich"
-    And 1 accounts should exist with name: "World Dating", account_type: 7
+    And 1 accounts should exist with name: "World Dating", account_type: "Prospect"
     And a contact should exist with first_name: "Erich"
-    And a lead should exist with first_name: "Erich", status: 2
+    And a lead should exist with first_name: "Erich", status: "Converted"
     And a new "Created" activity should have been created for "Contact" with "first_name" "Erich" and user: "annika"
     And a new "Converted" activity should have been created for "Lead" with "first_name" "Erich" and user: "annika"
     And a new "Created" activity should have been created for "Account" with "name" "World Dating" and user: "annika"

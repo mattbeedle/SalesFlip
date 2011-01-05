@@ -49,7 +49,7 @@ Feature: Manage users
     And I fill in "user_password" with "password"
     And I fill in "user_password_confirmation" with "password"
     When I press "user_submit"
-    Then 1 users should exist with username: "Werner", role: 3
+    Then 1 users should exist with username: "Werner", role: "Freelancer"
     And I should be on the new user session page
 
   Scenario: Accepted an invitation with errors
