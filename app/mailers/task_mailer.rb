@@ -2,7 +2,12 @@ class TaskMailer < ActionMailer::Base
   default :from => 'service@salesflip.com'
 
   def assignment_notification( task )
-    @url = task_url(task)
+    if task.asset
+      @url = url_for(:controller => task.asset_type.downcase.pluralize,
+                     :action => :show, :id => task.asset_id)
+    else
+      @url = tasks_url
+    end
     mail(:to => task.assignee.email, :subject => I18n.t('emails.task_reassigned.subject'),
          :reply_to => 'do-not-reply@salesflip.com')
   end

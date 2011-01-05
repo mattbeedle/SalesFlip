@@ -26,9 +26,6 @@ class Lead
   field :salutation,    :type => Integer
   field :company
   field :company_phone
-  field :company_blog
-  field :company_facebook
-  field :company_twitter
   field :website
   field :career_site
   field :job_title
@@ -47,6 +44,7 @@ class Lead
   field :linked_in
   field :facebook
   field :xing
+  field :blog
   field :identifier,    :type => Integer
 
   index(
@@ -75,6 +73,7 @@ class Lead
 
   before_validation :set_initial_state
   before_create     :set_identifier, :set_recently_created
+  before_save       :log_recently_changed
   after_save        :notify_assignee, :unless => :do_not_notify
 
   has_constant :titles,       lambda { I18n.t(:titles) }
@@ -111,7 +110,7 @@ class Lead
 
   def promote!( account_name, options = {} )
     @recently_converted = true
-    if !self.email.blank? and (contact = Contact.first(:conditions => { :email => self.email }))
+    if !self.email.blank? and (contact = Contact.where(:email => self.email).first)
       I18n.locale_around(:en) { update_attributes :status => 'Converted', :contact_id => contact.id }
       if contact.account.blank? && !account_name.blank?
         account = Account.find_or_create_for(self, account_name, options)
@@ -141,17 +140,18 @@ class Lead
     assignee_id == user.id
   end
 
+  def reassigned?
+    !assignee.blank? && ((@recently_changed.include?('assignee_id') && !@recently_created) ||
+                         @recently_created && assignee_id != user_id)
+  end
+
 protected
   def set_recently_created
     @recently_created = true
   end
 
   def notify_assignee
-    if !assignee.blank? && (changed.include?('assignee_id') || @recently_created && assignee_id != user_id)
-      UserMailer.lead_assignment_notification(self).deliver
-    end
-  rescue
-    nil
+    UserMailer.delay.lead_assignment_notification(self) if reassigned? && !self.do_not_notify
   end
 
   def set_initial_state
@@ -172,5 +172,9 @@ protected
 
   def set_identifier
     self.identifier = Identifier.next_lead
+  end
+
+  def log_recently_changed
+    @recently_changed = changed
   end
 end

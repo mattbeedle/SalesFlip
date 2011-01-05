@@ -27,10 +27,9 @@ Then /^the task "(.+)" should have been completed$/ do |name|
 end
 
 Then /^a task re\-assignment email should have been sent to "([^\"]*)"$/ do |email_address|
-  truth = ActionMailer::Base.deliveries.any? do |d|
-    d.to.include?(email_address) && d.body.match(/\/tasks\//)
+  assert ActionMailer::Base.deliveries.any? do |d|
+    d.to.include?(email_address) && d.body.match(/\/#{Task.last.asset.asset_type.downcase.pluralize}\//)
   end
-  assert truth
 end
 
 Then /^(\d+) tasks should have been created$/ do |count|

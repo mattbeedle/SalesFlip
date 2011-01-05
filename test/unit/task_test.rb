@@ -428,8 +428,9 @@ class TaskTest < ActiveSupport::TestCase
       @benny = User.make(:benny)
       ActionMailer::Base.deliveries.clear
       @task.update_attributes :assignee_id => @benny.id
+      Delayed::Worker.new.work_off
       assert_sent_email do |email|
-        email.to.include?(@benny.email) && email.body.match(/\/tasks\//) &&
+        email.to.include?(@benny.email) && email.body.match(/\/tasks/) &&
           email.subject.match(/You have been assigned a new task/)
       end
     end
@@ -443,8 +444,8 @@ class TaskTest < ActiveSupport::TestCase
 
     should 'not send a notification email when the task is created if the assignee is blank' do
       user = User.make
-      lead = Lead.make :assignee => user
-      @task = Task.make_unsaved(:user => user, :asset => lead)
+      lead = Lead.make(:user => user, :assignee => user)
+      @task = Task.make_unsaved(:call_erich, :user => user, :asset => lead)
       ActionMailer::Base.deliveries.clear
       @task.save!
       assert_equal 0, ActionMailer::Base.deliveries.length
