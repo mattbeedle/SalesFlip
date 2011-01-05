@@ -409,7 +409,8 @@ en:
   #--------------------------------------------------------------
   tasks_for: "Tasks for %{name}"
   no_outstanding_tasks: You have no outstanding tasks
-  
+  tasks_created_completed_count: Tasks (created / completed / incomplete)
+
   #--------------------------------------------------------------
   # Errors
   #--------------------------------------------------------------

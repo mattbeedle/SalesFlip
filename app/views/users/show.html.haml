@@ -25,3 +25,11 @@
 %dl.profile
   %dt= t(:email_count)
   %dd= @user.emails.count
+%dl.profile
+  %dt= t(:tasks_created_completed_count)
+  %dd
+    = @user.tasks.count
+    = '/'
+    = @user.tasks.completed.count
+    = '/'
+    = @user.tasks.incomplete.count
