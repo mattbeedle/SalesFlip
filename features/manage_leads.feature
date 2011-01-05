@@ -40,6 +40,7 @@ Feature: Manage leads
     When I follow "Edit"
     And I select "benjamin.pochhammer@1000jobboersen.de" from "Assignee"
     And I press "Save Lead"
+    And all delayed jobs have finished
     Then I should be on the lead's page
     And 1 emails should be delivered to "benjamin.pochhammer@1000jobboersen.de"
 
