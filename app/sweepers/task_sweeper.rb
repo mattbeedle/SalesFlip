@@ -22,7 +22,6 @@ class TaskSweeper < ActionController::Caching::Sweeper
     case
     when asset.is_a?(Lead)
       expire_fragment("lead_partial-#{asset.id}")
-      expire_fragment("lead_show-#{asset.id}")
       unless asset.contact.blank? || asset.contact.new_record?
         expire_contact(asset.contact)
         unless asset.contact.account.blank? || asset.contact.account.new_record?
@@ -43,12 +42,10 @@ class TaskSweeper < ActionController::Caching::Sweeper
 
   def expire_contact(contact)
     expire_fragment("contact_partial-#{asset.id}")
-    expire_fragment("contact_show-#{asset.id}")
     expire_fragment("contact_with_assets-#{asset.id}")
   end
 
   def expire_account(account)
     expire_fragment("account_partial-#{account.id}")
-    expire_fragment("account_show-#{account.id}")
   end
 end

@@ -7,16 +7,15 @@ class AccountSweeper < ActionController::Caching::Sweeper
 
   def after_destroy(account)
     expire_cache_for(account)
-    expire_fragment('deleted_items_nav_link')
+    expire_fragment('deleted_items_nav_link-true')
+    expire_fragment('deleted_items_nav_link-false')
   end
 
   private
   def expire_cache_for(account)
     expire_fragment("account_partial-#{account.id}")
-    expire_fragment("account_show-#{account.id}")
     account.contacts.each do |contact|
       expire_fragment("contact_partial-#{contact.id}")
-      expire_fragment("contact_show-#{contact.id}")
       expire_fragment("contact_with_assets-#{contact.id}")
     end
     account.tasks.each do |task|
