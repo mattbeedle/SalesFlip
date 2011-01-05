@@ -2,6 +2,5 @@ Then /^#{capture_model} should have (\d+) assigned (\w+)$/ do |name, size, assoc
   model!(name).send("assigned_#{association}").size.should == size.to_i
 end
 Then /^a view activity should have been created for opportunity with title "([^\"]*)"$/ do |title|
-  assert Activity.first(:conditions => { :action => Activity.actions.index('Viewed') }).
-    subject.title == title
+  assert Activity.first(:action => 'Viewed').subject.title == title
 end

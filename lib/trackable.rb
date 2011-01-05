@@ -36,7 +36,6 @@ module Trackable
   end
 
   def remove_tracker_ids=(ids)
-    olds_ids = attribute_get(:tracker_ids) || []
-    attribute_set :tracker_ids, olds_ids.map(&:to_s) - ids.map(&:to_s)
+    self.tracker_ids = tracker_ids.map(&:to_s) - ids.map(&:to_s)
   end
 end

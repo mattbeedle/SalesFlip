@@ -72,8 +72,7 @@ class LeadsController < InheritedResources::Base
   end
 
   def reject
-    @lead.updater_id = current_user.id
-    @lead.reject!
+    @lead.reject!(updater: current_user)
     redirect_to leads_path
   end
 

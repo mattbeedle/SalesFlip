@@ -42,11 +42,11 @@ module HasConstant
             end
 
             define_method "#{singular}_is" do |*values|
-              all(singular.to_sym => values)
+              all(singular.to_sym => values.flatten)
             end
 
             define_method "#{singular}_is_not" do |*values|
-              all(singular.to_sym.not => values)
+              all(singular.to_sym.not => values.flatten)
             end
           end
         end

@@ -88,28 +88,28 @@ Then /^a task should have been created$/ do
 end
 
 Then /^a created activity should exist for lead with first_name "([^\"]*)"$/ do |first_name|
-  assert Activity.first(:conditions => { :action => Activity.actions.index('Created') }).
+  assert Activity.first(:conditions => { :action => 'Created' }).
     subject.first_name == first_name
 end
 
 Then /^an updated activity should exist for lead with first_name "([^\"]*)"$/ do |first_name|
-  assert Activity.first(:conditions => { :action => Activity.actions.index('Updated') }).
+  assert Activity.first(:conditions => { :action => 'Updated' }).
     subject.first_name == first_name
 end
 
 Then /^a view activity should have been created for lead with first_name "([^\"]*)"$/ do |first_name|
-  assert Activity.first(:conditions => { :action => Activity.actions.index('Viewed') }).
+  assert Activity.first(:conditions => { :action => 'Viewed' }).
     subject.first_name == first_name
 end
 
 Then /^a new "([^\"]*)" activity should have been created for "([^\"]*)" with "([^\"]*)" "([^\"]*)"$/ do |action, model, field, value|
-  assert Activity.first(:conditions => { :action => Activity.actions.index(action),
+  assert Activity.first(:conditions => { :action => action,
                         :subject_type => model }).subject.send(field) == value
 end
 
 Then /^a new "([^\"]*)" activity should have been created for "([^\"]*)" with "([^\"]*)" "([^\"]*)" and user: "([^\"]*)"$/ do |action, model, field, value, modifier|
   user = model!(modifier)
-  activity = Activity.first(:conditions => { :action => Activity.actions.index(action),
+  activity = Activity.first(:conditions => { :action => action,
                             :subject_type => model, :user_id => user.id })
   assert activity.subject.send(field) == value
 end

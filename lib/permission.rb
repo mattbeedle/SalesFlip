@@ -36,6 +36,8 @@ module Permission
       unless user.role_is?('Freelancer')
         scope |= all(permission: 'Public')
       end
+
+      scope
     end
 
   end

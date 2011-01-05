@@ -27,7 +27,9 @@ module Salesflip
     require 'data_mapper/changes'
     require 'data_mapper/collection_extensions'
     require 'data_mapper/multiparameter_attribute_support'
+    require 'data_mapper/scope'
     require 'data_mapper/polymorphic'
+    require 'data_mapper/validations'
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named

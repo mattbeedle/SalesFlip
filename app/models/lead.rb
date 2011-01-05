@@ -110,7 +110,8 @@ class Lead
   def promote!( account_name, options = {} )
     @recently_converted = true
     if !self.email.blank? and (contact = Contact.first(:email => self.email))
-      I18n.locale_around(:en) { update :status => 'Converted', :contact_id => contact.id }
+      self.attributes = {:status => 'Converted', :contact_id => contact.id}
+      save
       if contact.account.blank? && !account_name.blank?
         account = Account.find_or_create_for(self, account_name, options)
         contact.update :account => account if account.valid?
@@ -127,9 +128,9 @@ class Lead
     return account || contact.account, contact, opportunity
   end
 
-  def reject!
+  def reject!(attributes = {})
     @recently_rejected = true
-    I18n.locale_around(:en) { update :status => 'Rejected' }
+    update attributes.merge(:status => 'Rejected')
   end
 
   def deliminated( deliminator, fields )

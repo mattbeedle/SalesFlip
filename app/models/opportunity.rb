@@ -21,7 +21,8 @@ class Opportunity
   property :updated_at, DateTime
   property :updated_on, Date
 
-  belongs_to :contact, :required => false
+  belongs_to :contact, required: false
+
   belongs_to :user, :required => true
   belongs_to :stage, model: 'OpportunityStage'
 
