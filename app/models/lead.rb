@@ -63,7 +63,7 @@ class Lead
 
   validates_presence_of :user, :last_name
 
-  attr_accessor :do_not_notify
+  attr_accessor :do_not_notify, :do_not_index
 
   referenced_in   :user
   referenced_in   :contact
@@ -188,5 +188,15 @@ protected
 
   def log_recently_changed
     @recently_changed = changed
+  end
+
+private
+  def maybe_auto_index
+    unless self.do_not_index
+      if @marked_for_auto_indexing
+        solr_index
+        remove_instance_variable(:@marked_for_auto_indexing)
+      end
+    end
   end
 end

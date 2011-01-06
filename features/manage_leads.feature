@@ -5,15 +5,20 @@ Feature: Manage leads
 
   Scenario: Importing leads from a CSV
     Given I am registered and logged in as Matt
+    And Annika exists with email: "annika.fleischer@1000jobboersen.de"
+    And Annika belongs to the same company as Matt
+    And all delayed jobs have finished
     And all emails have been delivered
     And I am on the leads page
     When follow "Import from CSV"
     And I attach the file "test/support/leads.csv" to "file"
+    And I select "annika.fleischer@1000jobboersen.de" from "Assignee"
     And I press "Upload"
     And all delayed jobs have finished
     Then I should be on the leads page
     And 3 leads should exist
     And an import summary email should have been sent
+    And I should see "Your leads are being imported now. You will receive a summary email when the import has finished"
 
   Scenario: Accepting a lead
     Given I am registered and logged in as annika

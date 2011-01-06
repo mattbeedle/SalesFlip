@@ -74,4 +74,5 @@ group :test do
   gem 'mbeedle-heroku-autoscale', :require => 'heroku/autoscale'
   gem 'timecop'
   gem 'test_notifier'
+  gem 'watchr'
 end

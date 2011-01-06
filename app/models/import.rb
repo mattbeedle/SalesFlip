@@ -1,9 +1,11 @@
 class Import
 
-  attr_accessor :user, :model, :file, :deliminator, :unimported
+  attr_accessor :user, :model, :filename, :deliminator, :unimported, :assignee
 
-  def initialize(user, model, file, deliminator = '|')
-    self.user, self.model, self.file, self.deliminator = user, model, file, deliminator
+  def initialize(user, model, file, options = {})
+    copy_file_to_tmp(file)
+    self.user, self.model, self.deliminator = user, model, (options[:deliminator] || '|')
+    self.assignee = options[:assignee]
     self.unimported = []
     @imported = []
   end
@@ -13,7 +15,9 @@ class Import
   end
 
   def import
-    file.read.force_encoding('iso-8859-1').encode('utf-8').split("\r").each_with_index do |line, index|
+    File.read(self.filename).force_encoding('iso-8859-1').encode('utf-8').
+      split("\r").each_with_index do |line, index|
+
       if index == 0
         get_included_fields(line)
       else
@@ -22,6 +26,7 @@ class Import
         similar = object.similar(0.9)
         unless similar.any?
           object.save
+          Sunspot.index(object)
           @imported << object.id
         else
           unimported << [line, similar]
@@ -29,6 +34,7 @@ class Import
       end
     end
     ImportMailer.import_summary(self).deliver
+    FileUtils.rm(self.filename)
   end
   alias :perform :import
 
@@ -40,10 +46,18 @@ protected
   end
 
   def build_attributes(values)
-    attributes = { :user => user, :source => 'Imported' }
+    attributes = { :user => user, :source => 'Imported', :assignee => assignee,
+                   :do_not_index => true }
     @fields.each_with_index do |field, i|
       attributes.merge!(field.to_sym => values[i])
     end
     attributes
+  end
+
+  def copy_file_to_tmp(file)
+    self.filename = "tmp/#{BSON::ObjectId.new}"
+    File.open(filename, 'w+') do |f|
+      f.write file.read.force_encoding('iso-8859-1').encode('utf-8')
+    end
   end
 end

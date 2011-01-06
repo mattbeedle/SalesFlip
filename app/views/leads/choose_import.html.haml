@@ -1,4 +1,14 @@
 = form_tag import_leads_path, :multipart => true do
   = hidden_field_tag :return_to, params[:return_to] if params[:return_to]
-  = file_field_tag :file
-  = submit_tag t(:upload)
+  .100.a
+    = file_field_tag :file
+  .25.a
+    %label{ :for => 'assignee' }= t(:assignee)
+    = select_tag :assignee, options_for_select(current_user.company.users.asc(:email).map { |u| [u.email, u.id] }), :include_blank => true
+  .5
+    %label{ :for => 'deliminator' }= t(:deliminator)
+    = text_field_tag :deliminator, params[:deliminator] || ','
+  .clear
+  .100.a
+    = submit_tag t(:upload)
+    = link_to t(:cancel), :back
