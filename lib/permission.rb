@@ -5,6 +5,13 @@ module Permission
     field :permission,          :type => Integer, :default => 0
     field :permitted_user_ids,  :type => Array,   :default => []
 
+    # TODO this needs to be refactored, it's slow as fuck, and we just learned
+    # that it will overload the database server fairly quickly if run alot.
+    # It's used on most of the major models to decide who can view them, so it
+    # is used alot. However, at the moment it can't be made to use the mongoid
+    # criteria stuff because when mongoid merges the criteria together when
+    # this scope is chained with others, it seems to merge some incorrectly,
+    # depending on what scopes are chained.
     named_scope :permitted_for, lambda { |user|
       if !user.role_is?('Freelancer')
         { :where => {
