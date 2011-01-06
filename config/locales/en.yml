@@ -137,6 +137,7 @@ en:
   accept: Accept
   export_as_csv: Export this list as a CSV
   import_from_csv: Import from CSV
+  optional_extra_information: Optional Extra Information
   assignee: Assignee
   choose_fields: Choose Fields to Export
   export: Export
