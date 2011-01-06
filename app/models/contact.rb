@@ -74,7 +74,7 @@ class Contact
     text :first_name, :last_name, :department, :email, :alt_email, :phone, :mobile,
       :fax, :website, :linked_in, :facebook, :twitter, :xing, :address
   end
-  handle_asynchronously :solr_index
+  #handle_asynchronously :solr_index
 
   def self.assigned_to( user_id )
     user_id = BSON::ObjectId.from_string(user_id) if user_id.is_a?(String)
