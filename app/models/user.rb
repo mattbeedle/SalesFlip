@@ -32,7 +32,7 @@ class User
   has n,  :invitations, :inverse => :inviter#, :dependent => :destroy
   has 1,  :invitation,  :inverse => :invited
   has n,  :opportunities
-  has n,  :assigned_opportunities, foreign_key: 'assignee_id',
+  has n,  :assigned_opportunities, child_key: 'assignee_id',
     model: 'Opportunity'
 
   belongs_to :company, :required => true
