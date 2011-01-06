@@ -1,4 +1,8 @@
 namespace :db do
+  namespace :test do
+    task :prepare do
+    end
+  end
   
   desc 'Import leads csv'
   task :import_leads_csv => :environment do
