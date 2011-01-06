@@ -66,5 +66,5 @@ Before do
   ActionMailer::Base.deliveries.clear
   Sham.reset
   FakeWeb.allow_net_connect = false
-  # Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
+  Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
 end

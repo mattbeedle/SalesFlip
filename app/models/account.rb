@@ -7,7 +7,7 @@ class Account
   include Permission
   include Trackable
   include Activities
-  # include Sunspot::Mongoid
+  include Sunspot::DataMapper
   include Assignable
 
   property :id, Serial
@@ -54,9 +54,9 @@ class Account
     all(:name => /#{name}/i)
   end
 
-  # searchable do
-    # text :name, :email, :phone, :website, :fax
-  # end
+  searchable do
+    text :name, :email, :phone, :website, :fax
+  end
 
   def self.assigned_to(user_or_user_id)
     user_id = DataMapper::Resource === user_or_user_id ? user_or_user_id.id : user_or_user_id

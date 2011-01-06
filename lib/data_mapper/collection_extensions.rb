@@ -10,9 +10,8 @@ module DataMapper
   end
 end
 
-module DataMapper
-  module Model
-    alias where all
+module ActiveRecordCompatibility
+  module Finder
 
     def find(scope = :first, options = {})
       collection = all(options)
@@ -32,7 +31,27 @@ module DataMapper
 end
 
 module DataMapper
+  module Model
+    alias where all
+    include ActiveRecordCompatibility::Finder
+
+    %w(before after).each do |scope|
+      %w(save create update destroy).each do |method|
+        class_eval <<-RUBY, __FILE__, __LINE__+1
+        def #{scope}_#{method}(*args, &block)
+          #{scope} :#{method}, *args, &block
+        end
+        RUBY
+      end
+    end
+
+  end
+end
+
+module DataMapper
   class Collection
+    include ActiveRecordCompatibility::Finder
+
     def build(*args)
       new(*args)
     end

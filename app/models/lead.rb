@@ -6,7 +6,7 @@ class Lead
   include Permission
   include Trackable
   include Activities
-  # include Sunspot::Mongoid
+  include Sunspot::DataMapper
   include Assignable
   include Gravtastic
   is_gravtastic
@@ -73,10 +73,6 @@ class Lead
     notify_assignee unless do_not_notify
   end
 
-  # def self.with_status(statuses)
-    # all(:status => statuses.map { |status| Lead.statuses.index(status) })
-  # end
-
   def self.unassigned
     all(:assignee_id => nil)
   end
@@ -85,10 +81,10 @@ class Lead
     all(:user_id => company.users.map(&:id))
   end
 
-  # searchable do
-    # text :first_name, :last_name, :email, :phone, :notes, :company, :alternative_email, :mobile,
-      # :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing
-  # end
+  searchable do
+    text :first_name, :last_name, :email, :phone, :notes, :company, :alternative_email, :mobile,
+      :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing
+  end
   # handle_asynchronously :solr_index
 
   def self.with_status( statuses )

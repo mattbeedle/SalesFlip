@@ -34,6 +34,7 @@ Feature: Manage activities
     Given I am registered and logged in as annika
     And a lead: "erich" exists with user: annika
     And an email: "erich_offer_email" exists with user: annika, commentable: lead, subject: "test email"
+    And I debug
     When I go to the dashboard page
     And I follow "test email"
     Then I should be on the lead's page

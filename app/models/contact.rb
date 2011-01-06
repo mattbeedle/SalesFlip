@@ -6,7 +6,7 @@ class Contact
   include Permission
   include Trackable
   include Activities
-  # include Sunspot::Mongoid
+  include Sunspot::DataMapper
   include Assignable
   include Gravtastic
   is_gravtastic
@@ -68,10 +68,10 @@ class Contact
     all(:full_name => /#{name}/i)
   end
 
-  # searchable do
-    # text :first_name, :last_name, :department, :email, :alt_email, :phone, :mobile,
-      # :fax, :website, :linked_in, :facebook, :twitter, :xing, :address
-  # end
+  searchable do
+    text :first_name, :last_name, :department, :email, :alt_email, :phone, :mobile,
+      :fax, :website, :linked_in, :facebook, :twitter, :xing, :address
+  end
 
   def self.assigned_to( user_id )
     any_of({ :assignee_id => user_id }, { :user_id => user_id, :assignee_id => nil })

@@ -6,7 +6,7 @@ class Opportunity
   include ParanoidDelete
   include Activities
   include Permission
-  # include Sunspot::Mongoid
+  include Sunspot::DataMapper
 
   property :id, Serial
   property :title, String, :required => true
@@ -57,9 +57,9 @@ class Opportunity
   alias :name  :title
   alias :name= :title=
 
-  # searchable do
-    # text :title, :background_info
-  # end
+  searchable do
+    text :title, :background_info
+  end
 
   def self.stage_is( stages )
     stages = stages.lines.to_a if stages.respond_to?(:lines)
