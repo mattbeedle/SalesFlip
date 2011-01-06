@@ -173,7 +173,30 @@ class LeadTest < ActiveSupport::TestCase
       @lead = Lead.make_unsaved(:erich, :user => User.make)
       @user = User.make(:benny)
     end
-    
+
+    context 'similar' do
+      setup do
+        @lead = Lead.create! :user => @user, :first_name => 'Matt',
+          :last_name => 'Beedle', :company => '1000JobBoersen'
+        @lead2 = Lead.new :user => @user, :first_name => 'Mat',
+          :last_name => 'Beedle', :company => '10000JobBoersen'
+        @lead3 = Lead.create! :user => @user, :first_name => 'Matthew',
+          :last_name => 'Burns', :company => 'JobBoersen'
+      end
+
+      should 'find all leads with similar names and companies' do
+        assert @lead2.similar(0.9).include?(@lead)
+      end
+
+      should 'find only very similar leads with the threshold turned up' do
+        assert !@lead2.similar(0.9).include?(@lead3)
+      end
+
+      should 'be able to turn the threshold down to get leads which are less similar' do
+        assert @lead2.similar(0.3).include?(@lead3)
+      end
+    end
+
     should 'always store permitted user ids as BSON::ObjectIds' do
       @lead.permitted_user_ids = [@user.id.to_s]
       assert_equal [@user.id], @lead.permitted_user_ids
@@ -181,7 +204,7 @@ class LeadTest < ActiveSupport::TestCase
       @lead.permitted_user_ids = [user.id]
       assert_equal [user.id], @lead.permitted_user_ids
     end
-    
+
     should 'not be able to assign to another user if the permission is private' do
       @lead.save!
       @lead.update_attributes :permission => 'Private'
