@@ -61,7 +61,7 @@ class Account
   handle_asynchronously :solr_index
 
   def self.for_company(company)
-    where(:user_id.in => company.users.map(&:id))
+    where(:user_id => company.users.map(&:id))
   end
 
   def self.assigned_to(user_or_user_id)

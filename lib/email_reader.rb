@@ -56,7 +56,7 @@ protected
       file = File.open("tmp/#{attachment.filename}", 'w+') do |f|
         f.write attachment.read.force_encoding('utf-8')
       end
-      comment.attachments << Attachment.new(:attachment => File.open("tmp/#{attachment.filename}"))
+      comment.attachments.create(:attachment => File.open("tmp/#{attachment.filename}"))
     end
   end
 

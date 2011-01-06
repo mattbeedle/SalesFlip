@@ -48,6 +48,7 @@ class Lead
   property :linked_in, String
   property :facebook, String
   property :xing, String
+  property :blog, String
   property :identifier, Integer
   property :created_at, DateTime
   property :created_on, Date
