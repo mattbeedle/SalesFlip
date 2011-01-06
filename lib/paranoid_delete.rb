@@ -19,6 +19,6 @@ module ParanoidDelete
 
   def destroy_with_paranoid
     update :deleted_at => Time.now
-    comments.all.each(&:destroy_without_paranoid) if self.respond_to?(:comments)
+    comments.destroy! if self.respond_to?(:comments)
   end
 end

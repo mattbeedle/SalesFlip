@@ -9,6 +9,12 @@ module Activities
 
     belongs_to :updater, model: 'User', required: false
 
+    unless ParanoidDelete > self
+      before :destroy do
+        activities.destroy!
+      end
+    end
+
     attr_accessor :do_not_log
   end
 
@@ -36,26 +42,17 @@ module Activities
   end
 
   def related_activities
-    @activities ||= Activity.any_of(
-      { :subject_type => %w(Lead Account Contact), :subject_id => self.id },
-      { :subject_type => %w(Comment Email), :subject_id => comments.map(&:id) },
-      { :subject_type => 'Task', :subject_id => tasks.map(&:id) }
-    ).all(:order => :updated_at.desc)
+    @activities = activities | comments.activities | tasks.activities
 
     if self.respond_to?(:contacts)
-      @activities = @activities.any_of(
-        { :subject_type => 'Contact', :subject_id => contacts.map(&:id) },
-        { :subject_type => 'Lead',
-          :subject_id => leads.flatten.map(&:id) },
-        { :subject_type => 'Task',
-          :subject_id => contacts.map(&:tasks).flatten.map(&:id) +
-          contacts.map(&:leads).flatten.map(&:tasks).flatten.map(&:id) },
-        { :subject_type => %w(Comment Email),
-          :subject_id => contacts.map(&:comments).flatten.map(&:id) +
-          contacts.map(&:emails).flatten.map(&:id) +
-          leads.map(&:comments).flatten.map(&:id) +
-          leads.map(&:emails).flatten.map(&:id) })
+      @activities |= contacts.activities
+      @activities |= contacts.leads.activities
+      @activities |= contacts.tasks.activities
+      @activities |= contacts.leads.tasks.activities
+      @activities |= contacts.comments.activities
+      @activities |= contacts.leads.comments.activities
     end
-    @activities
+
+    @activities.all(:order => :updated_at.desc)
   end
 end

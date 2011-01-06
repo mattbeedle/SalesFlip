@@ -35,6 +35,7 @@ class Account
   belongs_to :parent, model: 'Account', required: false
   
   has n,   :contacts#, :dependent => :nullify
+  has n,   :leads, :through => :contacts
   has n,   :tasks, :as => :asset
   has n,   :comments, :as => :commentable
   has n,   :children, :model => 'Account', :child_key => 'parent_id'
@@ -72,10 +73,6 @@ class Account
     properties.map { |p| p.name.to_s }.sort.delete_if do |f|
       f.match(/access|permission|permitted_user_ids|tracker_ids/)
     end
-  end
-
-  def leads
-    @leads ||= contacts.map(&:leads).flatten
   end
 
   alias :full_name :name
