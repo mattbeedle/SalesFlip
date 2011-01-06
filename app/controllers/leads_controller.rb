@@ -82,6 +82,16 @@ class LeadsController < InheritedResources::Base
     redirect_to leads_path
   end
 
+  def import
+    @import = Import.new(current_user, Lead, params[:file], ',')
+    @import.import
+    return_to_or_default leads_path
+  end
+
+  def export
+    set_filters
+  end
+
 protected
   def leads_index_cache_key
     Digest::SHA1.hexdigest([
@@ -110,6 +120,7 @@ protected
     @filters.merge!(:unassigned => params[:unassigned]) if params[:unassigned]
     @filters.merge!(:assigned_to => params[:assigned_to]) if params[:assigned_to]
     @filters.merge!(:source_is => params[:source_is]) if params[:source_is]
+    @filters
   end
 
   def resource

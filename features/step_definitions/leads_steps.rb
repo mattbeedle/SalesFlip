@@ -136,3 +136,10 @@ Then /^#{capture_model} should be assigned to #{capture_model}$/ do |lead, user|
   user = model!(user)
   assert_equal user, lead.assignee
 end
+
+Then /^an import summary email should have been sent$/ do
+  assert_equal 1, ActionMailer::Base.deliveries.length
+  assert ActionMailer::Base.deliveries.last.to.include?(User.first.email)
+  assert_match(/3 leads were imported/, ActionMailer::Base.deliveries.last.body.to_s)
+  assert_match(/1 leads were not imported/, ActionMailer::Base.deliveries.last.body.to_s)
+end

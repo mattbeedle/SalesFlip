@@ -81,14 +81,18 @@ class Lead
   has_constant :sources,      lambda { I18n.t(:lead_sources) }
   has_constant :salutations,  lambda { I18n.t(:salutations) }
 
-  named_scope :with_status, lambda { |statuses| { :where => {
-    :status.in => statuses.map { |status| Lead.statuses.index(status) } } } }
-  named_scope :unassigned, :where => { :assignee_id => nil }
-  named_scope :for_company, lambda { |company| { :where => { :user_id.in => company.users.map(&:id) } } }
+  named_scope :with_status, lambda { |statuses|
+    where(:status.in => statuses.map { |status| Lead.statuses.index(status) })
+  }
+  named_scope :unassigned, where(:assignee_id => nil)
+  named_scope :for_company, lambda { |company|
+    where(:user_id.in => company.users.map(&:id))
+  }
 
   searchable do
-    text :first_name, :last_name, :email, :phone, :notes, :company, :alternative_email, :mobile,
-      :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing
+    text :first_name, :last_name, :email, :phone, :notes, :company,
+      :alternative_email, :mobile, :address, :referred_by, :website, :twitter,
+      :linked_in, :facebook, :xing
   end
   handle_asynchronously :solr_index
 
@@ -101,6 +105,14 @@ class Lead
     fields.map(&:first).sort.delete_if do |f|
       f.match(/access|permission|permitted_user_ids|tracker_ids/)
     end
+  end
+
+  def similar( threshold )
+    ids = Lead.only(:id, :first_name, :last_name, :company).map do |lead|
+      [lead.id, "#{self.full_name}, #{self.company}".
+       levenshtein_similar("#{lead.full_name}, #{lead.company}")]
+    end.select { |similarity| similarity.last > threshold }.map(&:first)
+    Lead.where(:_id.in => ids)
   end
 
   def full_name

@@ -37,8 +37,11 @@
                 = source
                 %span.count= "(#{Lead.for_company(current_user.company).not_deleted.permitted_for(current_user).source_is([source]).count})"
         .clear= submit_tag t(:filter), :id => 'filter'
-  - if can? :export, current_user
+  - if can?(:export, current_user) || can?(:import, current_user)
     .gold.box
       %h3= t(:data_actions)
       %ul.plain
-        %li= link_to t(:export_as_csv), export_leads_path(@filters), :id => 'export_as_csv'
+        - if can?(:export, current_user)
+          %li= link_to t(:export_as_csv), export_leads_path(@filters), :id => 'export_as_csv'
+        - if can?(:import, current_user)
+          %li= link_to t(:import_from_csv), choose_import_leads_path(:return_to => request.fullpath)

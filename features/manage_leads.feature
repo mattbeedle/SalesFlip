@@ -3,6 +3,18 @@ Feature: Manage leads
   A user
   wants manage leads
 
+  Scenario: Importing leads from a CSV
+    Given I am registered and logged in as Matt
+    And all emails have been delivered
+    And I am on the leads page
+    When follow "Import from CSV"
+    And I attach the file "test/support/leads.csv" to "file"
+    And I press "Upload"
+    And all delayed jobs have finished
+    Then I should be on the leads page
+    And 3 leads should exist
+    And an import summary email should have been sent
+
   Scenario: Accepting a lead
     Given I am registered and logged in as annika
     And a lead: "erich" exists with user: annika

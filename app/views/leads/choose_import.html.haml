@@ -1,0 +1,4 @@
+= form_tag import_leads_path, :multipart => true do
+  = hidden_field_tag :return_to, params[:return_to] if params[:return_to]
+  = file_field_tag :file
+  = submit_tag t(:upload)

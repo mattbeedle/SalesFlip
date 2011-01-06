@@ -136,6 +136,7 @@ en:
   stop_updating_me: Stop updating me
   accept: Accept
   export_as_csv: Export this list as a CSV
+  import_from_csv: Import from CSV
   choose_fields: Choose Fields to Export
   export: Export
   create: Create
@@ -148,6 +149,8 @@ en:
   alt_email: Other Email
   or_preset_date: or preset date
   or_real_date: or real date
+  upload: Upload
+
   #--------------------------------------------------------------
   # Form Labels
   #--------------------------------------------------------------
@@ -425,6 +428,8 @@ en:
   #--------------------------------------------------------------
   email_count: Emails
   emails:
+    import_summary:
+      subject: Import Summary
     do_not_reply: "do-not-reply@%{host}"
     task_reassigned:
       subject: You have been assigned a new task

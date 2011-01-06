@@ -14,7 +14,9 @@ Salesflip::Application.routes.draw do
       put :promote
       put :reject
     end
-    get :export, :on => :collection
+    get   :export, :on => :collection
+    post  :import, :on => :collection
+    get   :choose_import, :on => :collection
   end
 
   resources :contacts do
