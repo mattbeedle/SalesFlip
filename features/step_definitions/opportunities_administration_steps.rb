@@ -1,5 +1,5 @@
 Given /^there is only 1 opportunity stage$/ do
-  OpportunityStage.destroy
+  OpportunityStage.destroy!
   OpportunityStage.make :company => User.first.company
 end
 
