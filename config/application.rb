@@ -1,5 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 
+require "active_model/railtie"
 require "action_controller/railtie"
 require "action_mailer/railtie"
 require "active_resource/railtie"
@@ -29,6 +30,7 @@ module Salesflip
     require 'data_mapper/multiparameter_attribute_support'
     require 'data_mapper/scope'
     require 'data_mapper/polymorphic'
+    require 'data_mapper/sweeper'
     require 'data_mapper/validations'
 
     # Only load the plugins named here, in the order given (default is alphabetical).
@@ -60,5 +62,9 @@ module Salesflip
     config.filter_parameters += [:password]
 
     config.action_mailer.default_url_options = { :host => 'salesflip.com' }
+
+    config.after_initialize do
+      Delayed::Worker.backend.auto_upgrade!
+    end
   end
 end

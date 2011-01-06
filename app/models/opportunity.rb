@@ -21,6 +21,8 @@ class Opportunity
   property :updated_at, DateTime
   property :updated_on, Date
 
+  attr_accessor :do_not_notify
+
   belongs_to :contact, required: false
 
   belongs_to :user, :required => true

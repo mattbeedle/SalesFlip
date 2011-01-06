@@ -377,7 +377,9 @@ class TaskTest < ActiveSupport::TestCase
       end
       
       should 'assign the opportunity to the user who create the task' do
-        @opportunity.tasks.create :user => @user, :name => 'test', :due_at => Time.zone.now,
+        @opportunity.tasks.create :user => @user,
+          :name => 'test',
+          :due_at => Time.zone.now,
           :category => Task.categories.first
         assert_equal @opportunity.reload.assignee, @user
       end

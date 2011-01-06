@@ -65,6 +65,7 @@ class Lead
   before :valid?, :set_initial_state
   before :create,     :set_identifier
   before :create,     :set_recently_created
+  before :save,       :log_recently_changed
   after  :save do
     notify_assignee unless do_not_notify
   end
@@ -134,8 +135,10 @@ class Lead
   end
 
   def reassigned?
-    !assignee.blank? && ((@recently_changed.include?('assignee_id') && !@recently_created) ||
-                         @recently_created && assignee_id != user_id)
+    @reassigned = assignee && (
+      @recently_changed && @recently_changed.include?('assignee_id') ||
+      @recently_created && assignee_id != user_id
+    )
   end
 
 protected

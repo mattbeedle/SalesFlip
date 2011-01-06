@@ -2,6 +2,7 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  include ActionController::Caching::Sweeping
 
   # internal application, doesn't really need forgery protection
   #protect_from_forgery

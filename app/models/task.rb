@@ -199,7 +199,7 @@ class Task
 
   def reassigned?
     @reassigned = assignee && (
-      @recently_changed.include?('assignee_id') ||
+      @recently_changed && @recently_changed.include?('assignee_id') ||
       @recently_created && assignee_id != user_id
     )
   end

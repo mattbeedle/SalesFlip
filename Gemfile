@@ -18,6 +18,7 @@ gem 'dm-types'
 gem 'dm-validations'
 
 gem 'delayed_job'
+gem 'delayed_job_data_mapper', '1.0.0.rc'
 gem 'compass'
 gem 'uuid'
 gem 'has_scope'
