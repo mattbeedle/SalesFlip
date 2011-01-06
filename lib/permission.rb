@@ -5,23 +5,20 @@ module Permission
     field :permission,          :type => Integer, :default => 0
     field :permitted_user_ids,  :type => Array,   :default => []
 
-    named_scope :permitted_for, lambda { |user|
-      if !user.role_is?('Freelancer')
-        { :where => {
-          '$where' => "this.user_id == '#{user.id}' || this.permission == '#{Contact.permissions.index('Public')}' || " +
-          "this.assignee_id == '#{user.id}' || " +
-          "(this.permission == '#{Contact.permissions.index('Shared')}' && contains(this.permitted_user_ids, '#{user.id}')) || " +
-          "(this.permission == '#{Contact.permissions.index('Private')}' && this.assignee_id == '#{user.id}')"
-        } }
+    def self.permitted_for(user)
+      if user.role_is?('Freelancer')
+        any_of({ :user_id => user.id },
+               { :assignee_id => user.id },
+               { :permission => Contact.permissions.index('Shared'),
+                 :permitted_user_ids.in => [user.id] })
       else
-        { :where => {
-        '$where' => "this.user_id == '#{user.id}' || " +
-          "(this.assignee_id == '#{user.id}' && this.permission == '#{Contact.permissions.index('Public')}') || " +
-          "(this.assignee_id == '#{user.id}' && this.permission == '#{Contact.permissions.index('Private')}') || " +
-          "(this.permission == '#{Contact.permissions.index('Shared')}' && contains(this.permitted_user_ids, '#{user.id}'))"
-      } }
+        any_of({ :user_id => user.id },
+               { :permission => Contact.permissions.index('Public') },
+               { :assignee_id => user.id },
+               { :permission => Contact.permissions.index('Shared'),
+                 :permitted_user_ids.in => [user.id] })
       end
-    }
+    end
 
     validates_presence_of :permission
     validate :require_permitted_users
