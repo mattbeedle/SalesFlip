@@ -48,14 +48,14 @@ module DataMapper
           property "#{name}_id".to_sym, Integer, required: opts.has_key?(:required) ? opts[:required] : true
 
           class_eval <<-EVIL, __FILE__, __LINE__+1
-            def #{name}                                                                           # def commentable
-              send('_#{name}_' + #{name}_#{suffix}.demodulize.underscore) if #{name}_#{suffix}    #   send('_commentable_' + commentable_type.demodulize.underscore) if commentable_class
-            end                                                                                   # end
+            def #{name}                                                                                   # def commentable
+              send('_#{name}_' + #{name}_#{suffix}.demodulize.underscore) if #{name}_#{suffix}.present?   #   send('_commentable_' + commentable_type.demodulize.underscore) if commentable_class.present?
+            end                                                                                           # end
 
             def #{name}=(object)                                                                  # def commentable=(object)
               if object                                                                           #   if object
                 self.#{name}_#{suffix} = object.class.base_model.name                             #     self.commentable_type = object.class.base_model.name
-                resource_name = object.class.base_model.name.demodulize.underscore               #     resource_name = object.class.base_model.name.demodulize.underscore
+                resource_name = object.class.base_model.name.demodulize.underscore                #     resource_name = object.class.base_model.name.demodulize.underscore
                 self.send('_#{name}_' + resource_name + '=', object)                              #     self.send('_commentable_' + resource_name + '=', object)
               else                                                                                #   else
                 self.#{name}_id = nil                                                             #     self.commentable_id = nil

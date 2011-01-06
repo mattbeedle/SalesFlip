@@ -27,8 +27,8 @@ class Task
   has n, :activities, :as => :subject#, :dependent => :destroy
 
   before :create, :set_recently_created
-  after :update, :log_reassignment
   before :save,   :log_recently_changed
+  after  :update, :log_reassignment
 
   after :create,  :assign_unassigned_asset
   after :update,  :log_update
@@ -197,8 +197,10 @@ class Task
   end
 
   def reassigned?
-    @reassigned = !assignee.blank? && (@recently_changed.include?('assignee_id') ||
-                                         @recently_created && assignee_id.to_s != user_id.to_s)
+    @reassigned = assignee && (
+      @recently_changed.include?('assignee_id') ||
+      @recently_created && assignee_id != user_id
+    )
   end
 
 protected
@@ -207,7 +209,7 @@ protected
   end
 
   def log_recently_changed
-    @recently_changed = changed
+    @recently_changed = changed.dup
   end
 
   def assign_unassigned_asset
