@@ -10,7 +10,6 @@ tmp
 tmp/sass-cache
 tmp/
 config/settings.yml
-config/deploy.rb
 sphinx/*
 sphinx
 *.sqlite3
@@ -18,5 +17,8 @@ log/*
 *.sqlite3-journal
 .autotest
 .bundle
-solr/data/*
+solr/*
 .sass-cache/*
+public/javascripts/all.js
+doc/*
+.yardoc/*

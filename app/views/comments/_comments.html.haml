@@ -4,11 +4,10 @@
     .comments-closed
       - activity = object.activities.last
       %p
-        = 'Comments are closed. To comment, please'
-        = link_to 'view the contact for this lead', contact_path(object.contact)
-      %p= raw "This lead was converted by #{link_to activity.user.full_name, user_path(activity.user)} on #{l(activity.created_at, :format => :short)}."
-      
-      
+        = t(:comments_closed)
+        = link_to t(:view_contact_for_lead), contact_path(object.contact)
+      %p= raw t(:lead_converted_by, :link => link_to(activity.user.full_name, activity.user), :time => l(activity.created_at, :format => :short))
+
   - if comments.empty?
     %p No comments have been posted yet.
   - else

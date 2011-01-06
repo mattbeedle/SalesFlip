@@ -11,7 +11,7 @@ Feature: Manage users
     And I should see "My Profile"
     And I should see "@salesflip.appspotmail.com"
     And an activity should not exist
-    
+
   Scenario: Viewing your profile as a freelancer
     Given I am registered and logged in as Carsten Werner
     And I am on the dashboard page
@@ -27,6 +27,7 @@ Feature: Manage users
     When I fill in "invitation_email" with "werner@1000jobboersen.de"
     And I select "Freelancer" from "invitation_role"
     And I press "invitation_submit"
+    And all delayed jobs have finished
     Then I should be on the invitations page
     And I should see "werner@1000jobboersen.de"
     And 1 invitations should exist with email: "werner@1000jobboersen.de"

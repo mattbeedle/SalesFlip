@@ -9,6 +9,7 @@ class Account
   include Activities
   include Sunspot::DataMapper
   include Assignable
+  include ActiveModel::Observing
 
   property :id, Serial
   property :name, String, required: true
@@ -57,12 +58,17 @@ class Account
   searchable do
     text :name, :email, :phone, :website, :fax
   end
+  handle_asynchronously :solr_index
+
+  def self.for_company(company)
+    where(:user_id.in => company.users.map(&:id))
+  end
 
   def self.assigned_to(user_or_user_id)
     user_id = DataMapper::Resource === user_or_user_id ? user_or_user_id.id : user_or_user_id
     all(assignee_id: user_id) | all(user_id: user_id, assignee_id: nil)
   end
-  
+
   def self.similar_accounts( name )
     Account.all(:fields => [:id, :name]).select do |account|
       name.levenshtein_similar(account.name) > 0.5

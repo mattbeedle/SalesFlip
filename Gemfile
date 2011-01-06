@@ -1,6 +1,6 @@
 source :gemcutter
 
-gem 'rails', '3.0.0'
+gem 'rails'
 
 gem 'sqlite3-ruby',         :require => 'sqlite3'
 
@@ -42,18 +42,21 @@ gem 'gravtastic'
 gem 'cancan'
 
 # Plugins
-#gem 'salesflip-lead_notifications', :require => 'lead_notifications'
+gem 'salesflip-lead_notifications', :require => 'lead_notifications'
 
 group :production do
   gem 'smurf'
   gem 'mbeedle-heroku-autoscale', :require => 'heroku/autoscale'
+  gem 'mysql2'
+  gem 'newrelic_rpm'
 end
 
 group :development do
   gem 'ruby-debug19'
   gem 'wirble'
-  gem 'heroku'
-  gem 'thin'
+  gem 'heroku',     :require => nil
+  gem 'thin',       :require => nil
+  gem 'capistrano', :require => nil
 end
 
 group :test do

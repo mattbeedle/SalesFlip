@@ -5,6 +5,7 @@ class Comment
   include Activities
   include Permission
   include ParanoidDelete
+  include ActiveModel::Observing
 
   property :id, Serial
   property :subject, String

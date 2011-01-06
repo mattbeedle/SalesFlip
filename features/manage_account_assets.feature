@@ -14,9 +14,9 @@ Feature: Manage contacts on the account's show page
 
   Scenario: Viewing tasks for a contact
     Given I am registered and logged in as annika
-    And Annika has invited user: "benny"
+    And Annika has invited Benny
     And account: "careermee" exists with user: benny
     And a contact: "florian" exists with user: benny, account: the account
-    And a task exists with name: "Follow up and close the deal", user: benny, asset: the contact
+    And a task exists with name: "Follow up and close the deal", user: Annika, asset: the contact
     And I am on the account's page
     Then I should see "Follow up and close the deal" within "#main"

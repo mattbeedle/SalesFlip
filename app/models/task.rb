@@ -5,6 +5,7 @@ class Task
   include Permission
   include Activities
   include Assignable
+  include ActiveModel::Observing
 
   property :id, Serial
   property :name, String, :required => true
@@ -214,12 +215,12 @@ protected
 
   def assign_unassigned_asset
     if asset && (asset.is_a?(Lead) || asset.is_a?(Opportunity)) && asset.assignee.blank?
-      asset.update :assignee => self.user
+      asset.update :assignee => self.user, :do_not_notify => true
     end
   end
 
   def notify_assignee
-    TaskMailer.assignment_notification(self).deliver if reassigned?
+    TaskMailer.delay.assignment_notification(self) if reassigned?
   end
 
   def log_update

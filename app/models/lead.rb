@@ -9,6 +9,7 @@ class Lead
   include Sunspot::DataMapper
   include Assignable
   include Gravtastic
+  include ActiveModel::Observing
   is_gravtastic
 
   property :id, Serial
@@ -19,14 +20,9 @@ class Lead
   property :rating, Integer
   property :notes, String
 
-  # has_constant
-  # property :title, DataMapper::Property::Enum, :flags => I18n.t(:titles)
   has_constant :titles,       lambda { I18n.t(:titles) }
-  # property :salutation, DataMapper::Property::Enum, :flags => I18n.t(:salutations)
   has_constant :salutations,  lambda { I18n.t(:salutations) }
-  # property :status, DataMapper::Property::Enum, :flags => I18n.t(:lead_statuses)
   has_constant :statuses,     lambda { I18n.t(:lead_statuses) }
-  # property :source, DataMapper::Property::Enum, :flags => I18n.t(:lead_sources)
   has_constant :sources,      lambda { I18n.t(:lead_sources) }
 
   property :company, String
@@ -85,7 +81,7 @@ class Lead
     text :first_name, :last_name, :email, :phone, :notes, :company, :alternative_email, :mobile,
       :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing
   end
-  # handle_asynchronously :solr_index
+  handle_asynchronously :solr_index
 
   def self.with_status( statuses )
     statuses = statuses.lines if statuses.respond_to?(:lines)
@@ -105,7 +101,7 @@ class Lead
 
   def promote!( account_name, options = {} )
     @recently_converted = true
-    if !self.email.blank? and (contact = Contact.first(:email => self.email))
+    if email.present? && (contact = Contact.first(:email => email))
       self.attributes = {:status => 'Converted', :contact_id => contact.id}
       save
       if contact.account.blank? && !account_name.blank?
@@ -133,14 +129,23 @@ class Lead
     fields.map { |field| self.send(field) }.join(deliminator)
   end
 
+  def assigned_to?( user )
+    assignee_id == user.id
+  end
+
+  def reassigned?
+    !assignee.blank? && ((@recently_changed.include?('assignee_id') && !@recently_created) ||
+                         @recently_created && assignee_id != user_id)
+  end
+
 protected
   def set_recently_created
     @recently_created = true
   end
 
   def notify_assignee
-    if assignee && (changed.include?('assignee_id') || @recently_created && assignee_id != user_id)
-      UserMailer.lead_assignment_notification(self).deliver
+    if reassigned? && !do_not_notify
+      UserMailer.delay.lead_assignment_notification(self)
     end
   end
 
@@ -160,5 +165,9 @@ protected
 
   def set_identifier
     self.identifier = Identifier.next_lead
+  end
+
+  def log_recently_changed
+    @recently_changed = changed
   end
 end

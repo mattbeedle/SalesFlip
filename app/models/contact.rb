@@ -9,6 +9,7 @@ class Contact
   include Sunspot::DataMapper
   include Assignable
   include Gravtastic
+  include ActiveModel::Observing
   is_gravtastic
 
   property :id, Serial
@@ -72,6 +73,7 @@ class Contact
     text :first_name, :last_name, :department, :email, :alt_email, :phone, :mobile,
       :fax, :website, :linked_in, :facebook, :twitter, :xing, :address
   end
+  handle_asynchronously :solr_index
 
   def self.assigned_to( user_id )
     any_of({ :assignee_id => user_id }, { :user_id => user_id, :assignee_id => nil })
@@ -82,7 +84,7 @@ class Contact
       f.match(/access|permission|permitted_user_ids|tracker_ids/)
     end
   end
-  
+
   def comments_including_leads
     Comment.any_of({ :commentable_type => self.class.name, :commentable_id => self.id },
       { :commentable_type => 'Lead', :commentable_id => self.leads.map(&:id) })

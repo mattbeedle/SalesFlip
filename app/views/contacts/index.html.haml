@@ -1,11 +1,12 @@
-%h2.title
-  Contacts
-  = add_new t('add_contact'), new_contact_path
-.contacts
-  = render :partial => 'contacts/contact', :collection => @contacts
-  = will_paginate @contacts
+- cache(contacts_index_cache_key) do
+  %h2.title
+    Contacts
+    = add_new t(:add_contact), new_contact_path
+  .contacts
+    = render :partial => 'contacts/contact', :collection => @contacts
+    = will_paginate @contacts
 - content_for :sidebar do
-  = render :partial => "shared/index_filter", :locals => { :collection => Contact.sources.sort, :selector => :source_is}
+  = render :partial => 'shared/index_filter', :locals => { :collection => Contact.sources.sort, :selector => :source_is }
   - if can? :export, current_user
     .gold.box
       %h3= t(:data_actions)

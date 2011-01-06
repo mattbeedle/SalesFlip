@@ -21,7 +21,7 @@ module Salesflip
     # -- all .rb files in that directory are automatically loaded.
 
     # Add additional load paths for your own custom dirs
-    config.autoload_paths += %W( #{config.root}/lib )
+    config.autoload_paths += %W( #{config.root}/lib #{config.root}/app/sweepers )
 
     require 'data_mapper/any_of'
     require 'data_mapper/changes'

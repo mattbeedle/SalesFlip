@@ -11,7 +11,9 @@ class UserMailer < ActionMailer::Base
 
   def lead_assignment_notification( lead )
     @lead = lead
-    mail(:to => lead.assignee.email, :subject => I18n.t('emails.lead_assignment.subject'))
+    user = User.find(lead.assignee_id) # TODO fix this hack
+    mail(:to => user.email,
+         :subject => I18n.t('emails.lead_assignment.subject'))
   end
 
   def receive( email )

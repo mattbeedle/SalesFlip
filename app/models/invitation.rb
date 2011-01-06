@@ -33,6 +33,6 @@ protected
   end
 
   def send_invitation
-    InvitationMailer.invitation(self).deliver
+    InvitationMailer.delay.invitation(self)
   end
 end

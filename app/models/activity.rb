@@ -9,6 +9,7 @@ class Activity
   include DataMapper::Resource
   include DataMapper::Timestamps
   include HasConstant::Orm::DataMapper
+  include ActiveModel::Observing
 
   property :id, Serial
   property :info, String

@@ -28,6 +28,29 @@ Feature: Manage leads
     Then I should not see "Accept"
     And I should see "Edit"
 
+  Scenario: Trying to accept a lead when it has already been accepted, but the UI has not updated
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And a lead: "erich" exists with user: Annika
+    When I go to the leads page
+    And Benny accepts the lead
+    And I press "accept"
+    Then I should be on the leads page
+    And I should see "This lead was just accepted by benjamin.pochhammer, you can no longer accept it"
+
+  Scenario: Re-assigning a lead
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And a lead: "erich" exists with user: Annika, assignee: Annika
+    And all emails have been delivered
+    And I am on the lead's page
+    When I follow "Edit"
+    And I select "benjamin.pochhammer@1000jobboersen.de" from "Assignee"
+    And I press "Update Lead"
+    And all delayed jobs have finished
+    Then I should be on the lead's page
+    And 1 emails should be delivered to "benjamin.pochhammer@1000jobboersen.de"
+
   Scenario: Creating a lead
     Given I am registered and logged in as annika
     And I am on the leads page
@@ -421,6 +444,18 @@ Feature: Manage leads
     And I should see "Account Name"
     And I should see "Attachment"
 
+  Scenario: Viewing a converted lead
+    Given I am registered and logged in as annika
+    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com", assignee: Annika
+    And account: "careermee" exists with user: annika
+    And contact: "florian" exists with email: "erich.feldmeier@gmail.com", account: careermee
+    And I am on the lead's page
+    When I follow "Convert"
+    And I press "Convert Lead"
+    And I go to the lead's page
+    Then I should see "This lead was converted by annika.fleischer"
+    And I should see "Comments are closed"
+
   Scenario: Private lead (in)visiblity on leads page
     Given I am registered and logged in as annika
     And user: "benny" exists
@@ -474,6 +509,7 @@ Feature: Manage leads
   Scenario: Actions for a converted lead
     Given I am registered and logged in as annika
     And a lead: "erich" exists with user: annika, status: "Converted"
+    And an activity exists with action: "Converted", user: annika, subject: lead
     When I am on the lead's page
     Then I should not see "Convert" within "a"
     And I should not see "Reject" within "a"

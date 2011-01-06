@@ -27,7 +27,7 @@
 .clear
 = render :partial => 'tasks/add_task', :locals => { :object => @account }
 .clear
-= render :partial => 'comments/comments', :locals => { :object => @account, :comments => @account.comments }
+= render :partial => 'comments/comments', :locals => { :object => @account, :comments => @account.comments.desc(:created_at) }
 
 - content_for :sidebar do
   .box.ice
@@ -46,8 +46,8 @@
         - link = @account.linked_in.blank? ? nil : link_to('LinkedIn',@account.linked_in)
         - face = @account.facebook.blank?  ? nil : link_to('Facebook',@account.facebook)
         - xing = @account.xing.blank?      ? nil : link_to('Xing', @account.xing)
-        = [twit, link, face, xing].compact.join(', ').html_safe
-  
+        = raw [twit, link, face, xing].compact.join(', ')
+
   - if @account.children.any?
     %br/
     .box.ice
@@ -59,5 +59,3 @@
   #recent_activity.box.ice
     %h3= t(:recent_activity_for, :name => @account.full_name )
     = render :partial => 'shared/activity_for', :collection => @account.related_activities.limit(6), :as => :activity
-    
-  

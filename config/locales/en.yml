@@ -305,6 +305,7 @@ en:
   info_for: "Info for %{name}"
   no_contact_info: "No contact info for %{name}"
   contacts_created_accepted: Contacts (created/accepted)
+
   #--------------------------------------------------------------
   # Leads
   #--------------------------------------------------------------
@@ -366,6 +367,9 @@ en:
     - Prospect
     - Reseller
     - Other
+  comments_closed: Comments are closed. To comment please
+  view_contact_for_lead: view the contact for this lead
+  lead_converted_by: This lead was converted by %{link} on %{time}
 
   #--------------------------------------------------------------
   # Task
@@ -458,7 +462,8 @@ en:
   #--------------------------------------------------------------
   tasks_for: "Tasks for %{name}"
   no_outstanding_tasks: You have no outstanding tasks
-  
+  tasks_created_completed_count: Tasks (created / completed / incomplete)
+
   #--------------------------------------------------------------
   # Errors
   #--------------------------------------------------------------
