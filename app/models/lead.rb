@@ -172,6 +172,6 @@ protected
   end
 
   def log_recently_changed
-    @recently_changed = changed
+    @recently_changed = changed.dup
   end
 end

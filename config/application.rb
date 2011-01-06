@@ -32,6 +32,7 @@ module Salesflip
     require 'data_mapper/polymorphic'
     require 'data_mapper/sweeper'
     require 'data_mapper/validations'
+    require 'data_mapper/yaml'
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named
