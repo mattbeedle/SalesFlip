@@ -30,6 +30,7 @@ en:
   data_summary: Data Summary
   status: Status
   total: Total
+  confirm: Confirm
 
   mongoid:
     errors:
@@ -263,7 +264,7 @@ en:
     - final review
     - closed/won
     - closed/lost
-  opportunity_outline: "Weighted: %{amount} with %{discount} discount and %{probability} probability | expected to close %{close_on}"
+  opportunity_outline: "%{amount} with %{discount} discount and %{probability} probability | expected to close %{close_on}"
   add_opportunity: Add Opportunity
   select_contact: Select Contact
   opportunity: Opportunity
