@@ -44,4 +44,4 @@
         - if can?(:export, current_user)
           %li= link_to t(:export_as_csv), export_leads_path(@filters), :id => 'export_as_csv'
         - if can?(:import, current_user)
-          %li= link_to t(:import_from_csv), choose_import_leads_path(:return_to => request.fullpath)
+          %li= link_to t(:import_from_csv), new_lead_import_path(:return_to => request.fullpath)

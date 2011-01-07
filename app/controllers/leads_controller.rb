@@ -82,21 +82,6 @@ class LeadsController < InheritedResources::Base
     redirect_to leads_path
   end
 
-  def import
-    unless params[:file] && params[:file].content_type == 'text/csv'
-      redirect_to :back, :error => 'Must upload a CSV file'
-      return false
-    end
-    assignee = params[:assignee].blank? ? nil : User.find(BSON::ObjectId.from_string(params[:assignee]))
-    @import = Import.new(current_user, Lead, params[:file],
-                         :deliminator => params[:deliminator],
-                         :assignee => assignee)
-    @import.delay.import
-    flash[:notice] = 'Your leads are being imported now. You will receive a ' +
-      'summary email when the import has finished'
-    return_to_or_default leads_path
-  end
-
   def export
     set_filters
   end

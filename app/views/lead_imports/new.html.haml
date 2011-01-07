@@ -1,19 +1,13 @@
-= form_tag import_leads_path, :multipart => true do
+= simple_form_for @lead_import, :html => { :multipart => true } do |form|
   = hidden_field_tag :return_to, params[:return_to] if params[:return_to]
   %fieldset
-    .100.a
-      = file_field_tag :file
+    .100.a= form.input :file, :label => nil
   %h3.toggler.open= t(:optional_extra_information)
   .toggle
     %fieldset
-      .25.a
-        %label{ :for => 'assignee' }= t(:assignee)
-        = select_tag :assignee, options_for_select(current_user.company.users.asc(:email).map { |u| [u.email, u.id] }), :include_blank => true
+      .25.a= form.input :assignee_id, :collection => current_user.company.users.asc(:email).map { |u| [u.email, u.id] }, :include_blank => true
+      .5= form.input :deliminator
       .clear
-      .5
-        %label{ :for => 'deliminator' }= t(:deliminator)
-        = text_field_tag :deliminator, params[:deliminator] || ','
-      .clear
-  .100.a
-    = submit_tag t(:upload)
-    = link_to t(:cancel), :back
+    .100.a
+      = form.button :submit, t(:upload)
+      = link_to t(:cancel), :back

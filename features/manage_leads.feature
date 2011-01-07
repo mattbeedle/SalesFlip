@@ -11,12 +11,12 @@ Feature: Manage leads
     And all emails have been delivered
     And I am on the leads page
     When follow "Import from CSV"
-    And I attach the file "test/support/leads.csv" to "file"
+    And I attach the file "test/support/leads.csv" to "lead_import_file"
     And I select "annika.fleischer@1000jobboersen.de" from "Assignee"
     And I press "Upload"
+    And I press "Confirm"
     And all delayed jobs have finished
-    Then I should be on the leads page
-    And 3 leads should exist
+    Then 3 leads should exist
     And an import summary email should have been sent
     And I should see "Your leads are being imported now. You will receive a summary email when the import has finished"
 

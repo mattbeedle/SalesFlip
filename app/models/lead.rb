@@ -115,6 +115,13 @@ class Lead
     Lead.where(:_id.in => ids)
   end
 
+  def similar_accounts( threshold )
+    ids = Account.only(:id, :name).map do |account|
+      [account.id, self.company.levenshtein_similar(account.name)]
+    end.select { |similarity| similarity.last > threshold }.map(&:first)
+    Account.where(:_id.in => ids)
+  end
+
   def full_name
     "#{first_name} #{last_name}"
   end

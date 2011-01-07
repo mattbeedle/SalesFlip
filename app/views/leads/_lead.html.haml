@@ -13,7 +13,7 @@
         = "at #{lead.company}" if !lead.company.blank?
         - if lead.assigned_to?(current_user)
           = raw " | Email: #{mail_to lead.email, nil, :bcc => current_user.dropbox_email}" if lead.email.present?
-          = raw " | Phone: #{lead.phone}" if lead.phone.present?
+          = raw " | Phone: #{lead.phone || lead.company_phone}" if lead.phone.present? || lead.company_phone.present?
           = raw " | Mobile: #{lead.mobile}" if lead.mobile.present?
         %br/
         %em.timestamp

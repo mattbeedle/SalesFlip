@@ -33,6 +33,7 @@ class User
   references_many  :opportunities, :index => true
   references_many  :assigned_opportunities, :foreign_key => 'assignee_id',
     :class_name => 'Opportunity', :index => true
+  references_many  :lead_imports
 
   referenced_in :company
 
