@@ -176,15 +176,12 @@ class LeadTest < ActiveSupport::TestCase
 
     context 'similar' do
       setup do
-        @lead = Lead.create! :user => @user, :first_name => 'Matt',
-          :last_name => 'Beedle', :company => '1000JobBoersen'
-        @lead2 = Lead.new :user => @user, :first_name => 'Mat',
-          :last_name => 'Beedle', :company => '10000JobBoersen'
-        @lead3 = Lead.create! :user => @user, :first_name => 'Matthew',
-          :last_name => 'Burns', :company => 'JobBoersen'
+        @lead = Lead.make :company => '1000JobBoersen'
+        @lead2 = Lead.new :company => '10000JobBoersen'
+        @lead3 = Lead.make :company => 'JobBoersen'
       end
 
-      should 'find all leads with similar names and companies' do
+      should 'find all leads with similar company name' do
         assert @lead2.similar(0.9).include?(@lead)
       end
 
@@ -213,7 +210,7 @@ class LeadTest < ActiveSupport::TestCase
       assert !@lead.valid?
       assert @lead.errors[:base].include?('Cannot assign a private lead to another user, please change the permissions first')
     end
-    
+
     should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
       @lead.save!
       user = User.make

@@ -108,9 +108,9 @@ class Lead
   end
 
   def similar( threshold )
-    ids = Lead.only(:id, :first_name, :last_name, :company).map do |lead|
-      [lead.id, "#{self.full_name}, #{self.company}".
-       levenshtein_similar("#{lead.full_name}, #{lead.company}")]
+    ids = Lead.only(:id, :company).map do |lead|
+      [lead.id, self.company.
+       levenshtein_similar(lead.company)]
     end.select { |similarity| similarity.last > threshold }.map(&:first)
     Lead.where(:_id.in => ids)
   end
