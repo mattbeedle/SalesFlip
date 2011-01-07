@@ -47,7 +47,7 @@ protected
 
   def build_attributes(values)
     attributes = { :user => user, :source => 'Imported', :assignee => assignee,
-                   :do_not_index => true }
+                   :do_not_index => true, :do_not_notify => true }
     @fields.each_with_index do |field, i|
       attributes.merge!(field.to_sym => values[i])
     end
