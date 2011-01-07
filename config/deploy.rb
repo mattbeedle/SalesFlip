@@ -22,6 +22,7 @@ set :branch, `git branch`.lines.to_a.find {|b| b =~ /\*/ }.sub(/\*\s/, '').chomp
 # these http://github.com/rails/irs_process_scripts
 
 before 'deploy:restart', 'deploy:bundle'
+after 'deploy:bundle', 'deploy:delayed_job'
 after 'deploy:restart', 'deploy:symlinks'
 namespace :deploy do
   task :start do ; end
