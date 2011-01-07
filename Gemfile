@@ -14,6 +14,7 @@ gem 'dm-migrations'
 gem 'dm-postgres-adapter'
 gem 'dm-rails'
 gem 'dm-timestamps'
+gem 'dm-transactions'
 gem 'dm-types'
 gem 'dm-validations'
 

@@ -7,6 +7,8 @@ class AssignableModel
   include Assignable
   property :id, Serial
   belongs_to :user, required: false
+
+  auto_migrate!
 end
 
 class NotAssignableModel
@@ -15,6 +17,8 @@ class NotAssignableModel
   include Permission
   property :id, Serial
   belongs_to :user, required: false
+
+  auto_migrate!
 end
 
 class PermissionTest < ActiveSupport::TestCase

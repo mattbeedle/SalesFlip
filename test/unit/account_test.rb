@@ -334,7 +334,7 @@ class AccountTest < ActiveSupport::TestCase
       end
 
       should 'NOT return shared contacts where the user is not in the permitted users list' do
-        @world_dating.update :permission => 'Shared', :permitted_user_ids => [@world_dating.id]
+        @world_dating.update :permission => 'Shared', :permitted_user_ids => [@benny.id]
         assert !Account.permitted_for(@annika).include?(@world_dating)
       end
     end

@@ -422,10 +422,12 @@ class TaskTest < ActiveSupport::TestCase
 
 
     should 'send a notification email to the assignee if the assignee is changed' do
+      @task.assignee = User.make
       @task.save
       @benny = User.make(:benny)
       ActionMailer::Base.deliveries.clear
       @task.update :assignee_id => @benny.id
+      assert_equal @benny, @task.assignee
       Delayed::Worker.new.work_off
       assert_sent_email do |email|
         email.to.include?(@benny.email) && email.body.match(/\/tasks/) &&

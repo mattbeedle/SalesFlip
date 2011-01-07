@@ -226,7 +226,8 @@ class LeadTest < ActiveSupport::TestCase
         @lead.assignee = User.make
         @lead.save
         ActionMailer::Base.deliveries.clear
-        @lead.update :assignee => @user
+        @lead.update :assignee_id => @user.id
+        assert_equal @user, @lead.assignee
         Delayed::Worker.new.work_off
         assert_sent_email { |email| email.to.include?(@user.email) }
       end

@@ -167,6 +167,8 @@ GEM
       do_sqlite3 (~> 0.10.2)
     dm-timestamps (1.0.2)
       dm-core (~> 1.0.2)
+    dm-transactions (1.0.2)
+      dm-core (~> 1.0.2)
     dm-types (1.0.2)
       dm-core (~> 1.0.2)
       fastercsv (~> 1.5.3)
@@ -374,6 +376,7 @@ DEPENDENCIES
   dm-postgres-adapter
   dm-rails
   dm-timestamps
+  dm-transactions
   dm-types
   dm-validations
   faker (= 0.3.1)

@@ -5,6 +5,14 @@ require 'rails/test_help'
 
 require File.expand_path(File.dirname(__FILE__) + "/blueprints")
 
+DataMapper.auto_migrate!
+
+DatabaseCleaner.strategy = :transaction
+
+FakeWeb.allow_net_connect = false
+FakeWeb.register_uri(:post, 'http://localhost:8981/solr/update?wt=ruby', :body => '')
+Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
+
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
   #
@@ -144,12 +152,16 @@ class ActiveSupport::TestCase
   end
 
   setup do
-    DataMapper.auto_migrate!
     Sham.reset
-    FakeWeb.allow_net_connect = false
     ActionMailer::Base.deliveries.clear
-    FakeWeb.register_uri(:post, 'http://localhost:8981/solr/update?wt=ruby', :body => '')
-    Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
+  end
+
+  setup do
+    DatabaseCleaner.start
+  end
+
+  teardown do
+    DatabaseCleaner.clean
   end
 
   setup do
