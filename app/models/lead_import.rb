@@ -32,7 +32,7 @@ class LeadImport
         similar_accounts = lead.similar_accounts(0.9)
         unless similar.any? || similar_accounts.any?
           lead.save
-          Sunspot.index(lead)
+          Sunspot.index!(lead)
           self.imported << lead
         else
           self.unimported << [line, similar.map(&:id) + similar_accounts.map(&:id)]
