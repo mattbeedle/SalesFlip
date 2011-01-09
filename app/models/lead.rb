@@ -108,7 +108,8 @@ class Lead
   end
 
   def similar( threshold )
-    ids = Lead.only(:id, :company).map do |lead|
+    leads = Lead.search { keywords self.company }.results
+    ids = leads.map do |lead|
       [lead.id, self.company.
        levenshtein_similar(lead.company)]
     end.select { |similarity| similarity.last > threshold }.map(&:first)
@@ -116,7 +117,8 @@ class Lead
   end
 
   def similar_accounts( threshold )
-    ids = Account.only(:id, :name).map do |account|
+    accounts = Account.search { keywords self.company }
+    ids = accounts.map do |account|
       [account.id, self.company.levenshtein_similar(account.name)]
     end.select { |similarity| similarity.last > threshold }.map(&:first)
     Account.where(:_id.in => ids)
