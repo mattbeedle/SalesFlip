@@ -176,9 +176,13 @@ class LeadTest < ActiveSupport::TestCase
 
     context 'similar' do
       setup do
+        FakeWeb.allow_net_connect = true
         @lead = Lead.make :company => '1000JobBoersen'
         @lead2 = Lead.new :company => '10000JobBoersen'
         @lead3 = Lead.make :company => 'JobBoersen'
+        @search = Lead.search { keywords 'JobBoersen' }
+        @search.stubs(:results).returns([@lead, @lead2, @lead3])
+        Lead.stubs(:search).returns(@search)
       end
 
       should 'find all leads with similar company name' do

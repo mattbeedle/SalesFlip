@@ -149,7 +149,7 @@ class ActiveSupport::TestCase
       email.to.include? posting.board.api_email
     end
   end
- 
+
   def assert_delete_job_email_sent(posting)
     assert_sent_email do |email|
       email.subject == "Löschen der Stellenanzeige #{posting.job.position} von #{posting.job.company_name}" and

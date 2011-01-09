@@ -12,6 +12,7 @@ class LeadImportTest < ActiveSupport::TestCase
   context 'Instance' do
     setup do
       @user = User.make
+      FakeWeb.allow_net_connect = true
     end
 
     context 'when importing a valid CSV file' do
