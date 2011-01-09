@@ -35,6 +35,13 @@ Feature: Manage Opportunities
     And I should see "changed opportunity"
     And I should not see "great opportunity"
 
+  Scenario: Editing an opportunity when it is not assigned to you
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And an opportunity exists with title: "great opportunity", user: Benny, assignee: Benny
+    When I follow "Opportunities"
+    Then I should not see "Edit"
+
   Scenario: Creating an opportunity with missing attributes
     Given I am registered and logged in as annika
     And I am on the opportunities page
