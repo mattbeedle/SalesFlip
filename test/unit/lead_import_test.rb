@@ -25,7 +25,7 @@ class LeadImportTest < ActiveSupport::TestCase
         end
 
         should 'know the number of lines in the file' do
-          assert_equal 5, @import.lines.count
+          assert_equal 4, @import.lines.count
         end
 
         should 'count imported leads' do
@@ -65,6 +65,13 @@ class LeadImportTest < ActiveSupport::TestCase
         end
 
         should 'generate a list of unimported items' do
+          @search = Lead.search { keywords '' }
+          @search.stubs(:results).returns([Lead.where(:last_name => 'Smith').first])
+          Lead.stubs(:search).returns(@search)
+          @import = LeadImport.create!(:user => @user,
+                                       :file => File.open('test/support/duplicate_lead.csv'),
+                                       :deliminator => ',')
+          @import.import
           assert_equal 1, @import.unimported.length
         end
       end
