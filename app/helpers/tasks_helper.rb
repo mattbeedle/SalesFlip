@@ -1,6 +1,6 @@
 # Methods added to this helper will be available to all templates in the application.
 module TasksHelper
-  def task_asset_info(task,link=false)
+  def task_asset_info(task, link = false)
     return if task.asset_id.blank? || action_is('show')
     a = task.asset
     a_to_dom = a.class.to_s.underscore.downcase
@@ -11,7 +11,9 @@ module TasksHelper
     if a.respond_to?(:email) && a.email.present?
       print << " | Email: <a href='mailto:#{a.email}'>#{a.email}</a>"
     end
-    print << " | Phone: #{a.phone}" if a.phone.present?
+    if a.respond_to?(:phone) && a.phone.present?
+      print << " | Phone: #{a.phone}"
+    end
     print << "</small>"
     print.html_safe
   end
