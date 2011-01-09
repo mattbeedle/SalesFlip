@@ -1,6 +1,6 @@
 %dl.item.opportunity
   %dt
-    %span{ :class => opportunity.stage.name.gsub('/','_').gsub(' ','_') }= opportunity.stage.name.capitalize
+    %span{ :class => opportunity.stage.name.gsub('/', '_').gsub(' ', '_') }= opportunity.stage.name.capitalize
   %dd
     %strong= link_to opportunity.title, opportunity
     %small

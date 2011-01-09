@@ -1,5 +1,7 @@
+- comment = @comment || Comment.new
+- 3.times { comment.attachments.build }
 .add_comment
-  = simple_form_for @comment || Comment.new, :html => { :multipart => true } do |form|
+  = simple_form_for comment, :html => { :multipart => true } do |form|
     = form.hidden_field :commentable_type, :value => object.class.to_s
     = form.hidden_field :commentable_id, :value => object.id
     = render :partial => 'comments/form', :locals => { :form => form }
