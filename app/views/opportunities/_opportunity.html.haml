@@ -16,4 +16,5 @@
         - opportunity.attachments.each do |attachment|
           = link_to attachment.attachment_filename, attachment.attachment.url
     %span.actions
-      = link_to t(:edit), edit_opportunity_path(opportunity)
+      - if opportunity.assigned_to?(current_user)
+        = link_to t(:edit), edit_opportunity_path(opportunity)
