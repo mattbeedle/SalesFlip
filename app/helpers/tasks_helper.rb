@@ -8,7 +8,7 @@ module TasksHelper
     print << "#{a_to_dom}'>#{a.class.to_s}: </span>"
     print << link if link
     print << " @ #{a.company}" if a.respond_to?('company') && a.company.present?
-    if a.responds_to?(:email) && a.email.present?
+    if a.respond_to?(:email) && a.email.present?
       print << " | Email: <a href='mailto:#{a.email}'>#{a.email}</a>"
     end
     print << " | Phone: #{a.phone}" if a.phone.present?
