@@ -58,7 +58,9 @@ class LeadsController < InheritedResources::Base
 
   def convert
     @account = current_user.accounts.new(:name => @lead.company)
-    @contact = Contact.first(:conditions => { :email => @lead.email }) unless @lead.email.blank?
+    unless @lead.email.blank?
+      @contact = Contact.first(:conditions => { :email => @lead.email })
+    end
     @opportunity = current_user.opportunities.build :assignee => current_user
     @opportunity.attachments.build
   end
@@ -127,10 +129,12 @@ protected
   end
 
   def build_resource
-    if params[:lead] && (ids = params[:lead][:permitted_user_ids]) && ids.is_a?(String)
+    if params[:lead] && (ids = params[:lead][:permitted_user_ids]) &&
+      ids.is_a?(String)
       params[:lead][:permitted_user_ids] = ids.lines.to_a
     end
-    @lead ||= Lead.new({ :updater => current_user, :user => current_user }.merge!(params[:lead] || {}))
+    @lead ||= Lead.new({ :updater => current_user, :user => current_user }.
+                       merge!(params[:lead] || {}))
   end
 
   def export_allowed?
@@ -141,8 +145,8 @@ protected
 
   def already_assigned?
     if !resource.assignee.blank? && resource.assignee != current_user
-      flash[:error] = "This lead was just accepted by " +
-        "#{resource.assignee.full_name}, you can no longer accept it"
+      flash[:error] = I18n.t(:lead_already_accepted,
+                             :user => resource.assignee.full_name)
       redirect_to :back
       return false
     end
