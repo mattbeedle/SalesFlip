@@ -11,6 +11,8 @@ class Lead
   include Assignable
   include Gravtastic
   include ActiveModel::Observing
+  include OnlineFields
+
   is_gravtastic
 
   field :first_name
@@ -26,7 +28,6 @@ class Lead
   field :salutation,    :type => Integer
   field :company
   field :company_phone
-  field :website
   field :career_site
   field :job_title
   field :department
@@ -40,11 +41,6 @@ class Lead
   field :referred_by
   field :do_not_call,   :type => Boolean
 
-  field :twitter
-  field :linked_in
-  field :facebook
-  field :xing
-  field :blog
   field :identifier,    :type => Integer
 
   index(

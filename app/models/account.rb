@@ -10,17 +10,13 @@ class Account
   include Sunspot::Mongoid
   include Assignable
   include ActiveModel::Observing
+  include OnlineFields
 
   field :name
   field :email
   field :access,            :type => Integer
-  field :website
   field :phone
   field :fax
-  field :facebook
-  field :linked_in
-  field :twitter
-  field :xing
   field :billing_address
   field :shipping_address
   field :identifier,        :type => Integer
@@ -103,7 +99,8 @@ class Account
       permitted = options[:permitted_user_ids]
     end
     account = object.updater_or_user.accounts.create :permission => permission,
-      :name => name, :permitted_user_ids => permitted, :account_type => 'Prospect'
+      :name => name, :permitted_user_ids => permitted,
+      :account_type => Account.account_types[I18n.in_locale(:en) { Account.account_types.index('Prospect') }]
   end
 
   def deliminated( deliminator, fields )
