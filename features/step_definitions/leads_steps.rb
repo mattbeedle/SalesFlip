@@ -107,15 +107,15 @@ Then /^a view activity should have been created for lead with first_name "([^\"]
 end
 
 Then /^a new "([^\"]*)" activity should have been created for "([^\"]*)" with "([^\"]*)" "([^\"]*)"$/ do |action, model, field, value|
-  assert Activity.first(:conditions => { :action => action,
-                        :subject_type => model }).subject.send(field) == value
+  model = model.constantize.first(field => value)
+
+  assert model.activities.first(:action => action)
 end
 
 Then /^a new "([^\"]*)" activity should have been created for "([^\"]*)" with "([^\"]*)" "([^\"]*)" and user: "([^\"]*)"$/ do |action, model, field, value, modifier|
   user = model!(modifier)
-  activity = Activity.first(:conditions => { :action => action,
-                            :subject_type => model, :user_id => user.id })
-  assert activity.subject.send(field) == value
+  model = model.constantize.first(field => value)
+  assert model.activities.first(:action => action, :user => user)
 end
 
 Then /^lead "([^\"]*)" should have been deleted$/ do |lead|

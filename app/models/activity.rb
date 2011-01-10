@@ -27,7 +27,7 @@ class Activity
   has_constant :actions, lambda { I18n.t(:activity_actions) }
 
   def self.for_subject(subject)
-    all(:subject_id => subject.id, :subject_type => subject.class.to_s)
+    subject.activities
   end
 
   def self.already_notified(user)
@@ -48,18 +48,17 @@ class Activity
 
   def self.create_activity( user, subject, action )
     unless subject.is_a?(Task) and action == 'Viewed'
-      Activity.create :subject => subject, :action => action, :user => user
+      Activity.create user: user, action: action, subject: subject
     end
   end
 
   def self.update_activity( user, subject, action )
-    activity = Activity.all(:user_id => user.id, :subject_id => subject.id,
-                              :subject_type => subject.class.name,
-                              :action => action).first
+    activity = subject.activities.first(:user => user, :action => action)
+
     if activity
-      activity.update(:updated_at => Time.zone.now, :user_id => user.id)
+      activity.update(:updated_at => Time.zone.now, :user => user)
     else
-      create_activity(user, subject, action)
+      activity = create_activity(user, subject, action)
     end
     activity
   end

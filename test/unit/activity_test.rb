@@ -3,7 +3,7 @@ require 'test_helper.rb'
 class ActivityTest < ActiveSupport::TestCase
   context 'Class' do
     should_have_constant :actions
-    should_require_key :user, :subject_id
+    should_require_key :user
 
     context 'log' do
       setup do
@@ -14,8 +14,7 @@ class ActivityTest < ActiveSupport::TestCase
       should 'create a new activity with the supplied user, model and action' do
         Activity.log(@lead.user, @lead, 'Viewed')
         assert_equal 1, Activity.count
-        assert Activity.first(:user_id => @lead.user_id, :subject_id => @lead.id,
-                              :subject_type => 'Lead', :action => 'Viewed')
+        assert Activity.first(:user => @lead.user, :lead => @lead, :action => 'Viewed')
       end
 
       should 'create a new activity for "Deleted"' do

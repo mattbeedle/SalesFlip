@@ -261,8 +261,8 @@ class AccountTest < ActiveSupport::TestCase
       lead = Lead.make(:contact => contact)
       task = Task.make(:asset => contact)
       task2 = Task.make(:asset => lead)
-      assert @account.related_activities.include?(task.activities.first)
-      assert @account.related_activities.include?(task2.activities.first)
+      assert_includes @account.related_activities, task.activities.first
+      assert_includes @account.related_activities, task2.activities.first
     end
 
     should 'include activities for related comments and emails in related_activities' do

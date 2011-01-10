@@ -42,17 +42,20 @@ module Activities
   end
 
   def related_activities
-    @activities = activities | comments.activities | tasks.activities
+    # NOTE: the order here is important. If self.activities comes first
+    # DataMapper will attempt to reset the foreign keys on the returned
+    # activities.
+    activities = comments.activities | tasks.activities | self.activities
 
     if self.respond_to?(:contacts)
-      @activities |= contacts.activities
-      @activities |= contacts.leads.activities
-      @activities |= contacts.tasks.activities
-      @activities |= contacts.leads.tasks.activities
-      @activities |= contacts.comments.activities
-      @activities |= contacts.leads.comments.activities
+      activities |= contacts.activities
+      activities |= contacts.leads.activities
+      activities |= contacts.tasks.activities
+      activities |= contacts.leads.tasks.activities
+      activities |= contacts.comments.activities
+      activities |= contacts.leads.comments.activities
     end
 
-    @activities.all(:order => :updated_at.desc)
+    activities.all(:order => :updated_at.desc)
   end
 end

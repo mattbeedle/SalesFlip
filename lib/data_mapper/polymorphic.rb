@@ -3,37 +3,22 @@ module DataMapper
     module Relationship
       alias :has_without_polymorphism :has
 
+      def __polymorphic_relationships__
+        @polymorphic_relationships ||= Hash.new { |h, k| h[k] = ::Set.new }
+      end
+
       def has(cardinality, name, *args)
         opts = args.last.kind_of?(::Hash) ? args.pop : {}
 
         if as = opts.delete(:as)
-          name = name.to_s
-          suffix = 'type'
+          target_class = name.to_s.classify.constantize
 
-          opts[:child_key] = [:"#{as}_id"]
-          opts[:"#{as}_type"] = self
+          relationships = target_class.__polymorphic_relationships__[as]
+          relationships << target_class.belongs_to(self.name.underscore, required: false)
 
-          child_model_name = opts[:model] || opts[:class_name] || name.classify
-          child_klass      = child_model_name.constantize
-          belongs_to_name  = self.name.demodulize.underscore
-
-          has_without_polymorphism cardinality, name, *(args + [opts])
-
-          child_klass.belongs_to "_#{as}_#{belongs_to_name}".to_sym, :child_key => opts[:child_key], :model => self
-
-          child_klass.class_eval <<-EVIL, __FILE__, __LINE__+1
-            def #{belongs_to_name}                                                          # def post
-              _#{as}_#{belongs_to_name} if #{as}_#{suffix} == '#{self.name}'                #   _commentable_post if commentable_type == 'Post'
-            end                                                                             # end
-
-            def #{belongs_to_name}=(object)                                                 # def post=(object)
-              self._#{as}_#{belongs_to_name} = object if #{as}_#{suffix} == '#{self.name}'  #   self._commentable_post = object if commentable_type == 'Post'
-            end                                                                             # end
-
-            protected :_#{as}_#{belongs_to_name}, :_#{as}_#{belongs_to_name}=
-          EVIL
+          has_without_polymorphism cardinality, name, target_class, inverse: self.name.underscore.to_sym
         else
-          has_without_polymorphism(cardinality, name, *(args + [opts]))
+          has_without_polymorphism cardinality, name, *(args + [opts])
         end
       end
 
@@ -41,28 +26,76 @@ module DataMapper
 
       def belongs_to(name, *args)
         opts = args.last.kind_of?(::Hash) ? args.pop : {}
+
         if opts.delete(:polymorphic)
-          suffix = 'type'
+          class_eval <<-RUBY, __FILE__, __LINE__+1
 
-          property "#{name}_#{suffix}".to_sym, String
-          property "#{name}_id".to_sym, Integer, required: opts.has_key?(:required) ? opts[:required] : true
+          def #{name}_id
+            #{name}.try(:id)
+          end
 
-          class_eval <<-EVIL, __FILE__, __LINE__+1
-            def #{name}                                                                                   # def commentable
-              send('_#{name}_' + #{name}_#{suffix}.demodulize.underscore) if #{name}_#{suffix}.present?   #   send('_commentable_' + commentable_type.demodulize.underscore) if commentable_class.present?
-            end                                                                                           # end
+          def #{name}_type
+            #{name}.try(:class)
+          end
 
-            def #{name}=(object)                                                                  # def commentable=(object)
-              if object                                                                           #   if object
-                self.#{name}_#{suffix} = object.class.base_model.name                             #     self.commentable_type = object.class.base_model.name
-                resource_name = object.class.base_model.name.demodulize.underscore                #     resource_name = object.class.base_model.name.demodulize.underscore
-                self.send('_#{name}_' + resource_name + '=', object)                              #     self.send('_commentable_' + resource_name + '=', object)
-              else                                                                                #   else
-                self.#{name}_id = nil                                                             #     self.commentable_id = nil
-                self.#{name}_#{suffix} = nil                                                      #     self.commentable_type = nil
-              end                                                                                 #   end
-            end                                                                                   # end
-          EVIL
+          def #{name}_id=(id)
+            if @#{name}_type.present?
+              __set_polymorphic_form_type_and_id__(@#{name}_type, id)
+            else
+              @#{name}_id = id
+            end
+          end
+
+          def #{name}_type=(type)
+            if @#{name}_id.present?
+              __set_polymorphic_form_type_and_id__(type, @#{name}_id)
+            else
+              @#{name}_type = type
+            end
+          end
+
+          def #{name}
+            if defined?(@#{name})
+              @#{name}
+            else
+              self.class.__polymorphic_relationships__[:#{name}].each do |relationship|
+                object = relationship.get(self)
+                return @#{name} = object if object
+              end
+              @#{name} = nil
+            end
+          end
+
+          def #{name}=(object)
+            @#{name} = object
+
+            if object
+              self.class.__polymorphic_relationships__[:#{name}].each do |relationship|
+                if relationship.target_model.base_model == object.class.base_model
+                  relationship.set(self, object)
+                else
+                  relationship.set(self, nil)
+                end
+              end
+            else
+              self.class.__polymorphic_relationships__[:#{name}].each do |relationship|
+                relationship.set(self, nil)
+              end
+            end
+          end
+
+          private
+          def __set_polymorphic_form_type_and_id__(type, id)
+            self.class.__polymorphic_relationships__[:#{name}].each do |relationship|
+              if relationship.target_model.base_model.name == type
+                relationship.child_key.set(self, [id])
+              else
+                relationship.child_key.set(self, [nil])
+              end
+            end
+          end
+
+          RUBY
         else
           belongs_to_without_polymorphism name, *(args + [opts])
         end

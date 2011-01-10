@@ -86,8 +86,7 @@ class Contact
   end
 
   def comments_including_leads
-    Comment.any_of({ :commentable_type => self.class.name, :commentable_id => self.id },
-      { :commentable_type => 'Lead', :commentable_id => self.leads.map(&:id) })
+    comments | leads.comments
   end
 
   def full_name

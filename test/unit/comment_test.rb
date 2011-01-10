@@ -2,7 +2,7 @@ require 'test_helper.rb'
 
 class CommentTest < ActiveSupport::TestCase
   context 'Class' do
-    should_require_key :user, :commentable_id
+    should_require_key :user
   end
 
   context 'Named Scopes' do

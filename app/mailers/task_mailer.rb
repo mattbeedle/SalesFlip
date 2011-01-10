@@ -3,8 +3,8 @@ class TaskMailer < ActionMailer::Base
 
   def assignment_notification( task )
     if task.asset
-      @url = url_for(:controller => task.asset_type.downcase.pluralize,
-                     :action => :show, :id => task.asset_id)
+      @url = url_for(:controller => task.asset.class.name.downcase.pluralize,
+                     :action => :show, :id => task.asset.id)
     else
       @url = tasks_url
     end

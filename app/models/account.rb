@@ -28,17 +28,18 @@ class Account
   property :created_on, Date
   property :updated_at, DateTime
   property :updated_on, Date
-  
+
   has_constant :accesses, lambda { I18n.t(:access_levels) }
   has_constant :account_types, lambda { I18n.t(:account_types) }
 
   belongs_to :user, required: true
   belongs_to :parent, model: 'Account', required: false
-  
+
   has n,   :contacts#, :dependent => :nullify
   has n,   :leads, :through => :contacts
   has n,   :tasks, :as => :asset
   has n,   :comments, :as => :commentable
+  has n,   :emails, :as => :commentable
   has n,   :children, :model => 'Account', :child_key => 'parent_id'
 
   before :create,     :set_identifier

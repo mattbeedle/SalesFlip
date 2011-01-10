@@ -20,7 +20,7 @@ class UserTest < ActiveSupport::TestCase
         @email = Email.create :user => @benny, :subject => 'an offer',
           :text => 'Here is your offer', :commentable => @lead, :from => 'test@test.com',
           :received_at => Time.zone.now
-        @attachment = @email.attachments.create :subject => @email,
+        @attachment = @email.attachments.create \
           :attachment => File.open('test/upload-files/erich_offer.pdf')
         @task = @lead.tasks.create :name => 'Call this guy', :due_at => 'due_today',
           :category => 'Call', :user => @user
