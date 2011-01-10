@@ -19,7 +19,8 @@ class LeadSweeper < ActionController::Caching::Sweeper
   def expire_cache_for(lead)
     expire_fragment("lead_partial-#{lead.id}")
     lead.tasks.each do |task|
-      expire_fragment("task_partial-#{task.id}")
+      expire_fragment("task_partial-#{task.id}-true")
+      expire_fragment("task_partial-#{task.id}-false")
     end
     unless lead.contact.blank? || lead.contact.new_record?
       contact = lead.contact

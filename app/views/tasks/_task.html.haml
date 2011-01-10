@@ -1,4 +1,4 @@
-- cache("task_partial-#{task.id}") do
+- cache("task_partial-#{task.id}-#{action_is('show')}") do
   %dl.item.task{ :class => task.completed? ? 'completed' : nil }
     %dt.category
       %span{ :class => task.category.downcase }= task.category

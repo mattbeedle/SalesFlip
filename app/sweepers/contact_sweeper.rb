@@ -20,7 +20,8 @@ class ContactSweeper < ActionController::Caching::Sweeper
     expire_fragment("contact_partial-#{contact.id}")
     expire_fragment("contact_with_assets-#{contact.id}")
     contact.tasks.each do |task|
-      expire_fragment("task_partial-#{task.id}")
+      expire_fragment("task_partial-#{task.id}-true")
+      expire_fragment("task_partial-#{task.id}-false")
     end
     unless contact.account.blank? || contact.account.new_record?
       account = contact.account
