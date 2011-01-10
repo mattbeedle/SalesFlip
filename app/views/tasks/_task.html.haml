@@ -1,7 +1,7 @@
 - cache("task_partial-#{task.id}") do
   %dl.item.task{ :class => task.completed? ? 'completed' : nil }
     %dt.category
-      %span{ :class => task.category.downcase }= task.category
+      %span{ :class => I18n.locale_around(:en) {task.category.downcase} }= task.category
     %dd
       %span.item_name
         - if task.completed?

@@ -1,7 +1,7 @@
 - cache("contact_partial-#{contact.id}") do
   %dl.item.contact
     %dt
-      %span{ :class => contact.source.present? ? contact.source.downcase : 'no-source' }
+      %span{ :class => I18n.locale_around(:en) {contact.source.present? ? contact.source.downcase : 'no-source'} }
         = contact.source.present? ? contact.source : t(:no_source)
     %dd
       %strong

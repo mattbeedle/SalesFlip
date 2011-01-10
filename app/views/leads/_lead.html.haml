@@ -1,7 +1,7 @@
 - cache("lead_partial-#{lead.id}") do
   %dl.item.lead
     %dt
-      %span{ :class => lead.status.downcase }= lead.status
+      %span{ :class => I18n.locale_around(:en) {lead.status.downcase} }= lead.status
     %dd{ :class => lead.assignee == current_user ? nil : 'accept' }
       %strong
         - if lead.permitted_for?(current_user)
