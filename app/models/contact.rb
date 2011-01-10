@@ -73,6 +73,9 @@ class Contact
   searchable do
     text :first_name, :last_name, :department, :email, :alt_email, :phone, :mobile,
       :fax, :website, :linked_in, :facebook, :twitter, :xing, :address
+    text :account do
+      account.name
+    end
   end
   handle_asynchronously :solr_index
 
