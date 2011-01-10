@@ -3,10 +3,28 @@ module DataMapper
     module Relationship
       alias :has_without_polymorphism :has
 
-      def __polymorphic_relationships__
-        @polymorphic_relationships ||= Hash.new { |h, k| h[k] = ::Set.new }
-      end
-
+      # Defines a 1:n or 1:1 relationship.
+      #
+      # = Options
+      #   :as => Symbol        defines this relationship as polymorphic
+      #
+      # = Polymorphic associations
+      #
+      # Rather than ActiveRecord-style polymorphic relationships, where the
+      # target class has "_type" and "_id" columns for joining, we instead
+      # define an optional belongs_to relationship for each polymorphic source
+      # class on the child model.
+      #
+      # For example, given we have:
+      #
+      #   User.has n, :activities, as: :subject
+      #   Post.has n, :activities, as: :subject
+      #
+      # Then the activity model will have the following relationships:
+      #
+      #   Activity.belongs_to :post, required: false
+      #   Activity.belongs_to :user, required: false
+      #
       def has(cardinality, name, *args)
         opts = args.last.kind_of?(::Hash) ? args.pop : {}
 
@@ -14,16 +32,61 @@ module DataMapper
           target_class = name.to_s.classify.constantize
 
           relationships = target_class.__polymorphic_relationships__[as]
-          relationships << target_class.belongs_to(self.name.underscore, required: false)
 
-          has_without_polymorphism cardinality, name, target_class, inverse: self.name.underscore.to_sym
+          relationships << target_class.belongs_to(
+            self.name.underscore,
+            required: false
+          )
+
+          has_without_polymorphism(
+            cardinality,
+            name,
+            target_class,
+            inverse: self.name.underscore.to_sym
+          )
         else
-          has_without_polymorphism cardinality, name, *(args + [opts])
+          has_without_polymorphism(
+            cardinality,
+            name,
+            *(args + [opts])
+          )
         end
+      end
+
+      # @api private
+      def __polymorphic_relationships__
+        @polymorphic_relationships ||= Hash.new { |h, k| h[k] = ::Set.new }
       end
 
       alias :belongs_to_without_polymorphism :belongs_to
 
+
+      # Defines an n:1 relationship.
+      #
+      # = Options
+      #   :polymorphic => true        defines this relationship as polymorphic
+      #
+      # = Polymorphic associations
+      #
+      # When the option :polymorphic => true is passed to this method, writers
+      # and accessors are defined to facilitate working with polymorphic target
+      # models.
+      #
+      # Given the following model, then,
+      #
+      #   Activity.belongs_to :subject, :polymorphic => true
+      #
+      # Then the following methods will be defined:
+      #
+      #   Activity#subject_id
+      #   Activity#subject_type
+      #
+      #   Activity#subject_id=(new_id)
+      #   Activity#subject_type=(new_type)
+      #
+      #   Activity#subject
+      #   Activity#subject=(new_subject)
+      #
       def belongs_to(name, *args)
         opts = args.last.kind_of?(::Hash) ? args.pop : {}
 
