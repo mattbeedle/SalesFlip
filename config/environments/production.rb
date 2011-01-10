@@ -40,6 +40,8 @@ Salesflip::Application.configure do
   # Enable threaded mode
   # config.threadsafe!
 
+  config.i18n.default_locale = :de
+
   config.active_support.deprecation = :log
 
   config.middleware.use Rack::GridFS, :hostname => ENV['MONGODB_HOST'],

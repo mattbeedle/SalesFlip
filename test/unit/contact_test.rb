@@ -88,7 +88,7 @@ class ContactTest < ActiveSupport::TestCase
         assert contact.do_not_call
       end
     end
-    
+
     context 'for_company' do
       setup do
         @contact = Contact.make

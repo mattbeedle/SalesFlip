@@ -50,6 +50,6 @@
         %tr
           %td= link_to assigned_leads.count, leads_path(:assigned_to => current_user.id, :status_is_not => ['Rejected', 'Not Interested'])
           %td= link_to "#{contacted_leads.count} (#{number_to_percentage((contacted_leads.count.to_f / assigned_leads.count) * 100, :precision => 2)})", leads_path(:assigned_to => @user.id, :status_is => ['Contacted'])
-          %td= link_to "#{converted_leads.count} (#{number_to_percentage((converted_leads.count.to_f / contacted_leads.count) * 100, :precision => 2)})", leads_path(:assigned_to => @user.id, :status_is => ['Converted'])
+          %td= link_to "#{converted_leads.count} (#{number_to_percentage((converted_leads.count.to_f || 0.0 / contacted_leads.count) * 100, :precision => 2)})", leads_path(:assigned_to => @user.id, :status_is => ['Converted'])
           - @user.company.opportunity_stages.not_deleted.each do |stage|
             %td= link_to Opportunity.assigned_to(@user.id).stage_is(stage.name).count, opportunities_path(:assigned_to => @user.id, :stage_is => [stage.name])
