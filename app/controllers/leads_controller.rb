@@ -83,7 +83,7 @@ class LeadsController < InheritedResources::Base
 
 protected
   def leads_index_cache_key
-    Digest::SHA1.hexdigest([
+    @index_cache_key ||= Digest::SHA1.hexdigest([
       'leads', Lead.for_company(current_user.company).desc(:updated_at).
       first.try(:updated_at).try(:to_i), params.flatten.join('-')].join('-'))
   end
