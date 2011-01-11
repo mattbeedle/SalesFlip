@@ -26,18 +26,19 @@ module Permission
   module ClassMethods
 
     def permitted_for(user)
-      scope =  all(user_id: user.id)
-      scope |= all(permission: 'Shared', permitted_users.id => user.id)
+      # scope =  all(user_id: user.id)
+      # scope |= all(permission: 'Shared', permitted_users.id => user.id)
 
-      if Assignable > self
-        scope |= all(assignee_id: user.id)
-      end
+      # if Assignable > self
+        # scope |= all(assignee_id: user.id)
+      # end
 
-      unless user.role_is?('Freelancer')
-        scope |= all(permission: 'Public')
-      end
+      # unless user.role_is?('Freelancer')
+        # scope |= all(permission: 'Public')
+      # end
 
-      scope
+      # scope
+      all(lead_permissions.user_id => user.id)
     end
 
   end

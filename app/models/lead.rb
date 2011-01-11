@@ -1,3 +1,9 @@
+class LeadPermission
+  include DataMapper::Resource
+  belongs_to :lead, key: true
+  belongs_to :user, key: true
+end
+
 class Lead
   include DataMapper::Resource
   include DataMapper::Timestamps
@@ -62,6 +68,8 @@ class Lead
   has n, :comments, :as => :commentable#, :dependent => :delete_all
   has n, :tasks, :as => :asset#, :dependent => :delete_all
   has n, :emails, :as => :commentable#, :dependent => :delete_all
+
+  has n, :lead_permissions
 
   before :valid?, :set_initial_state
   before :create,     :set_identifier
