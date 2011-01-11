@@ -21,3 +21,4 @@ solr/*
 public/javascripts/all.js
 doc/*
 .yardoc/*
+public/uploads/*
