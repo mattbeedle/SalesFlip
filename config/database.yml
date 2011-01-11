@@ -1,25 +1,11 @@
 # This is not actually being used, just set up to get pickle working properly
 base: &base
-  adapter: sqlite3
-  pool: 5
-  timeout: 5000
+  adapter: postgresql
 
 development:
-  database: db/lean_crm_development.sqlite3
+  database: salesflip_dev
   <<: *base
 
 test:
-  database: db/lean_crm_test.sqlite3
+  database: salesflip_test
   <<: *base
-
-cucumber:
-  database: db/lean_crm_cucumber.sqlite3
-  <<: *base
-
-production:
-  database: maildb
-  encoding: utf8
-  user: mail
-  password: 8arcelona
-  adapter: mysql
-  socket: /tmp/mysql.sock
