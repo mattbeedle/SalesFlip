@@ -51,7 +51,7 @@
               - emails << mail_to(c.email, c.email, :bcc => current_user.dropbox_email) if c.email.present?
               - emails << mail_to(c.alt_email, t(:alt_email), :bcc => current_user.dropbox_email) if c.alt_email.present?
               = raw emails.compact.join(', ')
-          - twit = c.website.blank?   ? nil : link_to('Twitter', c.website)
+          - twit = c.twitter.blank?   ? nil : link_to('Twitter', c.twitter)
           - link = c.linked_in.blank? ? nil : link_to('LinkedIn', c.linked_in)
           - face = c.facebook.blank?  ? nil : link_to('Facebook', c.facebook)
           - xing = c.xing.blank?      ? nil : link_to('Xing', c.xing)
@@ -60,7 +60,7 @@
             %dt= t(:social_media)
             %dd
               = raw social_media.join(', ')
-          = show_attribute(contact, 'website', link_to(c.website))
+          = show_attribute(contact, 'website', link_to(c.website, c.website))
 
           %dt Permissions
           %dd
@@ -83,6 +83,7 @@
         = render :partial => 'tasks/task', :collection => contact.lead.tasks.for(current_user).incomplete
       .add
         = link_to raw("<b>+</b>#{t(:add_task)}"), new_task_path(:asset_id => contact.id, :asset_type => 'Contact', :return_to => request.fullpath), :id => "add_task_for_#{dom_id contact}", :class => 'add_task'
+
     -#----------------------------------------------------------------------
     -# Comments for Contact
     -#----------------------------------------------------------------------

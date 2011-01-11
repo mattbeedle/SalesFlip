@@ -11,6 +11,8 @@ class Contact
   include Assignable
   include Gravtastic
   include ActiveModel::Observing
+  include OnlineFields
+
   is_gravtastic
 
   field :first_name
@@ -26,11 +28,6 @@ class Contact
   field :phone
   field :mobile
   field :fax
-  field :website
-  field :linked_in
-  field :facebook
-  field :twitter
-  field :xing
   field :address
   field :born_on,             :type => Date
   field :do_not_call,         :type => Boolean
@@ -73,6 +70,9 @@ class Contact
   searchable do
     text :first_name, :last_name, :department, :email, :alt_email, :phone, :mobile,
       :fax, :website, :linked_in, :facebook, :twitter, :xing, :address
+    text :account do
+      account.name
+    end
   end
   #handle_asynchronously :solr_index
 
