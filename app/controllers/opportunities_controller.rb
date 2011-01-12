@@ -49,8 +49,9 @@ protected
   end
 
   def collection
-    @opportunities ||= opportunities.paginate(
-      :per_page => params[:per_page] || 10, :page => params[:page] || 1)
+    @opportunities ||= opportunities.desc(:opportunity_stage_id).
+      desc(:created_at).paginate(:per_page => params[:per_page] || 10,
+                                 :page => params[:page] || 1)
   end
 
   def resource
