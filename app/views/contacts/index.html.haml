@@ -1,6 +1,6 @@
 - cache(contacts_index_cache_key) do
   %h2.title
-    Contacts
+    = t(:contacts)
     = add_new t(:add_contact), new_contact_path
   .contacts
     = render :partial => 'contacts/contact', :collection => @contacts
