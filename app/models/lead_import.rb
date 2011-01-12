@@ -31,9 +31,10 @@ class LeadImport
         similar = lead.similar(0.9)
         similar_accounts = lead.similar_accounts(0.9)
         unless similar.any? || similar_accounts.any?
-          lead.save
-          Sunspot.index!(lead)
-          self.imported << lead
+          if lead.save
+            Sunspot.index!(lead)
+            self.imported << lead
+          end
         else
           self.unimported << [line, similar.map(&:id) + similar_accounts.map(&:id)]
         end
@@ -66,10 +67,13 @@ class LeadImport
   end
 
   def build_attributes(values)
-    attributes = { :user => user, :source => 'Imported', :assignee => assignee,
+    attributes = { :user => user,
+                   :source => Lead.sources[I18n.in_locale(:en) { Lead.sources.index('Imported') }],
+                   :assignee => assignee,
                    :do_not_index => true, :do_not_notify => true, :do_not_log => true }
     @fields.each_with_index do |field, i|
-      attributes.merge!(field.to_sym => values[i])
+      value = values[i].blank? ? nil : values[i].gsub(/[\n"\r]/, '').strip
+      attributes.merge!(field.gsub(/[\n"\r]/, '').strip.to_sym => value)
     end
     attributes
   end

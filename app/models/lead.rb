@@ -110,6 +110,8 @@ class Lead
        levenshtein_similar(lead.company)]
     end.select { |similarity| similarity.last > threshold }.map(&:first)
     Lead.where(:_id.in => ids)
+  rescue
+    []
   end
 
   def similar_accounts( threshold )
