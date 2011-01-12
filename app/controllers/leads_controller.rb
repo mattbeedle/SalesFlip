@@ -59,7 +59,7 @@ class LeadsController < InheritedResources::Base
   def convert
     @account = current_user.accounts.new(:name => @lead.company)
     unless @lead.email.blank?
-      @contact = Contact.first(:conditions => { :email => @lead.email })
+      @contact = Contact.where(:email => @lead.email).first
     end
     @opportunity = current_user.opportunities.build :assignee => current_user
     @opportunity.attachments.build
@@ -69,9 +69,9 @@ class LeadsController < InheritedResources::Base
     @lead.updater_id = current_user.id
     @account, @contact, @opportunity = @lead.promote!(
       params[:account_id].blank? ? params[:account_name] : params[:account_id], params)
-    if @account.nil? && @contact.valid?
+    if @account.nil? && @contact.valid? && !@contact.new_record?
       redirect_to contact_path(@contact)
-    elsif @account.valid? && @contact.valid?
+    elsif @account.valid? && @contact.valid? & !@contact.new_record?
       redirect_to account_path(@account)
     else
       render :action => :convert

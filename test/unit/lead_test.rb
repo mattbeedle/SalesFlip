@@ -457,6 +457,14 @@ class LeadTest < ActiveSupport::TestCase
         assert opportunity.errors.blank?
       end
 
+      should 'not create an account or contact if an opportunity is supplied, and the opportunity is invalid' do
+        account, contact, opportunity = @lead.promote!(
+          'A company', :opportunity => { :title => 'An opportunity', :amount => 'asf' })
+        assert_equal 0, Account.count
+        assert_equal 0, Contact.count
+        assert_equal 0, Opportunity.count
+      end
+
       should 'still return an account if the contact exists, but it does not have an account' do
         @lead.update_attributes :email => 'florian.behn@careermee.com'
         @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)

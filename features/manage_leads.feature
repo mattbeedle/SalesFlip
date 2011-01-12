@@ -394,6 +394,20 @@ Feature: Manage leads
     And 1 opportunities should exist with title: "A great opportunity"
     And the newly created contact should have an opportunity
 
+  Scenario: Converting a lead to a new account, but entering an invalid opportunity
+    Given I am registered and logged in as annika
+    And a lead: "erich" exists with user: Annika, assignee: Annika
+    And I am on the lead's page
+    When I follow "Convert"
+    And I fill in "account_name" with "World Dating"
+    And I fill in "opportunity_title" with "A great opportunity"
+    And I fill in "opportunity_amount" with "asdfdsafs"
+    And I press "convert"
+    Then I should be on the lead's promote page
+    And 0 accounts should exist
+    And 0 contacts should exist
+    And 0 opportunities should exist
+
   Scenario: Converting a lead to an existing account
     Given I am registered and logged in as annika
     And a lead: "erich" exists with user: annika, assignee: Annika

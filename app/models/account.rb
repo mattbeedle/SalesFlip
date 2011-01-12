@@ -85,7 +85,7 @@ class Account
   def self.find_or_create_for( object, name_or_id, options = {} )
     account = Account.find(BSON::ObjectId.from_string(name_or_id.to_s))
   rescue BSON::InvalidObjectId => e
-    account = Account.first(:conditions => { :name => name_or_id })
+    account = Account.where(:name => name_or_id).first
     account = create_for(object, name_or_id, options) unless account
     account
   end
@@ -98,9 +98,11 @@ class Account
       permission = options[:permission] || 0
       permitted = options[:permitted_user_ids]
     end
-    account = object.updater_or_user.accounts.create :permission => permission,
+    account = object.updater_or_user.accounts.build :permission => permission,
       :name => name, :permitted_user_ids => permitted,
       :account_type => Account.account_types[I18n.in_locale(:en) { Account.account_types.index('Prospect') }]
+    account.save unless options[:just_validate] == true
+    account
   end
 
   def deliminated( deliminator, fields )

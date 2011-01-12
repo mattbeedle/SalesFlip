@@ -98,7 +98,7 @@ class Contact
     "#{last_name}, #{first_name}".strip.gsub(/,$/, '')
   end
 
-  def self.create_for( lead, account )
+  def self.create_for( lead, account, options = {} )
     contact = account.contacts.build :user => lead.updater_or_user, :permission => account.permission,
       :permitted_user_ids => account.permitted_user_ids
     Lead.fields.map(&:first).delete_if do |k|
@@ -109,7 +109,7 @@ class Contact
         contact.send("#{key}=", lead.send(key))
       end
     end
-    if account.valid? and contact.valid?
+    if account.valid? && contact.valid? && !options[:just_validate]
       contact.save
       contact.leads << lead
     end

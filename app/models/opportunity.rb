@@ -45,6 +45,9 @@ class Opportunity
 
   searchable do
     text :title, :background_info
+    text :contact do
+      contact.name
+    end
   end
   handle_asynchronously :solr_index
 
