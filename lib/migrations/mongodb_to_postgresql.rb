@@ -1,6 +1,6 @@
 module Migrations
   class MongodbToPostgresql < ActiveRecord::Migration
-    SKIP = [ "_sphinx_id", "_type", "budget", "contact_person", "region" ]
+    SKIP = [ "_sphinx_id", "_type", "budget", "contact_person", "region", "freelancer_id" ]
 
     class << self
       def columns(attributes = {})

@@ -4,7 +4,6 @@ class CreateTasks < ActiveRecord::Migration
       t.integer :asset_id
       t.integer :assignee_id
       t.integer :completed_by_id
-      t.integer :freelancer_id
       t.integer :user_id
       t.string :asset_type
 
@@ -12,7 +11,6 @@ class CreateTasks < ActiveRecord::Migration
       t.string :legacy_asset_id
       t.string :legacy_assignee_id
       t.string :legacy_completed_by_id
-      t.string :legacy_freelancer_id
       t.string :legacy_user_id
 
       # For the Activities mixin.

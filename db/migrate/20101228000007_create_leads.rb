@@ -4,14 +4,12 @@ class CreateLeads < ActiveRecord::Migration
       t.integer :assignee_id
       t.integer :campaign_id
       t.integer :contact_id
-      t.integer :freelancer_id
       t.integer :user_id
 
       t.string :legacy_id
       t.string :legacy_assignee_id
       t.string :legacy_campaign_id
       t.string :legacy_contact_id
-      t.string :legacy_freelancer_id
       t.string :legacy_user_id
 
       # For the Activities mixin.

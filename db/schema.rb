@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110112000005) do
+ActiveRecord::Schema.define(:version => 20110112000006) do
 
   create_table "accounts", :force => true do |t|
     t.integer  "user_id"
@@ -91,8 +91,6 @@ ActiveRecord::Schema.define(:version => 20110112000005) do
     t.string   "permitted_user_ids"
     t.integer  "updater_id"
     t.string   "legacy_updater_id"
-    t.integer  "freelancer_id"
-    t.string   "legacy_freelancer_id"
     t.string   "subject"
     t.text     "text"
     t.string   "from"
@@ -173,13 +171,11 @@ ActiveRecord::Schema.define(:version => 20110112000005) do
     t.integer  "assignee_id"
     t.integer  "campaign_id"
     t.integer  "contact_id"
-    t.integer  "freelancer_id"
     t.integer  "user_id"
     t.string   "legacy_id"
     t.string   "legacy_assignee_id"
     t.string   "legacy_campaign_id"
     t.string   "legacy_contact_id"
-    t.string   "legacy_freelancer_id"
     t.string   "legacy_user_id"
     t.integer  "updater_id"
     t.string   "legacy_updater_id"
@@ -233,14 +229,12 @@ ActiveRecord::Schema.define(:version => 20110112000005) do
     t.integer  "asset_id"
     t.integer  "assignee_id"
     t.integer  "completed_by_id"
-    t.integer  "freelancer_id"
     t.integer  "user_id"
     t.string   "asset_type"
     t.string   "legacy_id"
     t.string   "legacy_asset_id"
     t.string   "legacy_assignee_id"
     t.string   "legacy_completed_by_id"
-    t.string   "legacy_freelancer_id"
     t.string   "legacy_user_id"
     t.integer  "updater_id"
     t.string   "legacy_updater_id"

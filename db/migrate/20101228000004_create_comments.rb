@@ -18,9 +18,6 @@ class CreateComments < ActiveRecord::Migration
       t.integer :updater_id
       t.string :legacy_updater_id
 
-      t.integer :freelancer_id
-      t.string :legacy_freelancer_id
-
       t.string :subject
       t.text :text
       t.string :from
