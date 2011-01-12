@@ -17,7 +17,7 @@ module OnlineFields
   end
 
   def correct_website_links
-    if !self.website.blank? && self.website.match(/^http/)
+    if !self.website.blank? && !self.website.match(/^http/)
       self.website = "http://#{self.website}"
     end
   end
