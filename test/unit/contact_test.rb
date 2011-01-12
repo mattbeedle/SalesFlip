@@ -80,7 +80,7 @@ class ContactTest < ActiveSupport::TestCase
         assert_equal 'a test department', contact.department
         assert_equal 'Website', contact.source
         assert_equal 'an address', contact.address
-        assert_equal 'www.test.com', contact.website
+        assert_equal 'http://www.test.com', contact.website
         assert_equal 'linkedin', contact.linked_in
         assert_equal 'facebook', contact.facebook
         assert_equal 'xing', contact.xing

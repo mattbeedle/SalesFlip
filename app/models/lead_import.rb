@@ -8,10 +8,12 @@ class LeadImport
   field :deliminator, default: ','
   field :unimported,  type: Array,    default: []
   field :state,       type: Integer,  default: 0
+  field :source,      type: Integer,  default: 9
 
   validates_presence_of :file, :deliminator, :user
 
   has_constant :states, %w(pending completed canceled)
+  has_constant :sources, lambda { Lead.sources }
 
   mount_uploader :file, AttachmentUploader
 
@@ -67,10 +69,9 @@ class LeadImport
   end
 
   def build_attributes(values)
-    attributes = { :user => user,
-                   :source => Lead.sources[I18n.in_locale(:en) { Lead.sources.index('Imported') }],
-                   :assignee => assignee,
-                   :do_not_index => true, :do_not_notify => true, :do_not_log => true }
+    attributes = { :user => user, :source => self.source,
+                   :assignee => assignee, :do_not_index => true,
+                   :do_not_notify => true, :do_not_log => true }
     @fields.each_with_index do |field, i|
       value = values[i].blank? ? nil : values[i].gsub(/[\n"\r]/, '').strip
       attributes.merge!(field.gsub(/[\n"\r]/, '').strip.to_sym => value)

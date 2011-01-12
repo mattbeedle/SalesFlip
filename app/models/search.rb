@@ -4,28 +4,15 @@ class Search
 
   field :terms
   field :collections, :type => Array
-  field :company
 
   referenced_in :user, :index => true
 
-  validate :criteria_entered?
+  validates_presence_of :terms
 
-  def results
-    unless company.blank?
-      @results ||= Lead.search { with(:company, company) }.results.not_deleted +
-        Account.search { with(:name, company) }.results.not_deleted
-    else
-      @results ||= Sunspot.search(collections.map(&:constantize) || [Account, Contact, Lead]) do
-        keywords terms
-      end.results
-    end
-  end
-
-private
-  def criteria_entered?
-    if self.terms.blank? and self.company.blank?
-      self.errors.add :terms, I18n.t('activemodel.errors.messages.blank')
-      self.errors.add :company, I18n.t('activemodel.errors.messages.blank')
-    end
+  def results( per_page = 30, page = 1 )
+    @results ||= Sunspot.search(collections.map(&:constantize) || [Account, Contact, Lead, Opportunity]) do
+      keywords terms
+      paginate(:per_page => per_page, :page => page)
+    end.results
   end
 end
