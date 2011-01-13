@@ -51,9 +51,3 @@ class AssociateTasks < Migrations::MongodbToPostgresql
     postgre.create_command(sql).execute_non_query
   end
 end
-
-# permitted_user_ids
-# lead_permitted_users | lead_id | permitted_user |
-#
-# tracker_ids
-# model_trackers | lead_id | tracker_id |
