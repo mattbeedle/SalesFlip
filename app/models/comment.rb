@@ -8,9 +8,9 @@ class Comment
   include ActiveModel::Observing
 
   property :id, Serial
-  property :type, Discriminator
+  property :type, Discriminator, index: true
   property :subject, String
-  property :text, Text, :required => true
+  property :text, Text, required: true
   property :created_at, DateTime
   property :created_on, Date
   property :updated_at, DateTime

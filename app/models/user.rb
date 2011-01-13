@@ -61,9 +61,10 @@ class User
   end
 
   def deleted_items_count
-    [Lead, Contact, Account, Comment].map do |model|
-      (model.permitted_for(self) & model.deleted).count
-    end.inject {|sum, n| sum += n }
+    count  = Lead.permitted_for(self).deleted.count
+    count += Contact.permitted_for(self).deleted.count
+    count += Account.permitted_for(self).deleted.count
+    count += Comment.permitted_for(self).deleted.count
   end
 
   def full_name

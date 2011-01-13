@@ -1,5 +1,9 @@
 module DataMapper
-  class Collection
+  # This module defines API-compatible pagination methods with will_paginate.
+  # The advantage to this implementation is that it doesn't require loading the
+  # collection immediately, allowing DataMapper to strategically eager load
+  # paginated collections.
+  module WillPaginate
 
     attr_reader :total_entries
     attr_reader :total_pages
@@ -15,6 +19,13 @@ module DataMapper
       current_page < total_pages ? (current_page + 1) : nil
     end
 
+    # Paginates a collection according to the options provided.
+    #
+    # = Options
+    #
+    #   :page         current page (defaults to 1)
+    #   :per_page     results per page (defaults to 30)
+    #
     def paginate(options = {})
       raise ArgumentError, "parameter hash expected (got #{options.inspect})" unless Hash === options
 
@@ -25,10 +36,12 @@ module DataMapper
       @total_pages = (@total_entries / per_page.to_f).ceil
       @current_page = page
 
-      query.update(offset: (per_page - 1) * page, limit: per_page)
+      query.update(offset: (page - 1) * page, limit: per_page)
 
       self
     end
 
   end
 end
+
+DataMapper::Collection.send(:include, DataMapper::WillPaginate)

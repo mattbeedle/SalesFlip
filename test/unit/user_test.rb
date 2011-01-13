@@ -149,6 +149,7 @@ class UserTest < ActiveSupport::TestCase
 
     context 'deleted_items_count' do
       setup do
+        @user.save
         @lead = Lead.make
         @contact = Contact.make
         @account = Account.make

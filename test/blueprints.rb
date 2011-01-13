@@ -31,6 +31,7 @@ User.blueprint(:carsten_werner) do
 end
 
 User.blueprint do
+  confirmed_at { Time.now }
   company { Company.make }
   email
   password { 'password' }

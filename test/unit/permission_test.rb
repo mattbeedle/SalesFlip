@@ -1,26 +1,5 @@
 require 'test_helper'
 
-class AssignableModel
-  include DataMapper::Resource
-  include HasConstant::Orm::DataMapper
-  include Permission
-  include Assignable
-  property :id, Serial
-  belongs_to :user, required: false
-
-  auto_migrate!
-end
-
-class NotAssignableModel
-  include DataMapper::Resource
-  include HasConstant::Orm::DataMapper
-  include Permission
-  property :id, Serial
-  belongs_to :user, required: false
-
-  auto_migrate!
-end
-
 class PermissionTest < ActiveSupport::TestCase
   context '.permitted_for' do
     context 'when model is assignable' do
