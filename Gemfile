@@ -9,6 +9,7 @@ gem 'inherited_resources'
 gem 'warden'
 gem 'devise'
 
+gem 'dm-core', :git => 'git://github.com/datamapper/dm-core.git'
 gem 'dm-devise'
 gem 'dm-migrations'
 gem 'dm-postgres-adapter'

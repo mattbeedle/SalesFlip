@@ -29,7 +29,6 @@ module Salesflip
     require 'data_mapper/any_of'
     require 'data_mapper/changes'
     require 'data_mapper/collection_extensions'
-    require 'data_mapper/many_to_one_relationships'
     require 'data_mapper/multiparameter_attribute_support'
     require 'data_mapper/polymorphic'
     require 'data_mapper/scope'
