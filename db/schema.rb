@@ -12,6 +12,16 @@
 
 ActiveRecord::Schema.define(:version => 20110112000007) do
 
+  create_table "account_permitted_users", :force => true do |t|
+    t.integer "account_id"
+    t.integer "permitted_user_id"
+  end
+
+  create_table "account_trackers", :force => true do |t|
+    t.integer "account_id"
+    t.integer "tracker_id"
+  end
+
   create_table "accounts", :force => true do |t|
     t.integer  "user_id"
     t.integer  "assignee_id"
@@ -79,6 +89,11 @@ ActiveRecord::Schema.define(:version => 20110112000007) do
     t.datetime "updated_at"
   end
 
+  create_table "comment_permitted_users", :force => true do |t|
+    t.integer "comment_id"
+    t.integer "permitted_user_id"
+  end
+
   create_table "comments", :force => true do |t|
     t.integer  "user_id"
     t.integer  "commentable_id"
@@ -106,6 +121,16 @@ ActiveRecord::Schema.define(:version => 20110112000007) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "contact_permitted_users", :force => true do |t|
+    t.integer "contact_id"
+    t.integer "permitted_user_id"
+  end
+
+  create_table "contact_trackers", :force => true do |t|
+    t.integer "contact_id"
+    t.integer "tracker_id"
   end
 
   create_table "contacts", :force => true do |t|
@@ -167,6 +192,16 @@ ActiveRecord::Schema.define(:version => 20110112000007) do
     t.boolean "enabled"
   end
 
+  create_table "lead_permitted_users", :force => true do |t|
+    t.integer "lead_id"
+    t.integer "permitted_user_id"
+  end
+
+  create_table "lead_trackers", :force => true do |t|
+    t.integer "lead_id"
+    t.integer "tracker_id"
+  end
+
   create_table "leads", :force => true do |t|
     t.integer  "assignee_id"
     t.integer  "campaign_id"
@@ -223,6 +258,11 @@ ActiveRecord::Schema.define(:version => 20110112000007) do
     t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "task_permitted_users", :force => true do |t|
+    t.integer "task_id"
+    t.integer "permitted_user_id"
   end
 
   create_table "tasks", :force => true do |t|

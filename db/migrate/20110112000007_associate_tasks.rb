@@ -31,6 +31,18 @@ class AssociateTasks < Migrations::MongodbToPostgresql
     subselect = "SELECT id FROM users WHERE legacy_id = legacy_updater_id"
     sql = "UPDATE tasks SET updater_id = (#{subselect})"
     postgre.create_command(sql).execute_non_query
+
+    # Migrate the permissions...
+    select = "SELECT id, legacy_permitted_user_ids FROM tasks WHERE legacy_permitted_user_ids IS NOT NULL"
+    reader = postgre.create_command(select).execute_reader
+    reader.each do |row|
+      row["legacy_permitted_user_ids"].split(",").each do |id|
+        account_id = row["id"]
+        sql = "INSERT INTO task_permitted_users (task_id, permitted_user_id) " <<
+          "values (#{account_id}, (SELECT id FROM users WHERE legacy_id = '#{id}'))"
+        postgre.create_command(sql).execute_non_query
+      end
+    end
   end
 
   def self.down
@@ -39,3 +51,9 @@ class AssociateTasks < Migrations::MongodbToPostgresql
     postgre.create_command(sql).execute_non_query
   end
 end
+
+# permitted_user_ids
+# lead_permitted_users | lead_id | permitted_user |
+#
+# tracker_ids
+# model_trackers | lead_id | tracker_id |
