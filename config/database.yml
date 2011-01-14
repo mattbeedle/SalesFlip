@@ -16,6 +16,10 @@ cucumber:
   database: db/lean_crm_cucumber.sqlite3
   <<: *base
 
+staging:
+  database: db/salesflip_staging.sqlite3
+  <<: *base
+
 production:
   database: db/salesflip_production.sqlite3
   <<: *base
