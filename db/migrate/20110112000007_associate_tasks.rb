@@ -1,6 +1,7 @@
 class AssociateTasks < Migrations::MongodbToPostgresql
 
   def self.up
+    puts "Associating Tasks"
     # Migrate the assets...
     sql = "UPDATE tasks SET asset_id = accounts.id FROM accounts WHERE " <<
       "tasks.asset_type = 'Account' AND tasks.legacy_asset_id = accounts.legacy_id"
@@ -35,7 +36,7 @@ class AssociateTasks < Migrations::MongodbToPostgresql
       row["legacy_permitted_user_ids"].split(",").each do |id|
         account_id = row["id"]
         sql = "INSERT INTO task_permitted_users (task_id, permitted_user_id) " <<
-          "values (#{account_id}, (SELECT id FROM users WHERE legacy_id = '#{id}'))"
+          "values (#{account_id}, (SELECT id FROM users WHERE legacy_id = '#{id}' LIMIT 1))"
         postgre.create_command(sql).execute_non_query
       end
     end

@@ -1,6 +1,7 @@
 class AssociateComments < Migrations::MongodbToPostgresql
 
   def self.up
+    puts "Associating Comments"
     # Migrate the users...
     sql = "UPDATE comments SET user_id = users.id FROM users WHERE users.legacy_id = comments.legacy_user_id"
     postgre.create_command(sql).execute_non_query
@@ -23,7 +24,7 @@ class AssociateComments < Migrations::MongodbToPostgresql
       row["legacy_permitted_user_ids"].split(",").each do |id|
         account_id = row["id"]
         sql = "INSERT INTO comment_permitted_users (comment_id, permitted_user_id) " <<
-          "values (#{account_id}, (SELECT id FROM users WHERE legacy_id = '#{id}'))"
+          "values (#{account_id}, (SELECT id FROM users WHERE legacy_id = '#{id}') LIMIT 1)"
         postgre.create_command(sql).execute_non_query
       end
     end

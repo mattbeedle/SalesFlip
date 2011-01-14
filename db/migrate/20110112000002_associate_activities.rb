@@ -1,6 +1,7 @@
 class AssociateActivities < Migrations::MongodbToPostgresql
 
   def self.up
+    puts "Associating Activities"
     # Migrate the users...
     sql = "UPDATE activities SET user_id = users.id FROM users WHERE users.legacy_id = activities.legacy_user_id"
     postgre.create_command(sql).execute_non_query

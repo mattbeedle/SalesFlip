@@ -1,6 +1,7 @@
 class AssociateLeads < Migrations::MongodbToPostgresql
 
   def self.up
+    puts "Associating Leads"
     # Migrate the users...
     sql = "UPDATE leads SET user_id = users.id FROM users WHERE users.legacy_id = leads.legacy_user_id"
     postgre.create_command(sql).execute_non_query
@@ -24,7 +25,7 @@ class AssociateLeads < Migrations::MongodbToPostgresql
       row["legacy_permitted_user_ids"].split(",").each do |id|
         account_id = row["id"]
         sql = "INSERT INTO lead_permitted_users (lead_id, permitted_user_id) " <<
-          "values (#{account_id}, (SELECT id FROM users WHERE legacy_id = '#{id}'))"
+          "values (#{account_id}, (SELECT id FROM users WHERE legacy_id = '#{id}' LIMIT 1))"
         postgre.create_command(sql).execute_non_query
       end
     end
@@ -36,7 +37,7 @@ class AssociateLeads < Migrations::MongodbToPostgresql
       row["legacy_tracker_ids"].split(",").each do |id|
         account_id = row["id"]
         sql = "INSERT INTO lead_trackers (lead_id, tracker_id) " <<
-          "values (#{account_id}, (SELECT id FROM users WHERE legacy_id = '#{id}'))"
+          "values (#{account_id}, (SELECT id FROM users WHERE legacy_id = '#{id}' LIMIT 1))"
         postgre.create_command(sql).execute_non_query
       end
     end

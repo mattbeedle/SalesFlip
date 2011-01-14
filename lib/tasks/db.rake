@@ -80,6 +80,7 @@ namespace :db do
     end
   end
 
+  desc "Convert MongoDB users to Postgres"
   task :migrate_users => :environment do
     Dir[ File.join(Rails.root, "db", "migrate", "*.rb") ].sort.each { |file| require file }
 
@@ -87,6 +88,7 @@ namespace :db do
     MigrateUsers.up
   end
 
+  desc "Re-relate the Postgre relations"
   task :re_relate => :environment do
     Dir[ File.join(Rails.root, "db", "migrate", "*.rb") ].sort.each { |file| require file }
 

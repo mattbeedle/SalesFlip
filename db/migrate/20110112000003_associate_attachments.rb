@@ -1,6 +1,7 @@
 class AssociateAttachments < Migrations::MongodbToPostgresql
 
   def self.up
+    puts "Associating Attachments"
     # Migrate the subjects...
     sql = "UPDATE attachments SET subject_id = comments.id FROM comments WHERE " <<
       "attachments.subject_type = 'Comment' AND attachments.legacy_subject_id = comments.legacy_id"
