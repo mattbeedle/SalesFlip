@@ -1,21 +1,34 @@
-set :application, "salesflip"
 set :repository,  "git://github.com/mattbeedle/SalesFlip.git"
 
 set :scm, :git
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
 
-role :web, ENV['SALESFLIP_WEB_SERVER']                          # Your HTTP server, Apache/etc
-role :app, ENV['SALESFLIP_WEB_SERVER']                          # This may be the same as your `Web` server
+if ENV['RAILS_ENV'] == 'production'
+  set :application, "salesflip"
+  role :web, ENV['SALESFLIP_WEB_SERVER']
+  role :app, ENV['SALESFLIP_WEB_SERVER']
 
-set :user, ENV['SALESFLIP_USER']
-set :password, ENV['SALESFLIP_PASSWORD']
-set :deploy_to, "/var/www/#{application}"
-set :deploy_via, :remote_cache
+  set :user, ENV['SALESFLIP_USER']
+  set :password, ENV['SALESFLIP_PASSWORD']
+  set :deploy_to, "/var/www/#{application}"
+  set :deploy_via, :remote_cache
 
-default_run_options[:pty] = true
+  default_run_options[:pty] = true
+else
+  set :application, "salesflip_staging"
+  role :web, ENV['SALESFLIP_WEB_SERVER']
+  role :app, ENV['SALESFLIP_WEB_SERVER']
+
+  set :user, ENV['SALESFLIP_USER']
+  set :password, ENV['SALESFLIP_PASSWORD']
+  set :deploy_to, "/var/www/#{application}"
+  set :deploy_via, :remote_cache
+
+  default_run_options[:pty] = true
+end
 
 # Set branch to current
-set :branch, `git branch`.lines.to_a.find {|b| b =~ /\*/ }.sub(/\*\s/, '').chomp
+set :branch, `git branch`.lines.to_a.find { |b| b =~ /\*/ }.sub(/\*\s/, '').chomp
 
 # If you are using Passenger mod_rails uncomment this:
 # if you're still using the script/reapear helper you will need
