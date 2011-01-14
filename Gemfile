@@ -5,6 +5,8 @@ gem 'rails'
 gem 'sqlite3-ruby',         :require => 'sqlite3'
 
 gem "bson_ext"
+gem "mongo"
+
 gem 'haml'
 gem 'inherited_resources'
 gem 'warden'
@@ -12,25 +14,27 @@ gem 'devise'
 
 gem 'dm-core', :git => 'git://github.com/datamapper/dm-core.git'
 gem 'dm-devise'
-gem 'dm-migrations'
+gem 'dm-migrations', :git => 'git://github.com/datamapper/dm-migrations.git'
 gem 'dm-postgres-adapter'
 gem 'dm-rails'
 gem 'dm-timestamps'
 gem 'dm-transactions'
-gem 'dm-types'
-gem 'dm-validations'
+gem 'dm-types', :git => 'git://github.com/datamapper/dm-types.git'
+gem 'dm-validations', :git => 'git://github.com/datamapper/dm-validations.git'
 
 gem 'delayed_job'
 gem 'delayed_job_data_mapper', '1.0.0.rc'
 gem 'compass'
 gem 'uuid'
 gem 'has_scope'
-gem 'hassle',               :git => 'git://github.com/koppen/hassle.git'
-gem 'inherited_resources'
+gem 'navvy'
+gem 'aaronh-chronic',       :git => 'git://github.com/AaronH/chronic.git', :require => 'chronic'
 gem 'mail'
+gem 'beanstalk-client'
+gem 'will_paginate',        '3.0.pre'
+gem 'riddle'
+gem 'carrierwave',          :git => 'git://github.com/jnicklas/carrierwave.git'
 gem 'memcached'
-gem "mongo"
-gem "mongoid", :git => "git://github.com/mongoid/mongoid.git"
 # gem 'mongo_session_store',  :git => 'git://github.com/mattbeedle/mongo_session_store.git'
 gem 'simple_form'
 gem 'has_constant',         :git => 'git://github.com/mattbeedle/has_constant.git'

@@ -2,8 +2,7 @@ class AssociateActivities < Migrations::MongodbToPostgresql
 
   def self.up
     # Migrate the users...
-    subselect = "SELECT id FROM users WHERE legacy_id = legacy_user_id"
-    sql = "UPDATE activities SET user_id = (#{subselect})"
+    sql = "UPDATE activities SET user_id = users.id FROM users WHERE users.legacy_id = activities.legacy_user_id"
     postgre.create_command(sql).execute_non_query
 
     # Migrate the subjects...

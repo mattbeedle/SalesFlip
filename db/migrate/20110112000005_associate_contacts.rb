@@ -2,23 +2,19 @@ class AssociateContacts < Migrations::MongodbToPostgresql
 
   def self.up
     # Migrate the users...
-    subselect = "SELECT id FROM users WHERE legacy_id = legacy_user_id"
-    sql = "UPDATE contacts SET user_id = (#{subselect})"
+    sql = "UPDATE contacts SET user_id = users.id FROM users WHERE users.legacy_id = contacts.legacy_user_id"
     postgre.create_command(sql).execute_non_query
 
     # Migrate the accounts...
-    subselect = "SELECT id FROM accounts WHERE legacy_id = legacy_account_id"
-    sql = "UPDATE contacts SET account_id = (#{subselect})"
+    sql = "UPDATE contacts SET account_id = accounts.id FROM accounts WHERE accounts.legacy_id = contacts.legacy_account_id"
     postgre.create_command(sql).execute_non_query
 
     # Migrate the assignees...
-    subselect = "SELECT id FROM users WHERE legacy_id = legacy_assignee_id"
-    sql = "UPDATE contacts SET assignee_id = (#{subselect})"
+    sql = "UPDATE contacts SET assignee_id = users.id FROM users WHERE users.legacy_id = contacts.legacy_assignee_id"
     postgre.create_command(sql).execute_non_query
 
     # Migrate the leads...
-    subselect = "SELECT id FROM leads WHERE legacy_id = legacy_lead_id"
-    sql = "UPDATE contacts SET lead_id = (#{subselect})"
+    sql = "UPDATE contacts SET lead_id = leads.id FROM leads WHERE leads.legacy_id = contacts.legacy_lead_id"
     postgre.create_command(sql).execute_non_query
 
     # Migrate the permissions...

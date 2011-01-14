@@ -13,23 +13,19 @@ class AssociateTasks < Migrations::MongodbToPostgresql
     postgre.create_command(sql).execute_non_query
 
     # Migrate the users...
-    subselect = "SELECT id FROM users WHERE legacy_id = legacy_user_id"
-    sql = "UPDATE tasks SET user_id = (#{subselect})"
+    sql = "UPDATE tasks SET user_id = users.id FROM users WHERE users.legacy_id = tasks.legacy_user_id"
     postgre.create_command(sql).execute_non_query
 
     # Migrate the assignees...
-    subselect = "SELECT id FROM users WHERE legacy_id = legacy_assignee_id"
-    sql = "UPDATE tasks SET assignee_id = (#{subselect})"
+    sql = "UPDATE tasks SET assignee_id = users.id FROM users WHERE users.legacy_id = tasks.legacy_assignee_id"
     postgre.create_command(sql).execute_non_query
 
-    # Migrate the compled_bys...
-    subselect = "SELECT id FROM users WHERE legacy_id = legacy_completed_by_id"
-    sql = "UPDATE tasks SET completed_by_id = (#{subselect})"
+    # Migrate the completed_bys...
+    sql = "UPDATE tasks SET completed_by_id = users.id FROM users WHERE users.legacy_id = tasks.legacy_completed_by_id"
     postgre.create_command(sql).execute_non_query
 
     # Migrate the updaters...
-    subselect = "SELECT id FROM users WHERE legacy_id = legacy_updater_id"
-    sql = "UPDATE tasks SET updater_id = (#{subselect})"
+    sql = "UPDATE tasks SET updater_id = users.id FROM users WHERE users.legacy_id = tasks.legacy_updater_id"
     postgre.create_command(sql).execute_non_query
 
     # Migrate the permissions...

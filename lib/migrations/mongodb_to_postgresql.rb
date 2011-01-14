@@ -1,5 +1,5 @@
 module Migrations
-  class MongodbToPostgresql < ActiveRecord::Migration
+  class MongodbToPostgresql
     SKIP = [ "_sphinx_id", "_type", "budget", "contact_person", "region", "freelancer_id" ]
 
     class << self
@@ -23,7 +23,7 @@ module Migrations
       end
 
       def mongodb(name)
-        @collection ||= Mongoid.master.collection(name)
+        @collection ||= Mongo::Connection.new.db("salesflip_development").collection(name)
       end
 
       def postgre

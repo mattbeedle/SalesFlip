@@ -2,18 +2,15 @@ class AssociateAccounts < Migrations::MongodbToPostgresql
 
   def self.up
     # Migrate the users...
-    subselect = "SELECT id FROM users WHERE legacy_id = legacy_user_id"
-    sql = "UPDATE accounts SET user_id = (#{subselect})"
+    sql = "UPDATE accounts SET user_id = users.id FROM users WHERE users.legacy_id = accounts.legacy_user_id"
     postgre.create_command(sql).execute_non_query
 
     # Migrate the assignees...
-    subselect = "SELECT id FROM users WHERE legacy_id = legacy_assignee_id"
-    sql = "UPDATE accounts SET assignee_id = (#{subselect})"
+    sql = "UPDATE accounts SET assignee_id = users.id FROM users WHERE users.legacy_id = accounts.legacy_assignee_id"
     postgre.create_command(sql).execute_non_query
 
     # Migrate the parents...
-    subselect = "SELECT id FROM accounts WHERE legacy_id = legacy_parent_id"
-    sql = "UPDATE accounts SET parent_id = (#{subselect})"
+    sql = "UPDATE accounts SET parent_id = a.id FROM accounts a WHERE a.legacy_id = accounts.legacy_parent_id"
     postgre.create_command(sql).execute_non_query
 
     # Migrate the permissions...

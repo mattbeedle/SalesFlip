@@ -3,7 +3,7 @@ namespace :db do
     task :prepare do
     end
   end
-  
+
   desc 'Import leads csv'
   task :import_leads_csv => :environment do
     user = User.first(:email => /beedle/i)
@@ -22,9 +22,9 @@ namespace :db do
         data[company][:urls] << url
       end
     end
-    
+
     data.each do |key, attributes|
-      
+
       contact_names = attributes.delete(:contact_names)
       contact_names.each_with_index do |name, index|
         names = name.strip.gsub(/\"/, '').split(/\s/)
@@ -66,6 +66,34 @@ namespace :db do
           end
         end
       end
+    end
+  end
+
+  desc "Convert MongoDB data to Postgres"
+  task :migrate_data => :environment do
+    Dir[ File.join(Rails.root, "db", "migrate", "*.rb") ].sort.each { |file| require file }
+
+    puts "Migrating the MongoDB data to PostgreSQL"
+    [ MigrateAccounts, MigrateActivities, MigrateAttachments, MigrateComments,
+      MigrateCompanies, MigrateContacts, MigrateDomains, MigrateLeads, MigrateTasks ].each do |migration|
+      migration.up
+    end
+  end
+
+  task :migrate_users => :environment do
+    Dir[ File.join(Rails.root, "db", "migrate", "*.rb") ].sort.each { |file| require file }
+
+    puts "Migrating the users"
+    MigrateUsers.up
+  end
+
+  task :re_relate => :environment do
+    Dir[ File.join(Rails.root, "db", "migrate", "*.rb") ].sort.each { |file| require file }
+
+    puts "Hooking up the Postgre Relations"
+    [ AssociateAccounts, AssociateActivities, AssociateAttachments, AssociateComments,
+      AssociateContacts, AssociateLeads, AssociateTasks, AssociateUsers ].each do |migration|
+      migration.up
     end
   end
 end
