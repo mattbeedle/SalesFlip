@@ -17,5 +17,4 @@ cucumber:
   <<: *base
 
 production:
-  database: db/salesflip_production.sqlite3
   <<: *base

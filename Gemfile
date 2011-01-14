@@ -4,6 +4,7 @@ gem 'rails'
 
 gem 'sqlite3-ruby',         :require => 'sqlite3'
 
+gem "bson_ext"
 gem 'haml'
 gem 'inherited_resources'
 gem 'warden'
@@ -24,14 +25,12 @@ gem 'delayed_job_data_mapper', '1.0.0.rc'
 gem 'compass'
 gem 'uuid'
 gem 'has_scope'
-gem 'navvy'
-gem 'aaronh-chronic',       :git => 'git://github.com/AaronH/chronic.git', :require => 'chronic'
+gem 'hassle',               :git => 'git://github.com/koppen/hassle.git'
+gem 'inherited_resources'
 gem 'mail'
-gem 'beanstalk-client'
-gem 'will_paginate',        '3.0.pre'
-gem 'riddle'
-gem 'carrierwave',          :git => 'git://github.com/jnicklas/carrierwave.git'
 gem 'memcached'
+gem "mongo"
+gem "mongoid", :git => "git://github.com/mongoid/mongoid.git"
 # gem 'mongo_session_store',  :git => 'git://github.com/mattbeedle/mongo_session_store.git'
 gem 'simple_form'
 gem 'has_constant',         :git => 'git://github.com/mattbeedle/has_constant.git'
