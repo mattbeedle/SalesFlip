@@ -49,5 +49,11 @@ class AssociateContacts < Migrations::MongodbToPostgresql
   def self.down
     sql = "UPDATE contacts SET user_id = NULL, account_id = NULL, assignee_id = NULL, lead_id = NULL"
     postgre.create_command(sql).execute_non_query
+
+    sql = "DELETE FROM contact_permitted_users"
+    postgre.create_command(sql).execute_non_query
+
+    sql = "DELETE FROM contact_trackers"
+    postgre.create_command(sql).execute_non_query
   end
 end

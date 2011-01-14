@@ -33,5 +33,8 @@ class AssociateComments < Migrations::MongodbToPostgresql
   def self.down
     sql = "UPDATE comments SET user_id = NULL, commentable_id = NULL"
     postgre.create_command(sql).execute_non_query
+
+    sql = "DELETE FROM comment_permitted_users"
+    postgre.create_command(sql).execute_non_query
   end
 end

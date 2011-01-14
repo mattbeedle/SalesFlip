@@ -49,5 +49,8 @@ class AssociateTasks < Migrations::MongodbToPostgresql
     sql = "UPDATE tasks SET user_id = NULL, assignee_id = NULL, completed_by_id = NULL, " <<
       "updater_id = NULL, asset_id = NULL"
     postgre.create_command(sql).execute_non_query
+
+    sql = "DELETE FROM task_permitted_users"
+    postgre.create_command(sql).execute_non_query
   end
 end
