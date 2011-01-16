@@ -37,6 +37,9 @@ class AssociateAccounts < Migrations::MongodbToPostgresql
         postgre.create_command(sql).execute_non_query
       end
     end
+
+    sql = "ALTER TABLE accounts ALTER COLUMN user_id SET NOT NULL"
+    postgre.create_command(sql).execute_non_query
   end
 
   def self.down

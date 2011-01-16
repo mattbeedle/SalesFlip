@@ -14,6 +14,8 @@ class MigrateAccounts < Migrations::MongodbToPostgresql
     postgre.create_command(sql).execute_non_query
     sql = "ALTER TABLE accounts ADD COLUMN legacy_tracker_ids text"
     postgre.create_command(sql).execute_non_query
+    sql = "ALTER TABLE accounts ALTER COLUMN user_id DROP NOT NULL"
+    postgre.create_command(sql).execute_non_query
     mongodb_to_postgres("accounts")
   end
   def self.down

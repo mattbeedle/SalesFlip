@@ -21,8 +21,8 @@ class Account
   property :linked_in, String
   property :twitter, String
   property :xing, String
-  property :billing_address, String
-  property :shipping_address, String
+  property :billing_address, Text
+  property :shipping_address, Text
   property :identifier, Integer
   property :created_at, DateTime
   property :created_on, Date
