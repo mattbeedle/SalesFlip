@@ -31,7 +31,9 @@ Salesflip::Application.configure do
   # config.active_record.schema_format = :sql
 
   config.active_support.deprecation = :log
-  
+
   # config.middleware.use Rack::GridFS, :hostname => 'localhost',
     # :port => 27017, :database => 'salesflip_test', :prefix => 'uploads'
+
+  config.logger = Logger.new(Rails.root.join("log",Rails.env + ".log"),3,5*1024*1024)
 end
