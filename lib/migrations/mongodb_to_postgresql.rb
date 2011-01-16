@@ -27,7 +27,7 @@ module Migrations
       end
 
       def postgre
-        @connection ||= DataObjects::Connection.new("postgres://localhost/salesflip_dev")
+        @connection ||= DataObjects::Connection.new("postgres://localhost/salesflip_test")
       end
 
       def value_markers(attributes = {})
