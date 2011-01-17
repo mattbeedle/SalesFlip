@@ -358,11 +358,13 @@ en:
     - Ms
     - Mrs
   titles:
-    - Dr
+    - Dr.
     - Sir
     - Lord
     - Madam
     - Earl
+    - Prof.
+    - Prof. Dr.
   account_types:
     - Analyst
     - Competitor

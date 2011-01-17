@@ -356,11 +356,13 @@ de:
     - Frau
     - Fräulein
   titles:
-    - Dr
-    - Sir
-    - Lord
-    - Madam
-    - Earl
+    - Dr.
+    - Dr.
+    - Dr.
+    - Dr.
+    - Graf
+    - Prof.
+    - Prof. Dr.
   account_types:
     - Analyst
     - Konkurrent/in
