@@ -375,6 +375,16 @@ de:
   comments_closed: Kommentare sind geschlossen. Um zu kommentieren, bitte
   view_contact_for_lead: den Kontakt für diesen Lead einsehen
   lead_converted_by: Dieser Kundenkontakt wurde konvertiert von %{link} am %{time}
+  company_sizes:
+    - '1-5'
+    - '6-10'
+    - '11-20'
+    - '21-50'
+    - '51-100'
+    - '101-200'
+    - '201-500'
+    - '501-5000'
+    - 'über 5000'
 
   #--------------------------------------------------------------
   # Task
