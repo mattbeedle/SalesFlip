@@ -28,5 +28,5 @@ production:
   database: salesflip_production
   user: postgres
   password: <%= ENV['SALESFLIP_POSTGRES_PASSWORD'] %>
-  host: <%= ENV['SALESFLIP_POSTGRES_HOST' %>
+  host: <%= ENV['SALESFLIP_POSTGRES_HOST'] %>
   <<: *base
