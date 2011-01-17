@@ -43,7 +43,8 @@ module Migrations
       end
 
       def postgre
-        @connection ||= DataObjects::Connection.new("postgres://localhost/#{database}")
+        @connection ||= DataObjects::Connection.new(
+          "postgres://postgres:#{ENV['SALESFLIP_POSTGRES_PASSWORD']}@#{ENV['SALESFLIP_POSTGRES_HOST']}:5432/#{database}")
       end
 
       def value_markers(attributes = {})
