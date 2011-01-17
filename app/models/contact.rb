@@ -23,6 +23,7 @@ class Contact
   property :mobile, String
   property :fax, String
   property :website, String
+  property :blog, String
   property :linked_in, String
   property :facebook, String
   property :twitter, String
