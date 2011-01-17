@@ -16,7 +16,7 @@ module Migrations
 
     class << self
       def columns(attributes = {})
-        attributes.keys.sort.collect do |key|
+        attributes.keys.delete_if { |key| key.blank? }.sort.collect do |key|
           key =~ /_id/ ? "\"legacy_#{key}\"".gsub("__", "_") : "\"#{key}\""
         end.join(",")
       end
