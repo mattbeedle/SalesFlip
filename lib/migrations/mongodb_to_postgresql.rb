@@ -39,7 +39,13 @@ module Migrations
       end
 
       def mongodb(name)
-        @collection ||= Mongo::Connection.new.db(database).collection(name)
+        @db ||= Mongo::Connection.new(ENV['MONGODB_HOST'], 27017).db(database)
+        if Rails.env.staging?
+          @db.authenticate(ENV['MONGODB_STAGING_USER'], ENV['MONGODB_STAGING_PASSWORD'])
+        elsif Rails.env.production?
+          @db.authenticate(ENV['MONGODB_USER'], ENV['MONGODB_PASSWORD'])
+        end
+        @collection ||= @db.collection(name)
       end
 
       def postgre
