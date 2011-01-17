@@ -54,11 +54,11 @@ module Migrations
       end
 
       def value_markers(attributes = {})
-        attributes.delete_if { |k,v| k == 'hausnummer' }.size.times.collect{ "?" }.join(",")
+        attributes.delete_if { |k,v| k == 'hausnummer' || k.blank? }.size.times.collect{ "?" }.join(",")
       end
 
       def values(attributes = {})
-        attributes.keys.delete_if { |k| k == 'hausnummer' }.sort.collect { |key| typecast(attributes[key]) }
+        attributes.keys.delete_if { |k| k == 'hausnummer' || k.blank? }.sort.collect { |key| typecast(attributes[key]) }
       end
 
       def typecast(value)
