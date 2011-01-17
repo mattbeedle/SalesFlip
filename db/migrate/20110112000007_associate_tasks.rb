@@ -3,13 +3,13 @@ class AssociateTasks < Migrations::MongodbToPostgresql
   def self.up
     puts "Associating Tasks"
     # Migrate the assets...
-    sql = "UPDATE tasks SET asset_id = accounts.id FROM accounts WHERE " <<
+    sql = "UPDATE tasks SET account_id = accounts.id FROM accounts WHERE " <<
       "tasks.asset_type = 'Account' AND tasks.legacy_asset_id = accounts.legacy_id"
     postgre.create_command(sql).execute_non_query
-    sql = "UPDATE tasks SET asset_id = contacts.id FROM contacts WHERE " <<
+    sql = "UPDATE tasks SET contact_id = contacts.id FROM contacts WHERE " <<
       "tasks.asset_type = 'Contact' AND tasks.legacy_asset_id = contacts.legacy_id"
     postgre.create_command(sql).execute_non_query
-    sql = "UPDATE tasks SET asset_id = leads.id FROM leads WHERE " <<
+    sql = "UPDATE tasks SET lead_id = leads.id FROM leads WHERE " <<
       "tasks.asset_type = 'Lead' AND tasks.legacy_asset_id = leads.legacy_id"
     postgre.create_command(sql).execute_non_query
 

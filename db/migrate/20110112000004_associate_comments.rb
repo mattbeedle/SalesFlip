@@ -7,13 +7,13 @@ class AssociateComments < Migrations::MongodbToPostgresql
     postgre.create_command(sql).execute_non_query
 
     # Migrate the commentables...
-    sql = "UPDATE comments SET commentable_id = accounts.id FROM accounts WHERE " <<
+    sql = "UPDATE comments SET account_id = accounts.id FROM accounts WHERE " <<
       "comments.commentable_type = 'Account' AND comments.legacy_commentable_id = accounts.legacy_id"
     postgre.create_command(sql).execute_non_query
-    sql = "UPDATE comments SET commentable_id = contacts.id FROM contacts WHERE " <<
+    sql = "UPDATE comments SET contact_id = contacts.id FROM contacts WHERE " <<
       "comments.commentable_type = 'Contact' AND comments.legacy_commentable_id = contacts.legacy_id"
     postgre.create_command(sql).execute_non_query
-    sql = "UPDATE comments SET commentable_id = leads.id FROM leads WHERE " <<
+    sql = "UPDATE comments SET lead_id = leads.id FROM leads WHERE " <<
       "comments.commentable_type = 'Lead' AND comments.legacy_commentable_id = leads.legacy_id"
     postgre.create_command(sql).execute_non_query
 

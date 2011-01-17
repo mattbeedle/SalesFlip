@@ -1,5 +1,8 @@
 class MigrateUsers < Migrations::MongodbToPostgresql
   def self.up
+    sql = "ALTER TABLE users ALTER COLUMN company_id DROP NOT NULL"
+    postgre.create_command(sql).execute_non_query
+
     sql = "ALTER TABLE users ADD COLUMN legacy_id varchar(24)"
     postgre.create_command(sql).execute_non_query
     sql = "ALTER TABLE users ADD COLUMN legacy_company_id varchar(24)"

@@ -1,5 +1,8 @@
 class MigrateTasks < Migrations::MongodbToPostgresql
   def self.up
+    sql = "ALTER TABLE tasks ALTER COLUMN user_id DROP NOT NULL"
+    postgre.create_command(sql).execute_non_query
+
     sql = "ALTER TABLE tasks ADD COLUMN legacy_id varchar(24)"
     postgre.create_command(sql).execute_non_query
     sql = "ALTER TABLE tasks ADD COLUMN legacy_asset_id varchar(24)"
@@ -9,6 +12,8 @@ class MigrateTasks < Migrations::MongodbToPostgresql
     sql = "ALTER TABLE tasks ADD COLUMN legacy_completed_by_id varchar(24)"
     postgre.create_command(sql).execute_non_query
     sql = "ALTER TABLE tasks ADD COLUMN legacy_user_id varchar(24)"
+    postgre.create_command(sql).execute_non_query
+    sql = "ALTER TABLE tasks ADD COLUMN asset_type varchar(12)"
     postgre.create_command(sql).execute_non_query
     sql = "ALTER TABLE tasks ADD COLUMN legacy_updater_id varchar(24)"
     postgre.create_command(sql).execute_non_query
