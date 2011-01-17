@@ -1,6 +1,18 @@
 module Migrations
   class MongodbToPostgresql
-    SKIP = [ "_sphinx_id", "_type", "budget", "contact_person", "region", "freelancer_id" ]
+
+    SKIP = [
+      "_sphinx_id",
+      "_type",
+      "budget",
+      "contact_person",
+      "do_not_email",
+      "do_not_geocode",
+      "do_not_log",
+      "region",
+      "freelancer_id",
+      "from_email"
+    ]
 
     class << self
       def columns(attributes = {})
@@ -13,6 +25,10 @@ module Migrations
         "INSERT INTO #{table_name} (#{columns(attributes)}) VALUES (#{value_markers(attributes)})"
       end
 
+      def database
+        @database ||= DataMapper::Repository.adapters[:default].options["database"]
+      end
+
       def mongodb_to_postgres(name)
         puts("Migrating #{name}.")
         mongodb(name).find.each do |attributes|
@@ -23,11 +39,11 @@ module Migrations
       end
 
       def mongodb(name)
-        @collection ||= Mongo::Connection.new.db("salesflip_development").collection(name)
+        @collection ||= Mongo::Connection.new.db(database).collection(name)
       end
 
       def postgre
-        @connection ||= DataObjects::Connection.new("postgres://localhost/salesflip_test")
+        @connection ||= DataObjects::Connection.new("postgres://localhost/#{database}")
       end
 
       def value_markers(attributes = {})

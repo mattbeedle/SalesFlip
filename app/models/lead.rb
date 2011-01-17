@@ -18,7 +18,7 @@ class Lead
   property :email, String
   property :phone, String
   property :rating, Integer
-  property :notes, String
+  property :notes, Text
 
   has_constant :titles,       lambda { I18n.t(:titles) }
   has_constant :salutations,  lambda { I18n.t(:salutations) }
@@ -30,14 +30,14 @@ class Lead
   property :company_blog, String
   property :company_facebook, String
   property :company_twitter, String
-  property :website, String
-  property :career_site, String
+  property :website, Text
+  property :career_site, Text
   property :job_title, String
   property :department, String
   property :alternative_email, String
   property :fax, String
   property :mobile, String
-  property :address, String
+  property :address, Text
   property :city, String
   property :postal_code, String
   property :country, String

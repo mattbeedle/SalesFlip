@@ -8,7 +8,7 @@ class Task
   include ActiveModel::Observing
 
   property :id, Serial
-  property :name, String, :required => true
+  property :name, Text, :required => true
   property :due_at, Time, :required => true
   property :priority, Integer
   property :completed_at, Time
