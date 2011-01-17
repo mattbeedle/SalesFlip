@@ -45,7 +45,7 @@ module Activities
     # NOTE: the order here is important. If self.activities comes first
     # DataMapper will attempt to reset the foreign keys on the returned
     # activities.
-    activities = comments.activities | tasks.activities | self.activities
+    activities = comments.activities | campaign.activities | tasks.activities | self.activities
 
     if self.respond_to?(:contacts)
       activities |= contacts.activities

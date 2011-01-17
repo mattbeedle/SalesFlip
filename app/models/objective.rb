@@ -7,6 +7,7 @@ class Objective
   embedded_in :campaign, :inverse_of => :objective
 
   validates_presence_of :number_of_leads, :if => :conversion_percentage?
+  validates_numericality_of :conversion_percentage
 
   def number_of_conversions
     if conversion_percentage?

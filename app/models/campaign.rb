@@ -15,7 +15,7 @@ class Campaign
   belongs_to_related :user, :index => true
   has_many_related :leads, :dependent => :nullify, :index => true do
     def converted
-      with_status('Converted')
+      status_is('Converted')
     end
   end
   has_many_related :tasks, :as => :asset, :dependent => :delete_all, :index => true
