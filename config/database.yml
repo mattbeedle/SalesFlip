@@ -19,11 +19,14 @@ cucumber:
 
 staging:
   database: salesflip_staging
+  user: postgres
+  password: <%= ENV['SALESFLIP_POSTGRES_PASSWORD'] %>
+  host: <%= ENV['SALESFLIP_POSTGRES_HOST'] %>
   <<: *base
 
 production:
   database: salesflip_production
   user: postgres
   password: <%= ENV['SALESFLIP_POSTGRES_PASSWORD'] %>
-  host: 178.63.20.76
+  host: <%= ENV['SALESFLIP_POSTGRES_HOST' %>
   <<: *base
