@@ -50,6 +50,7 @@ class Lead
   property :facebook, String
   property :xing, String
   property :blog, String
+  property :homepage, String
   property :identifier, Integer
   property :created_at, DateTime
   property :created_on, Date
