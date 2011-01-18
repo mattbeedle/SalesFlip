@@ -20,10 +20,11 @@ class Lead
   property :rating, Integer
   property :notes, Text
 
-  has_constant :titles,       lambda { I18n.t(:titles) }
-  has_constant :salutations,  lambda { I18n.t(:salutations) }
-  has_constant :statuses,     lambda { I18n.t(:lead_statuses) }
-  has_constant :sources,      lambda { I18n.t(:lead_sources) }
+  has_constant :titles,         lambda { I18n.t(:titles) }
+  has_constant :salutations,    lambda { I18n.t(:salutations) }
+  has_constant :statuses,       lambda { I18n.t(:lead_statuses) }
+  has_constant :sources,        lambda { I18n.t(:lead_sources) }
+  has_constant :company_sizes,  lambda { I18n.t(:company_sizes) }
 
   property :company, String
   property :company_phone, String
