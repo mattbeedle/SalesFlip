@@ -33,9 +33,13 @@ module Migrations
         puts("Migrating #{name}.")
         mongodb(name).find.each do |attributes|
           attrs = attributes.except(*SKIP)
-          sql = command(name, attrs)
-          postgre.create_command(sql).execute_non_query(*values(attrs))
+          @sql = command(name, attrs)
+          postgre.create_command(@sql).execute_non_query(*values(attrs))
         end
+      rescue StandardError => e
+        puts @sql
+        puts e
+        raise e
       end
 
       def mongodb(name)
