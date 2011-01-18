@@ -13,6 +13,8 @@ class User
   property :id, Serial
   property :username, String
   property :api_key, String
+  property :first_name, String
+  property :last_name, String
   property :type, String
   property :created_at, DateTime
   property :created_on, Date
