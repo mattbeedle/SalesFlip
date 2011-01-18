@@ -24,6 +24,8 @@ module Salesflip
     # Add additional load paths for your own custom dirs
     config.autoload_paths += %W( #{config.root}/lib #{config.root}/app/sweepers )
 
+    require 'cancan/ext/inherited_resource'
+
     require 'data_mapper/postgres'
 
     require 'data_mapper/any_of'
