@@ -16,7 +16,7 @@ module Migrations
 
     class << self
       def columns(attributes = {})
-        attributes.keys.delete_if { |key| key.blank? || key == 'hausnummer' }.sort.collect do |key|
+        attributes.keys.delete_if { |key| key.blank? || key == 'hausnummer' || key == 'unlock_token' }.sort.collect do |key|
           key =~ /_id/ ? "\"legacy_#{key}\"".gsub("__", "_") : "\"#{key}\""
         end.join(",")
       end
@@ -58,11 +58,11 @@ module Migrations
       end
 
       def value_markers(attributes = {})
-        attributes.delete_if { |k,v| k == 'hausnummer' || k.blank? }.size.times.collect{ "?" }.join(",")
+        attributes.delete_if { |k,v| k == 'hausnummer' || k.blank? || k == 'unlock_token' }.size.times.collect{ "?" }.join(",")
       end
 
       def values(attributes = {})
-        attributes.keys.delete_if { |k| k == 'hausnummer' || k.blank? }.sort.collect { |key| typecast(attributes[key]) }
+        attributes.keys.delete_if { |k| k == 'hausnummer' || k.blank? || k == 'unlock_token' }.sort.collect { |key| typecast(attributes[key]) }
       end
 
       def typecast(value)
