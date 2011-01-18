@@ -5,9 +5,7 @@ module Trackable
     singular_name = name.downcase
     through_relationship_name = :"#{singular_name}_trackers"
 
-    through_model = DataMapper::Model.new
-
-    Object.const_set("#{name}Tracker", through_model)
+    through_model = DataMapper::Model.new("#{name}Tracker")
 
     through_model.belongs_to :tracker, User, :key => true
     through_model.belongs_to :"#{singular_name}", :key => true

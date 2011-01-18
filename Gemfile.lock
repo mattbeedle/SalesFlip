@@ -5,13 +5,37 @@ GIT
     aaronh-chronic (0.3.9)
 
 GIT
-  remote: git://github.com/datamapper/dm-core.git
-  revision: 532d4a5e10c54febfa6d176c890c5baa2007219d
-  ref: 532d4a
+  remote: git://github.com/bernerdschaefer/dm-core.git
+  revision: a1c61098bab5cf7e8033b735adabdfa9a7ce2021
   specs:
     dm-core (1.0.2)
       addressable (~> 2.2)
       extlib (~> 0.9.15)
+
+GIT
+  remote: git://github.com/datamapper/dm-migrations.git
+  revision: c11ef94edae79d06d73a74e61006912c7d98b306
+  specs:
+    dm-migrations (1.0.2)
+      dm-core (~> 1.0.2)
+
+GIT
+  remote: git://github.com/datamapper/dm-types.git
+  revision: fd8ad3b2fafc404ca270aac0b87ca2896ebd95b8
+  specs:
+    dm-types (1.0.2)
+      dm-core (~> 1.0.2)
+      fastercsv (~> 1.5.3)
+      json_pure (~> 1.4)
+      stringex (~> 1.1.0)
+      uuidtools (~> 2.1.1)
+
+GIT
+  remote: git://github.com/datamapper/dm-validations.git
+  revision: 5a73ee18d88a02c5412f34b855a2be3819857c9a
+  specs:
+    dm-validations (1.0.2)
+      dm-core (~> 1.0.2)
 
 GIT
   remote: git://github.com/jnicklas/carrierwave.git
@@ -153,8 +177,6 @@ GEM
     dm-do-adapter (1.0.2)
       data_objects (~> 0.10.2)
       dm-core (~> 1.0.2)
-    dm-migrations (1.0.2)
-      dm-core (~> 1.0.2)
     dm-observer (1.0.2)
       dm-core (~> 1.0.2)
     dm-postgres-adapter (1.0.2)
@@ -176,14 +198,6 @@ GEM
     dm-timestamps (1.0.2)
       dm-core (~> 1.0.2)
     dm-transactions (1.0.2)
-      dm-core (~> 1.0.2)
-    dm-types (1.0.2)
-      dm-core (~> 1.0.2)
-      fastercsv (~> 1.5.3)
-      json_pure (~> 1.4)
-      stringex (~> 1.1.0)
-      uuidtools (~> 2.1.1)
-    dm-validations (1.0.2)
       dm-core (~> 1.0.2)
     do_postgres (0.10.2)
       data_objects (= 0.10.2)
@@ -384,13 +398,13 @@ DEPENDENCIES
   devise
   dm-core!
   dm-devise
-  dm-migrations
+  dm-migrations!
   dm-postgres-adapter
   dm-rails
   dm-timestamps
   dm-transactions
-  dm-types
-  dm-validations
+  dm-types!
+  dm-validations!
   faker (= 0.3.1)
   fakeweb
   gravtastic

@@ -1,5 +1,14 @@
 # encoding: utf-8
 require 'machinist/data_mapper'
+
+module Machinist
+  class DataMapperAdapter
+    def self.has_association?(object, attribute)
+      object.class.relationships.named?(attribute)
+    end
+  end
+end
+
 require 'sham'
 require 'faker'
 

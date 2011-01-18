@@ -79,8 +79,8 @@ class ActiveSupport::TestCase
   def self.should_require_key(*args)
     klass = self.name.gsub(/Test$/, '').constantize
     args.each do |arg|
-      key = klass.relationships.has_key?(arg) ? :"#{arg}_id" : arg
       should "require key '#{arg}'" do
+        key = klass.relationships.named?(arg) ? :"#{arg}_id" : arg
         obj = klass.new
         obj.send("#{key}=", nil)
         obj.valid?
@@ -94,24 +94,9 @@ class ActiveSupport::TestCase
     args.each do |arg|
       should "have_many '#{arg}'" do
         has = false
-        klass.relationships.each do |name, relationship|
-          if name == arg.to_s && relationship.class.name =~ /OneToMany/ && relationship.max == Infinity
+        klass.relationships.each do |relationship|
+          if relationship.name.to_s == arg.to_s && relationship.class.name =~ /OneToMany/ && relationship.max == Infinity
             break has = true
-          end
-        end
-        assert has
-      end
-    end
-  end
-
-  def self.should_have_one(*args)
-    klass = self.name.gsub(/Test$/, '').constantize
-    args.each do |arg|
-      should "have_one '#{arg}'" do
-        has = false
-        klass.associations.each do |name, assoc|
-          if assoc.association.to_s.match(/ReferencesOne/) and name == arg.to_s
-            has = true
           end
         end
         assert has
@@ -124,8 +109,8 @@ class ActiveSupport::TestCase
     args.each do |arg|
       should "belong_to '#{arg}'" do
         has = false
-        klass.relationships.each do |name, relationship|
-          if name == arg.to_s && relationship.class.name =~ /ManyToOne/
+        klass.relationships.each do |relationship|
+          if relationship.name.to_s == arg.to_s && relationship.class.name =~ /ManyToOne/
             break has = true
           end
         end

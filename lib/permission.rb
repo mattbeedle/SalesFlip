@@ -5,7 +5,7 @@ module Permission
     through_relationship_name = permitted_users_model.name.tableize.to_sym
 
     has n, through_relationship_name
-    has n, :permitted_users, User,
+    has n, :permitted_users, 'User',
       through: through_relationship_name
 
     has n, cached_permissions_model.name.tableize.to_sym
@@ -57,8 +57,7 @@ module Permission
       model_name = "#{name}PermittedUser"
       return Object.const_get(model_name) if Object.const_defined?(model_name)
 
-      through_model = DataMapper::Model.new
-      Object.const_set(model_name, through_model)
+      through_model = DataMapper::Model.new(model_name)
 
       through_model.belongs_to :permitted_user, User, :key => true
       through_model.belongs_to :"#{name.underscore}", :key => true
@@ -74,8 +73,7 @@ module Permission
       model_name = "Cached#{name}Permission"
       return Object.const_get(model_name) if Object.const_defined?(model_name)
 
-      model = DataMapper::Model.new
-      Object.const_set(model_name, model)
+      model = DataMapper::Model.new(model_name)
 
       model.belongs_to :"#{name.underscore}", :key => true
       model.belongs_to :user, :key => true

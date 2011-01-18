@@ -55,7 +55,7 @@ module DataMapper
 
       # @api private
       def __polymorphic_relationships__
-        @polymorphic_relationships ||= Hash.new { |h, k| h[k] = [] }
+        @polymorphic_relationships ||= Hash.new { |h, k| h[k] = RelationshipSet.new }
       end
 
       alias :belongs_to_without_polymorphism :belongs_to
