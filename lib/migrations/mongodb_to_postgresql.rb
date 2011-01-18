@@ -48,13 +48,21 @@ module Migrations
           @db.authenticate(ENV['MONGODB_STAGING_USER'], ENV['MONGODB_STAGING_PASSWORD'])
         elsif Rails.env.production?
           @db.authenticate(ENV['MONGODB_USER'], ENV['MONGODB_PASSWORD'])
+        else
+          @db = Mongo::Connection.new.db(database)
         end
         @collection ||= @db.collection(name)
       end
 
       def postgre
-        @connection ||= DataObjects::Connection.new(
-          "postgres://postgres:#{ENV['SALESFLIP_POSTGRES_PASSWORD']}@#{ENV['SALESFLIP_POSTGRES_HOST']}:5432/#{database}")
+        if Rails.env.production? || Rails.env.staging?
+          @connection ||= DataObjects::Connection.new(
+            "postgres://postgres:#{ENV['SALESFLIP_POSTGRES_PASSWORD']}@#{ENV['SALESFLIP_POSTGRES_HOST']}:5432/#{database}")
+        else
+          @connection ||= DataObjects::Connection.new(
+            "postgres://localhost/#{database}")
+        end
+        @connection
       end
 
       def value_markers(attributes = {})
