@@ -94,8 +94,16 @@ namespace :db do
 
     puts "Hooking up the Postgre Relations"
     [ AssociateAccounts, AssociateActivities, AssociateAttachments, AssociateComments,
-      AssociateContacts, AssociateLeads, AssociateTasks, AssociateUsers ].each do |migration|
+      AssociateContacts, AssociateLeads, AssociateTasks, AssociateUsers, FixHasConstants ].each do |migration|
       migration.up
     end
+  end
+
+  desc 'migrate everything'
+  task :migrate_all => :environment do
+    Rake::Task['db:automigrate'].invoke
+    Rake::Task['db:migrate_data'].invoke
+    Rake::Task['db:migrate_users'].invoke
+    Rake::Task['db:re_relate'].invoke
   end
 end
