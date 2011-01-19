@@ -73,16 +73,39 @@ class Activity
 
   class << self
     def visible_to(user)
-      all.to_a.delete_if do |activity|
-        (activity.subject.permission_is?('Private') && activity.subject.user != user) ||
-        (activity.subject.permission_is?('Shared') &&
-        !activity.subject.permitted_user_ids.include?(user.id) &&
-        activity.subject.user != user)
+      activities = []
+
+      # Ensure that we're using the identity map by using all.each here instead
+      # of all.to_a.delete_if.
+      all.each do |activity|
+        next unless activity.subject
+        next if (
+          (activity.subject.permission_is?('Private') && activity.subject.user != user) ||
+          (
+            activity.subject.permission_is?('Shared') &&
+            !activity.subject.permitted_user_ids.include?(user.id) &&
+            activity.subject.user != user
+          )
+        )
+
+        activities << activity
       end
+
+      activities
     end
 
     def not_restored
-      all.to_a.delete_if { |activity| activity.subject.deleted_at.nil? }
+      activities = []
+
+      # Ensure that we're using the identity map by using all.each here instead
+      # of all.to_a.delete_if.
+      all.each do |activity|
+        next if activity.subject.deleted_at.nil?
+
+        activities << activity
+      end
+
+      activities
     end
   end
 end

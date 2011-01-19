@@ -5,9 +5,9 @@ module DataMapper
   # paginated collections.
   module WillPaginate
 
-    attr_accessor_with_default :total_entries, 0
-    attr_accessor_with_default :total_pages, 0
-    attr_accessor_with_default :current_page, 0
+    attr_accessor :total_entries
+    attr_accessor :total_pages
+    attr_accessor :current_page
 
     # current_page - 1 or nil if there is no previous page
     def previous_page
@@ -32,11 +32,11 @@ module DataMapper
       page = (options[:page] || 1).to_i
       per_page = (options[:per_page] || 30).to_i
 
-      self.total_entries = count
-      self.total_pages = (@total_entries / per_page.to_f).ceil
-      self.current_page = page
+      @total_entries = count
+      @total_pages = (@total_entries / per_page.to_f).ceil
+      @current_page = page
 
-      query.update(offset: (page - 1) * page, limit: per_page)
+      query.update(offset: (page - 1) * per_page, limit: per_page)
 
       self
     end
