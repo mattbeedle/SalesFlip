@@ -29,7 +29,7 @@ class User
   has n,  :tasks
   has n,  :accounts
   has n,  :contacts
-  has n,  :activities
+  has n,  :activities,  child_key: 'creator_id'
   has n,  :searches
   has n,  :invitations, :inverse => :inviter#, :dependent => :destroy
   has 1,  :invitation,  :inverse => :invited

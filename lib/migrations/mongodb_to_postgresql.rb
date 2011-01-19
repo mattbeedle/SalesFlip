@@ -71,7 +71,7 @@ module Migrations
       end
 
       def values(attributes = {})
-        attributes.keys.delete_if { |k| k == 'hausnummer' || k.blank? || k == 'unlock_token' }.sort.collect { |key| typecast(attributes[key]) }
+        attributes.keys.delete_if { |k| k == 'hausnummer' || k.blank? || k == 'unlock_token' }.sort.collect { |key| typecast(attributes[key].blank? ? nil : attributes[key]) }
       end
 
       def typecast(value)
