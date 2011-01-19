@@ -10,6 +10,11 @@ CarrierWave.configure do |config|
   config.grid_fs_access_url   = '/uploads'
   config.grid_fs_host         = db_config[Rails.env]['host']
   config.grid_fs_port         = db_config[Rails.env]['port']
-  config.grid_fs_username     = ENV['MONGOHQ_USER']
-  config.grid_fs_password     = ENV['MONGOHQ_PASSWORD']
+  if Rails.env.staging?
+    config.grid_fs_username     = ENV['MONGODB_STAGING_USER']
+    config.grid_fs_password     = ENV['MONGODB_STAGING_PASSWORD']
+  elsif Rails.env.production?
+    config.grid_fs_username     = ENV['MONGODB_USER']
+    config.grid_fs_password     = ENV['MONGODB_PASSWORD']
+  end
 end
