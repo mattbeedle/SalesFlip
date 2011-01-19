@@ -69,8 +69,11 @@ protected
     unless read_fragment(tasks_index_cache_key)
       if params[:scopes]
         @tasks = {}
-        params[:scopes].keys.map(&:to_sym).each do |scope|
-          @tasks[scope] = apply_scopes(Task).asc(:due_at).send(scope)
+        scopes = %w(overdue due_today due_tomorrow due_this_week due_next_week due_later)
+
+        scopes.each do |scope|
+          scope = scope.to_sym
+          @tasks[scope] = apply_scopes(Task).asc(:due_at).send(scope) if params[:scopes][scope]
         end
       else
         @overdue ||= apply_scopes(Task).overdue.asc(:due_at)
