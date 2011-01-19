@@ -30,9 +30,9 @@ class AssociateComments < Migrations::MongodbToPostgresql
     end
 
     # Fix type fields
-    sql = 'UPDATE comments SET type = "Email" WHERE subject IS NOT NULL'
+    sql = "UPDATE comments SET type = 'Email' WHERE subject IS NOT NULL"
     postgre.create_command(sql).execute_non_query
-    sql = 'UPDATE comments SET type = "Comment" WHERE type IS NULL'
+    sql = "UPDATE comments SET type = 'Comment' WHERE type IS NULL"
     postgre.create_command(sql).execute_non_query
   end
 
