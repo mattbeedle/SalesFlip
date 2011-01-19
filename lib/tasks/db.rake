@@ -106,4 +106,12 @@ namespace :db do
     puts "Fixing has constants"
     FixHasConstants.up
   end
+
+  desc "Fix Attachments"
+  task :fix_attachments => :environment do
+    Dir[ File.join(Rails.root, "db", "migrate", "*.rb") ].sort.each { |file| require file }
+
+    puts 'Fixing attachments'
+    FixAttachments.up
+  end
 end

@@ -8,6 +8,8 @@ class Attachment
   property :created_on, Date
   property :updated_at, DateTime
   property :updated_on, Date
+  property :legacy_id,  String
+  property :attachment_filename, String
 
   belongs_to :subject, :polymorphic => true, required: true
 

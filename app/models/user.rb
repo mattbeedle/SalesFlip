@@ -75,10 +75,8 @@ class User
   alias :name :full_name
 
   def recent_items
-    Activity.all(:user_id => self.id,
-                 :action => 'Viewed',
-                 :order => :updated_at.desc,
-                 :limit => 5).map(&:subject)
+    activities.where(:action => 'Viewed', :order => :updated_at.desc,
+                     :limit => 5).map(&:subject)
   end
 
   def tracked_items
