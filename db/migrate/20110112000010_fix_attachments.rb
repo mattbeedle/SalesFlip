@@ -36,7 +36,6 @@ class FixAttachments < Migrations::MongodbToPostgresql
     else
       db = Mongo::Connection.new.db(database)
     end
-    db = Mongo::Connection.new.db('salesflip_development')
     grid = Mongo::GridFileSystem.new(db)
   end
 
