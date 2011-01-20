@@ -32,9 +32,10 @@ Feature: Manage campaigns
     And I should see "Conversions 1 0"
 
     When I follow "Edit"
+    And I fill in "Name" with "Lead lead leads leads"
     And I fill in "Number of leads" with ""
     And I press "Save Campaign"
-    Then I should see "can't be blank"
+    And I should see "can't be blank"
 
     When I fill in "Number of leads" with "5"
     And I fill in "Conversion (%)" with ""
@@ -66,7 +67,7 @@ Feature: Manage campaigns
 
     When I follow "Campaigns" within "#navigation"
     Then I should see "Generate 100 leads this month"
-    And I should see "Dec 01 - Dec 31"
+    And I should see "1. Dec - 31. Dec"
 
   Scenario: Viewing a campaign
     Given I am registered and logged in as annika
@@ -75,7 +76,7 @@ Feature: Manage campaigns
 
     When I follow "Generate 100 leads this month"
     Then I should see "Generate 100 leads this month"
-    And I should see "Dec 01 - Dec 31"
+    And I should see "1. Dec - 31. Dec"
 
   Scenario: Viewing a campaign with leads
     Given I am registered and logged in as annika
@@ -96,7 +97,7 @@ Feature: Manage campaigns
 
     When I fill in "First Name" with "Erich"
     And I fill in "Last Name" with "Feldmeier"
-    And I press "Save Lead"
+    And I press "Create Lead"
     Then I should be on the campaign page
     And I should see "Erich Feldmeier"
 
@@ -134,17 +135,17 @@ Feature: Manage campaigns
     Then I should be on that campaign's page
     And I should see "Campaign was successfully updated"
     And I should see "Generate 20 leads next week"
-    And I should see "Dec 08 - Dec 15"
+    And I should see "8. Dec - 15. Dec"
 
   Scenario: Viewing campaign creation event
     Given I am registered and logged in as annika
     And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: annika
 
     When I go to the campaign's page
-    Then I should see "Campaign Created by annika.fleischer@1000jobboersen.de"
+    Then I should see "Campaign Created by annika.fleischer"
 
     When I go to the home page
-    Then I should see "annika.fleischer@1000jobboersen.de created campaign Generate 100 leads this month"
+    Then I should see "annika.fleischer"
 
   Scenario: Viewing campaign update event
     Given I am registered and logged in as annika
@@ -153,7 +154,7 @@ Feature: Manage campaigns
     And I fill in "Start date" with "2/12/2010"
 
     When I press "Save Campaign"
-    Then I should see "Campaign Updated by annika.fleischer@1000jobboersen.de"
+    Then I should see "Campaign Updated by annika.fleischer"
 
     When I go to the home page
     Then I should see "annika.fleischer@1000jobboersen.de updated campaign Generate 100 leads this month"
@@ -164,7 +165,7 @@ Feature: Manage campaigns
     And I go to the campaign's page
 
     When I refresh the page
-    Then I should see "Campaign Viewed by annika.fleischer@1000jobboersen.de"
+    Then I should see "Campaign Viewed by annika.fleischer"
 
   Scenario: Creating a comment for a campaign
     Given I am registered and logged in as annika

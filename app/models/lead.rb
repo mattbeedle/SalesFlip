@@ -80,6 +80,10 @@ class Lead
     all(:user_id => company.users.map(&:id))
   end
 
+  def self.converted
+    status_is('Converted')
+  end
+
   searchable do
     text :first_name, :last_name, :email, :phone, :notes, :company, :alternative_email, :mobile,
       :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing

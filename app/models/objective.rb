@@ -1,13 +1,25 @@
 class Objective
-  include Mongoid::Document
+  include DataMapper::Resource
 
-  field :number_of_leads, :type => Integer
-  field :conversion_percentage, :type => Integer
+  property :id, Serial
+  property :number_of_leads, Integer
+  property :conversion_percentage, Integer
 
-  embedded_in :campaign, :inverse_of => :objective
+  belongs_to :campaign, required: false
+
+  after :valid? do |success, context = :default|
+    if !success && campaign
+      campaign.errors[:objective] ||= errors.to_hash
+    end
+  end
 
   validates_presence_of :number_of_leads, :if => :conversion_percentage?
-  validates_numericality_of :conversion_percentage
+  validates_numericality_of :conversion_percentage, allow_blank: true,
+    allow_nil: true
+
+  def conversion_percentage?
+    conversion_percentage.present?
+  end
 
   def number_of_conversions
     if conversion_percentage?

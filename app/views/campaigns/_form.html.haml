@@ -8,7 +8,7 @@
   %h3.toggler.open= t('objectives')
   .toggle
     %fieldset
-      = form.simple_fields_for @campaign.objective || :objective do |f|
+      = form.simple_fields_for @campaign.objective || Objective.new do |f|
         .16.a= f.input :number_of_leads
         .16.z= f.input :conversion_percentage
 

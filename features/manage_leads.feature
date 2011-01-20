@@ -134,8 +134,7 @@ Feature: Manage leads
     When I fill in "First Name" with "Erich"
     And I fill in "Last Name" with "Feldmeier"
     And I select "Generate 100 leads this month" from "Campaign"
-    And I press "Save Lead"
-    And I follow "Erich Feldmeier"
+    And I press "lead_submit"
     Then I should see "Generate 100 leads this month"
 
   Scenario: Logging activity

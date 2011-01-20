@@ -1,28 +1,42 @@
 class Campaign
-  include Mongoid::Document
+  include DataMapper::Resource
   include ParanoidDelete
   include Activities
 
-  field :name
-  field :start_date, :type => Date
-  field :end_date, :type => Date
+  property :id, Serial
+  property :name, String
+  property :start_date, Date
+  property :end_date, Date
 
   validates_presence_of :name
-  validates_associated :objective
 
-  embeds_one :objective
+  belongs_to :user, required: false
+  has 1, :objective
 
-  belongs_to_related :user, :index => true
-  has_many_related :leads, :dependent => :nullify, :index => true do
-    def converted
-      status_is('Converted')
+  accepts_nested_attributes_for :objective
+
+  validates_with_block :objective do
+    if objective
+      objective.valid? || [false, objective.errors.to_hash]
+    else
+      true
     end
   end
-  has_many_related :tasks, :as => :asset, :dependent => :delete_all, :index => true
-  has_many_related :comments, :as => :commentable, :dependent => :delete_all, :index => true
+
+  has n, :leads
+  has n, :tasks, :as => :asset
+  has n, :comments, :as => :commentable
+
+  def start_date?
+    start_date.present?
+  end
+
+  def end_date?
+    end_date.present?
+  end
 
   def objective?
-    objective && objective.number_of_leads?
+    objective && objective.number_of_leads.present?
   end
 
   def permission_is?(permission)
@@ -34,7 +48,7 @@ class Campaign
   end
 
   def related_activities
-    Activity.where(:subject_id => id)
+    tasks.activities | comments.activities | leads.activities | activities
   end
 
 end

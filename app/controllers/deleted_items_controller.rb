@@ -25,7 +25,7 @@ class DeletedItemsController < ApplicationController
 
 protected
   def resource
-    @item = params[:type].constantize.find(params[:id])
+    @item = params[:type].constantize.get(params[:id])
   end
 
   def admin_required
