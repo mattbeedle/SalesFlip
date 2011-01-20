@@ -21,7 +21,7 @@ class Activity
   has n, :activity_users
   has n, :notified_users, User, through: Resource
 
-  belongs_to :user
+  belongs_to :user, child_key: 'creator_id'
   belongs_to :subject, polymorphic: true, required: true
 
   has_constant :actions, lambda { I18n.t(:activity_actions) }

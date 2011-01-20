@@ -11,7 +11,7 @@ class AssociateAttachments < Migrations::MongodbToPostgresql
     postgre.create_command(sql).execute_non_query
 
     # Delete the orphans
-    sql = "DELETE FROM attachments WHERE subject_id IS NULL"
+    sql = "DELETE FROM attachments WHERE comment_id IS NULL AND opportunity_id IS NULL"
     postgre.create_command(sql).execute_non_query
   end
 

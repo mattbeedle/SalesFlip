@@ -16,7 +16,7 @@ module Migrations
 
     class << self
       def columns(attributes = {})
-        attributes.keys.delete_if { |key| key.blank? || key == 'hausnummer' }.sort.collect do |key|
+        attributes.keys.delete_if { |key| key.blank? || key == 'hausnummer' || key == 'unlock_token' }.sort.collect do |key|
           key =~ /_id/ ? "\"legacy_#{key}\"".gsub("__", "_") : "\"#{key}\""
         end.join(",")
       end
@@ -33,32 +33,45 @@ module Migrations
         puts("Migrating #{name}.")
         mongodb(name).find.each do |attributes|
           attrs = attributes.except(*SKIP)
-          sql = command(name, attrs)
-          postgre.create_command(sql).execute_non_query(*values(attrs))
+          @sql = command(name, attrs)
+          postgre.create_command(@sql).execute_non_query(*values(attrs))
         end
+      rescue StandardError => e
+        puts @sql
+        puts e
+        raise e
       end
 
       def mongodb(name)
-        @db ||= Mongo::Connection.new(ENV['MONGODB_HOST'], 27017).db(database)
         if Rails.env.staging?
+          @db ||= Mongo::Connection.new(ENV['MONGODB_HOST'], 27017).db(database)
           @db.authenticate(ENV['MONGODB_STAGING_USER'], ENV['MONGODB_STAGING_PASSWORD'])
         elsif Rails.env.production?
+          @db ||= Mongo::Connection.new(ENV['MONGODB_HOST'], 27017).db(database)
           @db.authenticate(ENV['MONGODB_USER'], ENV['MONGODB_PASSWORD'])
+        else
+          @db = Mongo::Connection.new.db(database)
         end
         @collection ||= @db.collection(name)
       end
 
       def postgre
-        @connection ||= DataObjects::Connection.new(
-          "postgres://postgres:#{ENV['SALESFLIP_POSTGRES_PASSWORD']}@#{ENV['SALESFLIP_POSTGRES_HOST']}:5432/#{database}")
+        if Rails.env.production? || Rails.env.staging?
+          @connection ||= DataObjects::Connection.new(
+            "postgres://postgres:#{ENV['SALESFLIP_POSTGRES_PASSWORD']}@#{ENV['SALESFLIP_POSTGRES_HOST']}:5432/#{database}")
+        else
+          @connection ||= DataObjects::Connection.new(
+            "postgres://localhost/#{database}")
+        end
+        @connection
       end
 
       def value_markers(attributes = {})
-        attributes.delete_if { |k,v| k == 'hausnummer' || k.blank? }.size.times.collect{ "?" }.join(",")
+        attributes.delete_if { |k,v| k == 'hausnummer' || k.blank? || k == 'unlock_token' }.size.times.collect{ "?" }.join(",")
       end
 
       def values(attributes = {})
-        attributes.keys.delete_if { |k| k == 'hausnummer' || k.blank? }.sort.collect { |key| typecast(attributes[key]) }
+        attributes.keys.delete_if { |k| k == 'hausnummer' || k.blank? || k == 'unlock_token' }.sort.collect { |key| typecast(attributes[key].blank? ? nil : attributes[key]) }
       end
 
       def typecast(value)

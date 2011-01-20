@@ -13,6 +13,8 @@ class User
   property :id, Serial
   property :username, String
   property :api_key, String
+  property :first_name, String
+  property :last_name, String
   property :type, String
   property :created_at, DateTime
   property :created_on, Date
@@ -27,7 +29,7 @@ class User
   has n,  :tasks
   has n,  :accounts
   has n,  :contacts
-  has n,  :activities
+  has n,  :activities,  child_key: 'creator_id'
   has n,  :searches
   has n,  :invitations, :inverse => :inviter#, :dependent => :destroy
   has 1,  :invitation,  :inverse => :invited
@@ -73,10 +75,8 @@ class User
   alias :name :full_name
 
   def recent_items
-    Activity.all(:user_id => self.id,
-                 :action => 'Viewed',
-                 :order => :updated_at.desc,
-                 :limit => 5).map(&:subject)
+    activities.where(:action => 'Viewed', :order => :updated_at.desc,
+                     :limit => 5).map(&:subject)
   end
 
   def tracked_items
