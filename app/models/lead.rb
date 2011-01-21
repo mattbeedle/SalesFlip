@@ -1,13 +1,12 @@
 class Lead
-  include Mongoid::Document
-  include Mongoid::Timestamps
-  include HasConstant
-  include HasConstant::Orm::Mongoid
+  include DataMapper::Resource
+  include DataMapper::Timestamps
+  include HasConstant::Orm::DataMapper
   include ParanoidDelete
   include Permission
   include Trackable
   include Activities
-  include Sunspot::Mongoid
+  include Sunspot::DataMapper
   include Assignable
   include Gravtastic
   include ActiveModel::Observing
@@ -15,77 +14,68 @@ class Lead
 
   is_gravtastic
 
-  field :first_name
-  field :last_name
-  field :email
-  field :phone
-  field :status,        :type => Integer
-  field :source,        :type => Integer
-  field :rating,        :type => Integer
-  field :notes
+  property :id, Serial
+  property :first_name, String
+  property :last_name, String, :required => true
+  property :email, String
+  property :phone, String
+  property :rating, Integer
+  property :notes, Text
 
-  field :title,         :type => Integer
-  field :salutation,    :type => Integer
-  field :company
-  field :company_size,  :type => Integer
-  field :company_phone
-  field :career_site
-  field :job_title
-  field :department
-  field :alternative_email
-  field :fax
-  field :mobile
-  field :address
-  field :city
-  field :postal_code
-  field :country
-  field :referred_by
-  field :do_not_call,   :type => Boolean
+  has_constant :titles,         lambda { I18n.t(:titles) }
+  has_constant :salutations,    lambda { I18n.t(:salutations) }
+  has_constant :statuses,       lambda { I18n.t(:lead_statuses) }
+  has_constant :sources,        lambda { I18n.t(:lead_sources) }
+  has_constant :company_sizes,  lambda { I18n.t(:company_sizes) }
 
-  field :identifier,    :type => Integer
+  property :company, String
+  property :company_phone, String
+  property :company_blog, String
+  property :company_facebook, String
+  property :company_twitter, String
+  property :career_site, Text
+  property :job_title, String
+  property :department, String
+  property :alternative_email, String
+  property :fax, String
+  property :mobile, String
+  property :address, Text
+  property :city, String
+  property :postal_code, String
+  property :country, String
+  property :referred_by, String
+  property :do_not_call, Boolean
 
-  index(
-    [
-      [ :first_name, Mongo::ASCENDING ],
-      [ :last_name, Mongo::ASCENDING ]
-    ],
-  )
-
-  index(
-    [
-      [:status, Mongo::DESCENDING],
-      [:created_at, Mongo::DESCENDING]
-    ]
-  )
-
-  validates_presence_of :user, :last_name
+  property :homepage, String
+  property :identifier, Integer
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
   attr_accessor :do_not_notify, :do_not_index
 
-  referenced_in   :user
-  referenced_in   :contact
-  references_many :comments, :as => :commentable, :dependent => :delete_all
-  references_many :tasks, :as => :asset, :dependent => :delete_all
-  references_many :emails, :as => :commentable, :dependent => :delete_all
+  belongs_to   :user, :required => true
+  belongs_to   :contact, :required => false
+  has n, :comments, :as => :commentable#, :dependent => :delete_all
+  has n, :tasks, :as => :asset#, :dependent => :delete_all
+  has n, :emails, :as => :commentable#, :dependent => :delete_all
 
-  before_validation :set_initial_state
-  before_create     :set_identifier, :set_recently_created
-  before_save       :log_recently_changed
-  after_save        :notify_assignee, :unless => :do_not_notify
+  before :valid?, :set_initial_state
+  before :create,     :set_identifier
+  before :create,     :set_recently_created
+  before :save,       :log_recently_changed
+  after  :save do
+    notify_assignee unless do_not_notify
+  end
 
-  has_constant :titles,         lambda { I18n.t(:titles) }
-  has_constant :statuses,       lambda { I18n.t(:lead_statuses) }
-  has_constant :sources,        lambda { I18n.t(:lead_sources) }
-  has_constant :salutations,    lambda { I18n.t(:salutations) }
-  has_constant :company_sizes,  lambda { I18n.t(:company_sizes) }
+  def self.unassigned
+    all(:assignee_id => nil)
+  end
 
-  named_scope :with_status, lambda { |statuses|
-    where(:status.in => statuses.map { |status| Lead.statuses.index(status) })
-  }
-  named_scope :unassigned, where(:assignee_id => nil)
-  named_scope :for_company, lambda { |company|
-    where(:user_id.in => company.users.map(&:id))
-  }
+  def self.for_company(company)
+    all(:user_id => company.users.map(&:id))
+  end
 
   searchable do
     text :first_name, :last_name, :email, :phone, :notes, :company,
@@ -96,34 +86,29 @@ class Lead
 
   def self.with_status( statuses )
     statuses = statuses.lines if statuses.respond_to?(:lines)
-    where(:status.in => statuses.map { |status| Lead.statuses.index(status) })
+    all(:status => statuses)
   end
 
   def self.exportable_fields
-    fields.map(&:first).sort.delete_if do |f|
+    properties.map { |p| p.name.to_s }.sort.delete_if do |f|
       f.match(/access|permission|permitted_user_ids|tracker_ids/)
     end
   end
 
   def similar( threshold )
     leads = Lead.search { keywords self.company }.results
-    ids = leads.map do |lead|
-      [lead.id, self.company.
-       levenshtein_similar(lead.company)]
-    end.select { |similarity| similarity.last > threshold }.map(&:first)
-    Lead.where(:_id.in => ids)
-  rescue
-    []
+
+    leads.select do |lead|
+      company.levenshtein_similar(lead.company) > threshold
+    end
   end
 
   def similar_accounts( threshold )
     accounts = Account.search { keywords self.company }.results
-    ids = accounts.map do |account|
-      [account.id, self.company.levenshtein_similar(account.name)]
-    end.select { |similarity| similarity.last > threshold }.map(&:first)
-    Account.where(:_id.in => ids)
-  rescue
-    []
+
+    accounts.select do |account|
+      company.levenshtein_similar(account.company) > threshold
+    end
   end
 
   def full_name
@@ -133,11 +118,12 @@ class Lead
 
   def promote!( account_name, options = {} )
     @recently_converted = true
-    if !self.email.blank? and (contact = Contact.where(:email => self.email).first)
-      I18n.locale_around(:en) { update_attributes :status => 'Converted', :contact_id => contact.id }
+    if email.present? && (contact = Contact.first(:email => email))
+      self.attributes = {:status => 'Converted', :contact_id => contact.id}
+      save
       if contact.account.blank? && !account_name.blank?
         account = Account.find_or_create_for(self, account_name, options)
-        contact.update_attributes :account => account if account.valid?
+        contact.update :account => account if account.valid?
       end
     else
       if options[:opportunity] && !options[:opportunity].keys.blank?
@@ -150,15 +136,16 @@ class Lead
       contact = Contact.create_for(self, account, options)
       opportunity = Opportunity.create_for(contact, options)
       if [account, contact].all?(&:valid?)
-        I18n.locale_around(:en) { update_attributes :status => 'Converted', :contact_id => contact.id }
+        self.attributes = {:status => 'Converted', :contact_id => contact.id}
+        save
       end
     end
     return account || contact.account, contact, opportunity
   end
 
-  def reject!
+  def reject!(attributes = {})
     @recently_rejected = true
-    I18n.locale_around(:en) { update_attributes :status => 'Rejected' }
+    update attributes.merge(:status => 'Rejected')
   end
 
   def deliminated( deliminator, fields )
@@ -170,8 +157,10 @@ class Lead
   end
 
   def reassigned?
-    !assignee.blank? && ((@recently_changed.include?('assignee_id') && !@recently_created) ||
-                         @recently_created && assignee_id != user_id)
+    @reassigned = assignee && (
+      @recently_changed && @recently_changed.include?('assignee_id') ||
+      @recently_created && assignee_id != user_id
+    )
   end
 
 protected
@@ -180,11 +169,13 @@ protected
   end
 
   def notify_assignee
-    UserMailer.delay.lead_assignment_notification(self) if reassigned? && !self.do_not_notify
+    if reassigned? && !do_not_notify
+      UserMailer.delay.lead_assignment_notification(self)
+    end
   end
 
   def set_initial_state
-    I18n.locale_around(:en) { self.status = 'New' unless self.status } if self.new_record?
+    I18n.locale_around(:en) { self.status = 'New' unless self.status } if self.new?
   end
 
   def log_update
@@ -192,10 +183,8 @@ protected
     case
     when @recently_converted then Activity.log(updater_or_user, self, 'Converted')
     when @recently_rejected then Activity.log(updater_or_user, self, 'Rejected')
-    when @recently_destroyed then Activity.log(updater_or_user, self, 'Deleted')
-    when @recently_restored then Activity.log(updater_or_user, self, 'Restored')
     else
-      Activity.log(updater_or_user, self, 'Updated')
+      super
     end
   end
 
@@ -204,7 +193,7 @@ protected
   end
 
   def log_recently_changed
-    @recently_changed = changed
+    @recently_changed = changed.dup
   end
 
 private

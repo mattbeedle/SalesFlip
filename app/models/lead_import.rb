@@ -1,25 +1,30 @@
 class LeadImport
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include DataMapper::Resource
+  include DataMapper::Timestamps
   include Assignable
-  include HasConstant
-  include HasConstant::Orm::Mongoid
+  include HasConstant::Orm::DataMapper
 
-  field :deliminator, default: ','
-  field :unimported,  type: Array,    default: []
-  field :state,       type: Integer,  default: 0
-  field :source,      type: Integer,  default: 9
+  property :id, Serial
+  property :deliminator, String, default: ','
+  property :unimported, Object, default: []
+  property :file, String, auto_validation: false
+  property :file_filename, String
+  property :created_at, DateTime
+  property :updated_at, DateTime
 
-  validates_presence_of :file, :deliminator, :user
+  validates_presence_of :deliminator, :user
 
-  has_constant :states, %w(pending completed canceled)
-  has_constant :sources, lambda { Lead.sources }
-
+  validates_presence_of :file
   mount_uploader :file, AttachmentUploader
 
-  referenced_in :user
+  has_constant :states, %w(pending completed canceled),
+    default: "pending"
+  has_constant :sources, lambda { Lead.sources },
+    default: "Imported"
 
-  references_many :imported, class_name: 'Lead', stored_as: :array
+  belongs_to :user
+
+  has n, :imported, 'Lead', through: Resource
 
   def import
     lines.each_with_index do |line, index|
@@ -44,7 +49,7 @@ class LeadImport
       end
     end
     self.state = 'completed'
-    save!
+    save
     ImportMailer.import_summary(self).deliver
   end
 

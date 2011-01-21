@@ -1,47 +1,67 @@
 class Opportunity
-  include Mongoid::Document
-  include Mongoid::Timestamps
-  include HasConstant
-  include HasConstant::Orm::Mongoid
-  include Mongoid::Rails::MultiParameterAttributes
+  include DataMapper::Resource
+  include DataMapper::Timestamps
+  include HasConstant::Orm::DataMapper
   include Assignable
   include ParanoidDelete
   include Activities
   include Permission
-  include Sunspot::Mongoid
+  include Sunspot::DataMapper
 
-  field :title
-  field :close_on,        :type => Date,    :default => lambda { 1.month.from_now.utc }
-  field :probability,     :type => Integer, :default => 100
-  field :amount,          :type => Float,   :default => 0.0
-  field :discount,        :type => Float,   :default => 0.0
-  field :background_info
-  field :margin,          :type => Float
+  property :id, Serial
+  property :title, String, :required => true
+  property :close_on, Date,    :default => lambda { |*| 1.month.from_now.utc }
+  property :probability, Integer, :default => 100
+  property :amount, Float,   :default => 0.0
+  property :discount, Float,   :default => 0.0
+  property :background_info, String
+  property :margin, Float
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
-  referenced_in :contact
-  referenced_in :user
-  referenced_in :stage, :class_name => 'OpportunityStage'
-  references_many :comments, :as => :commentable, :dependent => :delete_all
-  references_many :tasks, :as => :asset, :dependent => :delete_all
-  references_many :attachments, :as => :subject, :index => true
+  validates_numericality_of :amount,      :allow_blank => true, :allow_nil => true
+  validates_numericality_of :probability, :allow_blank => true, :allow_nil => true
+  validates_numericality_of :discount,    :allow_blank => true, :allow_nil => true
 
-  validates_presence_of :title, :user, :stage
-  validates_numericality_of :amount,      :allow_blank => true
-  validates_numericality_of :probability, :allow_blank => true
-  validates_numericality_of :discount,    :allow_blank => true
+  attr_accessor :do_not_notify
 
-  named_scope :for_company, lambda { |company| where(:user_id.in => company.users.map(&:id)) }
-  named_scope :closing_for_date, lambda { |date| where(:close_on => date) }
-  named_scope :closing_between_dates, lambda { |start_date, end_date|
-    where(:close_on.gte => start_date, :close_on.lte => end_date) }
-  named_scope :certainty, where(:probability => 100)
-  named_scope :created_on, lambda { |date|
-    where(:created_at.gte => date.beginning_of_day.utc,
-          :created_at.lte => date.end_of_day.utc) }
+  belongs_to :contact, required: false
 
-  before_save :set_probability, :update_close_date
+  belongs_to :user, :required => true
+  belongs_to :stage, model: 'OpportunityStage'
 
-  alias :name :title
+  has n, :comments, :as => :commentable#, :dependent => :delete_all
+  has n, :tasks, :as => :asset#, :dependent => :delete_all
+  has n, :attachments, :as => :subject
+
+  def self.for_company(company)
+    all(:user_id => company.users.map(&:id))
+  end
+
+  def self.closing_for_date(date)
+    all(:close_on => date)
+  end
+
+  def self.closing_between_dates(start_date, end_date)
+    all(:close_on.gte => start_date, :close_on.lte => end_date)
+  end
+
+  def self.certainty
+    all(:probability => 100)
+  end
+
+  def self.created_on(date)
+    all(:created_at.gte => date.beginning_of_day.utc,
+        :created_at.lte => date.end_of_day.utc)
+  end
+
+  before :save, :set_probability
+  before :save, :update_close_date
+
+  alias :name  :title
+  alias :name= :title=
 
   searchable do
     text :title, :background_info
@@ -53,7 +73,7 @@ class Opportunity
 
   def self.stage_is( stages )
     stages = stages.lines.to_a if stages.respond_to?(:lines)
-    where(:stage_id.in => OpportunityStage.where(:name.in => stages).map(&:id))
+    all(:stage_id => OpportunityStage.all(:name => stages).map(&:id))
   end
 
   def weighted_amount
@@ -69,7 +89,7 @@ class Opportunity
 
   def self.create_for( contact, options = {} )
     attributes = options[:opportunity] || {}
-    opportunity = contact.opportunities.build attributes.merge(:user => contact.user,
+    opportunity = contact.opportunities.new attributes.merge(:user => contact.user,
       :assignee => contact.assignee)
     opportunity.save if contact.valid? && !opportunity.title.blank?
     opportunity

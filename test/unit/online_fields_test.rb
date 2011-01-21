@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class OnlineFieldsClass
-  include Mongoid::Document
+  include DataMapper::Resource
 end
 
 class OnlineFieldsTest < ActiveSupport::TestCase
@@ -11,27 +11,27 @@ class OnlineFieldsTest < ActiveSupport::TestCase
     end
 
     should 'add website field' do
-      assert OnlineFieldsClass.fields.map(&:first).include?('website')
+      assert OnlineFieldsClass.properties.named?(:website)
     end
 
     should 'add twitter field' do
-      assert OnlineFieldsClass.fields.map(&:first).include?('twitter')
+      assert OnlineFieldsClass.properties.named?(:twitter)
     end
 
     should 'add linked_in field' do
-      assert OnlineFieldsClass.fields.map(&:first).include?('linked_in')
+      assert OnlineFieldsClass.properties.named?(:linked_in)
     end
 
     should 'add facebook field' do
-      assert OnlineFieldsClass.fields.map(&:first).include?('facebook')
+      assert OnlineFieldsClass.properties.named?(:facebook)
     end
 
     should 'add xing field' do
-      assert OnlineFieldsClass.fields.map(&:first).include?('xing')
+      assert OnlineFieldsClass.properties.named?(:xing)
     end
 
     should 'add blog field' do
-      assert OnlineFieldsClass.fields.map(&:first).include?('blog')
+      assert OnlineFieldsClass.properties.named?(:blog)
     end
   end
 

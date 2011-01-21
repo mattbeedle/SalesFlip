@@ -67,7 +67,7 @@ protected
 
   def resource
     @contact ||= hook(:contacts_resource, self).last
-    @contact ||= Contact.for_company(current_user.company).where(:_id => params[:id]).first
+    @contact ||= Contact.for_company(current_user.company).where(:id => params[:id]).first
   end
 
   def begin_of_association_chain
@@ -85,7 +85,7 @@ protected
   end
 
   def account
-    @account ||= Account.find(params[:account_id]) if params[:account_id]
+    @account ||= Account.get(params[:account_id]) if params[:account_id]
   end
   
   def can_export?

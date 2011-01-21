@@ -4,6 +4,7 @@ log/test.log
 log/development.log
 log/*.log
 log/*
+public/uploads/*
 tmp/*
 tmp
 tmp/sass-cache

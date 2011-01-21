@@ -1,29 +1,30 @@
 class Comment
-  include Mongoid::Document
-  include Mongoid::Timestamps
-  include HasConstant
-  include HasConstant::Orm::Mongoid
+  include DataMapper::Resource
+  include DataMapper::Timestamps
+  include HasConstant::Orm::DataMapper
   include Activities
   include Permission
   include ParanoidDelete
   include ActiveModel::Observing
 
-  field :subject
-  field :text
+  property :id, Serial
+  property :type, Discriminator, index: true
+  property :subject, String
+  property :text, Text, required: true
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
-  referenced_in :user, :index => true
-  referenced_in :commentable, :polymorphic => true, :index => true
+  belongs_to :user, :required => true
+  belongs_to :commentable, polymorphic: true, required: true
 
-  references_many :attachments, :as => :subject, :index => true
+  has n, :attachments, :as => :subject
 
-  validates_presence_of :commentable, :user, :text
-
-  after_create :add_attachments
-
-  index :created_at, :background => true
+  after :create, :add_attachments
 
   def self.sorted
-    where.asc(:created_at)
+    all(:order => :created_at.asc)
   end
 
   def name

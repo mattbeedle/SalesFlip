@@ -10,12 +10,12 @@ class ContactTest < ActiveSupport::TestCase
     should_have_many :leads, :tasks, :comments, :emails, :opportunities
 
     should 'know which fields can be exported' do
-      Contact.fields.map(&:first).each do |field|
+      Contact.properties.map {|p| p.name.to_s}.each do |field|
         unless field == 'access' || field == 'permission' ||
           field == 'permitted_user_ids' || field == 'tracker_ids'
-          assert Contact.exportable_fields.include?(field)
+          assert_includes Contact.exportable_fields, field
         else
-          assert !Contact.exportable_fields.include?(field)
+          refute Contact.exportable_fields.include?(field)
         end
       end
     end
@@ -28,12 +28,12 @@ class ContactTest < ActiveSupport::TestCase
       end
 
       should 'return contacts assigned to the specified user' do
-        assert Contact.assigned_to(@user.id).include?(@contact)
+        assert_includes Contact.assigned_to(@user.id), @contact
         assert_equal 1, Contact.assigned_to(@user.id).count
       end
 
       should 'return contacts created by the specified user, but not assigned to anyone' do
-        assert Contact.assigned_to(@contact2.user.id).include?(@contact2)
+        assert_includes Contact.assigned_to(@contact2.user.id), @contact2
         assert_equal 1, Contact.assigned_to(@contact2.user.id).count
       end
 
@@ -51,13 +51,13 @@ class ContactTest < ActiveSupport::TestCase
       should 'create a contact from the supplied lead and account' do
         Contact.create_for(@lead, @account)
         assert_equal 1, Contact.count
-        assert Contact.where(:first_name => @lead.first_name, :last_name => @lead.last_name).first
+        assert Contact.all(:first_name => @lead.first_name, :last_name => @lead.last_name).first
         assert_equal 1, @account.contacts.count
       end
 
       should 'assign lead to contact' do
         contact = Contact.create_for(@lead, @account)
-        assert contact.leads.include?(@lead)
+        assert_includes contact.leads, @lead
       end
 
       should 'not create the contact if the supplied account is invalid' do
@@ -70,7 +70,7 @@ class ContactTest < ActiveSupport::TestCase
         5.times do
           Identifier.next_contact
         end
-        @lead.update_attributes :phone => '1234567890', :salutation => 'Mr',
+        @lead.update :phone => '1234567890', :salutation => 'Mr',
           :department => 'a test department', :source => 'Website', :address => 'an address',
           :website => 'www.test.com', :linked_in => 'linkedin', :facebook => 'facebook',
           :xing => 'xing', :do_not_call => true
@@ -84,7 +84,7 @@ class ContactTest < ActiveSupport::TestCase
         assert_equal 'linkedin', contact.linked_in
         assert_equal 'facebook', contact.facebook
         assert_equal 'xing', contact.xing
-        assert contact.identifier != @lead.identifier
+        refute_equal @lead.identifier, contact.identifier
         assert contact.do_not_call
       end
     end
@@ -132,29 +132,29 @@ class ContactTest < ActiveSupport::TestCase
     end
     
     should 'not be able to assign to another user if the permission is private' do
-      @contact.save!
-      @contact.update_attributes :permission => 'Private'
-      assert @contact.valid?
+      @contact.save
+      @contact.update :permission => 'Private'
+      assert_valid @contact
       @contact.assignee = @user
-      assert !@contact.valid?
-      assert @contact.errors[:base].include?('Cannot assign a private contact to another user, please change the permissions first')
+      refute_valid @contact
+      assert_includes @contact.errors[:permission], 'Cannot assign a private contact to another user, please change the permissions first'
     end
     
     should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
-      @contact.save!
+      @contact.save
       user = User.make
-      @contact.update_attributes :permission => 'Shared', :permitted_user_ids => [user.id]
-      assert @contact.valid?
+      @contact.update :permission => 'Shared', :permitted_user_ids => [user.id]
+      assert_valid @contact
       @contact.assignee = @user
-      assert !@contact.valid?
-      assert @contact.errors[:base].include?('Cannot assign a shared contact to a user it is not shared with. Please change the permissions first')
+      refute_valid @contact
+      assert_includes @contact.errors[:permission], 'Cannot assign a shared contact to a user it is not shared with. Please change the permissions first'
     end
     
     should 'be able to get all comments including those for any associated leads' do
-      @contact.save!
+      @contact.save
       lead = Lead.make :contact => @contact
       comment = Comment.make :commentable => lead
-      assert @contact.comments_including_leads.include?(comment)
+      assert_includes @contact.comments_including_leads, comment
     end
 
     should 'be able to get fields in pipe deliminated format' do
@@ -163,24 +163,24 @@ class ContactTest < ActiveSupport::TestCase
 
     should 'be assigned an identifier on creation' do
       assert @contact.identifier.nil?
-      @contact.save!
+      @contact.save
       assert @contact.identifier
     end
 
     should 'be assigned consecutive identifiers' do
-      @contact.save!
+      @contact.save
       assert_equal 1, @contact.identifier
       @contact2 = Contact.make_unsaved
       assert @contact2.identifier.nil?
-      @contact2.save!
+      @contact2.save
       assert_equal 2, @contact2.reload.identifier
     end
 
     should 'validate uniqueness of email' do
       @contact.email = 'florian.behn@careermee.com'
-      @contact.save!
+      @contact.save
       c = Contact.make_unsaved(:florian, :email => @contact.email)
-      assert !c.valid?
+      refute_valid c
       assert c.errors[:email]
     end
 
@@ -193,49 +193,49 @@ class ContactTest < ActiveSupport::TestCase
       end
 
       should 'return all public contacts' do
-        assert Contact.permitted_for(@annika).include?(@florian)
-        assert Contact.permitted_for(@annika).include?(@steven)
+        assert_includes Contact.permitted_for(@annika), @florian
+        assert_includes Contact.permitted_for(@annika), @steven
       end
 
       should 'return all contacts belonging to the user' do
-        @florian.update_attributes :permission => 'Private'
-        assert Contact.permitted_for(@annika).include?(@florian)
+        @florian.update :permission => 'Private'
+        assert_includes Contact.permitted_for(@annika), @florian
       end
 
       should 'NOT return private contacts belonging to another user' do
-        @steven.update_attributes :permission => 'Private'
-        assert !Contact.permitted_for(@annika).include?(@steven)
+        @steven.update :permission => 'Private'
+        refute_includes Contact.permitted_for(@annika), @steven
       end
 
       should 'return shared contacts where the user is in the permitted users list' do
-        @steven.update_attributes :permission => 'Shared', :permitted_user_ids => [@florian.user_id]
-        assert Contact.permitted_for(@annika).include?(@steven)
+        @steven.update :permission => 'Shared', :permitted_user_ids => [@florian.user_id]
+        assert_includes Contact.permitted_for(@annika), @steven
       end
 
       should 'NOT return shared contacts where the user is not in the permitted users list' do
-        @steven.update_attributes :permission => 'Shared', :permitted_user_ids => [@steven.user_id]
-        assert !Contact.permitted_for(@annika).include?(@steven)
+        @steven.update :permission => 'Shared', :permitted_user_ids => [@steven.user_id]
+        refute_includes Contact.permitted_for(@annika), @steven
       end
     end
 
     context 'activity logging' do
       setup do
-        @contact.save!
-        @contact = Contact.find(@contact.id)
+        @contact.save
+        @contact = Contact.get(@contact.id)
       end
 
       should 'log an activity when created' do
-        assert @contact.activities.any? {|a| a.action == 'Created' }
+        assert_includes @contact.activities.map(&:action), 'Created'
       end
 
       should 'log an activity when updated' do
-        @contact.update_attributes :first_name => 'test'
-        assert @contact.activities.any? {|a| a.action == 'Updated' }
+        @contact.update :first_name => 'test'
+        assert_includes @contact.activities.map(&:action), 'Updated'
       end
 
       should 'not log an "update" activity when do_not_log is set' do
-        @contact.update_attributes :first_name => 'test', :do_not_log => true
-        assert !@contact.activities.any? {|a| a.action == 'Updated' }
+        @contact.update :first_name => 'test', :do_not_log => true
+        refute_includes @contact.activities.map(&:action), 'Updated'
       end
 
       should 'not log an update activity when created' do
@@ -244,15 +244,15 @@ class ContactTest < ActiveSupport::TestCase
 
       should 'log an activity when deleted' do
         @contact.destroy
-        assert @contact.activities.any? {|a| a.action == 'Deleted' }
+        assert_includes @contact.activities.map(&:action), 'Deleted'
       end
 
       should 'log an activity when restored' do
         @contact.destroy
-        @contact.activities.each(&:destroy)
-        @contact = Contact.find(@contact.id)
-        @contact.update_attributes :deleted_at => nil
-        assert @contact.activities.any? {|a| a.action == 'Restored' }
+        @contact.activities.destroy!
+        @contact = Contact.get(@contact.id)
+        @contact.update :deleted_at => nil
+        assert_includes @contact.activities.reload.map(&:action), 'Restored'
       end
     end
 
@@ -277,18 +277,18 @@ class ContactTest < ActiveSupport::TestCase
 
     should 'require at least one permitted user if permission is "Shared"' do
       @contact.permission = 'Shared'
-      assert !@contact.valid?
+      refute_valid @contact
       assert @contact.errors[:permitted_user_ids]
     end
 
     should 'require last name' do
       @contact.last_name = nil
-      assert !@contact.valid?
+      refute_valid @contact
       assert @contact.errors[:last_name]
     end
 
     should 'be valid with all required attributes' do
-      assert @contact.valid?
+      assert_valid @contact
     end
   end
 end

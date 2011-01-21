@@ -1,4 +1,3 @@
-require 'lead'
 class Ability
   include CanCan::Ability
 

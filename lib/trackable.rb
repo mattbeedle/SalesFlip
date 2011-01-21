@@ -1,27 +1,39 @@
 module Trackable
   extend ActiveSupport::Concern
-  
+
   included do
-    field :tracker_ids, :type => Array
-    named_scope :tracked_by, lambda { |user| { :where => { :tracker_ids => user.id } } }
+    singular_name = name.downcase
+    through_relationship_name = :"#{singular_name}_trackers"
+
+    through_model = DataMapper::Model.new("#{name}Tracker")
+
+    through_model.belongs_to :tracker, User, :key => true
+    through_model.belongs_to :"#{singular_name}", :key => true
+
+    has n, through_relationship_name
+    has n, :trackers, User,
+      through: through_relationship_name
   end
 
-  def trackers
-    unless tracker_ids.nil?
-      User.where(:_id.in => tracker_ids.map { |id| BSON::ObjectId.from_string(id.to_s) })
+  module ClassMethods
+    def tracked_by(user)
+      all(trackers.id => user.id)
     end
   end
 
-  def tracked_by?( user )
+  def tracker_ids
+    trackers.map &:id
+  end
+
+  def tracked_by?(user)
     trackers && trackers.include?(user)
   end
 
-  def tracker_ids=( ids )
-    write_attribute :tracker_ids, ids.map { |id| BSON::ObjectId.from_string(id.to_s) } if ids
+  def tracker_ids=(ids)
+    self.trackers = User.all(:id => ids)
   end
 
-  def remove_tracker_ids=( ids )
-    olds_ids = read_attribute(:tracker_ids) || []
-    write_attribute :tracker_ids, olds_ids.map(&:to_s) - ids.map(&:to_s)
+  def remove_tracker_ids=(ids)
+    self.tracker_ids = tracker_ids.map(&:to_s) - ids.map(&:to_s)
   end
 end

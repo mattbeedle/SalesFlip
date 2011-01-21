@@ -3,14 +3,23 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 
-require File.expand_path(File.dirname(__FILE__) + "/blueprints")
+require "blueprints"
+require "models"
+
+DataMapper.auto_migrate!
+
+DatabaseCleaner.strategy = :transaction
+
+FakeWeb.allow_net_connect = false
+FakeWeb.register_uri(:post, 'http://localhost:8981/solr/update?wt=ruby', :body => '')
+Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
 
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
   #
   # Note: You'll currently still have to declare fixtures explicitly in integration tests
   # -- they do not yet inherit this setting
-  fixtures :all
+  # fixtures :all
 
   # Add more helper methods to be used by all tests here...
 
@@ -18,9 +27,9 @@ class ActiveSupport::TestCase
     klass = self.name.gsub(/Test$/, '').constantize
     args.each do |arg|
       should "have_constant '#{arg}'" do
-        assert klass.new.respond_to?(arg.to_s.singularize)
-        assert klass.respond_to?(arg.to_s)
-        assert klass.new.respond_to?("#{arg.to_s.singularize}_is?")
+        assert_respond_to klass.new, arg.to_s.singularize
+        assert_respond_to klass, arg.to_s
+        assert_respond_to klass.new, "#{arg.to_s.singularize}_is?"
       end
     end
   end
@@ -28,37 +37,41 @@ class ActiveSupport::TestCase
   def self.should_act_as_paranoid
     klass = self.name.gsub(/Test$/, '').constantize
     should 'act as paranoid' do
-      assert klass.new.respond_to?('deleted_at')
-      assert klass.respond_to?('not_deleted')
-      assert klass.respond_to?('deleted')
-      assert klass.not_deleted.blank?
-      assert klass.deleted.blank?
+      assert_respond_to klass.new, 'deleted_at'
+      assert_respond_to klass, 'not_deleted'
+      assert_respond_to klass, 'deleted'
+      assert_blank klass.not_deleted
+      assert_blank klass.deleted
       obj = klass.make
-      assert klass.not_deleted.include?(obj)
+      assert_includes klass.not_deleted, obj
       obj.destroy
       assert obj.deleted_at
-      assert klass.deleted.include?(obj)
-      assert klass.not_deleted.blank?
+      assert_includes klass.deleted, obj
+      assert_blank klass.not_deleted
     end
   end
 
   def self.should_be_trackable
     klass = self.name.gsub(/Test$/, '').constantize
     should 'be trackable' do
-      assert klass.new.respond_to?('tracker_ids')
-      assert klass.new.respond_to?('trackers')
-      assert klass.new.respond_to?('tracker_ids=')
-      assert klass.new.respond_to?('tracked_by?')
-      assert klass.new.respond_to?('remove_tracker_ids=')
-      assert klass.respond_to?('tracked_by')
+      assert_respond_to klass.new, 'tracker_ids'
+      assert_respond_to klass.new, 'trackers'
+      assert_respond_to klass.new, 'tracker_ids='
+      assert_respond_to klass.new, 'tracked_by?'
+      assert_respond_to klass.new, 'remove_tracker_ids='
+      assert_respond_to klass, 'tracked_by'
     end
   end
 
   def self.should_have_key(*args)
-    klass = self.name.gsub(/Test$/, '').constantize
+    if args.first.is_a? Class
+      klass = args.shift
+    else
+      klass = self.name.gsub(/Test$/, '').constantize
+    end
     args.each do |arg|
       should "have_key '#{arg}'" do
-        assert klass.fields.map(&:first).include?(arg.to_s)
+        assert klass.properties.named?(arg)
       end
     end
   end
@@ -67,10 +80,16 @@ class ActiveSupport::TestCase
     klass = self.name.gsub(/Test$/, '').constantize
     args.each do |arg|
       should "require key '#{arg}'" do
+        if relationship = klass.relationships[arg]
+          key = relationship.child_key.first
+        else
+          key = klass.properties[arg]
+        end
         obj = klass.new
-        obj.send("#{arg.to_sym}=", nil)
+        key.set(obj, nil)
         obj.valid?
-        assert !obj.errors[arg.to_sym].blank?
+        assert_present obj.errors[key.name],
+          "expected error on #{key.name} but got: #{obj.errors.to_hash.inspect}"
       end
     end
   end
@@ -80,24 +99,9 @@ class ActiveSupport::TestCase
     args.each do |arg|
       should "have_many '#{arg}'" do
         has = false
-        klass.associations.each do |name, assoc|
-          if assoc.association.to_s.match(/ReferencesMany|EmbedsMany/) and name == arg.to_s
-            has = true
-          end
-        end
-        assert has
-      end
-    end
-  end
-
-  def self.should_have_one(*args)
-    klass = self.name.gsub(/Test$/, '').constantize
-    args.each do |arg|
-      should "have_one '#{arg}'" do
-        has = false
-        klass.associations.each do |name, assoc|
-          if assoc.association.to_s.match(/ReferencesOne/) and name == arg.to_s
-            has = true
+        klass.relationships.each do |relationship|
+          if relationship.name.to_s == arg.to_s && relationship.class.name =~ /OneToMany/ && relationship.max == Infinity
+            break has = true
           end
         end
         assert has
@@ -106,13 +110,13 @@ class ActiveSupport::TestCase
   end
 
   def self.should_belong_to(*args)
-    klass = self.name.gsub(/Test$/, '').constantize
+    klass = args.first.is_a?(Class) ? args.shift : self.name.gsub(/Test$/, '').constantize
     args.each do |arg|
       should "belong_to '#{arg}'" do
         has = false
-        klass.associations.each do |name, assoc|
-          if assoc.association.to_s.match(/ReferencedIn|EmbeddedIn/) and name == arg.to_s
-            has = true
+        klass.relationships.each do |relationship|
+          if relationship.name.to_s == arg.to_s && relationship.class.name =~ /ManyToOne/
+            break has = true
           end
         end
         assert has
@@ -124,22 +128,47 @@ class ActiveSupport::TestCase
     klass = self.name.gsub(/Test$/, '').constantize
     args.each do |arg|
       should "have_uploader '#{arg}'" do
-        assert klass.new.send(arg).is_a?(CarrierWave::Uploader::Base)
+        assert_kind_of CarrierWave::Uploader::Base, klass.new.send(arg)
+      end
+    end
+  end
+
+  def self.should_have_instance_methods(*args)
+    klass = self.name.gsub(/Test$/, '').constantize
+    args.each do |arg|
+      should "have instance method '#{arg}'" do
+        assert_respond_to klass.new, arg
       end
     end
   end
 
   setup do
     Sham.reset
-    Mongoid.database.collections.each do |collection|
-      begin
-        collection.drop
-      rescue
-      end
-    end
-    FakeWeb.allow_net_connect = false
     ActionMailer::Base.deliveries.clear
-    FakeWeb.register_uri(:post, 'http://localhost:8981/solr/update?wt=ruby', :body => '')
+  end
+
+  setup do
+    DatabaseCleaner.start
+  end
+
+  teardown do
+    DatabaseCleaner.clean
+  end
+
+  setup do
+    DataMapper::Repository.context << repository
+  end
+
+  teardown do
+    DataMapper::Repository.context.pop
+  end
+
+  def assert_valid(model)
+    assert model.valid?, "Expected #{model.class} to be valid, but got: #{model.errors.full_messages.join(", ")}"
+  end
+
+  def refute_valid(model)
+    refute model.valid?, "Expected #{model.class} to be invalid, but was valid"
   end
 
   def assert_add_job_email_sent(posting)

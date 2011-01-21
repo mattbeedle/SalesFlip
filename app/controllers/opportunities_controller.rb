@@ -56,6 +56,6 @@ protected
 
   def resource
     @opportunity ||= Opportunity.for_company(current_user.company).permitted_for(current_user).
-      where(:_id => params[:id]).first
+      where(:id => params[:id]).first
   end
 end

@@ -18,11 +18,11 @@
     = simple_form_for @account do |form|
       = hidden_field_tag :return_to, account_path(@account.parent_id) if @account.parent_id
       = hidden_field_tag :similarity_off, true
-      - @account.fields.map(&:first).each do |field|
-        - next if @account.send(field).blank?
-        - if @account.send(field).is_a?(Array)
-          - @account.send(field).each do |value|
-            = form.hidden_field "#{field}[]", value
+      - @account.attributes.each do |field, value|
+        - next if value.blank?
+        - if value.is_a?(Array)
+          - value.each do |v|
+            = form.hidden_field "#{field}[]", v
         - else
-          = form.hidden_field field, :value => @account.send(field)
+          = form.hidden_field field, :value => value
       = form.button :submit, t(:create_new_account)

@@ -1,13 +1,12 @@
 class Contact
-  include Mongoid::Document
-  include Mongoid::Timestamps
-  include HasConstant
-  include HasConstant::Orm::Mongoid
+  include DataMapper::Resource
+  include DataMapper::Timestamps
+  include HasConstant::Orm::DataMapper
   include ParanoidDelete
   include Permission
   include Trackable
   include Activities
-  include Sunspot::Mongoid
+  include Sunspot::DataMapper
   include Assignable
   include Gravtastic
   include ActiveModel::Observing
@@ -15,57 +14,57 @@ class Contact
 
   is_gravtastic
 
-  field :first_name
-  field :last_name
-  field :full_name
-  field :access,              :type => Integer
-  field :title,               :type => Integer
-  field :salutation,          :type => Integer
-  field :department
-  field :source,              :type => Integer
-  field :email
-  field :alt_email
-  field :phone
-  field :mobile
-  field :fax
-  field :address
-  field :born_on,             :type => Date
-  field :do_not_call,         :type => Boolean
-  field :deleted_at,          :type => Time
-  field :identifier,          :type => Integer
-  field :city
-  field :country
-  field :postal_code
-  field :job_title
+  property :id, Serial
+  property :first_name, String
+  property :last_name, String, :required => true
+  property :full_name, String
+  property :department, String
+  property :email, String
+  property :alt_email, String
+  property :phone, String
+  property :mobile, String
+  property :fax, String
+  property :address, String
+  property :born_on, Date
+  property :do_not_call, Boolean
+  property :identifier, Integer
+  property :city, String
+  property :country, String
+  property :postal_code, String
+  property :job_title, String
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
-  index :first_name, :background => true
-  index :last_name, :background => true
+  validates_uniqueness_of :email, allow_blank: true
 
-  validates_presence_of :user, :last_name
-  validates_uniqueness_of :email, :allow_blank => true
-
-  before_create :set_identifier
-  before_save   :set_full_name
+  before :create, :set_identifier
+  before :save,   :set_full_name
 
   has_constant :accesses,     lambda { I18n.t(:access_levels) }
   has_constant :titles,       lambda { I18n.t(:titles) }
   has_constant :sources,      lambda { I18n.t(:lead_sources) }
   has_constant :salutations,  lambda { I18n.t(:salutations) }
 
-  referenced_in :account, :index => true
-  referenced_in :user, :index => true
-  referenced_in :assignee, :class_name => 'User', :index => true
-  referenced_in :lead, :index => true
+  belongs_to :account, :required => false
+  belongs_to :user, :required => true
+  belongs_to :assignee, :model => 'User', :required => false
+  belongs_to :lead, :required => false
 
-  references_many :tasks, :as => :asset, :dependent => :destroy, :index => true
-  references_many :comments, :as => :commentable, :dependent => :delete_all, :index => true
-  references_many :leads, :dependent => :destroy, :index => true
-  references_many :emails, :as => :commentable, :dependent => :delete_all, :index => true
-  references_many :opportunities, :dependent => :destroy, :index => true
+  has n, :tasks, :as => :asset#, :dependent => :destroy
+  has n, :comments, :as => :commentable#, :dependent => :delete_all
+  has n, :leads#, :dependent => :destroy
+  has n, :emails, :as => :commentable#, :dependent => :delete_all
+  has n, :opportunities#, :dependent => :destroy
 
-  named_scope :for_company, lambda { |company| {
-    :where => { :user_id.in => company.users.map(&:id) } } }
-  named_scope :name_like, lambda { |name| { :where => { :full_name => /#{name}/i } } }
+  def self.for_company(company)
+    all(:user_id => company.users.map(&:id))
+  end
+
+  def self.name_like(name)
+    all(:full_name => /#{name}/i)
+  end
 
   searchable do
     text :first_name, :last_name, :department, :email, :alt_email, :phone, :mobile,
@@ -74,19 +73,17 @@ class Contact
   #handle_asynchronously :solr_index
 
   def self.assigned_to( user_id )
-    user_id = BSON::ObjectId.from_string(user_id) if user_id.is_a?(String)
     any_of({ :assignee_id => user_id }, { :user_id => user_id, :assignee_id => nil })
   end
 
   def self.exportable_fields
-    fields.map(&:first).sort.delete_if do |f|
+    properties.map { |p| p.name.to_s }.sort.delete_if do |f|
       f.match(/access|permission|permitted_user_ids|tracker_ids/)
     end
   end
 
   def comments_including_leads
-    Comment.any_of({ :commentable_type => self.class.name, :commentable_id => self.id },
-      { :commentable_type => 'Lead', :commentable_id.in => self.leads.map(&:id) })
+    comments | leads.comments
   end
 
   def full_name
@@ -99,16 +96,16 @@ class Contact
   end
 
   def self.create_for( lead, account, options = {} )
-    contact = account.contacts.build :user => lead.updater_or_user, :permission => account.permission,
+    contact = account.contacts.new :user => lead.updater_or_user, :permission => account.permission,
       :permitted_user_ids => account.permitted_user_ids
-    Lead.fields.map(&:first).delete_if do |k|
-      %w(identifier _id user_id permission permitted_user_ids _sphinx_id created_at updated_at deleted_at tracker_ids updater_id).
-        include?(k)
-    end.each do |key|
-      if contact.fields.map(&:first).include?(key)
-        contact.send("#{key}=", lead.send(key))
+
+    lead.attributes.each do |key, value|
+      next if %w(identifier id user_id permission permitted_user_ids _sphinx_id created_at updated_at deleted_at tracker_ids updater_id).include?(key.to_s)
+      if contact.respond_to?("#{key}=")
+        contact.send("#{key}=", value)
       end
     end
+
     if account.valid? && contact.valid? && !options[:just_validate]
       contact.save
       contact.leads << lead
@@ -126,6 +123,6 @@ protected
   end
 
   def set_full_name
-    write_attribute :full_name, "#{first_name} #{last_name}"
+    attribute_set :full_name, "#{first_name} #{last_name}"
   end
 end

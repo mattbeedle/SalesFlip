@@ -5,15 +5,15 @@ class DeletedItemsController < ApplicationController
 
   def index
     @items ||= [
-      Lead.permitted_for(current_user).where(:deleted_at.ne => nil) +
-      Contact.permitted_for(current_user).where(:deleted_at.ne => nil) +
-      Account.permitted_for(current_user).where(:deleted_at.ne => nil) +
-      Comment.permitted_for(current_user).where(:deleted_at.ne => nil)
+      Lead.permitted_for(current_user).where(:deleted_at.not => nil).entries +
+      Contact.permitted_for(current_user).where(:deleted_at.not => nil).entries +
+      Account.permitted_for(current_user).where(:deleted_at.not => nil).entries +
+      Comment.permitted_for(current_user).where(:deleted_at.not => nil).entries
     ].flatten.sort_by(&:deleted_at)
   end
 
   def update
-    @item.update_attributes :deleted_at => nil
+    @item.update :deleted_at => nil
     redirect_to deleted_items_path
   end
 

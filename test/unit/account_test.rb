@@ -6,7 +6,7 @@ class AccountTest < ActiveSupport::TestCase
     should_act_as_paranoid
     should_be_trackable
     should_have_key :user_id, :assignee_id, :name, :email, :access, :website, :phone, :fax,
-      :billing_address, :shipping_address, :identifier, :account_type
+      :billing_address, :shipping_address, :account_type
     should_require_key :user, :name
     should_belong_to :user, :assignee
     should_have_many :contacts, :tasks, :comments
@@ -26,8 +26,8 @@ class AccountTest < ActiveSupport::TestCase
       @parent = Account.make(:careermee)
       @child = Account.make(:name => 'CareerWee')
       @child.parent = @parent
-      @child.save!
-      @child = Account.find(@child.id)
+      @child.save
+      @child = Account.get(@child.id)
       assert_equal @parent, @child.parent
     end
 
@@ -35,7 +35,7 @@ class AccountTest < ActiveSupport::TestCase
       @child = Account.make(:careermee)
       @parent = Account.make(:name => 'CareerWee')
       @parent.children << @child
-      @parent = Account.find(@parent.id)
+      @parent = Account.get(@parent.id)
       assert @parent.children.include?(@child)
     end
 
@@ -43,12 +43,13 @@ class AccountTest < ActiveSupport::TestCase
       @child = Account.make
       @parent = Account.make
       @child.parent = @parent
-      @child.save!
+      @child.save
       assert_equal @child, @parent.children.first
     end
 
     should 'know which fields can be exported' do
-      Account.fields.map(&:first).each do |field|
+      Account.properties.map(&:name).each do |field|
+        field = field.to_s
         unless field == 'access' || field == 'permission' ||
           field == 'permitted_user_ids' || field == 'tracker_ids'
           assert Account.exportable_fields.include?(field)
@@ -125,7 +126,7 @@ class AccountTest < ActiveSupport::TestCase
 
       context 'when lead does not have updater' do
         setup do
-          @lead.update_attributes :updater_id => nil
+          @lead.update :updater_id => nil
           Account.create_for(@lead, 'CareerMee')
         end
 
@@ -136,7 +137,7 @@ class AccountTest < ActiveSupport::TestCase
 
       context 'when lead has updater' do
         setup do
-          @lead.update_attributes :updater_id => @benny.id
+          @lead.update :updater_id => @benny.id
           Account.create_for(@lead, 'CareerMee')
         end
 
@@ -147,7 +148,7 @@ class AccountTest < ActiveSupport::TestCase
 
       context 'when lead permission is specified' do
         setup do
-          @lead.update_attributes :permission => 'Private'
+          @lead.update :permission => 'Private'
           Account.create_for(@lead, 'CareerMee', :permission => 'Object')
         end
 
@@ -216,22 +217,22 @@ class AccountTest < ActiveSupport::TestCase
     end
     
     should 'not be able to assign to another user if the permission is private' do
-      @account.save!
-      @account.update_attributes :permission => 'Private'
+      @account.save
+      @account.update :permission => 'Private'
       assert @account.valid?
       @account.assignee = @user
       assert !@account.valid?
-      assert @account.errors[:base].include?('Cannot assign a private account to another user, please change the permissions first')
+      assert @account.errors[:permission].include?('Cannot assign a private account to another user, please change the permissions first')
     end
     
     should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
-      @account.save!
+      @account.save
       user = User.make
-      @account.update_attributes :permission => 'Shared', :permitted_user_ids => [user.id]
+      @account.update :permission => 'Shared', :permitted_user_ids => [user.id]
       assert @account.valid?
       @account.assignee = @user
       assert !@account.valid?
-      assert @account.errors[:base].include?('Cannot assign a shared account to a user it is not shared with. Please change the permissions first')
+      assert_includes @account.errors[:permission], 'Cannot assign a shared account to a user it is not shared with. Please change the permissions first'
     end
 
     should 'be able to get all related leads' do
@@ -260,8 +261,8 @@ class AccountTest < ActiveSupport::TestCase
       lead = Lead.make(:contact => contact)
       task = Task.make(:asset => contact)
       task2 = Task.make(:asset => lead)
-      assert @account.related_activities.include?(task.activities.first)
-      assert @account.related_activities.include?(task2.activities.first)
+      assert_includes @account.related_activities, task.activities.first
+      assert_includes @account.related_activities, task2.activities.first
     end
 
     should 'include activities for related comments and emails in related_activities' do
@@ -271,10 +272,10 @@ class AccountTest < ActiveSupport::TestCase
       comment2 = Comment.make(:commentable => lead)
       email = Email.make(:commentable => contact)
       email2 = Email.make(:commentable => lead)
-      assert @account.related_activities.include?(comment.activities.first)
-      assert @account.related_activities.include?(comment2.activities.first)
-      assert @account.related_activities.include?(email.activities.first)
-      assert @account.related_activities.include?(email2.activities.first)
+      assert_includes @account.related_activities, comment.activities.first
+      assert_includes @account.related_activities, comment2.activities.first
+      assert_includes @account.related_activities, email.activities.first
+      assert_includes @account.related_activities, email2.activities.first
     end
 
     should 'be able to get fields in pipe deliminated format' do
@@ -296,24 +297,9 @@ class AccountTest < ActiveSupport::TestCase
       assert @account.website.nil?
     end
 
-    should 'be assigned an identifier on creation' do
-      assert @account.identifier.nil?
-      @account.save!
-      assert @account.identifier
-    end
-
-    should 'be assigned consecutive identifiers' do
-      @account.save!
-      assert_equal 1, @account.identifier
-      @account2 = Account.make_unsaved
-      assert @account2.identifier.nil?
-      @account2.save!
-      assert_equal 2, @account2.identifier
-    end
-
     should 'validate uniqueness of email' do
       @account.email = 'test@test.com'
-      @account.save!
+      @account.save
       a = Account.make_unsaved(:careermee, :email => 'test@test.com')
       assert !a.valid?
       assert a.errors[:email]
@@ -333,39 +319,41 @@ class AccountTest < ActiveSupport::TestCase
       end
 
       should 'return all contacts belonging to the user' do
-        @careermee.update_attributes :permission => 'Private'
+        @careermee.update :permission => 'Private'
         assert Account.permitted_for(@annika).include?(@careermee)
       end
 
       should 'NOT return private contacts belonging to another user' do
-        @world_dating.update_attributes :permission => 'Private'
+        @world_dating.update :permission => 'Private'
         assert !Account.permitted_for(@annika).include?(@world_dating)
       end
 
       should 'return shared contacts where the user is in the permitted users list' do
-        @world_dating.update_attributes :permission => 'Shared', :permitted_user_ids => [@annika.id]
+        @world_dating.update :permission => 'Shared', :permitted_user_ids => [@annika.id]
         assert Account.permitted_for(@annika).include?(@world_dating)
       end
 
       should 'NOT return shared contacts where the user is not in the permitted users list' do
-        @world_dating.update_attributes :permission => 'Shared', :permitted_user_ids => [@world_dating.id]
+        @world_dating.update :permission => 'Shared', :permitted_user_ids => [@benny.id]
         assert !Account.permitted_for(@annika).include?(@world_dating)
       end
     end
 
     context 'activity logging' do
       setup do
-        @account.save!
+        @account.save
       end
 
       should 'log an activity when created' do
-        assert @account.activities.any? {|a| a.action == 'Created' }
+        activities = @account.activities.map &:action
+        assert_includes activities, 'Created'
       end
 
       should 'log an activity when updated' do
-        @account.update_attributes :name => 'an update test'
+        @account.update :name => 'an update test'
         assert_equal 2, @account.activities.count
-        assert @account.activities.any? {|a| a.action == 'Updated' }
+        activities = @account.activities.map &:action
+        assert_includes activities, 'Updated'
       end
 
       should 'not log an update activity when created' do
@@ -374,14 +362,16 @@ class AccountTest < ActiveSupport::TestCase
 
       should 'log an activity when deleted' do
         @account.destroy
-        assert @account.activities.any? {|a| a.action == 'Deleted' }
+        activities = @account.activities.map &:action
+        assert_includes activities, 'Deleted'
       end
 
       should 'log an activity when restored' do
         @account.destroy
         @account = Account.last
-        @account.update_attributes :deleted_at => nil
-        assert @account.activities.any? {|a| a.action == 'Restored' }
+        @account.update :deleted_at => nil
+        activities = @account.activities.map &:action
+        assert_includes activities, 'Restored'
       end
     end
 

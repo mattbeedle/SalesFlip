@@ -4,16 +4,26 @@ gem 'rails'
 
 gem 'sqlite3-ruby',         :require => 'sqlite3'
 
+gem "bson_ext"
+gem "mongo"
+
 gem 'haml'
 gem 'inherited_resources'
 gem 'warden'
 gem 'devise'
-gem 'mongoid',              :git => 'git://github.com/mattbeedle/mongoid.git', :branch => 'development'
-gem 'mongo'
-gem 'bson'
-gem 'bson_ext'
+
+gem 'dm-core', :git => 'git://github.com/bernerdschaefer/dm-core.git'
+gem 'dm-devise'
+gem 'dm-migrations', :git => 'git://github.com/datamapper/dm-migrations.git'
+gem 'dm-postgres-adapter'
+gem 'dm-rails'
+gem 'dm-timestamps'
+gem 'dm-transactions'
+gem 'dm-types', :git => 'git://github.com/datamapper/dm-types.git'
+gem 'dm-validations', :git => 'git://github.com/datamapper/dm-validations.git'
+
 gem 'delayed_job'
-gem 'delayed_job_mongoid'
+gem 'delayed_job_data_mapper', '1.0.0.rc'
 gem 'compass'
 gem 'uuid'
 gem 'has_scope'
@@ -31,13 +41,12 @@ gem 'has_constant',         :git => 'git://github.com/mattbeedle/has_constant.gi
 gem 'hassle',               :git => 'git://github.com/koppen/hassle.git'
 gem 'sunspot',              :require => 'sunspot'
 gem 'sunspot_rails'
-gem 'sunspot_mongoid',      :git => 'git://github.com/jugyo/sunspot_mongoid.git'
 gem 'remail'
 gem 'rack-gridfs',          :require => 'rack/gridfs', :git => 'git://github.com/mattbeedle/rack-gridfs.git'
 gem 'amatch'
 gem 'gravtastic'
 gem 'cancan'
-gem 'mongoid_i18n', :require => 'mongoid/i18n'
+gem 'unicorn'
 
 # Plugins
 gem 'salesflip-lead_notifications', :require => 'lead_notifications'
@@ -50,6 +59,7 @@ group :production do
 end
 
 group :development do
+  gem 'ruby-debug19'
   gem 'wirble'
   gem 'heroku',     :require => nil
   gem 'thin',       :require => nil
@@ -58,20 +68,19 @@ end
 
 group :test do
   gem 'pickle'
-  gem 'pickle-mongoid'
   gem 'capybara'
   gem 'cucumber-rails'
   gem 'cucumber'
   gem 'spork'
   gem 'launchy'
-  gem 'machinist_mongo',  :require => 'machinist/mongoid'
   gem 'autotest-rails',   :require => 'autotest/rails'
   gem 'fakeweb'
+  gem 'machinist'
   gem 'mocha'
-  gem 'faker'
+  gem 'faker', '0.3.1'
   gem 'shoulda'
   gem 'database_cleaner'
-  gem 'mbeedle-heroku-autoscale', :require => 'heroku/autoscale'
+  # gem 'mbeedle-heroku-autoscale', :require => 'heroku/autoscale'
   gem 'timecop'
   gem 'test_notifier'
   gem 'watchr'

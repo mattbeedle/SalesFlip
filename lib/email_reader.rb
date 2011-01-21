@@ -19,14 +19,12 @@ class EmailReader
         target = create_contact_from(email)
       end
       comment = Email.create :text => get_email_content(email),
-        :commentable => target, :user => user, :from_email => true, :subject => get_subject(email),
+        :commentable => target, :user => user, :subject => get_subject(email),
         :received_at => Time.zone.now, :from => incoming?(email) ? find_target_email(email) : user.email
       add_attachments( comment, email ) if comment
-      comment
+      return comment
     end
     user
-  rescue
-    nil
   end
 
 protected
@@ -58,12 +56,12 @@ protected
       file = File.open("tmp/#{attachment.filename}", 'w+') do |f|
         f.write attachment.read.force_encoding('utf-8')
       end
-      comment.attachments << Attachment.new(:attachment => File.open("tmp/#{attachment.filename}"))
+      comment.attachments.create(:attachment => File.open("tmp/#{attachment.filename}"))
     end
   end
 
   def self.find_target( email )
-    target = Lead.first(:conditions => { :email => /#{find_target_email(email)}/i, :status => Lead.statuses.index('New') })
+    target = Lead.first(:conditions => { :email => /#{find_target_email(email)}/i, :status => 'New' })
     target = Contact.first(:conditions => { :email => /#{find_target_email(email)}/i }) unless target
     target = Account.first(:conditions => { :email => /#{find_target_email(email)}/i }) unless target
     target = Lead.first(:conditions => { :email => /#{find_target_email(email)}/i }) unless target

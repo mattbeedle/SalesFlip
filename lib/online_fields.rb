@@ -3,16 +3,18 @@ module OnlineFields
 
   included do
     class_eval do
-      field :website
-      field :twitter
-      field :linked_in
-      field :facebook
-      field :xing
-      field :blog
+      property :website, String
+      property :twitter, String
+      property :linked_in, String
+      property :facebook, String
+      property :xing, String
+      property :blog, String
 
       validates_format_of :website, :with => /^http/, :allow_blank => true
 
-      before_validation :correct_website_links
+      before :valid? do
+        correct_website_links
+      end
     end
   end
 

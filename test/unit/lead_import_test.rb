@@ -6,7 +6,7 @@ class LeadImportTest < ActiveSupport::TestCase
     should_belong_to :user, :assignee
     should_have_constant :states, :sources
     should_have_uploader :file
-    should_validate_presence_of :user
+    should_require_key :user
   end
 
   context 'Instance' do
@@ -68,7 +68,7 @@ class LeadImportTest < ActiveSupport::TestCase
 
         should 'get the lead details correct' do
           @import.import
-          assert Lead.where(:salutation => Lead.salutations.index('Mrs'),
+          assert Lead.where(:salutation => 'Mrs',
                             :first_name => 'Joe', :last_name => 'Smith',
                             :job_title => 'Personalreferentin',
                             :company => 'Just some company', :postal_code => '20354',
@@ -82,9 +82,9 @@ class LeadImportTest < ActiveSupport::TestCase
           @search = Lead.search { keywords '' }
           @search.stubs(:results).returns([Lead.where(:last_name => 'Smith').first])
           Lead.stubs(:search).returns(@search)
-          @import = LeadImport.create!(:user => @user,
-                                       :file => File.open('test/support/duplicate_lead.csv'),
-                                       :deliminator => ',')
+          @import = LeadImport.create(:user => @user,
+                                      :file => File.open('test/support/duplicate_lead.csv'),
+                                      :deliminator => ',')
           @import.import
           assert_equal 1, @import.unimported.length
         end

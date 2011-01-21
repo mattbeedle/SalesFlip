@@ -15,7 +15,7 @@ Given /^the contact is shared with the other user$/ do
 end
 
 Then /^#{capture_model} should have a contact with first_name: "(.+)"$/ do |target, first_name|
-  assert model!(target).contacts.find(:first, :conditions => { :first_name => first_name })
+  assert model!(target).contacts.all(:first_name => first_name).first
 end
 
 Then /^the newly created contact should have an opportunity$/ do

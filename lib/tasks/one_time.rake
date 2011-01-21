@@ -23,15 +23,15 @@ namespace(:one_time) do
   desc 'Add identifiers to all accounts, leads and contacts'
   task :add_identifiers => :environment do
     Account.all(:identifier => nil).each do |account|
-      account.update_attributes :do_not_geocode => true, :identifier => Identifier.next_account,
+      account.update :do_not_geocode => true, :identifier => Identifier.next_account,
         :do_not_log => true
     end
     Contact.all(:identifier => nil).each do |contact|
-      contact.update_attributes :do_not_geocode => true, :identifier => Identifier.next_contact,
+      contact.update :do_not_geocode => true, :identifier => Identifier.next_contact,
         :do_not_log => true
     end
     Lead.all(:identifier => nil).each do |lead|
-      lead.update_attributes :do_not_geocode => true, :identifier => Identifier.next_lead,
+      lead.update :do_not_geocode => true, :identifier => Identifier.next_lead,
         :do_not_notify => true, :do_not_log => true
     end
   end
@@ -40,7 +40,7 @@ namespace(:one_time) do
   task :switch_contact_leads_to_has_many => :environment do
     Contact.all(:lead_id => { '$ne' => nil }).each do |contact|
       lead = Lead.first(:id => contact.lead_id)
-      lead.update_attributes :contact_id => contact.id, :do_not_log => true
+      lead.update :contact_id => contact.id, :do_not_log => true
     end
   end
 
@@ -57,7 +57,7 @@ namespace(:one_time) do
   task :add_company => :environment do
     c = Company.find_or_create_by_name('1000JobBoersen.de')
     User.all.each do |user|
-      user.update_attributes :company_id => c.id
+      user.update :company_id => c.id
     end
   end
 
@@ -85,7 +85,7 @@ namespace(:one_time) do
       next if index == 0
       row = line.split("\t")
       next unless row[1].blank?
-      u = User.where(:email => /beedle/i).first
+      u = User.first(:email => /beedle/i)
       l = u.leads.build :source => 'Imported', :rating => 2, :do_not_log => true, :first_name => 'n/a',
         :last_name => 'n/a'
       
@@ -100,7 +100,7 @@ namespace(:one_time) do
       end.select { |similarity| similarity.last > 0.9 }.map(&:first)
       
       unless ids.blank?
-        accounts = Account.where(:_id.in => ids)
+        accounts = Account.all(:_id => ids)
         puts "skipped: #{l.company} (#{accounts.map(&:name).inspect})"
         next
       end
@@ -110,7 +110,7 @@ namespace(:one_time) do
       end.select { |similarity| similarity.last > 0.9 }.map(&:first)
       
       unless ids.blank?
-        leads = Lead.where(:_id.in => ids)
+        leads = Lead.all(:_id => ids)
         puts "skipped: #{l.company} (#{leads.map(&:company).inspect})"
         next
       end

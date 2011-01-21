@@ -1,96 +1,117 @@
 class Task
-  include Mongoid::Document
-  include Mongoid::Timestamps
-  include HasConstant
-  include HasConstant::Orm::Mongoid
+  include DataMapper::Resource
+  include DataMapper::Timestamps
+  include HasConstant::Orm::DataMapper
   include Permission
-  include Mongoid::Rails::MultiParameterAttributes
   include Activities
   include Assignable
   include ActiveModel::Observing
 
-  field :name
-  field :due_at,          :type => Time
-  field :category,        :type => Integer
-  field :priority,        :type => Integer
-  field :completed_at,    :type => Time
-  field :deleted_at,      :type => Time
+  property :id, Serial
+  property :name, Text, :required => true, :lazy => false
+  property :due_at, Time, :required => true
+  property :priority, Integer
+  property :completed_at, Time
+  property :deleted_at, Time
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
-  has_constant :categories, lambda { I18n.t(:task_categories) }
+  has_constant :categories, I18n.t(:task_categories),
+    required: true, auto_validation: true
 
-  referenced_in :user
-  referenced_in :asset, :polymorphic => true
-  referenced_in :completed_by, :class_name => 'User'
+  belongs_to :user, :required => true
+  belongs_to :asset, :polymorphic => true, :required => false, suffix: 'type'
+  belongs_to :completed_by, :model => 'User', :required => false
 
-  references_many :activities, :as => :subject, :dependent => :destroy, :index => true
+  has n, :activities, :as => :subject#, :dependent => :destroy
 
-  validates_presence_of :user, :name, :due_at, :category
+  before :create, :set_recently_created
+  before :save,   :log_recently_changed
+  after  :update, :log_reassignment
 
-  before_create :set_recently_created
-  before_update :log_reassignment
-  before_save   :log_recently_changed
-  after_create  :assign_unassigned_asset
-  after_update  :log_update
-  after_save    :notify_assignee
+  after :create,  :assign_unassigned_asset
+  after :update,  :log_update
+  after :save,    :notify_assignee
 
-  named_scope :incomplete, :where => { :completed_at => nil }
+  def self.incomplete
+    all({ :completed_at => nil })
+  end
 
-  index [[ :due_at, Mongo::ASCENDING ]], :background => true
-
-  def self.for( user )
+  def self.for(user)
     any_of({ :user_id => user.id, :assignee_id => user.id }, { :assignee_id => user.id },
            { :user_id => user.id, :assignee_id => nil })
   end
 
-  named_scope :assigned_by, lambda { |user| { :where => {
-    :user_id => user.id, :assignee_id.nin => [nil, user.id] } } }
+  def self.assigned_by(user)
+    all(:user_id => user.id, :assignee_id.not => user.id)
+  end
 
-  named_scope :pending, :where => { :completed_at => nil, :assignee_id => nil }
+  def self.pending
+    all(:completed_at => nil, :assignee_id => nil)
+  end
 
-  named_scope :assigned, :where => { :assignee_id.ne => nil }
+  def self.assigned
+    all(:assignee_id.not => nil)
+  end
 
-  named_scope :completed, :where => { :completed_at.ne => nil }
+  def self.completed
+    all(:completed_at.not => nil)
+  end
 
-  named_scope :overdue, lambda { { :where => { :due_at.lte => Time.zone.now.midnight.utc } } }
+  def self.overdue
+    all(:due_at.lte => Time.zone.now.midnight.utc)
+  end
 
-  named_scope :due_today, lambda { { :where => {
-    :due_at.gt => Time.zone.now.midnight.utc,
-    :due_at.lte => Time.zone.now.end_of_day.utc } } }
+  def self.due_today
+    all(:due_at.gt => Time.zone.now.midnight.utc,
+        :due_at.lte => Time.zone.now.end_of_day.utc)
+  end
 
-  named_scope :due_tomorrow, lambda { { :where => {
-    :due_at.lte => Time.zone.now.tomorrow.end_of_day.utc,
-    :due_at.gte => Time.zone.now.tomorrow.beginning_of_day.utc } } }
+  def self.due_tomorrow
+    all(:due_at.lte => Time.zone.now.tomorrow.end_of_day.utc,
+        :due_at.gte => Time.zone.now.tomorrow.beginning_of_day.utc)
+  end
 
-  named_scope :due_this_week, lambda { { :where => {
-    :due_at.gte => Time.zone.now.tomorrow.beginning_of_day.utc + 1.day,
-    :due_at.lte => Time.zone.now.next_week.utc } } }
+  def self.due_this_week
+    all(:due_at.gte => Time.zone.now.tomorrow.beginning_of_day.utc + 1.day,
+        :due_at.lte => Time.zone.now.next_week.utc)
+  end
 
-  named_scope :due_next_week, lambda { { :where => {
-    :due_at.gte => Time.zone.now.next_week.beginning_of_week.utc,
-    :due_at.lte => Time.zone.now.next_week.end_of_week } } }
+  def self.due_next_week
+    all(:due_at.gte => Time.zone.now.next_week.beginning_of_week.utc,
+        :due_at.lte => Time.zone.now.next_week.end_of_week)
+  end
 
-  named_scope :due_later, lambda { { :where => {
-    :due_at.gt => Time.zone.now.next_week.end_of_week } } }
+  def self.due_later
+    all(:due_at.gt => Time.zone.now.next_week.end_of_week)
+  end
 
-  named_scope :completed_today, lambda { { :where => {
-    :completed_at.gte => Time.zone.now.midnight.utc,
-    :completed_at.lte => Time.zone.now.midnight.tomorrow.utc } } }
+  def self.completed_today
+    all(:completed_at.gte => Time.zone.now.midnight.utc,
+        :completed_at.lte => Time.zone.now.midnight.tomorrow.utc)
+  end
 
-  named_scope :completed_yesterday, lambda { { :where => {
-    :completed_at.gte => Time.zone.now.midnight.yesterday.utc,
-    :completed_at.lte => Time.zone.now.midnight.utc } } }
+  def self.completed_yesterday
+    all(:completed_at.gte => Time.zone.now.midnight.yesterday.utc,
+        :completed_at.lte => Time.zone.now.midnight.utc)
+  end
 
-  named_scope :completed_last_week, lambda { { :where => {
-    :completed_at.gte => Time.zone.now.beginning_of_week.utc - 7.days,
-    :completed_at.lte => Time.zone.now.beginning_of_week.utc } } }
+  def self.completed_last_week
+    all(:completed_at.gte => Time.zone.now.beginning_of_week.utc - 7.days,
+        :completed_at.lte => Time.zone.now.beginning_of_week.utc)
+  end
 
-  named_scope :completed_this_month, lambda { { :where => {
-    :completed_at.gte => Time.zone.now.beginning_of_month.utc,
-    :completed_at.lte => Time.zone.now.beginning_of_week.utc - 7.days } } }
+  def self.completed_this_month
+    all(:completed_at.gte => Time.zone.now.beginning_of_month.utc,
+        :completed_at.lte => Time.zone.now.beginning_of_week.utc - 7.days)
+  end
 
-  named_scope :completed_last_month, lambda { { :where => {
-    :completed_at.gte => (Time.zone.now.beginning_of_month.utc - 1.day).beginning_of_month.utc,
-    :completed_at.lte => Time.zone.now.beginning_of_month.utc } } }
+  def self.completed_last_month
+    all(:completed_at.gte => (Time.zone.now.beginning_of_month.utc - 1.day).beginning_of_month.utc,
+        :completed_at.lte => Time.zone.now.beginning_of_month.utc)
+  end
 
   def self.daily_email
     (Task.overdue + Task.due_today).flatten.sort_by(&:due_at).group_by(&:user).
@@ -102,7 +123,7 @@ class Task
   def self.grouped_by_scope( scopes, options = {} )
     tasks = {}
     scopes.each do |scope|
-      if self.scopes.map(&:first).include?(scope.to_sym)
+      if methods(false).include?(scope.to_sym)
         tasks[scope.to_sym] = (options[:target] || self).send(scope.to_sym)
       end
     end
@@ -112,8 +133,8 @@ class Task
   def completed_by_id=( user_id )
     if user_id and not completed?
       @recently_completed = true
-      write_attribute :completed_at, Time.zone.now
-      write_attribute :completed_by_id, user_id
+      attribute_set :completed_at, Time.zone.now
+      attribute_set :completed_by_id, user_id
     end
   end
 
@@ -122,15 +143,15 @@ class Task
   end
 
   def assignee_id=( assignee_id )
-    old_assignee_id = read_attribute(:assignee_id)
-    if old_assignee_id != assignee_id && !assignee_id.blank? && !new_record?
+    old_assignee_id = attribute_get(:assignee_id)
+    if old_assignee_id != assignee_id && !assignee_id.blank? && !new?
       @reassigned = true
     end
-    write_attribute :assignee_id, assignee_id
+    attribute_set :assignee_id, assignee_id
   end
 
   def due_at=( due )
-    write_attribute :due_at,
+    attribute_set :due_at,
       case due
       when 'overdue'
         Time.zone.now.yesterday.end_of_day.utc
@@ -177,8 +198,10 @@ class Task
   end
 
   def reassigned?
-    @reassigned = !assignee.blank? && (@recently_changed.include?('assignee_id') ||
-                                         @recently_created && assignee_id.to_s != user_id.to_s)
+    @reassigned = assignee && (
+      @recently_changed && @recently_changed.include?('assignee_id') ||
+      @recently_created && assignee_id != user_id
+    )
   end
 
 protected
@@ -187,12 +210,12 @@ protected
   end
 
   def log_recently_changed
-    @recently_changed = changed
+    @recently_changed = changed.dup
   end
 
   def assign_unassigned_asset
     if asset && (asset.is_a?(Lead) || asset.is_a?(Opportunity)) && asset.assignee.blank?
-      asset.update_attributes :assignee => self.user, :do_not_notify => true
+      asset.update :assignee => self.user, :do_not_notify => true
     end
   end
 
@@ -208,6 +231,6 @@ protected
   end
 
   def log_reassignment
-    Activity.log(self.user, self, 'Re-assigned') if @reassigned and valid?
+    Activity.log(self.user, self, 'Re-assigned') if @reassigned
   end
 end

@@ -1,28 +1,42 @@
+class ActivityUser
+  include DataMapper::Resource
+
+  belongs_to :notified_user, User, key: true
+  belongs_to :activity, key: true
+end
+
 class Activity
-  include Mongoid::Document
-  include Mongoid::Timestamps
-  include HasConstant
-  include HasConstant::Orm::Mongoid
+  include DataMapper::Resource
+  include DataMapper::Timestamps
+  include HasConstant::Orm::DataMapper
   include ActiveModel::Observing
 
-  field :action,            :type => Integer
-  field :info
-  field :notified_user_ids, :type => Array
+  property :id, Serial
+  property :info, String
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
-  referenced_in :user, :index => true
-  referenced_in :subject, :polymorphic => true, :index => true
+  has n, :activity_users
+  has n, :notified_users, User, through: Resource
 
-  index :action, :background => true
-  index [[ :created_at, Mongo::DESCENDING ]], :background => true
-
-  validates_presence_of :subject, :user
-
-  named_scope :for_subject, lambda { |subject| {
-    :where => { :subject_id => subject.id, :subject_type => subject.class.to_s } } }
-  named_scope :already_notified, lambda { |user| { :where => { :notified_user_ids => user.id } } }
-  named_scope :not_notified, lambda { |user| { :where => { :notified_user_ids.ne => user.id } } }
+  belongs_to :user, child_key: 'creator_id'
+  belongs_to :subject, polymorphic: true, required: true
 
   has_constant :actions, lambda { I18n.t(:activity_actions) }
+
+  def self.for_subject(subject)
+    subject.activities
+  end
+
+  def self.already_notified(user)
+    all(notified_users.id => user.id)
+  end
+
+  def self.not_notified(user)
+    all - already_notified(user)
+  end
 
   def self.log( user, subject, action )
     if %w(Created Deleted).include?(action)
@@ -34,40 +48,64 @@ class Activity
 
   def self.create_activity( user, subject, action )
     unless subject.is_a?(Task) and action == 'Viewed'
-      I18n.in_locale(:en) do
-        Activity.create :subject => subject, :action => action, :user => user
-      end
+      Activity.create user: user, action: action, subject: subject
     end
   end
 
   def self.update_activity( user, subject, action )
-    activity = Activity.where(:user_id => user.id, :subject_id => subject.id,
-                              :subject_type => subject.class.name,
-                              :action => Activity.actions.index(action)).first
+    activity = subject.activities.first(:user => user, :action => action)
+
     if activity
-      activity.update_attributes(:updated_at => Time.zone.now, :user_id => user.id)
+      activity.update(:updated_at => Time.zone.now, :user => user)
     else
-      create_activity(user, subject, action)
+      activity = create_activity(user, subject, action)
     end
     activity
   end
 
+  def notified_user_ids=(notified_user_ids)
+    notified_users.replace(User.all(id: notified_user_ids))
+  end
+
+  def notified_user_ids
+    notified_users.map &:id
+  end
+
   class << self
     def visible_to(user)
-      where.to_a.delete_if do |activity|
-        begin
+      activities = []
+
+      # Ensure that we're using the identity map by using all.each here instead
+      # of all.to_a.delete_if.
+      all.each do |activity|
+        next unless activity.subject
+        next if (
           (activity.subject.permission_is?('Private') && activity.subject.user != user) ||
-          (activity.subject.permission_is?('Shared') &&
-          !activity.subject.permitted_user_ids.include?(user.id) &&
-          activity.subject.user != user)
-        rescue StandardError => e
-          true
-        end
+          (
+            activity.subject.permission_is?('Shared') &&
+            !activity.subject.permitted_user_ids.include?(user.id) &&
+            activity.subject.user != user
+          )
+        )
+
+        activities << activity
       end
+
+      activities
     end
 
     def not_restored
-      where.to_a.delete_if { |activity| activity.subject.deleted_at.nil? }
+      activities = []
+
+      # Ensure that we're using the identity map by using all.each here instead
+      # of all.to_a.delete_if.
+      all.each do |activity|
+        next if activity.subject.deleted_at.nil?
+
+        activities << activity
+      end
+
+      activities
     end
   end
 end
