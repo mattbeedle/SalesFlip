@@ -23,7 +23,7 @@ namespace :deploy do
   task :stop do ; end
 
   task :restart, :roles => :app do
-    run "/etc/init.d/unicorn/restart"
+    run "/etc/init.d/unicorn restart"
   end
 
   task :symlinks, :roles => :app do
