@@ -6,7 +6,7 @@ set :application, "salesflip"
 set :user, "root"
 set :deploy_to, "/data/salesflip"
 set :runner, "root"
-set :repository,  "git://careerme.unfuddle.com:careerme/salesflip.git"
+set :repository,  "git@careerme.unfuddle.com:careerme/salesflip.git"
 set :scm, :git
 
 ssh_options[:paranoid] = false
