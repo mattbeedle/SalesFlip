@@ -21,14 +21,6 @@ GIT
       sunspot_rails (>= 1.1.0)
 
 GIT
-  remote: git://github.com/koppen/hassle.git
-  revision: a08c757bce033cebc7ef8a4a3a831127afcb956a
-  specs:
-    hassle (0.0.1)
-      haml
-      rack
-
-GIT
   remote: git://github.com/mattbeedle/has_constant.git
   revision: c8fa57435f5cfe312eeac8a54e299129f041d547
   specs:
@@ -331,7 +323,6 @@ DEPENDENCIES
   haml
   has_constant!
   has_scope
-  hassle!
   heroku
   inherited_resources
   launchy
