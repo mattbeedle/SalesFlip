@@ -1,3 +1,8 @@
+set :stages %w(staging production)
+set :default_stage, "staging"
+
+require "capistrano/ext/multistage"
+
 set :use_sudo, false
 
 set :git_shallow_clone, 1

@@ -53,6 +53,7 @@ group :development do
   gem 'heroku',     :require => nil
   gem 'thin',       :require => nil
   gem 'capistrano', :require => nil
+  gem 'capistrano-ext', :require => nil
 end
 
 group :test do
