@@ -7,7 +7,7 @@ module Rails
 
       protected
       def attributes_with_multiparameter=(values_hash)
-        attribs = values_hash.dup
+        attribs = values_hash.try_dup || {}
         multi_parameter_attributes = []
         attribs.each do |k, v|
           if k.to_s.include?("(")

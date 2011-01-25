@@ -42,7 +42,7 @@ protected
 
   def log_viewed_item
     subject = instance_variable_get("@#{controller_name.singularize}")
-    if subject and current_user and not subject.is_a?(Search)
+    if subject and current_user and subject.respond_to?(:activities) and not subject.is_a?(Search)
       Activity.log(current_user, subject, 'Viewed')
     end
   end
