@@ -1,4 +1,4 @@
-set :stages %w(staging production)
+set :stages, %w(production staging)
 set :default_stage, "staging"
 
 require "capistrano/ext/multistage"
@@ -7,9 +7,7 @@ set :use_sudo, false
 
 set :git_shallow_clone, 1
 set :keep_releases, 5
-set :application, "salesflip"
 set :user, "root"
-set :deploy_to, "/data/salesflip"
 set :runner, "root"
 set :repository,  "git@careerme.unfuddle.com:careerme/salesflip.git"
 set :scm, :git
@@ -26,10 +24,6 @@ after 'deploy:restart', 'deploy:symlinks'
 namespace :deploy do
   task :start do ; end
   task :stop do ; end
-
-  task :restart, :roles => :app do
-    run "/etc/init.d/unicorn restart"
-  end
 
   task :symlinks, :roles => :app do
     run "ln -s #{shared_path}/solr #{current_path}/solr"
