@@ -1,5 +1,5 @@
 set :deploy_to, "/data/salesflip-staging"
-set :branch, "dm-for-speed"
+set :branch, "dm-head-fixes"
 
 namespace :deploy do
   task :restart, :roles => :app do
