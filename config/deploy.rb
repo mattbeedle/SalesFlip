@@ -27,7 +27,7 @@ namespace :deploy do
   end
 
   task :bundle, :roles => :app do
-    run "cd #{release_path} && bundle install --without development test"
+    run "cd #{current_path} && bundle install --without development test"
   end
 
   task :delayed_job, :roles => :app do
