@@ -126,16 +126,19 @@ class Lead
         contact.update :account => account if account.valid?
       end
     else
-      if options[:opportunity] && !options[:opportunity].keys.blank?
-        opportunity = self.user.opportunities.build(options[:opportunity])
-        if !opportunity.valid? && !opportunity.title.blank?
-          options.merge!(:just_validate => true)
-        end
+      opportunity_provided = options[:opportunity].present? &&
+        options[:opportunity][:title].present?
+
+      if opportunity_provided
+        options.merge!(:just_validate => true)
       end
+
       account = Account.find_or_create_for(self, account_name, options)
       contact = Contact.create_for(self, account, options)
       opportunity = Opportunity.create_for(contact, options)
-      if [account, contact].all?(&:valid?)
+      opportunity.errors.clear
+
+      if [account, contact].all?(&:valid?) && (!opportunity_provided || opportunity.valid?)
         self.attributes = {:status => 'Converted', :contact_id => contact.id}
         save
       end

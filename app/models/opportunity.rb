@@ -91,7 +91,7 @@ class Opportunity
     attributes = options[:opportunity] || {}
     opportunity = contact.opportunities.new attributes.merge(:user => contact.user,
       :assignee => contact.assignee)
-    opportunity.save if contact.valid? && !opportunity.title.blank?
+    opportunity.save if opportunity.title.present? && opportunity.valid? && contact.valid?
     opportunity
   end
 
