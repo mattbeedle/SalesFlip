@@ -9,6 +9,6 @@ set :runner, "root"
 
 namespace :deploy do
   task :restart, :roles => :app do
-    # run "/etc/init.d/unicorn restart"
+    run "kill -USR2 `cat /data/salesflip/current/tmp/pids/unicorn.pid`"
   end
 end
