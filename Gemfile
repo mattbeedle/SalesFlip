@@ -30,6 +30,7 @@ gem 'amatch'
 gem 'gravtastic'
 gem 'cancan'
 gem 'mongoid_i18n', :require => 'mongoid/i18n'
+gem 'unicorn'
 
 # Plugins
 gem 'salesflip-lead_notifications', :require => 'lead_notifications'
