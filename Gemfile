@@ -2,6 +2,7 @@ source :gemcutter
 
 gem 'rails'
 
+gem 'sqlite3'
 gem 'haml'
 gem 'inherited_resources'
 gem 'devise'
