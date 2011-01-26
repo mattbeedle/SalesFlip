@@ -9,6 +9,7 @@ set :runner, "root"
 
 namespace :deploy do
   task :restart, :roles => :app do
-    run "kill -USR2 `cat /data/salesflip/current/tmp/pids/unicorn.pid`"
+    pid = File.read("/tmp/unicorn.pid").to_i
+    run("kill -USR2 #{pid}")
   end
 end
