@@ -15,9 +15,6 @@ set :scm, :git
 ssh_options[:paranoid] = false
 default_run_options[:pty] = true
 
-role :app, "salesflip.com", :primary => true
-role :web, "salesflip.com"
-
 before 'deploy:restart', 'deploy:bundle'
 after 'deploy:restart', 'deploy:symlinks'
 
