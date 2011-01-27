@@ -43,6 +43,6 @@ namespace :deploy do
   end
 
   task :bundle, :roles => :app do
-    run "cd #{current_path} && gem install bundler && bundle install --without development test"
+    run "cd #{current_path} && bundle install --without development test"
   end
 end
