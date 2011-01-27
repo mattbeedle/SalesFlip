@@ -18,19 +18,19 @@ default_run_options[:pty] = true
 
 before 'deploy:restart', 'deploy:bundle'
 after 'deploy:bundle', 'deploy:delayed_job'
+after 'deploy:bundle', 'deploy:solr'
 after 'deploy:restart', 'deploy:symlinks'
 
 namespace :deploy do
-  task :start, :roles => :app do
-    run "/etc/init.d/unicorn start"
-    run "/etc/init.d/delayed_job start"
-    run "/etc/init.d/solr start"
+  task :start do; end
+  task :stop do; end
+
+  task :delayed_job, :roles => :app do
+    run "/etc/init.d/delayed_job restart"
   end
 
-  task :stop, :roles => :app do
-    run "/etc/init.d/unicorn stop"
-    run "/etc/init.d/delayed_job stop"
-    run "/etc/init.d/solr stop"
+  task :solr, :roles => :app do
+    run "/etc/init.d/solr restart"
   end
 
   task :restart, :roles => :app do
