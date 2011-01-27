@@ -1,11 +1,11 @@
-set :deploy_to, "/data/salesflip-staging"
 set :branch, "dm-head-fixes"
 
-role :app, "salesflip.com", :primary => true
-role :web, "salesflip.com"
+role :app, "78.47.219.204", :primary => true
+role :app, "78.47.219.204"
 
 namespace :deploy do
   task :restart, :roles => :app do
-    run "/etc/init.d/unicorn-staging restart"
+    run("kill -USR2 `cat /tmp/unicorn.pid`")
+    run("/etc/init.d/delayed_job restart")
   end
 end
