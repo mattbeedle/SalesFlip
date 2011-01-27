@@ -147,6 +147,33 @@ class OpportunityTest < ActiveSupport::TestCase
       @opportunity = Opportunity.new
     end
 
+    should 'only allow numbers for "amount"' do
+      @opportunity.amount = 'asdfewf'
+      @opportunity.valid?
+      assert @opportunity.errors[:amount]
+      @opportunity.amount = 123
+      @opportunity.valid?
+      assert @opportunity.errors[:amount].blank?
+    end
+
+    should 'only allow numbers for "discount"' do
+      @opportunity.discount = 'asdfewf'
+      @opportunity.valid?
+      assert @opportunity.errors[:discount]
+      @opportunity.discount = 123
+      @opportunity.valid?
+      assert @opportunity.errors[:discount].blank?
+    end
+
+    should 'only allow numbers for "probability"' do
+      @opportunity.probability = 'asdfewf'
+      @opportunity.valid?
+      assert @opportunity.errors[:probability]
+      @opportunity.probability = 123
+      @opportunity.valid?
+      assert @opportunity.errors[:probability].blank?
+    end
+
     should 'update close date to the current date when the opportunity stage is set to 100%' do
       opportunity = Opportunity.make
       stage = OpportunityStage.make :percentage => 100

@@ -15,7 +15,7 @@
           = link_to root_path do
             %strong.logo SalesFlip
         = render :partial => 'layouts/nav' if current_user
-    #content
+    #content{:class => I18n.locale.to_s}
       .pad
         - if flash[:notice]
           #flashes

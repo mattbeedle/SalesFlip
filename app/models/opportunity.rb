@@ -26,6 +26,9 @@ class Opportunity
   references_many :attachments, :as => :subject, :index => true
 
   validates_presence_of :title, :user, :stage
+  validates_numericality_of :amount,      :allow_blank => true
+  validates_numericality_of :probability, :allow_blank => true
+  validates_numericality_of :discount,    :allow_blank => true
 
   named_scope :for_company, lambda { |company| where(:user_id.in => company.users.map(&:id)) }
   named_scope :closing_for_date, lambda { |date| where(:close_on => date) }
@@ -42,6 +45,9 @@ class Opportunity
 
   searchable do
     text :title, :background_info
+    text :contact do
+      contact.name
+    end
   end
   handle_asynchronously :solr_index
 

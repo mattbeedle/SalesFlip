@@ -34,7 +34,9 @@ class Activity
 
   def self.create_activity( user, subject, action )
     unless subject.is_a?(Task) and action == 'Viewed'
-      Activity.create :subject => subject, :action => action, :user => user
+      I18n.in_locale(:en) do
+        Activity.create :subject => subject, :action => action, :user => user
+      end
     end
   end
 

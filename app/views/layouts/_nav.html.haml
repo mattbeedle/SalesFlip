@@ -13,7 +13,7 @@
     - if can? :read, Task
       %li= link_to t(:tasks), tasks_path(:incomplete => true, :for => current_user.id), :class => active_if(controller_is('tasks'))
     - if can? :read, Lead
-      %li= link_to t(:leads), leads_path('with_status[]' => 'New', :unassigned => true, 'source_is[]' => 'Imported'), :class => active_if(controller_is('leads'))
+      %li= link_to t(:leads), leads_path('with_status[]' => Lead.statuses[I18n.in_locale(:en) { Lead.statuses.index('New') }], :unassigned => true, 'source_is[]' => Lead.sources[I18n.in_locale(:en) { Lead.sources.index('Imported') }]), :class => active_if(controller_is('leads'))
     - if can? :read, Opportunity
       %li= link_to t(:opportunities), opportunities_path(:assigned_to => current_user.id), :id => 'opportunities', :class => active_if(controller_is('opportunities'))
     - if can? :read, Account

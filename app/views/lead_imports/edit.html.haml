@@ -1,0 +1,15 @@
+%h3= t(:import)
+.clear
+%table
+  %tr
+    %th= t(:file)
+    %th= t(:assignee)
+    %th= t(:deliminator)
+    %th= t(:actions)
+  %tr
+    %td= link_to @lead_import.file_filename, @lead_import.file.url
+    %td= @lead_import.assignee.try(:full_name)
+    %td= @lead_import.deliminator
+    %td
+      = simple_form_for @lead_import do |form|
+        = form.button :submit, t(:confirm)

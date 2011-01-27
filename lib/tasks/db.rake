@@ -1,5 +1,5 @@
 namespace :db do
-  
+
   desc 'Import leads csv'
   task :import_leads_csv => :environment do
     user = User.where(:email => /beedle/i).first
@@ -18,15 +18,15 @@ namespace :db do
         data[company][:urls] << url
       end
     end
-    
+
     data.each do |key, attributes|
-      
       contact_names = attributes.delete(:contact_names)
       contact_names.each_with_index do |name, index|
         names = name.strip.gsub(/\"/, '').split(/\s/)
         I18n.in_locale(:de) do
           lead = user.leads.build :company => key, :salutation => names.first,
             :first_name => names[1], :last_name => names.last || 'Unknown',
+            :do_not_log => true, :do_not_notify => true, :do_not_index => true,
             :phone => attributes[:phones].shift, :email => attributes[:emails].shift,
             :notes => attributes[:urls].delete_if { |url|
               url.match(/@/)
@@ -44,17 +44,14 @@ namespace :db do
             next
           end
 
-          ids = Lead.only(:id, :company).map do |l|
-            [l.id, lead.company.levenshtein_similar(l.company)]
-          end.select { |similarity| similarity.last > 0.9 }.map(&:first)
-
-          unless ids.blank?
+          if lead.similar(0.85).any?
             puts "Skipped lead #{lead.name}, (#{lead.company})"
             puts "Similar leads: #{Lead.where(:_id.in => ids).map(&:company).join(', ')}"
             next
           end
           if lead.save
             puts "Created lead #{lead.name} (#{lead.company})"
+            Sunspot.index lead
           else
             puts names.inspect
             puts names.first

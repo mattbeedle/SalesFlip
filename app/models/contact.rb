@@ -11,6 +11,8 @@ class Contact
   include Assignable
   include Gravtastic
   include ActiveModel::Observing
+  include OnlineFields
+
   is_gravtastic
 
   field :first_name
@@ -26,11 +28,6 @@ class Contact
   field :phone
   field :mobile
   field :fax
-  field :website
-  field :linked_in
-  field :facebook
-  field :twitter
-  field :xing
   field :address
   field :born_on,             :type => Date
   field :do_not_call,         :type => Boolean
@@ -74,7 +71,7 @@ class Contact
     text :first_name, :last_name, :department, :email, :alt_email, :phone, :mobile,
       :fax, :website, :linked_in, :facebook, :twitter, :xing, :address
   end
-  handle_asynchronously :solr_index
+  #handle_asynchronously :solr_index
 
   def self.assigned_to( user_id )
     user_id = BSON::ObjectId.from_string(user_id) if user_id.is_a?(String)
@@ -101,7 +98,7 @@ class Contact
     "#{last_name}, #{first_name}".strip.gsub(/,$/, '')
   end
 
-  def self.create_for( lead, account )
+  def self.create_for( lead, account, options = {} )
     contact = account.contacts.build :user => lead.updater_or_user, :permission => account.permission,
       :permitted_user_ids => account.permitted_user_ids
     Lead.fields.map(&:first).delete_if do |k|
@@ -112,7 +109,7 @@ class Contact
         contact.send("#{key}=", lead.send(key))
       end
     end
-    if account.valid? and contact.valid?
+    if account.valid? && contact.valid? && !options[:just_validate]
       contact.save
       contact.leads << lead
     end

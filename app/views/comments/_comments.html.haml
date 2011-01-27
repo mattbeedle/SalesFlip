@@ -1,6 +1,6 @@
 .comments
   %h3.grad= t(:comments)
-  - if object.is_a?(Lead) && object.status == 'Converted'
+  - if object.is_a?(Lead) && I18n.in_locale(:en) { object.status == 'Converted' }
     .comments-closed
       - activity = I18n.in_locale(:en) { object.activities.action_is('Converted').first }
       %p
@@ -12,5 +12,5 @@
     %p No comments have been posted yet.
   - else
     = render :partial => 'comments/comment', :collection => comments# object.comments.not_deleted.desc(:created_at)
-- unless object.is_a?(Lead) && object.status == 'Converted'
+- unless object.is_a?(Lead) && I18n.in_locale(:en) { object.status == 'Converted' }
   = render :partial => 'comments/add_comment', :locals => { :object => object }

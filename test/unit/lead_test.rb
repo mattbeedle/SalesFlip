@@ -173,7 +173,31 @@ class LeadTest < ActiveSupport::TestCase
       @lead = Lead.make_unsaved(:erich, :user => User.make)
       @user = User.make(:benny)
     end
-    
+
+    context 'similar' do
+      setup do
+        FakeWeb.allow_net_connect = true
+        @lead = Lead.make :company => '1000JobBoersen'
+        @lead2 = Lead.new :company => '10000JobBoersen'
+        @lead3 = Lead.make :company => 'JobBoersen'
+        @search = Lead.search { keywords 'JobBoersen' }
+        @search.stubs(:results).returns([@lead, @lead2, @lead3])
+        Lead.stubs(:search).returns(@search)
+      end
+
+      should 'find all leads with similar company name' do
+        assert @lead2.similar(0.9).include?(@lead)
+      end
+
+      should 'find only very similar leads with the threshold turned up' do
+        assert !@lead2.similar(0.9).include?(@lead3)
+      end
+
+      should 'be able to turn the threshold down to get leads which are less similar' do
+        assert @lead2.similar(0.3).include?(@lead3)
+      end
+    end
+
     should 'always store permitted user ids as BSON::ObjectIds' do
       @lead.permitted_user_ids = [@user.id.to_s]
       assert_equal [@user.id], @lead.permitted_user_ids
@@ -181,7 +205,7 @@ class LeadTest < ActiveSupport::TestCase
       @lead.permitted_user_ids = [user.id]
       assert_equal [user.id], @lead.permitted_user_ids
     end
-    
+
     should 'not be able to assign to another user if the permission is private' do
       @lead.save!
       @lead.update_attributes :permission => 'Private'
@@ -190,7 +214,7 @@ class LeadTest < ActiveSupport::TestCase
       assert !@lead.valid?
       assert @lead.errors[:base].include?('Cannot assign a private lead to another user, please change the permissions first')
     end
-    
+
     should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
       @lead.save!
       user = User.make
@@ -431,6 +455,14 @@ class LeadTest < ActiveSupport::TestCase
         assert contact.is_a?(Contact)
         assert opportunity.is_a?(Opportunity)
         assert opportunity.errors.blank?
+      end
+
+      should 'not create an account or contact if an opportunity is supplied, and the opportunity is invalid' do
+        account, contact, opportunity = @lead.promote!(
+          'A company', :opportunity => { :title => 'An opportunity', :amount => 'asf' })
+        assert_equal 0, Account.count
+        assert_equal 0, Contact.count
+        assert_equal 0, Opportunity.count
       end
 
       should 'still return an account if the contact exists, but it does not have an account' do

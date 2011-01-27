@@ -1,7 +1,7 @@
 - cache(leads_index_cache_key) do
   %h2.title
     Leads
-    = add_new t(:add_lead), new_lead_path(:return_to => leads_path(:assigned_to => current_user.id, :with_status => ['New']))
+    = add_new t(:add_lead), new_lead_path(:return_to => request.fullpath)
 
   = render :partial => 'lead', :collection => @leads
   = will_paginate @leads
@@ -37,8 +37,11 @@
                 = source
                 %span.count= "(#{Lead.for_company(current_user.company).not_deleted.permitted_for(current_user).source_is([source]).count})"
         .clear= submit_tag t(:filter), :id => 'filter'
-  - if can? :export, current_user
+  - if can?(:export, current_user) || can?(:import, current_user)
     .gold.box
       %h3= t(:data_actions)
       %ul.plain
-        %li= link_to t(:export_as_csv), export_leads_path(@filters), :id => 'export_as_csv'
+        - if can?(:export, current_user)
+          %li= link_to t(:export_as_csv), export_leads_path(@filters), :id => 'export_as_csv'
+        - if can?(:import, current_user)
+          %li= link_to t(:import_from_csv), new_lead_import_path(:return_to => request.fullpath)

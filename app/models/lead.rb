@@ -11,6 +11,8 @@ class Lead
   include Assignable
   include Gravtastic
   include ActiveModel::Observing
+  include OnlineFields
+
   is_gravtastic
 
   field :first_name
@@ -25,8 +27,8 @@ class Lead
   field :title,         :type => Integer
   field :salutation,    :type => Integer
   field :company
+  field :company_size,  :type => Integer
   field :company_phone
-  field :website
   field :career_site
   field :job_title
   field :department
@@ -40,11 +42,6 @@ class Lead
   field :referred_by
   field :do_not_call,   :type => Boolean
 
-  field :twitter
-  field :linked_in
-  field :facebook
-  field :xing
-  field :blog
   field :identifier,    :type => Integer
 
   index(
@@ -63,7 +60,7 @@ class Lead
 
   validates_presence_of :user, :last_name
 
-  attr_accessor :do_not_notify
+  attr_accessor :do_not_notify, :do_not_index
 
   referenced_in   :user
   referenced_in   :contact
@@ -76,21 +73,26 @@ class Lead
   before_save       :log_recently_changed
   after_save        :notify_assignee, :unless => :do_not_notify
 
-  has_constant :titles,       lambda { I18n.t(:titles) }
-  has_constant :statuses,     lambda { I18n.t(:lead_statuses) }
-  has_constant :sources,      lambda { I18n.t(:lead_sources) }
-  has_constant :salutations,  lambda { I18n.t(:salutations) }
+  has_constant :titles,         lambda { I18n.t(:titles) }
+  has_constant :statuses,       lambda { I18n.t(:lead_statuses) }
+  has_constant :sources,        lambda { I18n.t(:lead_sources) }
+  has_constant :salutations,    lambda { I18n.t(:salutations) }
+  has_constant :company_sizes,  lambda { I18n.t(:company_sizes) }
 
-  named_scope :with_status, lambda { |statuses| { :where => {
-    :status.in => statuses.map { |status| Lead.statuses.index(status) } } } }
-  named_scope :unassigned, :where => { :assignee_id => nil }
-  named_scope :for_company, lambda { |company| { :where => { :user_id.in => company.users.map(&:id) } } }
+  named_scope :with_status, lambda { |statuses|
+    where(:status.in => statuses.map { |status| Lead.statuses.index(status) })
+  }
+  named_scope :unassigned, where(:assignee_id => nil)
+  named_scope :for_company, lambda { |company|
+    where(:user_id.in => company.users.map(&:id))
+  }
 
   searchable do
-    text :first_name, :last_name, :email, :phone, :notes, :company, :alternative_email, :mobile,
-      :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing
+    text :first_name, :last_name, :email, :phone, :notes, :company,
+      :alternative_email, :mobile, :address, :referred_by, :website, :twitter,
+      :linked_in, :facebook, :xing
   end
-  handle_asynchronously :solr_index
+  #handle_asynchronously :solr_index
 
   def self.with_status( statuses )
     statuses = statuses.lines if statuses.respond_to?(:lines)
@@ -101,6 +103,27 @@ class Lead
     fields.map(&:first).sort.delete_if do |f|
       f.match(/access|permission|permitted_user_ids|tracker_ids/)
     end
+  end
+
+  def similar( threshold )
+    leads = Lead.search { keywords self.company }.results
+    ids = leads.map do |lead|
+      [lead.id, self.company.
+       levenshtein_similar(lead.company)]
+    end.select { |similarity| similarity.last > threshold }.map(&:first)
+    Lead.where(:_id.in => ids)
+  rescue
+    []
+  end
+
+  def similar_accounts( threshold )
+    accounts = Account.search { keywords self.company }.results
+    ids = accounts.map do |account|
+      [account.id, self.company.levenshtein_similar(account.name)]
+    end.select { |similarity| similarity.last > threshold }.map(&:first)
+    Account.where(:_id.in => ids)
+  rescue
+    []
   end
 
   def full_name
@@ -117,8 +140,14 @@ class Lead
         contact.update_attributes :account => account if account.valid?
       end
     else
+      if options[:opportunity] && !options[:opportunity].keys.blank?
+        opportunity = self.user.opportunities.build(options[:opportunity])
+        if !opportunity.valid? && !opportunity.title.blank?
+          options.merge!(:just_validate => true)
+        end
+      end
       account = Account.find_or_create_for(self, account_name, options)
-      contact = Contact.create_for(self, account)
+      contact = Contact.create_for(self, account, options)
       opportunity = Opportunity.create_for(contact, options)
       if [account, contact].all?(&:valid?)
         I18n.locale_around(:en) { update_attributes :status => 'Converted', :contact_id => contact.id }
@@ -176,5 +205,15 @@ protected
 
   def log_recently_changed
     @recently_changed = changed
+  end
+
+private
+  def maybe_auto_index
+    unless self.do_not_index
+      if @marked_for_auto_indexing
+        solr_index
+        remove_instance_variable(:@marked_for_auto_indexing)
+      end
+    end
   end
 end

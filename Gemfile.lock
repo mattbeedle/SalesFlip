@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git://github.com/jnicklas/carrierwave.git
-  revision: 7361f97be97e5cd0986ccf41f9e96b47571f8daa
+  revision: 4dc1a5c357d8a6adcf02c3af1aa96edb51138e71
   specs:
     carrierwave (0.5.1)
       activesupport (~> 3.0)
@@ -277,6 +277,7 @@ GEM
       macaddr (~> 1.0)
     warden (1.0.3)
       rack (>= 1.0.0)
+    watchr (0.7)
     will_paginate (3.0.pre)
     wirble (0.1.3)
     xpath (0.1.3)
@@ -337,5 +338,6 @@ DEPENDENCIES
   timecop
   unicorn
   uuid
+  watchr
   will_paginate (= 3.0.pre)
   wirble

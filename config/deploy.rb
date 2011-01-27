@@ -16,6 +16,7 @@ ssh_options[:paranoid] = false
 default_run_options[:pty] = true
 
 before 'deploy:restart', 'deploy:bundle'
+after 'deploy:bundle', 'deploy:delayed_job'
 after 'deploy:restart', 'deploy:symlinks'
 
 namespace :deploy do

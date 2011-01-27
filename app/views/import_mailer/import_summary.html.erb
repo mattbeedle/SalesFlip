@@ -1,0 +1,20 @@
+<p><strong><%= @import.imported.count %></strong> leads were imported.</p>
+<br/>
+<p><strong><%= @import.unimported.length %></strong> leads were not imported:</p>
+
+<table>
+  <tr>
+    <th>Unimported line</th>
+    <th>Similar Lead/s</th>
+  <% @import.unimported.each do |unimported| %>
+    <tr>
+      <td><%= unimported.first %></td>
+      <td>
+        <% unimported.last.each do |lead| %>
+          (<%= lead_url(lead) %>)
+          <br/>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>

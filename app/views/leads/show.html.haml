@@ -4,11 +4,11 @@
     - if @lead.company.present?
       %small= " @ #{@lead.company}"
     = rating_for(@lead)
-  - if @lead.status_is?('Converted')
+  - if I18n.in_locale(:en) { @lead.status_is?('Converted') }
     %span.status.converted
       %strong &#10004;
       = t(:converted)
-  - if @lead.status_is?('Rejected')
+  - if I18n.in_locale(:en) { @lead.status_is?('Rejected') }
     %span.status.rejected
       %strong &#10008;
       = t(:rejected)
@@ -35,7 +35,7 @@
           = hidden_field_tag :return_to, request.fullpath
           = form.button :submit, t(:keep_me_updated), :id => 'keep_me_updated'
     - if @lead.assigned_to?(current_user)
-      - unless @lead.status_is?('Converted') or @lead.status_is?('Rejected')
+      - unless I18n.in_locale(:en) { @lead.status_is?('Converted') || @lead.status_is?('Rejected') }
         %li= link_to t(:convert), convert_lead_path(@lead), :id => 'convert_lead'
         %li
           = simple_form_for @lead, :url => reject_lead_path(@lead), :html => { :method => :put } do |form|

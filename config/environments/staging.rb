@@ -44,7 +44,8 @@ Salesflip::Application.configure do
 
   config.middleware.use Rack::GridFS, :hostname => ENV['MONGODB_STAGING_HOST'],
     :port => ENV['MONGODB_STAGING_PORT'],
-    :database => 'salesflip', :prefix => 'uploads', :user => ENV['MONGODB_STAGING_USER'],
+    :database => 'salesflip_staging', :prefix => 'uploads',
+    :user => ENV['MONGODB_STAGING_USER'],
     :password => ENV['MONGODB_STAGING_PASSWORD']
 
   config.after_initialize do

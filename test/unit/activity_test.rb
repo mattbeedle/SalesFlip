@@ -23,6 +23,16 @@ class ActivityTest < ActiveSupport::TestCase
         assert @lead.activities.any? {|a| a.action == 'Deleted' }
       end
 
+      should 'work in de locale' do
+        I18n.in_locale(:de) do
+          Activity.log(@lead.user, @lead, 'Viewed')
+        end
+        assert Activity.where(:user_id => @lead.user_id,
+                              :subject_id => @lead.id,
+                              :subject_type => 'Lead',
+                              :action => Activity.actions.index('Viewed')).first
+      end
+
       should 'find and update the last activity if action is "Viewed"' do
         Activity.log(@lead.user, @lead, 'Viewed')
         activity = Activity.last

@@ -30,6 +30,7 @@ en:
   data_summary: Data Summary
   status: Status
   total: Total
+  confirm: Confirm
 
   mongoid:
     errors:
@@ -136,6 +137,9 @@ en:
   stop_updating_me: Stop updating me
   accept: Accept
   export_as_csv: Export this list as a CSV
+  import_from_csv: Import from CSV
+  optional_extra_information: Optional Extra Information
+  assignee: Assignee
   choose_fields: Choose Fields to Export
   export: Export
   create: Create
@@ -148,6 +152,8 @@ en:
   alt_email: Other Email
   or_preset_date: or preset date
   or_real_date: or real date
+  upload: Upload
+
   #--------------------------------------------------------------
   # Form Labels
   #--------------------------------------------------------------
@@ -258,7 +264,7 @@ en:
     - final review
     - closed/won
     - closed/lost
-  opportunity_outline: "Weighted: %{amount} with %{discount} discount and %{probability} probability | expected to close %{close_on}"
+  opportunity_outline: "%{amount} with %{discount} discount and %{probability} probability | expected to close %{close_on}"
   add_opportunity: Add Opportunity
   select_contact: Select Contact
   opportunity: Opportunity
@@ -309,6 +315,7 @@ en:
   #--------------------------------------------------------------
   # Leads
   #--------------------------------------------------------------
+  lead_already_accepted: This lead was just accepted by %{user}, you can no longer accept it
   add_lead: Add Lead
   update_lead: Update Lead
   company: Company
@@ -351,11 +358,13 @@ en:
     - Ms
     - Mrs
   titles:
-    - Dr
+    - Dr.
     - Sir
     - Lord
     - Madam
     - Earl
+    - Prof.
+    - Prof. Dr.
   account_types:
     - Analyst
     - Competitor
@@ -367,6 +376,16 @@ en:
     - Prospect
     - Reseller
     - Other
+  company_sizes:
+    - '1-5'
+    - '6-10'
+    - '11-20'
+    - '21-50'
+    - '51-100'
+    - '101-200'
+    - '201-500'
+    - '501-5000'
+    - 'over 5000'
   comments_closed: Comments are closed. To comment please
   view_contact_for_lead: view the contact for this lead
   lead_converted_by: This lead was converted by %{link} on %{time}
@@ -425,6 +444,8 @@ en:
   #--------------------------------------------------------------
   email_count: Emails
   emails:
+    import_summary:
+      subject: Import Summary
     do_not_reply: "do-not-reply@%{host}"
     task_reassigned:
       subject: You have been assigned a new task

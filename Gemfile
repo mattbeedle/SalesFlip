@@ -63,4 +63,5 @@ group :test do
   gem 'database_cleaner'
   gem 'timecop'
   gem 'test_notifier'
+  gem 'watchr'
 end
