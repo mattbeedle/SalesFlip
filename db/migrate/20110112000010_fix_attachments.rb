@@ -3,21 +3,27 @@ class FixAttachments < Migrations::MongodbToPostgresql
     Attachment.where(:attachment_filename => nil).each &:destroy
     Attachment.where(:attachment_filename.not => nil).each do |attachment|
       begin
-        File.open(attachment.attachment_filename, 'wb+') do |file|
-          file.write grid.open(attachment.attachment.store_path(
-            attachment.attachment_filename), 'r').read
+        filename = attachment.attachment_filename
+
+        original_file_path = attachment.attachment.store_path(filename)
+
+        attachment.attribute_set :attachment, filename
+        attachment.attachment_filename = nil
+        attachment.legacy_id = nil
+
+        new_file_path = attachment.attachment.store_path(filename)
+
+        grid.open(new_file_path, 'w') do |new_file|
+          grid.open(original_file_path, 'r') do |original_file|
+            original_file.each do |chunk|
+              new_file.write(chunk)
+            end
+          end
         end
-        a = Attachment.new :subject => attachment.subject,
-          :attachment => File.open(attachment.attachment_filename)
-        a.save
-        a = Attachment.find(a.id)
-        a.created_at = attachment.created_at
-        a.created_on = attachment.created_at ? Date.parse(attachment.created_at.to_s) : nil
-        a.updated_at = attachment.updated_at
-        a.updated_on = attachment.updated_at ? Date.parse(attachment.updated_at.to_s) : nil
-        a.save!
-        attachment.destroy
-        FileUtils.rm(attachment.attachment_filename) if File.exists?(attachment.attachment_filename)
+
+        grid.delete(original_file_path)
+
+        attachment.save!
       rescue StandardError => e
         puts e
         puts attachment.legacy_id
@@ -27,16 +33,18 @@ class FixAttachments < Migrations::MongodbToPostgresql
   end
 
   def self.grid
-    if Rails.env.staging?
-      db ||= Mongo::Connection.new(ENV['MONGODB_HOST'], 27017).db(database)
-      db.authenticate(ENV['MONGODB_STAGING_USER'], ENV['MONGODB_STAGING_PASSWORD'])
-    elsif Rails.env.production?
-      db ||= Mongo::Connection.new(ENV['MONGODB_HOST'], 27017).db(database)
-      db.authenticate(ENV['MONGODB_USER'], ENV['MONGODB_PASSWORD'])
-    else
-      db = Mongo::Connection.new.db(database)
+    @grid ||= begin
+      if Rails.env.staging?
+        db ||= Mongo::Connection.new(ENV['MONGODB_HOST'], 27017).db(database)
+        db.authenticate(ENV['MONGODB_STAGING_USER'], ENV['MONGODB_STAGING_PASSWORD'])
+      elsif Rails.env.production?
+        db ||= Mongo::Connection.new(ENV['MONGODB_HOST'], 27017).db(database)
+        db.authenticate(ENV['MONGODB_USER'], ENV['MONGODB_PASSWORD'])
+      else
+        db = Mongo::Connection.new.db(database)
+      end
+      Mongo::GridFileSystem.new(db)
     end
-    grid = Mongo::GridFileSystem.new(db)
   end
 
   def self.down
