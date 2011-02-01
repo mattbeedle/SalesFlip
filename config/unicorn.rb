@@ -17,5 +17,5 @@ before_fork do |server, worker|
 end
 
 after_fork do |server, worker|
-  DataObjects::Pooling.pools.each do { |pool| pool.dispose }
+  DataObjects::Pooling.pools.each { |pool| pool.dispose }
 end
