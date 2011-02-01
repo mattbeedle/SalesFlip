@@ -36,7 +36,7 @@ Feature: Manage tasks
     When I press "task_submit"
     Then I should be on the tasks page
     And I should see "a test task"
-    
+
   Scenario: Assigning a new task to a user, with a lead, when the lead is private
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -51,7 +51,7 @@ Feature: Manage tasks
     And I press "Create Task"
     Then 0 tasks should exist
     And I should see "Cannot assign this task to anyone else because the lead that it is associated with is private. Please change the lead permission first"
-    
+
   Scenario: Assigning a new task to a user, with an account, when the account is private
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -66,7 +66,7 @@ Feature: Manage tasks
     And I press "Create Task"
     Then 0 tasks should exist
     And I should see "Cannot assign this task to anyone else because the account that it is associated with is private. Please change the account permission first"
-    
+
   Scenario: Assigning a new task to a user, with a contact, when the contact is private
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -81,7 +81,7 @@ Feature: Manage tasks
     And I press "Create Task"
     Then 0 tasks should exist
     And I should see "Cannot assign this task to anyone else because the contact that it is associated with is private. Please change the contact permission first"
-    
+
   Scenario: Assigning a new task to a user, with a lead, when the lead is not shared with them
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -98,7 +98,7 @@ Feature: Manage tasks
     And I press "Create Task"
     Then 0 tasks should exist
     And I should see "Cannot assign this task to benjamin.pochhammer@1000jobboersen.de because the lead associated with it is not shared with that user"
-    
+
   Scenario: Assigning a new task to a user, with an account, when the account is not shared with them
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -115,7 +115,7 @@ Feature: Manage tasks
     And I press "Create Task"
     Then 0 tasks should exist
     And I should see "Cannot assign this task to benjamin.pochhammer@1000jobboersen.de because the account associated with it is not shared with that user"
-    
+
   Scenario: Assigning an existing task to a user, with a contact, when the contact is private
     Given I am registered and logged in as annika
     And Annika has invited Benny
