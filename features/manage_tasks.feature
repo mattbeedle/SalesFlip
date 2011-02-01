@@ -138,6 +138,19 @@ Feature: Manage tasks
     Then I should see "Task for Annika"
     And I should not see "Task for Benny"
 
+  Scenario: Updating a task
+    Given I am registered and logged in as annika
+    And a task: "call_erich" exists with user: annika, assignee: annika
+    And all emails have been delivered
+    And I follow "Tasks"
+    And I follow the edit link for the task
+    And I follow "preset_date"
+    And I select "Today" from "task_due_at"
+    And I press "update_task"
+    And all delayed jobs have finished
+    Then I should be on the tasks page
+    And 0 emails should be delivered
+
   Scenario: Re-assiging a task
     Given I am registered and logged in as annika
     And Annika has invited Benny
