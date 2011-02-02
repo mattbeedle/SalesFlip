@@ -10,7 +10,7 @@ set :git_shallow_clone, 1
 set :keep_releases, 5
 set :user, "root"
 set :runner, "root"
-set :repository,  "git@careerme.unfuddle.com:careerme/salesflip.git"
+set :repository,  "git@github.com:HRNewMedia/SalesFlip.git"
 set :scm, :git
 
 ssh_options[:paranoid] = false
