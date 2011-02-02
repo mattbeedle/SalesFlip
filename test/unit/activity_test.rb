@@ -3,7 +3,7 @@ require 'test_helper.rb'
 class ActivityTest < ActiveSupport::TestCase
   context 'Class' do
     should_have_constant :actions
-    should_require_key :user
+    should_require_key :creator_id
 
     context 'log' do
       setup do

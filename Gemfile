@@ -53,6 +53,7 @@ group :development do
   gem 'wirble'
   gem 'capistrano', :require => nil
   gem 'capistrano-ext', :require => nil
+  gem 'ruby-debug19'
 end
 
 group :test do

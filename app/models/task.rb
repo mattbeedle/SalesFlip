@@ -142,14 +142,6 @@ class Task
     completed_at
   end
 
-  def assignee_id=( assignee_id )
-    old_assignee_id = attribute_get(:assignee_id)
-    if old_assignee_id != assignee_id && !assignee_id.blank? && !new?
-      @reassigned = true
-    end
-    attribute_set :assignee_id, assignee_id
-  end
-
   def due_at=( due )
     attribute_set :due_at,
       case due
@@ -198,7 +190,7 @@ class Task
   end
 
   def reassigned?
-    @reassigned = assignee && (
+    assignee && (
       @recently_changed && @recently_changed.include?('assignee_id') ||
       @recently_created && assignee_id != user_id
     )
@@ -231,6 +223,6 @@ protected
   end
 
   def log_reassignment
-    Activity.log(self.user, self, 'Re-assigned') if @reassigned
+    Activity.log(self.user, self, 'Re-assigned') if reassigned?
   end
 end
