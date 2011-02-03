@@ -42,6 +42,8 @@ Salesflip::Application.configure do
 
   config.active_support.deprecation = :log
 
+  config.i18n.default_locale = :de
+
   config.middleware.use Rack::GridFS, :hostname => ENV['MONGODB_HOST'],
     :port => ENV['MONGODB_PORT'], :database => 'salesflip',
     :prefix => 'uploads', :user => ENV['MONGODB_USER'],
