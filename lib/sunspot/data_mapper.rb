@@ -44,7 +44,7 @@ module Sunspot
       end
 
       def load_all(ids)
-        @class.all(id: ids)
+        @clazz.all(id: ids)
       end
     end
   end
