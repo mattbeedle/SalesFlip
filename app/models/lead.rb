@@ -52,9 +52,9 @@ class Lead
   property :blog, String
   property :homepage, String
   property :identifier, Integer
-  property :created_at, DateTime
+  property :created_at, DateTime, :index => true
   property :created_on, Date
-  property :updated_at, DateTime
+  property :updated_at, DateTime, :index => true
   property :updated_on, Date
 
   attr_accessor :do_not_notify
