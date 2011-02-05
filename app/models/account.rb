@@ -29,7 +29,6 @@ class Account
   property :updated_at, DateTime
   property :updated_on, Date
 
-  has_constant :accesses, lambda { I18n.t(:access_levels) }
   has_constant :account_types, lambda { I18n.t(:account_types) }
 
   belongs_to :user, required: true
