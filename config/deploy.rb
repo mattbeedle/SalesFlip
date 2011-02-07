@@ -26,16 +26,15 @@ namespace :deploy do
   task :stop do; end
 
   task :delayed_job, :roles => :app do
-    run "/etc/init.d/delayed_job restart"
+    run "cd #{current_path} && /etc/init.d/delayed_job restart"
   end
 
   task :solr, :roles => :app do
-    run "/etc/init.d/solr restart"
+    run "cd #{current_path} && /etc/init.d/solr restart"
   end
 
   task :restart, :roles => :app do
     run "kill -USR2 `cat /tmp/unicorn.pid`"
-    run "/etc/init.d/delayed_job restart"
   end
 
   task :symlinks, :roles => :app do
