@@ -47,7 +47,7 @@ module Migrations
           @db ||= Mongo::Connection.new(ENV['MONGODB_HOST'], 27017).db(database)
           @db.authenticate(ENV['MONGODB_STAGING_USER'], ENV['MONGODB_STAGING_PASSWORD'])
         elsif Rails.env.production?
-          @db ||= Mongo::Connection.new(ENV['MONGODB_HOST'], 27017).db(database)
+          @db ||= Mongo::Connection.new(ENV['MONGODB_HOST'], 27017).db('salesflip')
           @db.authenticate(ENV['MONGODB_USER'], ENV['MONGODB_PASSWORD'])
         else
           @db = Mongo::Connection.new.db(database)
