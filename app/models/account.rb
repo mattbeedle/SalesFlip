@@ -28,6 +28,7 @@ class Account
   property :created_on, Date
   property :updated_at, DateTime
   property :updated_on, Date
+  property :access, Integer
 
   has_constant :account_types, lambda { I18n.t(:account_types) }
 
