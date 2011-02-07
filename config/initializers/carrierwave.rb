@@ -18,7 +18,7 @@ CarrierWave.configure do |config|
     config.grid_fs_host         = ENV['MONGODB_HOST']
     config.grid_fs_username     = ENV['MONGODB_USER']
     config.grid_fs_password     = ENV['MONGODB_PASSWORD']
-    config.grid_fs_host         = 27017
+    config.grid_fs_port         = 27017
   else
     config.grid_fs_database     = 'salesflip_development'
     config.grid_fs_host         = 'localhost'
