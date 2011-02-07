@@ -44,5 +44,9 @@ module Salesflip
     config.filter_parameters += [:password]
 
     config.action_mailer.default_url_options = { :host => 'salesflip.com' }
+
+    config.after_initialize do
+      I18n.locale = :de
+    end
   end
 end
