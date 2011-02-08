@@ -31,6 +31,7 @@ gem 'amatch'
 gem 'gravtastic'
 gem 'cancan'
 gem 'mongoid_i18n', :require => 'mongoid/i18n'
+gem 'sqlite3'
 gem 'unicorn'
 
 # Plugins
