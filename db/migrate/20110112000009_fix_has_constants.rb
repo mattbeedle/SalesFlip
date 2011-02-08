@@ -36,6 +36,12 @@ class FixHasConstants < Migrations::MongodbToPostgresql
     puts 'fixing users role'
     sql = 'update users set role = role + 1 where role is not null'
     postgre.create_command(sql).execute_non_query
+
+    %w(leads accounts contacts opportunities).each do |table|
+      puts "fixing #{table} permissions"
+      sql = "update #{table} set permission = permission + 1"
+      postgre.create_command(sql).execute_non_query
+    end
   end
 
   def self.down
