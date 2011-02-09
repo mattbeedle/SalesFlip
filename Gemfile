@@ -8,6 +8,7 @@ gem 'devise'
 gem 'bson_ext'
 gem 'mongo'
 
+gem 'dm-accepts_nested_attributes'
 gem 'dm-core', :git => 'git://github.com/bernerdschaefer/dm-core.git'
 gem 'dm-devise'
 gem 'dm-migrations', :git => 'git://github.com/datamapper/dm-migrations.git'

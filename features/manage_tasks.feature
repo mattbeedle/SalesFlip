@@ -25,6 +25,14 @@ Feature: Manage tasks
     And I should not see "Today" within "#tasks"
     And I should see "You have no outstanding tasks" within "#tasks"
 
+  Scenario: Tasks on the dashboard for campaigns
+    Given I am registered and logged in as annika
+    And a campaign: "generate_leads" exists
+    And a task exists with user: Annika, name: "Task for Annika", asset: generate_leads
+    When I go to the dashboard page
+    Then I should see "Task for Annika" within "#tasks"
+    And I should see "Generate 100 leads" within "#tasks"
+
   Scenario: Creating a new task
     Given I am registered and logged in as annika
     And I am on the tasks page

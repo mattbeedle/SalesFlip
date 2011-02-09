@@ -63,6 +63,20 @@ User.blueprint(:matt) do
   role { 'Administrator' }
 end
 
+Campaign.blueprint do
+  name
+  start_date { Date.today }
+  end_date { 14.days.from_now }
+end
+
+Campaign.blueprint(:generate_leads) do
+  name { "Generate 100 leads this month" }
+  start_date { Date.today }
+  end_date { 1.month.from_now }
+
+  objective { Objective.new(:number_of_leads => 100, :conversion_percentage => 5) }
+end
+
 Lead.blueprint do
   first_name
   last_name

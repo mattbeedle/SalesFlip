@@ -5,6 +5,7 @@ class DeletedItemsController < ApplicationController
 
   def index
     @items ||= [
+      Campaign.where(:deleted_at.not => nil).entries +
       Lead.permitted_for(current_user).where(:deleted_at.not => nil).entries +
       Contact.permitted_for(current_user).where(:deleted_at.not => nil).entries +
       Account.permitted_for(current_user).where(:deleted_at.not => nil).entries +
@@ -24,11 +25,9 @@ class DeletedItemsController < ApplicationController
 
 protected
   def resource
-    @item ||= Lead.first(:conditions => { :id => params[:id] })
-    @item ||= Contact.first(:conditions => { :id => params[:id] })
-    @item ||= Account.first(:conditions => { :id => params[:id] })
+    @item = params[:type].constantize.get(params[:id])
   end
-  
+
   def admin_required
     raise CanCan::AccessDenied unless current_user.role_is?('Administrator')
   end

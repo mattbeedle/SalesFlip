@@ -61,6 +61,7 @@ class Lead
 
   belongs_to   :user, :required => true
   belongs_to   :contact, :required => false
+  belongs_to   :campaign, :required => false
   has n, :comments, :as => :commentable#, :dependent => :delete_all
   has n, :tasks, :as => :asset#, :dependent => :delete_all
   has n, :emails, :as => :commentable#, :dependent => :delete_all
@@ -79,6 +80,10 @@ class Lead
 
   def self.for_company(company)
     all(:user_id => company.users.map(&:id))
+  end
+
+  def self.converted
+    status_is('Converted')
   end
 
   searchable do

@@ -47,6 +47,10 @@ module Activities
     # activities.
     activities = comments.activities | tasks.activities | self.activities
 
+    if self.respond_to?(:campaign) && campaign
+      activities |= campaign.activities
+    end
+
     if self.respond_to?(:contacts)
       activities |= contacts.activities
       activities |= contacts.leads.activities

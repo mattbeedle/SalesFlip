@@ -12,6 +12,9 @@ en:
   tasks: Tasks
   lead: Lead
   leads: Leads
+  campaign: Campaign
+  campaigns: Campaigns
+  objectives: Objectives
   account: Account
   accounts: Accounts
   contacts: Contacts
@@ -155,6 +158,7 @@ en:
     labels:
       task:
         name: Subject
+      conversion_percentage: Conversion (%)
       identifier: Identifier
       address: Address
       account_name: Account Name
@@ -305,6 +309,13 @@ en:
   info_for: "Info for %{name}"
   no_contact_info: "No contact info for %{name}"
   contacts_created_accepted: Contacts (created/accepted)
+
+  #--------------------------------------------------------------
+  # Campaigns
+  #--------------------------------------------------------------
+  add_campaign: Add Campaign
+  edit_campaign: Edit Campaign
+  save_campaign: Save Campaign
 
   #--------------------------------------------------------------
   # Leads
