@@ -5,393 +5,462 @@ de:
   #--------------------------------------------------------------
   # Layout
   #--------------------------------------------------------------
-  welcome: Welcome
-  dashboard: Dashboard
-  edit_notifications: Notifications
-  task: Task
-  tasks: Tasks
+  welcome: "Willkommen %{user}"
+  dashboard: Übersicht
+  edit_notifications: Benachrichtigungen
+  task: Aufgabe
+  tasks: Aufgaben
   lead: Lead
   leads: Leads
-  account: Account
-  accounts: Accounts
-  contacts: Contacts
-  profile: Profile
-  login: Login
-  logout: Logout
-  recycle_bin_empty: Recycle Bin
-  recycle_bin: "Recycle Bin (%{count})"
-  use: Use
-  users: Users
-  invitations: Invitations
-  yes_use: "Yes, use"
+  account: Kunde
+  accounts: Kunden
+  contacts: Kontakte
+  opportunities: Verkaufschance
+  profile: Profil
+  login: Anmelden
+  logout: Abmelden
+  recycle_bin_empty: Papierkorb
+  recycle_bin: "Papierkorb (%{count})"
+  use: Ausführen
+  users: Benutzer
+  invitations: Einladungen
+  yes_use: "Ja, anwenden."
+  administration: Verwaltung
+  sales_site: Zurück zum CRM
+  data_summary: Datenzusammenfassung
+  status: Status
+  total: Summe
 
   mongoid:
     errors:
       messages:
        calling_criteria_find_with_nil_is_invalid:
-          Calling Criteria#find with nil is invalid
+          Anrufkriterien#mit der Nummer Null sind ungültig
   activemodel:
     errors:
       models:
         user:
           attributes:
             read_terms:
-              inclusion: You must agree to the terms to register
+              inclusion: Bitte stimme der Registrierung der AGB zu
       template:
         header:
-          one:    "%{model} could not be saved: 1 Error."
-          other:  "%{model} could not be saved: %{count} Errors."
-        body: "Please check the following fields:"
+          one:    "%{model} Konnte nicht gespeichert werden: 1 Error."
+          other:  "%{model} Konnte nicht gespeichert werden: %{count} Errors."
+        body: "Bitte überprüfen Sie folgende Felder:"
       messages:
-        inclusion: "is not a valid value"
-        exclusion: "is not available"
-        invalid: "is not valid"
-        confirm: "does not match confirmation"
-        accepted: "must be accepted"
-        empty: "can't be empty"
-        blank: "can't be blank"
-        too_long: "is too long (no more than %{count} characters)"
-        too_short: "is too short (no less than %{count} characters)"
-        wrong_length: "wronglength (must have exactly %{count} characters)"
-        taken: "is already taken"
-        not_a_number: "is not number"
-        greater_than: "must be larger than %{count}"
-        greater_than_or_equal_to: "must be greater than or equal to %{count}"
-        equal_to: "must be equal to %{count}"
-        less_than: "must be less than %{count}"
-        less_than_or_equal_to: "must be less than or equal to %{count}"
-        odd: "must be odd"
-        even: "must be even"
-        already_invited: "already on our invitation list"
+        inclusion: "Ist keine gültige Eingabe"
+        exclusion: "Ist nicht verfügbar"
+        invalid: "Ist ungültig"
+        confirm: "Stimmt nicht mit der Bestätigung überein"
+        accepted: "Muss akzeptiert werden"
+        empty: "Darf nicht leer sein"
+        blank: "Darf nicht unausgefüllt sein"
+        too_long: "Ist zu lang (nicht mehr als %{count} Zeichen)"
+        too_short: "Ist zu kurz (nicht weniger als %{count} Zeichen)"
+        wrong_length: "Falsche Zeichenlänge (muss genau %{count} Zeichen enthalten)"
+        taken: "Ist schon vergeben"
+        not_a_number: "Ist keine Zahl"
+        greater_than: "Muss größer sein als %{count}"
+        greater_than_or_equal_to: "Muss größer oder gleich %{count} sein"
+        equal_to: "Muss gleich %{count} sein"
+        less_than: "Muss kleiner sein als %{count}"
+        less_than_or_equal_to: "Muss kleiner oder gleich %{count} sein"
+        odd: "Muss ungerade sein"
+        even: "Muss gerade sein"
+        already_invited: "Schon auf der Einladungsliste"
 
   #--------------------------------------------------------------
   # Time
   #--------------------------------------------------------------
-  added_ago: "added on %{time}"
-  added_ago_by: "added by %{by} on %{time}"
-  assigned_ago_by: "assigned to %{for} on %{time} by %{by}"
-  assigned_to: "Assigned to %{user}"
-  created_ago: "created %{time} ago"
-  done_ago: "done on %{time}"
-  removed_ago: "removed on %{time}"
-  posted_ago: "Posted on %{time}"
-  updated_ago: "updated on %{time} ago"
-  wrote_ago: "wrote on %{time}"
-  email_sent_ago: "sent via email on %{time}"
-  via_email: "&#9993; via Email &gt; Re:%{subject}"
-  last_year: Last Year
-  last_month: Last Month
-  last_week: Last Week
-  yesterday: Yesterday
+  added_ago: "Hinzugefügt am %{time}"
+  added_ago_by: "Hinzugefügt von %{by} am %{time}"
+  assigned_ago_by: "%{for} Zugewiesen am %{time} von %{by}"
+  assigned_to: "%{user} Zugewiesen"
+  created_ago: "Erstellt vor %{time}"
+  done_ago: "Erledigt am %{time}"
+  removed_ago: "Entfernt am %{time}"
+  posted_ago: "Verschickt am %{time}"
+  updated_ago: "Updated am %{time} vorher"
+  wrote_ago: "Geschrieben am %{time}"
+  email_sent_ago: "per E-Mail verschickt am %{time}"
+  via_email: "&#9993; per E-mail &gt; Re:%{subject}"
+  last_year: Letztes Jahr
+  last_month: Letzten Monat
+  last_week: Letzte Woche
+  yesterday: Gestern
   time:
     formats:
       short: "<b>%b %d</b> @ <b>%I:%M%p</b>"
-  today: Today
-  tomorrow: Tomorrow
-  next_week: Next Week
-  this_week: This Week
-  this_month: This Month
-  next_month: Next Month
-  next_year: Next Year
+  today: Heute
+  tomorrow: Morgen
+  next_week: Nächste Woche
+  this_week: Diese Woche
+  this_month: Diesen Monat
+  next_month: Nächsten Monat
+  next_year: Nächstes Jahr
   
   #--------------------------------------------------------------
   # UI
   #--------------------------------------------------------------
-  assigned: Assigned
-  unassigned: Unassigned
-  account_type: Account Type
-  assigned_to_me: Assigned to me
+  assigned: Zugewiesen
+  unassigned: Nicht zugewiesen
+  account_type: Kundenart
+  assigned_to_me: Mir zugewiesen
   name_like: Name
-  source_is: Source
-  back: Back
-  cancel: Cancel
-  configuration: Configuration
-  completed: Completed
+  source_is: Quelle
+  back: Zurück
+  cancel: Abbrechen
+  configuration: Konfiguration
+  completed: Abgeschlossen
   delete_icon: "&#10005;"
-  delete: "Delete"
-  edit: Edit
+  delete: "Lösche"
+  edit: Bearbeiten
   filter: Filter
-  filters: Filters
-  filter_by_status: Filter by Status
-  data_actions: Data Options
-  follow: Follow
-  go_back: Go Back
-  or: or
-  notes: Notes
-  no_source: No Source
-  pending: Pending
-  privileges: Privileges
-  subject: Subject
-  tracking: Tracking
-  save: Save
-  submit: Submit
-  visit_website: Visit Website
-  keep_me_updated: Keep me updated
-  stop_updating_me: Stop updating me
-  accept: Accept
-  export_as_csv: Export this list as a CSV
-  choose_fields: Choose Fields to Export
-  export: Export
-  create: Create
+  filters: Filter
+  filter_by_status: Filter nach Status
+  data_actions: Datenoptionen
+  follow: Folge
+  go_back: Gehe zurück
+  or: oder
+  notes: Notizen
+  no_source: Keine Quelle
+  pending: Noch nicht erledigt
+  privileges: Rechte
+  subject: Betreff
+  tracking: Zuordnung
+  save: Speichern
+  submit: Senden
+  visit_website: Website besuchen
+  keep_me_updated: Updates beobachten 
+  stop_updating_me: Informiere mich nicht mehr
+  accept: Annehmen
+  export_as_csv: Exportiere diese Liste als CSV
+  import_from_csv: Importiere aus CSV
+  optional_extra_information: Optionale Zusatzinformation
+  assignee: Bearbeiter
+  choose_fields: Wähle Felder aus, um zu exportieren.
+  export: Exportieren
+  create: Erstellen
   deliminator: Deliminator
-  fields: Fields
-  recent_activity: Recent Activity
+  fields: Felder
+  recent_activity: Letzte Aktivität
   avatar: Avatar
-  
+  address: Adresse
+  primary_email: Primäre E-Mail Adresse
+  alt_email: Zusätzliche E-mail Adresse
+  or_preset_date: oder voreingestelltes Datum
+  or_real_date: oder tatsächliches Datum
+  upload: Hochladen
+
   #--------------------------------------------------------------
   # Form Labels
   #--------------------------------------------------------------
   simple_form:
     labels:
       task:
-        name: Subject
-      identifier: Identifier
-      address: Address
-      account_name: Account Name
-      account_id: Account
-      alt_email: Other Email
-      alternative_email: Other Email
-      billing_address: Billing Address
-      campaign_id: Campaign
-      company: Company
-      do_not_call: Do Not Call
-      email: Email
+        name: Betreff
+      identifier: Kennung
+      address: Adresse
+      account_name: Kundenname
+      account_id: Kunde
+      alt_email: andere E-Mail
+      alternative_email: andere E-Mail
+      billing_address: Rechnungsadresse
+      campaign_id: Kampagne
+      company: Firma
+      do_not_call: Bitte nicht anrufen
+      email: E-mail
       fax: Fax
       facebook: Facebook
-      first_name: First Name
-      last_name: Last Name
+      first_name: Vorname
+      last_name: Nachname
       linked_in: Linked In
-      mobile: Mobile
-      permission: Permission
-      permissions: Permissions
-      permitted_users: Permitted Users
-      phone: Phone
+      mobile: Handy
+      permission: Erlaubnis
+      permissions: Erlaubnisse
+      permitted_users: Zugelassene Nutzer
+      phone: Telefon
       status: Status
-      source: Source
-      shipping_address: Shipping Address
-      rating: Rating
-      referred_by: Referred By
-      salutation: Salutation
-      title: Title
+      source: Quelle
+      shipping_address: Lieferadresse
+      rating: Einstufung
+      referred_by: Geworben von
+      salutation: Anrede
+      title: Titel
       twitter: Twitter
       xing: Xing
       website: Website
-      department: Department
-      job_title: Job Title
-      city: City
-      postal_code: Postal Code
-  
+      department: Fachbereich
+      job_title: Berufsbezeichnung
+      city: Stadt
+      postal_code: Postleitzahl
+
   #--------------------------------------------------------------
   # Account
   #--------------------------------------------------------------
   access_levels:
     - Private
-  add_account: Add Account
-  delete_account: Delete Account
-  edit_account: Edit Account
-  add_sub_account: Add Sub-Account
-  add_sub_account_for: "Add Sub-Account for %{account}"
-  sub_account: Sub-Account
-  sub_accounts: Sub-Accounts
+  add_account: Kunde hinzufügen
+  delete_account: Kunde löschen
+  edit_account: Kunde bearbeiten
+  add_sub_account: Unter-Kunden hinzufügen
+  add_sub_account_for: "Unter-Kunden hinzufügen für %{account}"
+  sub_account: Unter-Kunde
+  sub_accounts: Unter-Kunden
   permissions:
-  - Public
-  - Shared
-  - Private
-  create_new_account: "No, Create New Account"
-  account_may_exist: This account may already exist
-  use_existing_account: Would you like to use an existing account instead?
-  accounts_created_accepted: Accounts (created/accepted)
+  - Öffentlich
+  - Geteilt
+  - Privat
+  create_new_account: "Nein, erstelle einen neuen Kunden."
+  account_may_exist: Dieser Kunde könnte bereits existieren.
+  use_existing_account: Möchtest Du stattdessen einen bereits existierenden Kunden benutzen?
+  accounts_created_accepted: Kunde (erstellt/angenommen)
+
+  #--------------------------------------------------------------
+  # Users
+  #--------------------------------------------------------------
+  assigned_leads: Zugewiesene Leads
+  contacted_leads: kontaktierte Leads
+  converted_leads: konvertierte Leads
+  pipeline: Trichter
 
   #--------------------------------------------------------------
   # Search
   #--------------------------------------------------------------
-  search: Search
-  no_search_results: "There are no matches, <a href=\"%{link}\">search again</a>"
-  results: Results
-  search_results_for: "Search Results for \"%{terms}\" (%{total} items found)"
-  by_company: "By Company"
-  search_people: Quick Search
-  search_companies: Search Companies
+  search: Suche
+  no_search_results: "Es gibt keine Übereinstimmungen, <a href=\"%{link}\">suche erneut</a>"
+  results: Ergebnisse
+  search_results_for: "Suche Ergebnisse für \"%{terms}\" (%{total} Ergebnisse gefunden)"
+  by_company: "Nach Firma"
+  search_people: Schnellsuche
+  search_companies: Suche Firmen
 
   #--------------------------------------------------------------
   # Activity
   #--------------------------------------------------------------
   activity_actions:
-    - Viewed
-    - Created
-    - Updated
-    - Completed
-    - 'Re-assigned'
-    - Rejected
-    - 'Re-scheduled'
-    - Converted
-    - Commented
-    - Deleted
-    - Restored
+    - Angesehen
+    - Erstellt
+    - Aktualisiert
+    - Vervollständigt
+    - 'Neu zugewiesen'
+    - Abgelehnt
+    - 'Neu terminiert'
+    - Konvertiert
+    - Kommentiert
+    - Gelöscht
+    - Wiederhergestellt
+    
+  #--------------------------------------------------------------
+  # Opportunities
+  #--------------------------------------------------------------
+  opportunity_stages:
+    - Kundensuche
+    - Auswertung
+    - Präsentation
+    - Verhandlung
+    - Endbewertung
+    - abgeschlossen/gewonnen
+    - abgeschlossen/verloren
+  opportunity_outline: "Bewertet: %{amount} mit %{discount} Ermäßigung und %{probability} Wahrscheinlichkeit | Abschluss wird erwartet am %{close_on}"
+  add_opportunity: Verkaufschance hinzufügen
+  select_contact: Kontakt auswählen
+  opportunity: Verkaufschance
+  attachments: Anlagen
+  no_opportunity_attachments: Diese Verkaufschance hat keine Anlagen
+  opportunities_for: Verkaufschance für %{name}
+  no_opportunities: Noch keine Verkaufschance
 
-  my_profile: My Profile
-  recent_items: Recent Items
-  recent_activity_for: "Recent Activity for %{name}"
+  #--------------------------------------------------------------
+  # Opportunity Stages
+  #--------------------------------------------------------------
+  add_opportunity_stage: Trichter-Stufe hinzufügen
+  opportunity_stages_heading: Trichter-Stufen
+  name: Name
+  percentage: Prozentsatz
+  actions: Aktionen
+
+  my_profile: Mein Profil
+  recent_items: Letzte Artikel
+  recent_activity_for: "Letzte Aktivität für %{name}"
   #--------------------------------------------------------------
   # Comments
   #--------------------------------------------------------------
-  add_comment: Add Comment
-  add_comment_for: "Add a Comment for %{name}"
-  edit_comment: Edit this Comment
-  comment: Comment
-  comment_updated: Comment was successfully updated
-  comments: Comments
-  comments_for: "Comments for %{name}"
-  save_comment: Save Comment
-  update_comment: Update Comment
-  wrote: wrote
+  add_comment: Kommentar hinzufügen
+  add_comment_for: "Kommentar hinzufügen für %{name}"
+  edit_comment: Bearbeite diesen Kommentar
+  comment: Kommentar
+  comment_updated: Kommentar wurde erfolgreich aktualisiert
+  comments: Kommentare
+  comments_for: "Kommentare für %{name}"
+  save_comment: Kommentar speichern
+  update_comment: Kommentar aktualisieren
+  wrote: schrieb
   
   #--------------------------------------------------------------
   # Contact
   #--------------------------------------------------------------
-  add_contact: Add Contact
-  contact_info: Contact Info
-  contact_info_for: "Contact %{name}"
-  delete_contact: Delete Contact
-  edit_contact: Edit Contact
-  info_for: "Info for %{name}"
-  no_contact_info: "No contact info for %{name}"
-  contacts_created_accepted: Contacts (created/accepted)
+  add_contact: Kontakt hinzufügen
+  contact_info: Kontakt Info
+  contact_info_for: "Kontakt %{name}"
+  contact_info_for_account: "Kunde: %{name}"
+  delete_contact: Kontakt löschen
+  edit_contact: Kontakt bearbeiten
+  info_for: "Info für %{name}"
+  no_contact_info: "Keine Kontakt Info für %{name}"
+  contacts_created_accepted: Kontakte (erstellt/angenommen)
+
   #--------------------------------------------------------------
   # Leads
   #--------------------------------------------------------------
-  add_lead: Add Lead
-  update_lead: Update Lead
-  company: Company
-  contact_info: Contact Info
-  convert: Convert
-  converted: Converted
-  convert_lead: Convert Lead
-  delete_lead: Delete Lead
-  edit_lead: Edit Lead
-  lead_name: Lead Name
-  reject_lead: Reject Lead
-  reject: Reject
-  rejected: Rejected
-  save_lead: Save Lead
-  tracking_info: Tracking Info
-  update_lead: Update Lead
+  add_lead: Lead hinzufügen
+  update_lead: Lead aktualisieren
+  company: Firma
+  contact_info: Kontakt Info
+  convert: Konvertiere
+  converted: Konvertiert
+  convert_lead: Konvertiere Lead
+  delete_lead: Lösche Lead
+  edit_lead: Bearbeite Lead
+  lead_name: Name des Leads
+  reject_lead: Kundenkontakt ablehnen
+  reject: Ablehnen
+  rejected: Abgelehnt
+  save_lead: Lead speichern
+  tracking_info: Zuordnungsinformation
+  update_lead: Lead aktualisieren
   web_and_social_media: "Web &amp; Social Media"
-  contact_already_exists: "Contact %{contact} already exists. Press convert to add this lead to that contact"
-  leads_created_accepted: Leads (created/accepted)
+  contact_already_exists: "Kontakt %{contact} exisitert schon. Drücke auf Konvertieren, um den Lead diesem Kontakt zuzuordnen."
+  leads_created_accepted: Leads (erstellt/angenommen)
   lead_statuses:
-    - New
-    - Contacted
-    - Converted
-    - Rejected
-    - Not Interested
-    - Interested
+    - Neu
+    - Kontaktiert
+    - Konvertiert
+    - Abgelehnt
+    - Nicht interessiert
+    - Interessiert
   lead_sources:
-    - Campaign
-    - Cold Call
-    - Conference
+    - Kampagne
+    - Kaltakquise
+    - Konferenz
     - Online Marketing
-    - Referal
-    - "Self-generated"
+    - Empfehlung
+    - "selbst erstellt"
     - Website
-    - Word of Mouth
-    - Other
-    - Imported
+    - Mundpropaganda
+    - Andere
+    - Importiert
   salutations:
     - Herr
-    - asfef
     - Frau
+    - Fräulein
   titles:
-    - Dr
-    - Sir
-    - Lord
-    - Madam
-    - Earl
+    - Dr.
+    - Dr.
+    - Dr.
+    - Dr.
+    - Graf
+    - Prof.
+    - Prof. Dr.
   account_types:
     - Analyst
-    - Competitor
-    - Customer
+    - Konkurrent/in
+    - Kunde
     - Integrator
     - Investor
     - Partner
-    - Press
-    - Prospect
-    - Reseller
-    - Other
+    - Presse
+    - potenzieller Neukunde
+    - Wiederverkäufer
+    - Andere
+  comments_closed: Kommentare sind geschlossen. Um zu kommentieren, bitte
+  view_contact_for_lead: den Kontakt für diesen Lead einsehen
+  lead_converted_by: Dieser Kundenkontakt wurde konvertiert von %{link} am %{time}
   company_sizes:
     - '1-5'
+    - '6-10'
+    - '11-20'
+    - '21-50'
+    - '51-100'
+    - '101-200'
+    - '201-500'
+    - '501-5000'
+    - 'über 5000'
 
   #--------------------------------------------------------------
   # Task
   #--------------------------------------------------------------
-  add_task: Add Task
-  delete_task: Delete Task
-  edit_task: Edit Task
-  update_task: Update Task
-  due_today: Today
-  due_tomorrow: Tomorrow
-  due_this_week: This week
-  due_next_week: Next week
-  due_later: Sometime later
-  overdue: As soon as possible
+  add_task: Anwendung hinzufügen
+  delete_task: Anwendung löschen
+  edit_task: Anwendung bearbeiten
+  update_task: Anwendung aktualisieren
+  due_today: Heute
+  due_tomorrow: Morgen
+  due_this_week: Diese Woche
+  due_next_week: Nächste Woche
+  due_later: Zu einem anderen Zeitpunkt
+  overdue: So früh wie möglich
   task_categories:
-    - Call
-    - Email
+    - Anrufen
+    - E-mail
     - "Follow-up"
-    - Lunch
+    - Mittagessen
     - Meeting
-    - Money
-    - Presentation
-    - Trip
-  task_reassigned: "Task has been re-assigned to %{user}"
-  no_tasks_for_lead: "You have no tasks for this lead. <a href='%{link}'>Add one now</a>"
-  no_tasks_for: "You have no tasks for this %{asset}. <a href='%{link}'>Add one now</a>"
+    - Geld
+    - Präsentation
+    - Ausflug
+  task_reassigned: "Aufgabe wurde %{user} neu zugewiesen"
+  no_tasks_for_lead: "Du hast keine weiteren Aufgaben für diesen Lead. <a href='%{link}'>Jetzt eine hinzufügen</a>"
+  no_tasks_for: "Du hast keine Aufgaben für diesen %{asset}. <a href='%{link}'>Jetzt eine hinzufügen </a>"
 
   #--------------------------------------------------------------
   # Deleted Items
   #--------------------------------------------------------------
-  restore: restore
-  permanently_delete: permantently delete
+  restore: Wiederherstellen
+  permanently_delete: Unwiederbringlich löschen
 
   #--------------------------------------------------------------
   # Users
   #--------------------------------------------------------------
-  add_user: Add User
-  confirmed_at: Confirmed At
-  username: Username
-  user_type: User Type
+  add_user: Nutzer hinzufügen
+  confirmed_at: Bestätigt am
+  username: Benutzername
+  user_type: Benutzertyp
 
   #--------------------------------------------------------------
   # Invitations
   #--------------------------------------------------------------
-  email: Email
-  state: State
+  email: E-mail
+  state: Status
   pending: Pending
-  accepted: Accepted
-  new_invitation: Invite Someone!
+  accepted: Angenommen
+  new_invitation: Lade jemanden ein!
 
   #--------------------------------------------------------------
   # Emails
   #--------------------------------------------------------------
-  email_count: Emails
+  email_count: E-mails
   emails:
-    do_not_reply: "do-not-reply@%{host}"
+    import_summary:
+      subject: Zusammenfassung importieren
+    do_not_reply: "Nicht antworten@%{host}"
     task_reassigned:
-      subject: You have been assigned a new task
+      subject: Dir wurde eine neue Aufgabe zugewiesen
     daily_task_summary:
-      subject: "SalesFlip: Daily task summary for %{date}"
+      subject: "SalesFlip: Tägliche Aufgaben-Zusammenfassung für den %{date}"
     tracked_items_update:
-      subject: "SalesFlip: Tracked items update for %{date}"
+      subject: "SalesFlip: Deine beobachteten Einträge %{date}"
     lead_assignment:
-      subject: "SalesFlip: You have been assigned a lead"
+      subject: "SalesFlip: Die wurde ein Lead zugewiesen"
     invitation:
-      subject: "SalesFlip: You have been invited to join %{company}'s company"
+      subject: "SalesFlip: Du wurdest eingeladen, der Firma %{company} beizutreten"
       body:
-        top: Here is your invitation link, please signup here.  You will then receive a confirmation email before you are able to log in
+        top: Hier ist Dein Link zur Einladung, bitten melde Dich hier an. Du wirst dann eine Bestätigung per E-Mail erhalten, erst dann kannst Du Dich einloggen. 
     lead_notification:
-      subject: New lead
+      subject: Neuer Lead
       body:
-        top: A new lead has arrived matching your notification criteria
+        top: Es ist ein neuer Lead mit Deinen Auswahlkriterien angekommen
   
   
   #--------------------------------------------------------------
@@ -405,21 +474,50 @@ de:
   # Info
   #--------------------------------------------------------------
   info:
-    dropbox: "This is the account which is used to route external emails into your comments feeds"
+    dropbox: "Dieses Dein E-Mail Link. Wenn Du diesen Link in das bcc Feld einer Kunden E-mail kopierst, wird diese E-mail automatisch bei diesem Kunden als Kommentar eingefügt. Hierzu muss der Kunde im SalesFlip angelegt."
   
   #--------------------------------------------------------------
   # Tasks
   #--------------------------------------------------------------
-  tasks_for: "Tasks for %{name}"
-  no_outstanding_tasks: You have no outstanding tasks
-  
+  tasks_for: "Aufgabe für %{name}"
+  no_outstanding_tasks: Du hast keine anstehenden Aufgaben
+  tasks_created_completed_count: Aufgaben (erstellt / vollständig / unvollständig)
+
   #--------------------------------------------------------------
   # Errors
   #--------------------------------------------------------------
-  error_404: The page you are looking for cannot be found.
-  error_404_note: "Check if the URL is correct or %{link}"
-  error_422: "The change you wanted was rejected."
-  error_422_note: "You may not have necessary permissions. %{link}"
-  error_500: A system error has occurred.
-  error_500_note: "%{link} or %{email}"
-  contact_the_admin: contact the administrator
+  error_404: Die Seite, nach der Du suchst, kann nicht gefunden werden.
+  error_404_note: "Überprüfe, ob die URL korrekt ist oder %{link}"
+  error_422: "Die Veränderung, die Du vornehmen wolltest, wurde abgelehnt."
+  error_422_note: "Es ist möglich, dass Du nicht über die notwendigen Rechte verfügst. %{link}"
+  error_500: Es ist ein Systemfehler aufgetreten.
+  error_500_note: "%{link} oder %{email}"
+  contact_the_admin: Kontaktiere den Administrator
+  company_info: Firmen-Info
+  country: Land
+  social_media: Social Media
+  #--------------------------------------------------------------
+  # Rails Date Defaults
+  #--------------------------------------------------------------
+  date:
+    formats:
+      default: "%d-%m-%Y"
+      short: "%e. %b"
+      long: "%e. %B %Y"
+      only_day: "%e"
+      datestamp: "%Y-%m-%d"
+      timestamp: "%Y-%m-%d %H:%M"
+    day_names: [Sonntag, Montag, Dienstag, Mittwoch, Donnerstag, Freitag, Samstag]
+    abbr_day_names: [So, Mo, Di, Mi, Do, Fr, Sa]
+    month_names: [~, Januar, Februar, März, April, Mai, Juni, Juli, August, September, Oktober, November, Dezember]
+    abbr_month_names: [~, Jan, Feb, Mär, Apr, Mai, Jun, Jul, Aug, Sep, Okt, Nov, Dez]
+    order: [ :day, :month, :year ]
+  time:
+    formats:
+      default: "%A, %e. %B %Y, %H:%M"
+      short: "%B %e, %Y %H:%M"
+      long: "%A, %e, %B %Y @%H:%M%p"
+      time: "%H:%M"
+      timestamp: "%Y-%m-%d %H:%M"
+    am: "AM"
+    pm: "PM"
