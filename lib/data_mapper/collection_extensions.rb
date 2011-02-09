@@ -52,6 +52,10 @@ module DataMapper
   class Collection
     include ActiveRecordCompatibility::Finder
 
+    def scoped
+      self
+    end
+
     def build(*args)
       new(*args)
     end

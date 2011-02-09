@@ -51,10 +51,11 @@ Salesflip::Application.configure do
     :prefix => 'uploads', :user => ENV['MONGODB_USER'],
     :password => ENV['MONGODB_PASSWORD']
 
-  #config.after_initialize do
-  #  require 'sunspot/rails'
-  #  Sunspot.config.solr.url = ENV['WEBSOLR_URL']
-  #end
+  config.after_initialize do
+    I18n.locale = :de
+    require 'sunspot/rails'
+    Sunspot.config.solr.url = ENV['WEBSOLR_URL']
+  end
 
   # require 'heroku/autoscale'
   # config.middleware.use Heroku::Autoscale,

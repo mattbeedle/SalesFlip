@@ -74,6 +74,7 @@ class LeadsController < InheritedResources::Base
     elsif @account.valid? && @contact.valid? & !@contact.new_record?
       redirect_to account_path(@account)
     else
+      @opportunity.attachments.build if @opportunity.attachments.blank?
       render :action => :convert
     end
   end

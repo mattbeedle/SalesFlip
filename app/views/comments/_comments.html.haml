@@ -2,7 +2,7 @@
   %h3.grad= t(:comments)
   - if object.is_a?(Lead) && I18n.in_locale(:en) { object.status == 'Converted' }
     .comments-closed
-      - activity = object.activities.last
+      - activity = I18n.in_locale(:en) { object.activities.action_is('Converted').first }
       %p
         = t(:comments_closed)
         = link_to t(:view_contact_for_lead), contact_path(object.contact)
