@@ -105,8 +105,12 @@ module Permission
 
       model.function refresh_function, returns: "trigger" do
         <<-SQL
-        if tg_op = 'INSERT' or tg_op = 'UPDATE' then
+        if tg_op = 'INSERT' then
           perform refresh_#{cached_permissions}(null, new.id);
+        elsif tg_op = 'UPDATE' then
+          if new.role <> old.role then
+            perform refresh_#{cached_permissions}(null, new.id);
+          end if;
         else
           perform refresh_#{cached_permissions}(null, old.id);
         end if;

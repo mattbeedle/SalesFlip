@@ -58,6 +58,17 @@ class PermissionTest < ActiveSupport::TestCase
           refute_includes subject.permitted_for(@user), item
         end
 
+        context "when the user's role is updated" do
+          setup do
+            @item = subject.create
+            @user.update_attributes :role => 'Sales Person'
+          end
+
+          should 'return public items' do
+            assert_includes subject.permitted_for(@user), @item
+          end
+        end
+
         should 'return private items created by the user' do
           item = subject.create(permission: 'Private', user: @user)
           assert_includes subject.permitted_for(@user), item
