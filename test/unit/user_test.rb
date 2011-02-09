@@ -83,18 +83,20 @@ class UserTest < ActiveSupport::TestCase
       @user = User.make_unsaved(:annika, :company => Company.make(:jobboersen))
     end
 
-    should 'cache assigned lead count' do
-      @user.save!
-      Lead.make :user => @user, :assignee => @user
-      assert_equal 1, @user.reload.assigned_lead_count
-    end
-
+    # TODO, decide what to do about dropbox integration (e.g google app engine, postfix, some other solution...)
+    #should 'add user to postfix after creation' do
+    #  @user.save
+    #  assert Domain.find_by_domain("#{@user.api_key}.salesflip.com")
+    #  assert Alias.find_by_mail_and_destination("@#{@user.api_key}.salesflip.com",
+    #                                            'catch.all@salesflip.com')
+    #end
+    
     should 'default role to "Sales Person"' do
       @user.role = nil
       @user.save
       assert @user.role_is?('Sales Person')
     end
-
+    
     should 'not default role to "Sales Person" if a role is already set' do
       @user.role = 'Freelancer'
       @user.save
