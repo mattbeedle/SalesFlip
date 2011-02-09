@@ -58,6 +58,8 @@ DatabaseCleaner.strategy = :transaction
 FakeWeb.allow_net_connect = false
 Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
 
+I18n.locale = :en
+
 Before do
   DatabaseCleaner.start
 end
