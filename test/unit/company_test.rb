@@ -17,8 +17,8 @@ class CompanyTest < ActiveSupport::TestCase
 
     should 'get default opportunity stages on creation' do
       company = Company.make
-      I18n.t(:opportunity_stages).each do |stage|
-        assert company.opportunity_stages.map(&:name).include?(stage)
+      I18n.t(:opportunity_stages, :locale => :en).each do |stage|
+        assert_includes company.opportunity_stages.map(&:name), stage
       end
     end
   end

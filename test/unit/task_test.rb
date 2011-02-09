@@ -431,7 +431,7 @@ class TaskTest < ActiveSupport::TestCase
       Delayed::Worker.new.work_off
       assert_sent_email do |email|
         email.to.include?(@benny.email) && email.body.match(/\/tasks/) &&
-          email.subject.match(/You have been assigned a new task/)
+          email.subject == I18n.t('emails.task_reassigned.subject')
       end
     end
 

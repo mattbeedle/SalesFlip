@@ -15,7 +15,7 @@ module Permission
     validates_presence_of :permitted_users,
       if: lambda { |model| model.permission_is?('Shared') }
 
-    has_constant :permissions, I18n.t(:permissions),
+    has_constant :permissions, I18n.t(:permissions, :locale => :en),
       default: 'Public', required: true, auto_validation: true
   end
 

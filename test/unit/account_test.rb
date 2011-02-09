@@ -2,7 +2,7 @@ require 'test_helper.rb'
 
 class AccountTest < ActiveSupport::TestCase
   context 'Class' do
-    should_have_constant :accesses, :account_types
+    should_have_constant :account_types
     should_act_as_paranoid
     should_be_trackable
     should_have_key :user_id, :assignee_id, :name, :email, :access, :website, :phone, :fax,
