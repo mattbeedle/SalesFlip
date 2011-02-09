@@ -16,7 +16,8 @@ class TaskSweeper < ActionController::Caching::Sweeper
 
   private
   def expire_cache_for(task)
-    expire_fragment("task_partial-#{task.id}")
+    expire_fragment("task_partial-#{task.id}-true")
+    expire_fragment("task_partial'#{task.id}-false")
 
     asset = task.asset
     case

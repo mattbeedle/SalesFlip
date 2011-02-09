@@ -56,6 +56,10 @@ DataMapper.auto_migrate!
 DatabaseCleaner.strategy = :transaction
 
 FakeWeb.allow_net_connect = false
+
+class Sunspot::Rails::StubSessionProxy::Search
+  def results; [].paginate; end
+end
 Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
 
 I18n.locale = :en

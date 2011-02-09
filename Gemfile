@@ -66,9 +66,9 @@ group :test do
   gem 'machinist'
   gem 'autotest-rails',   :require => 'autotest/rails'
   gem 'fakeweb'
-  gem 'mocha'
-  gem 'faker', "0.3.1"
+  gem 'faker', '0.3.1'
   gem 'shoulda'
+  gem 'mocha'
   gem 'database_cleaner'
   gem 'timecop'
   gem 'test_notifier'

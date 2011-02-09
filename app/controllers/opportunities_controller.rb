@@ -13,12 +13,18 @@ class OpportunitiesController < InheritedResources::Base
 
   def new
     build_resource
-    @opportunity.attachments.build
+    3.times { @opportunity.attachments.build }
   end
 
   def create
     create! do |success, failure|
       success.html { return_to_or_default opportunities_path }
+      failure.html do
+        3.times do
+          @opportunity.attachments.build
+        end unless @opportunity.attachments.any?
+        render :action => :new
+      end
     end
   end
 
@@ -43,8 +49,9 @@ protected
   end
 
   def collection
-    @opportunities ||= opportunities.paginate(
-      :per_page => params[:per_page] || 10, :page => params[:page] || 1)
+    @opportunities ||= opportunities.desc(:stage_id).
+      desc(:created_at).paginate(:per_page => params[:per_page] || 10,
+                                 :page => params[:page] || 1)
   end
 
   def resource

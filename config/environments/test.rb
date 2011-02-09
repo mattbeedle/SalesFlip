@@ -30,6 +30,8 @@ Salesflip::Application.configure do
   # like if you have constraints or database-specific column types
   # config.active_record.schema_format = :sql
 
+  config.i18n.default_locale = :en
+
   config.active_support.deprecation = :log
 
   # config.middleware.use Rack::GridFS, :hostname => 'localhost',

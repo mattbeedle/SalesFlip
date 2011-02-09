@@ -3,6 +3,23 @@ Feature: Manage leads
   A user
   wants manage leads
 
+  Scenario: Importing leads from a CSV
+    Given I am registered and logged in as Matt
+    And Annika exists with email: "annika.fleischer@1000jobboersen.de"
+    And Annika belongs to the same company as Matt
+    And all delayed jobs have finished
+    And all emails have been delivered
+    And I am on the leads page
+    When follow "Import from CSV"
+    And I attach the file "test/support/leads.csv" to "lead_import_file"
+    And I select "annika.fleischer@1000jobboersen.de" from "Assignee"
+    And I press "Upload"
+    And I press "Confirm"
+    And all delayed jobs have finished
+    Then 3 leads should exist
+    And an import summary email should have been sent
+    And I should see "Your leads are being imported now. You will receive a summary email when the import has finished"
+
   Scenario: Accepting a lead
     Given I am registered and logged in as annika
     And a lead: "erich" exists with user: annika
@@ -387,6 +404,20 @@ Feature: Manage leads
     Then I should be on the account page
     And 1 opportunities should exist with title: "A great opportunity"
     And the newly created contact should have an opportunity
+
+  Scenario: Converting a lead to a new account, but entering an invalid opportunity
+    Given I am registered and logged in as annika
+    And a lead: "erich" exists with user: Annika, assignee: Annika
+    And I am on the lead's page
+    When I follow "Convert"
+    And I fill in "account_name" with "World Dating"
+    And I fill in "opportunity_title" with "A great opportunity"
+    And I fill in "opportunity_amount" with "asdfdsafs"
+    And I press "convert"
+    Then I should be on the lead's promote page
+    And 0 accounts should exist
+    And 0 contacts should exist
+    And 0 opportunities should exist
 
   Scenario: Converting a lead to an existing account
     Given I am registered and logged in as annika

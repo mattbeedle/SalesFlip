@@ -9,7 +9,7 @@
       .60.a
         .string
           %label{ :for => 'account_name' }= t('simple_form.labels.account_name')
-          = text_field_tag :account_name
+          = text_field_tag :account_name, @account.name
       .40.z
         .string
           %label{ :for => 'account_id' }= t('simple_form.labels.account_id')

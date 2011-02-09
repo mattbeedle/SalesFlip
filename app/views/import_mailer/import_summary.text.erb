@@ -1,0 +1,10 @@
+<%= @import.imported.count %> leads were imported.
+
+<%= @import.unimported.length %> leads were not imported:
+
+<% @import.unimported.each do |unimported| %>
+  <%= unimported.first %>
+  <% unimported.last.each do |lead| %>
+    (<%= lead_url(lead) %>)
+  <% end %>
+<% end %>

@@ -1,0 +1,14 @@
+= simple_form_for @lead_import, :html => { :multipart => true } do |form|
+  = hidden_field_tag :return_to, params[:return_to] if params[:return_to]
+  %fieldset
+    .100.a= form.input :file, :label => nil
+  %h3.toggler.open= t(:optional_extra_information)
+  .toggle
+    %fieldset
+      .25.a= form.input :assignee_id, :collection => current_user.company.users.asc(:email).map { |u| [u.email, u.id] }, :include_blank => true
+      .5= form.input :deliminator
+      .25.z= form.input :source, :collection => Lead.sources
+      .clear
+    .100.a
+      = form.button :submit, t(:upload)
+      = link_to t(:cancel), :back

@@ -10,6 +10,8 @@ class Lead
   include Assignable
   include Gravtastic
   include ActiveModel::Observing
+  include OnlineFields
+
   is_gravtastic
 
   property :id, Serial
@@ -31,7 +33,6 @@ class Lead
   property :company_blog, String
   property :company_facebook, String
   property :company_twitter, String
-  property :website, Text
   property :career_site, Text
   property :job_title, String
   property :department, String
@@ -45,11 +46,6 @@ class Lead
   property :referred_by, String
   property :do_not_call, Boolean
 
-  property :twitter, String
-  property :linked_in, String
-  property :facebook, String
-  property :xing, String
-  property :blog, String
   property :homepage, String
   property :identifier, Integer
   property :created_at, DateTime, :index => true
@@ -57,7 +53,7 @@ class Lead
   property :updated_at, DateTime, :index => true
   property :updated_on, Date
 
-  attr_accessor :do_not_notify
+  attr_accessor :do_not_notify, :do_not_index
 
   belongs_to   :user, :required => true
   belongs_to   :contact, :required => false
@@ -87,10 +83,11 @@ class Lead
   end
 
   searchable do
-    text :first_name, :last_name, :email, :phone, :notes, :company, :alternative_email, :mobile,
-      :address, :referred_by, :website, :twitter, :linked_in, :facebook, :xing
+    text :first_name, :last_name, :email, :phone, :notes, :company,
+      :alternative_email, :mobile, :address, :referred_by, :website, :twitter,
+      :linked_in, :facebook, :xing
   end
-  handle_asynchronously :solr_index
+  #handle_asynchronously :solr_index
 
   def self.with_status( statuses )
     statuses = statuses.lines if statuses.respond_to?(:lines)
@@ -100,6 +97,22 @@ class Lead
   def self.exportable_fields
     properties.map { |p| p.name.to_s }.sort.delete_if do |f|
       f.match(/access|permission|permitted_user_ids|tracker_ids/)
+    end
+  end
+
+  def similar( threshold )
+    leads = Lead.search { keywords self.company }.results
+
+    leads.select do |lead|
+      company.levenshtein_similar(lead.company) > threshold
+    end
+  end
+
+  def similar_accounts( threshold )
+    accounts = Account.search { keywords self.company }.results
+
+    accounts.select do |account|
+      company.levenshtein_similar(account.company) > threshold
     end
   end
 
@@ -118,10 +131,19 @@ class Lead
         contact.update :account => account if account.valid?
       end
     else
+      opportunity_provided = options[:opportunity].present? &&
+        options[:opportunity][:title].present?
+
+      if opportunity_provided
+        options.merge!(:just_validate => true)
+      end
+
       account = Account.find_or_create_for(self, account_name, options)
-      contact = Contact.create_for(self, account)
+      contact = Contact.create_for(self, account, options)
       opportunity = Opportunity.create_for(contact, options)
-      if [account, contact].all?(&:valid?)
+      opportunity.errors.clear
+
+      if [account, contact].all?(&:valid?) && (!opportunity_provided || opportunity.valid?)
         self.attributes = {:status => 'Converted', :contact_id => contact.id}
         save
       end
@@ -180,5 +202,15 @@ protected
 
   def log_recently_changed
     @recently_changed = changed.dup
+  end
+
+private
+  def maybe_auto_index
+    unless self.do_not_index
+      if @marked_for_auto_indexing
+        solr_index
+        remove_instance_variable(:@marked_for_auto_indexing)
+      end
+    end
   end
 end

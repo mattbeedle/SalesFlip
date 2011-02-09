@@ -1,0 +1,36 @@
+%h2 Imported Leads
+
+- unless @lead_import.state_is?('completed')
+  %h3= t(:total_lines)
+  = @lead_import.lines.count
+  %br/
+  %h3= t(:progress)
+  = number_to_percentage @lead_import.progress, :precision => 2
+
+%br/
+%br/
+.clear
+%strong= @lead_import.imported.count
+leads imported successfully
+
+%ul
+  - @imported.each do |lead|
+    %li= link_to lead.name, lead
+= will_paginate @imported
+
+- if @lead_import.unimported.any?
+  %strong= @lead_import.unimported.length
+  leads did not import successfully
+  %table
+    %tr
+      %th line
+      %th similar
+    - @lead_import.unimported.each do |unimported|
+      %tr
+        %td= unimported.first
+        %td
+          %ul
+            - unimported.last.each do |object_id|
+              - object = Lead.where(:_id => object_id).first
+              - object = Account.where(:_id => object_id).first unless object
+              %li= link_to object.name, object

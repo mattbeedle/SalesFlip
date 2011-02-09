@@ -1,8 +1,9 @@
 - content_for :javascripts do
   = javascript_include_tag 'search'
-%h2.title= t(:search_results_for, :terms => @search.terms.blank? ? @search.company : @search.terms, :total => @search.results.length)
-- unless @search.results.blank?
-  - @search.results.each do |result|
+%h2.title= t(:search_results_for, :terms => @search.terms.blank? ? @search.company : @search.terms, :total => @results.total_entries)
+- unless @results.blank?
+  = will_paginate @results
+  - @results.each do |result|
     %div{ :class => result.class }
       - if result.is_a?(Lead)
         = render :partial => 'leads/lead', :locals => { :lead => result }
@@ -10,5 +11,6 @@
         = render :partial => 'contacts/contact', :locals => { :contact => result }
       - if result.is_a?(Account)
         = render :partial => 'accounts/account', :locals => { :account => result }
+  = will_paginate @results
 - else
   = raw t(:no_search_results, :link => new_search_path)

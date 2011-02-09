@@ -58,7 +58,9 @@ class LeadsController < InheritedResources::Base
 
   def convert
     @account = current_user.accounts.new(:name => @lead.company)
-    @contact = Contact.first(:conditions => { :email => @lead.email }) unless @lead.email.blank?
+    unless @lead.email.blank?
+      @contact = Contact.where(:email => @lead.email).first
+    end
     @opportunity = current_user.opportunities.build :assignee => current_user
     @opportunity.attachments.build
   end
@@ -67,9 +69,9 @@ class LeadsController < InheritedResources::Base
     @lead.updater_id = current_user.id
     @account, @contact, @opportunity = @lead.promote!(
       params[:account_id].blank? ? params[:account_name] : params[:account_id], params)
-    if @account.nil? && @contact.valid?
+    if @account.nil? && @contact.valid? && !@contact.new_record?
       redirect_to contact_path(@contact)
-    elsif @account.valid? && @contact.valid?
+    elsif @account.valid? && @contact.valid? & !@contact.new_record?
       redirect_to account_path(@account)
     else
       render :action => :convert
@@ -79,6 +81,10 @@ class LeadsController < InheritedResources::Base
   def reject
     @lead.reject!(updater: current_user)
     redirect_to leads_path
+  end
+
+  def export
+    set_filters
   end
 
 protected
@@ -109,6 +115,7 @@ protected
     @filters.merge!(:unassigned => params[:unassigned]) if params[:unassigned]
     @filters.merge!(:assigned_to => params[:assigned_to]) if params[:assigned_to]
     @filters.merge!(:source_is => params[:source_is]) if params[:source_is]
+    @filters
   end
 
   def resource
@@ -121,10 +128,12 @@ protected
   end
 
   def build_resource
-    if params[:lead] && (ids = params[:lead][:permitted_user_ids]) && ids.is_a?(String)
+    if params[:lead] && (ids = params[:lead][:permitted_user_ids]) &&
+      ids.is_a?(String)
       params[:lead][:permitted_user_ids] = ids.lines.to_a
     end
-    @lead ||= Lead.new({ :updater => current_user, :user => current_user }.merge!(params[:lead] || {}))
+    @lead ||= Lead.new({ :updater => current_user, :user => current_user }.
+                       merge!(params[:lead] || {}))
   end
 
   def export_allowed?
@@ -135,8 +144,8 @@ protected
 
   def already_assigned?
     if !resource.assignee.blank? && resource.assignee != current_user
-      flash[:error] = "This lead was just accepted by " +
-        "#{resource.assignee.full_name}, you can no longer accept it"
+      flash[:error] = I18n.t(:lead_already_accepted,
+                             :user => resource.assignee.full_name)
       redirect_to :back
       return false
     end

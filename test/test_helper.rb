@@ -80,11 +80,16 @@ class ActiveSupport::TestCase
     klass = self.name.gsub(/Test$/, '').constantize
     args.each do |arg|
       should "require key '#{arg}'" do
-        key = klass.relationships.named?(arg) ? :"#{arg}_id" : arg
+        if relationship = klass.relationships[arg]
+          key = relationship.child_key.first
+        else
+          key = klass.properties[arg]
+        end
         obj = klass.new
-        obj.send("#{key}=", nil)
+        key.set(obj, nil)
         obj.valid?
-        assert_present obj.errors[key], "expected error on #{key} but got: #{obj.errors.to_hash.inspect}"
+        assert_present obj.errors[key.name],
+          "expected error on #{key.name} but got: #{obj.errors.to_hash.inspect}"
       end
     end
   end
@@ -123,7 +128,7 @@ class ActiveSupport::TestCase
     klass = self.name.gsub(/Test$/, '').constantize
     args.each do |arg|
       should "have_uploader '#{arg}'" do
-        assert_instance_of CarrierWave::Uploader::Base, klass.new.send(arg)
+        assert_kind_of CarrierWave::Uploader::Base, klass.new.send(arg)
       end
     end
   end
@@ -173,7 +178,7 @@ class ActiveSupport::TestCase
       email.to.include? posting.board.api_email
     end
   end
- 
+
   def assert_delete_job_email_sent(posting)
     assert_sent_email do |email|
       email.subject == "Löschen der Stellenanzeige #{posting.job.position} von #{posting.job.company_name}" and

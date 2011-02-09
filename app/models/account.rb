@@ -10,17 +10,13 @@ class Account
   include Sunspot::DataMapper
   include Assignable
   include ActiveModel::Observing
+  include OnlineFields
 
   property :id, Serial
   property :name, String, required: true
   property :email, String, :unique => true, :allow_blank => true
-  property :website, String
   property :phone, String
   property :fax, String
-  property :facebook, String
-  property :linked_in, String
-  property :twitter, String
-  property :xing, String
   property :billing_address, Text
   property :shipping_address, Text
   property :identifier, Integer
@@ -59,7 +55,7 @@ class Account
   searchable do
     text :name, :email, :phone, :website, :fax
   end
-  handle_asynchronously :solr_index
+  #handle_asynchronously :solr_index
 
   def self.for_company(company)
     where(:user_id => company.users.map(&:id))
@@ -104,8 +100,11 @@ class Account
       permission = options[:permission] || 'Public'
       permitted = options[:permitted_user_ids]
     end
-    account = object.updater_or_user.accounts.create :permission => permission,
-      :name => name, :permitted_user_ids => permitted, :account_type => 'Prospect'
+    account = object.updater_or_user.accounts.build :permission => permission,
+      :name => name, :permitted_user_ids => permitted,
+      :account_type => Account.account_types[I18n.in_locale(:en) { Account.account_types.index('Prospect') }]
+    account.save unless options[:just_validate] == true
+    account
   end
 
   def deliminated( deliminator, fields )

@@ -36,6 +36,7 @@ class User
   has n,  :opportunities
   has n,  :assigned_opportunities, child_key: 'assignee_id',
     model: 'Opportunity'
+  has n, :lead_imports
 
   belongs_to :company, :required => true
 

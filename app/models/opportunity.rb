@@ -21,6 +21,10 @@ class Opportunity
   property :updated_at, DateTime
   property :updated_on, Date
 
+  validates_numericality_of :amount,      :allow_blank => true, :allow_nil => true
+  validates_numericality_of :probability, :allow_blank => true, :allow_nil => true
+  validates_numericality_of :discount,    :allow_blank => true, :allow_nil => true
+
   attr_accessor :do_not_notify
 
   belongs_to :contact, required: false
@@ -61,6 +65,9 @@ class Opportunity
 
   searchable do
     text :title, :background_info
+    text :contact do
+      contact.name
+    end
   end
   handle_asynchronously :solr_index
 
@@ -84,7 +91,7 @@ class Opportunity
     attributes = options[:opportunity] || {}
     opportunity = contact.opportunities.new attributes.merge(:user => contact.user,
       :assignee => contact.assignee)
-    opportunity.save if contact.valid? && !opportunity.title.blank?
+    opportunity.save if opportunity.title.present? && opportunity.valid? && contact.valid?
     opportunity
   end
 

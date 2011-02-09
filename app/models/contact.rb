@@ -10,6 +10,8 @@ class Contact
   include Assignable
   include Gravtastic
   include ActiveModel::Observing
+  include OnlineFields
+
   is_gravtastic
 
   property :id, Serial
@@ -22,12 +24,6 @@ class Contact
   property :phone, String
   property :mobile, String
   property :fax, String
-  property :website, String
-  property :blog, String
-  property :linked_in, String
-  property :facebook, String
-  property :twitter, String
-  property :xing, String
   property :address, String
   property :born_on, Date
   property :do_not_call, Boolean
@@ -77,7 +73,7 @@ class Contact
       account.try(:name)
     end
   end
-  handle_asynchronously :solr_index
+  #handle_asynchronously :solr_index
 
   def self.assigned_to( user_id )
     any_of({ :assignee_id => user_id }, { :user_id => user_id, :assignee_id => nil })
@@ -102,7 +98,7 @@ class Contact
     "#{last_name}, #{first_name}".strip.gsub(/,$/, '')
   end
 
-  def self.create_for( lead, account )
+  def self.create_for( lead, account, options = {} )
     contact = account.contacts.new :user => lead.updater_or_user, :permission => account.permission,
       :permitted_user_ids => account.permitted_user_ids
 
@@ -113,7 +109,7 @@ class Contact
       end
     end
 
-    if account.valid? and contact.valid?
+    if account.valid? && contact.valid? && !options[:just_validate]
       contact.save
       contact.leads << lead
     end

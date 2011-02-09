@@ -16,7 +16,7 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    if model.legacy_id
+    if model.respond_to?(:legacy_id) && model.legacy_id
       "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.legacy_id}"
     else
       "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"

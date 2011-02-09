@@ -46,9 +46,9 @@ GIT
 
 GIT
   remote: git://github.com/mattbeedle/has_constant.git
-  revision: 0fe7a40e06a2ce111f40dd53554f4373edaac327
+  revision: 4b599b96d3d86a52999dc5591a384b2b97c35747
   specs:
-    has_constant (0.4.3)
+    has_constant (0.4.2)
 
 GIT
   remote: git://github.com/mattbeedle/mongo_session_store.git

@@ -19,9 +19,9 @@ class ApplicationController < ActionController::Base
   before_filter "hook(:app_before_filter, self)"
   after_filter  "hook(:app_after_filter, self)"
   after_filter  :log_viewed_item, :only => :show
-  
+
   helper :all
-  
+
 protected
   def fix_array_params
     [:lead, :contact, :account, :opportunity].each do |type|
@@ -42,7 +42,7 @@ protected
 
   def log_viewed_item
     subject = instance_variable_get("@#{controller_name.singularize}")
-    if subject and current_user and not subject.is_a?(Search)
+    if subject and current_user and subject.respond_to?(:activities) and not subject.is_a?(Search)
       Activity.log(current_user, subject, 'Viewed')
     end
   end
