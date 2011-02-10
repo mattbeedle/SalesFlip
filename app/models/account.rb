@@ -14,7 +14,7 @@ class Account
 
   property :id, Serial
   property :name, String, required: true
-  property :email, String, :unique => true, :allow_blank => true
+  property :email, String, allow_blank: true
   property :phone, String
   property :fax, String
   property :billing_address, Text
@@ -30,6 +30,8 @@ class Account
 
   belongs_to :user, required: true
   belongs_to :parent, model: 'Account', required: false
+
+  validates_uniqueness_of :email, allow_blank: true
 
   has n,   :contacts#, :dependent => :nullify
   has n,   :leads, :through => :contacts

@@ -68,9 +68,8 @@ class Lead
   before :save,       :log_recently_changed
   after  :save do
     notify_assignee unless do_not_notify
-    user.company.update_cached_lead_counts
-    user.update_cached_lead_counts
   end
+  after :save, :update_cached_lead_counts
 
   def self.unassigned
     all(:assignee_id => nil)
@@ -89,7 +88,7 @@ class Lead
       :alternative_email, :mobile, :address, :referred_by, :website, :twitter,
       :linked_in, :facebook, :xing
   end
-  #handle_asynchronously :solr_index
+  handle_asynchronously :solr_index
 
   def self.with_status( statuses )
     statuses = statuses.lines if statuses.respond_to?(:lines)
@@ -143,12 +142,12 @@ class Lead
       account = Account.find_or_create_for(self, account_name, options)
       contact = Contact.create_for(self, account, options)
       opportunity = Opportunity.create_for(contact, options)
-      opportunity.errors.clear
 
       if [account, contact].all?(&:valid?) && (!opportunity_provided || opportunity.valid?)
-        self.attributes = {:status => 'Converted', :contact_id => contact.id}
+        self.attributes = { status: 'Converted', contact_id: contact.id }
         save
       end
+      opportunity.errors.clear unless opportunity_provided
     end
     return account || contact.account, contact, opportunity
   end
@@ -214,5 +213,10 @@ private
         remove_instance_variable(:@marked_for_auto_indexing)
       end
     end
+  end
+
+  def update_cached_lead_counts
+    Company.update_cached_lead_counts(self.user.company_id)
+    User.update_cached_lead_counts(self.user_id)
   end
 end

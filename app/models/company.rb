@@ -33,21 +33,18 @@ class Company
 
   before :create, :init_opportunity_stages
 
-  def update_cached_lead_counts
-    attributes = {
-      :unassigned_lead_count => Lead.for_company(self).unassigned.count
-    }
+  def self.update_cached_lead_counts(company_id)
+    company = Company.find(company_id)
+    company.unassigned_lead_count = Lead.for_company(company).unassigned.count
     Lead.statuses.each do |status|
-      attributes.merge!(
-        "#{status.downcase.gsub(/\s/, '_')}_lead_count" => Lead.for_company(self).
-        status_is(status).count)
+      company.send("#{status.downcase.gsub(/[\s\-]/, '_')}_lead_count=",
+                   Lead.for_company(company).status_is(status).count)
     end
     Lead.sources.each do |source|
-      attributes.merge!(
-        "#{source.downcase.gsub(/[\s\-]/, '_')}_lead_count" =>
-        Lead.for_company(self).source_is(source).count)
+      company.send("#{source.downcase.gsub(/[\s\-]/, '_')}_lead_count=",
+                   Lead.for_company(company).source_is(source).count)
     end
-    update_attributes attributes
+    company.save
   end
 
 protected

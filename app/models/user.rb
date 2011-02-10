@@ -108,9 +108,11 @@ class User
     "#{api_key}@salesflip.appspotmail.com"
   end
 
-  def update_cached_lead_counts
-    update_attributes :assigned_lead_count => Lead.
-      for_company(self.company).assigned_to(self).count
+  def self.update_cached_lead_counts(user_id)
+    user = User.find(user_id)
+    user.assigned_lead_count = Lead.for_company(user.company).
+      assigned_to(user).count
+    user.save
   end
 
 protected
