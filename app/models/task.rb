@@ -30,6 +30,7 @@ class Task
   before :create, :set_recently_created
   before :save,   :log_recently_changed
   after  :update, :log_reassignment
+  after  :create, :assign_unassigned_asset
 
   after :update,  :log_update
   after :save,    :notify_assignee
