@@ -31,7 +31,6 @@ class Task
   before :save,   :log_recently_changed
   after  :update, :log_reassignment
 
-  after :create,  :assign_unassigned_asset
   after :update,  :log_update
   after :save,    :notify_assignee
 
@@ -146,20 +145,20 @@ class Task
     attribute_set :due_at,
       case due
       when 'overdue'
-        Time.zone.now.yesterday.end_of_day.utc
+        Time.zone.now.yesterday.end_of_day
       when 'due_today'
-        Time.zone.now.end_of_day.utc
+        Time.zone.now.end_of_day
       when 'due_tomorrow'
-        Time.zone.now.tomorrow.end_of_day.utc
+        Time.zone.now.tomorrow.end_of_day
       when 'due_this_week'
-        Time.zone.now.end_of_week.utc
+        Time.zone.now.end_of_week
       when 'due_next_week'
-        Time.zone.now.next_week.end_of_week.utc
+        Time.zone.now.next_week.end_of_week
       when 'due_later'
-        (Time.zone.now.end_of_day + 5.years).utc
+        (Time.zone.now.end_of_day + 5.years)
       else
         if !due.is_a?(Time) and Chronic.parse(due)
-          Chronic.parse(due).utc
+          Chronic.parse(due)
         else
           due
         end
