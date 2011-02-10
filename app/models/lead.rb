@@ -68,6 +68,8 @@ class Lead
   before :save,       :log_recently_changed
   after  :save do
     notify_assignee unless do_not_notify
+    user.company.update_cached_lead_counts
+    user.update_cached_lead_counts
   end
 
   def self.unassigned
