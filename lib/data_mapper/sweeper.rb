@@ -1,6 +1,9 @@
 module ActionController
   module Caching
-    class Sweeper < ActiveModel::Observer #:nodoc:
+    class Sweeper
+      include Singleton
+      include DataMapper::Observer
+
       attr_accessor :controller
 
       def before(controller)

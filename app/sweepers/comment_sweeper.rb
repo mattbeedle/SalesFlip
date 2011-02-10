@@ -1,21 +1,22 @@
 class CommentSweeper < ActionController::Caching::Sweeper
   observe Comment
 
-  def after_create(comment)
-    expire_cache_for(comment)
+  sweeper = instance
+
+  after :create do |comment|
+    sweeper.expire_cache_for(comment)
   end
 
-  def after_update(comment)
-    expire_cache_for(comment)
+  after :update do |comment|
+    sweeper.expire_cache_for(comment)
   end
 
-  def after_destroy(comment)
-    expire_cache_for(comment)
-    expire_fragment('deleted_items_nav_link-true')
-    expire_fragment('deleted_items_nav_link-false')
+  after :destroy do |comment|
+    sweeper.expire_cache_for(comment)
+    sweeper.expire_fragment('deleted_items_nav_link-true')
+    sweeper.expire_fragment('deleted_items_nav_link-false')
   end
 
-  private
   def expire_cache_for(comment)
     expire_fragment("comment_partial-#{comment.id}")
     commentable = comment.commentable

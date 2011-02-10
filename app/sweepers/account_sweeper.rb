@@ -1,17 +1,22 @@
 class AccountSweeper < ActionController::Caching::Sweeper
   observe Account
 
-  def after_update(account)
-    expire_cache_for(account)
+  # The callbacks from the observer are instance_eval'd against the model, so
+  # we don't get access to methods defined on the sweeper. Therefore, we
+  # capture the singleton instance of the sweeper and call the expiration
+  # methods directly on it.
+  sweeper = instance
+
+  after :update do |account|
+    sweeper.expire_cache_for(account)
   end
 
-  def after_destroy(account)
-    expire_cache_for(account)
-    expire_fragment('deleted_items_nav_link-true')
-    expire_fragment('deleted_items_nav_link-false')
+  after :destroy do |account|
+    sweeper.expire_cache_for(account)
+    sweeper.expire_fragment('deleted_items_nav_link-true')
+    sweeper.expire_fragment('deleted_items_nav_link-false')
   end
 
-  private
   def expire_cache_for(account)
     expire_fragment("account_partial-#{account.id}")
     account.contacts.each do |contact|

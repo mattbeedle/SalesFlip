@@ -396,6 +396,7 @@ DEPENDENCIES
   dm-core!
   dm-devise
   dm-migrations!
+  dm-observer
   dm-postgres-adapter
   dm-rails
   dm-timestamps
