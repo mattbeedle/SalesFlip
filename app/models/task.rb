@@ -60,26 +60,26 @@ class Task
   end
 
   def self.overdue
-    all(:due_at.lte => Time.zone.now.midnight.utc)
+    all(:due_at.lte => Time.zone.now.midnight)
   end
 
   def self.due_today
-    all(:due_at.gt => Time.zone.now.midnight.utc,
-        :due_at.lte => Time.zone.now.end_of_day.utc)
+    all(:due_at.gt => Time.zone.now.midnight,
+        :due_at.lte => Time.zone.now.end_of_day)
   end
 
   def self.due_tomorrow
-    all(:due_at.lte => Time.zone.now.tomorrow.end_of_day.utc,
-        :due_at.gte => Time.zone.now.tomorrow.beginning_of_day.utc)
+    all(:due_at.lte => Time.zone.now.tomorrow.end_of_day,
+        :due_at.gte => Time.zone.now.tomorrow.beginning_of_day)
   end
 
   def self.due_this_week
-    all(:due_at.gte => Time.zone.now.tomorrow.beginning_of_day.utc + 1.day,
-        :due_at.lte => Time.zone.now.next_week.utc)
+    all(:due_at.gte => Time.zone.now.tomorrow.beginning_of_day + 1.day,
+        :due_at.lte => Time.zone.now.next_week)
   end
 
   def self.due_next_week
-    all(:due_at.gte => Time.zone.now.next_week.beginning_of_week.utc,
+    all(:due_at.gte => Time.zone.now.next_week.beginning_of_week,
         :due_at.lte => Time.zone.now.next_week.end_of_week)
   end
 
@@ -88,28 +88,28 @@ class Task
   end
 
   def self.completed_today
-    all(:completed_at.gte => Time.zone.now.midnight.utc,
-        :completed_at.lte => Time.zone.now.midnight.tomorrow.utc)
+    all(:completed_at.gte => Time.zone.now.midnight,
+        :completed_at.lte => Time.zone.now.midnight.tomorrow)
   end
 
   def self.completed_yesterday
-    all(:completed_at.gte => Time.zone.now.midnight.yesterday.utc,
-        :completed_at.lte => Time.zone.now.midnight.utc)
+    all(:completed_at.gte => Time.zone.now.midnight.yesterday,
+        :completed_at.lte => Time.zone.now.midnight)
   end
 
   def self.completed_last_week
-    all(:completed_at.gte => Time.zone.now.beginning_of_week.utc - 7.days,
-        :completed_at.lte => Time.zone.now.beginning_of_week.utc)
+    all(:completed_at.gte => Time.zone.now.beginning_of_week - 7.days,
+        :completed_at.lte => Time.zone.now.beginning_of_week)
   end
 
   def self.completed_this_month
-    all(:completed_at.gte => Time.zone.now.beginning_of_month.utc,
-        :completed_at.lte => Time.zone.now.beginning_of_week.utc - 7.days)
+    all(:completed_at.gte => Time.zone.now.beginning_of_month,
+        :completed_at.lte => Time.zone.now.beginning_of_week - 7.days)
   end
 
   def self.completed_last_month
-    all(:completed_at.gte => (Time.zone.now.beginning_of_month.utc - 1.day).beginning_of_month.utc,
-        :completed_at.lte => Time.zone.now.beginning_of_month.utc)
+    all(:completed_at.gte => (Time.zone.now.beginning_of_month - 1.day).beginning_of_month,
+        :completed_at.lte => Time.zone.now.beginning_of_month)
   end
 
   def self.daily_email
