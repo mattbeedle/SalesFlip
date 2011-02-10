@@ -8,16 +8,12 @@ module HasConstant
           singular = (options.delete(:accessor) || name.to_s.singularize).to_sym
 
           class_eval do
-            if values.respond_to?(:call)
-              flags = I18n.with_locale(:en) { values.call }
-            else
-              flags = values
-            end
+            values = values.respond_to?(:call) ? values.call : values
 
             property singular, ::DataMapper::Property::Enum,
-              {flags: flags, auto_validation: false}.merge(options)
+              {flags: values, auto_validation: false}.merge(options)
 
-            validates_within :set => [nil, *flags]
+            validates_within :set => [nil, *values]
           end
 
 
