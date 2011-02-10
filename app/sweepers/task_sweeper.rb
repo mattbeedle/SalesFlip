@@ -1,20 +1,21 @@
 class TaskSweeper < ActionController::Caching::Sweeper
   observe Task
 
-  def after_create(task)
-    expire_cache_for(task)
+  sweeper = instance
+
+  after :create do |task|
+    sweeper.expire_cache_for(task)
   end
 
-  def after_update(task)
-    expire_cache_for(task)
+  after :update do |task|
+    sweeper.expire_cache_for(task)
   end
 
-  def after_destroy(task)
-    expire_cache_for(task)
-    expire_fragment('deleted_items_nav_link')
+  after :destroy do |task|
+    sweeper.expire_cache_for(task)
+    sweeper.expire_fragment('deleted_items_nav_link')
   end
 
-  private
   def expire_cache_for(task)
     expire_fragment("task_partial-#{task.id}-true")
     expire_fragment("task_partial'#{task.id}-false")
