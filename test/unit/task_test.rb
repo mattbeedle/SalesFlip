@@ -187,7 +187,7 @@ class TaskTest < ActiveSupport::TestCase
       setup do
         @task2 = Task.make
         @task2.update :completed_by_id => @task2.user_id
-        @task2.update :completed_at => Time.zone.now.yesterday.utc
+        @task2.update :completed_at => Time.zone.now.yesterday
       end
 
       should 'return tasks which were completed yesterday' do
@@ -199,7 +199,7 @@ class TaskTest < ActiveSupport::TestCase
       setup do
         @task2 = Task.make
         @task2.update :completed_by_id => @task2.user_id
-        @task2.update :completed_at => Time.zone.now.beginning_of_week.utc - 7.days
+        @task2.update :completed_at => Time.zone.now.beginning_of_week - 7.days
       end
 
       should 'return tasks which where completed last week' do
@@ -211,7 +211,7 @@ class TaskTest < ActiveSupport::TestCase
       setup do
         @task2 = Task.make
         @task2.update :completed_by_id => @task2.user_id
-        @task2.update :completed_at => (Time.zone.now.beginning_of_month.utc + 1.day) - 1.month
+        @task2.update :completed_at => (Time.zone.now.beginning_of_month + 1.day) - 1.month
       end
 
       should 'return tasks which where completed last month' do
