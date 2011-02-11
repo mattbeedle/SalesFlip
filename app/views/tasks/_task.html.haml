@@ -1,4 +1,4 @@
-- cache("task_partial-#{task.id}-#{action_is('show')}") do
+- cache("task-#{task.id}-#{task.updated_at}-#{task.asset_id}-#{task.asset_updated_at}-#{action_is('show')}") do
   %dl.item.task{ :class => task.completed? ? 'completed' : nil }
     %dt.category
       %span{ :class => I18n.locale_around(:en) {task.category.downcase} }= task.category
@@ -21,6 +21,7 @@
             = simple_form_for task, :html => { :method => :delete } do |form|
               = hidden_field_tag :return_to, request.fullpath
               = form.button :submit, raw(t(:delete_icon)), :class => 'delete', :id => "delete_#{dom_id task}"
-        - unless task.asset.blank?
-          = task_asset_info(task, link_to(task.asset.name, task.asset))
+        - cache("task-asset-#{task.asset_id}-#{task.asset_updated_at}-#{action_is('show')}") do
+          - unless task.asset.blank?
+            = task_asset_info(task, link_to(task.asset.name, task.asset))
   .clear

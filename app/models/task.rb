@@ -18,6 +18,8 @@ class Task
   property :updated_at, DateTime
   property :updated_on, Date
 
+  property :asset_updated_at, DateTime
+
   has_constant :categories, I18n.t(:task_categories),
     required: true, auto_validation: true
 

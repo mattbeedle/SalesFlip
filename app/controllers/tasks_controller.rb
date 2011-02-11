@@ -1,8 +1,6 @@
 class TasksController < InheritedResources::Base
   load_and_authorize_resource
 
-  cache_sweeper :task_sweeper
-
   has_scope :assigned,              :type => :boolean
   has_scope :completed,             :type => :boolean
   has_scope :incomplete,            :type => :boolean
@@ -51,10 +49,23 @@ class TasksController < InheritedResources::Base
 
 protected
   def tasks_index_cache_key
+    return @cache_key if defined?(@cache_key)
+
     tasks = Task.for(current_user)
-    Digest::SHA1.hexdigest([
-      'tasks', tasks.desc(:updated_at).first.try(:updated_at).
-      try(:to_i), tasks.count, params.flatten.join('-')].join('-'))
+
+    most_recent_task = tasks.all(:order => [:updated_at.desc]).first
+    most_recent_task_with_asset = tasks.all(
+      :asset_updated_at.not => nil,
+      :order => [:asset_updated_at.desc]
+    ).first
+
+    @cache_key = Digest::SHA1.hexdigest([
+      'tasks',
+      most_recent_task.try(:updated_at).try(:to_i),
+      most_recent_task_with_asset.try(:asset_updated_at).try(:to_i),
+      tasks.count,
+      params.flatten.join('-')
+    ].join('-'))
   end
 
   def build_resource
@@ -66,7 +77,7 @@ protected
   end
 
   def collection
-    unless read_fragment(tasks_index_cache_key)
+    unless fragment_exist?(tasks_index_cache_key)
       if params[:scopes]
         @tasks = {}
         scopes = %w(overdue due_today due_tomorrow due_this_week due_next_week due_later)

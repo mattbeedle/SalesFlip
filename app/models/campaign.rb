@@ -1,5 +1,6 @@
 class Campaign
   include DataMapper::Resource
+  include DataMapper::Timestamps
   include ParanoidDelete
   include Activities
 
@@ -7,6 +8,8 @@ class Campaign
   property :name, String
   property :start_date, Date
   property :end_date, Date
+  property :created_at, DateTime
+  property :updated_at, DateTime
 
   validates_presence_of :name
 
@@ -26,6 +29,10 @@ class Campaign
   has n, :leads
   has n, :tasks, :as => :asset
   has n, :comments, :as => :commentable
+
+  after :save do
+    tasks.update! :asset_updated_at => updated_at
+  end
 
   def start_date?
     start_date.present?

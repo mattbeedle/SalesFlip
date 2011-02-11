@@ -41,6 +41,9 @@ class Contact
 
   before :create, :set_identifier
   before :save,   :set_full_name
+  after :save do
+    tasks.update! :asset_updated_at => updated_at
+  end
 
   has_constant :accesses,     lambda { I18n.t(:access_levels) }
   has_constant :titles,       lambda { I18n.t(:titles) }
