@@ -210,14 +210,17 @@ class UserTest < ActiveSupport::TestCase
         assert @user.recent_items.include?(@lead)
       end
 
+      should 'not return nil subjects' do
+        Activity.create! :user => @user, :subject => nil, :action => 'Viewed'
+        assert_equal 0, @user.recent_items.length
+      end
+
       should 'order items by when they where viewed' do
         @lead = Lead.make
         @contact = Contact.make
         @contact2 = Contact.make
         Activity.log(@user, @lead, 'Viewed')
-        sleep 1
         Activity.log(@user, @contact2, 'Viewed')
-        sleep 1
         Activity.log(@user, @contact, 'Viewed')
         assert_equal [@contact, @contact2, @lead], @user.recent_items
       end
