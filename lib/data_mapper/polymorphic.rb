@@ -94,11 +94,26 @@ module DataMapper
           class_eval <<-RUBY, __FILE__, __LINE__+1
 
           def #{name}_id
-            #{name}.try(:id)
+            if defined?(@#{name})
+              @#{name}.try(:id)
+            else
+              self.class.__polymorphic_relationships__[:#{name}].each do |relationship|
+                id = relationship.child_key.get(self).first
+                return id if id
+              end
+              nil
+            end
           end
 
           def #{name}_type
-            #{name}.try(:class)
+            if defined?(@#{name})
+              @#{name}.try(:class)
+            else
+              self.class.__polymorphic_relationships__[:#{name}].each do |relationship|
+                return relationship.parent_model if relationship.child_key.get(self).first
+              end
+              nil
+            end
           end
 
           def #{name}_id=(id)
