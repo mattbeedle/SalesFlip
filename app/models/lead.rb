@@ -70,6 +70,9 @@ class Lead
     notify_assignee unless do_not_notify
   end
   after :save, :update_cached_lead_counts
+  after :save do
+    tasks.update! :asset_updated_at => updated_at
+  end
 
   def self.unassigned
     all(:assignee_id => nil)

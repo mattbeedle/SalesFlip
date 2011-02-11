@@ -23,9 +23,5 @@ class AccountSweeper < ActionController::Caching::Sweeper
       expire_fragment("contact_partial-#{contact.id}")
       expire_fragment("contact_with_assets-#{contact.id}")
     end
-    account.tasks.each do |task|
-      expire_fragment("task_partial-#{task.id}-true")
-      expire_fragment("task_partial-#{task.id}-false")
-    end
   end
 end

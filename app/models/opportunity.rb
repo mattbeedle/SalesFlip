@@ -59,6 +59,9 @@ class Opportunity
 
   before :save, :set_probability
   before :save, :update_close_date
+  after :save do
+    tasks.update! :asset_updated_at => updated_at
+  end
 
   alias :name  :title
   alias :name= :title=
