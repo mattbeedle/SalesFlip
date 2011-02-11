@@ -20,10 +20,15 @@ before 'deploy:restart', 'deploy:symlinks'
 before 'deploy:restart', 'deploy:bundle'
 after 'deploy:bundle', 'deploy:delayed_job'
 after 'deploy:bundle', 'deploy:solr'
+after 'deploy:bundle', 'deploy:autoupgrade'
 
 namespace :deploy do
   task :start do; end
   task :stop do; end
+
+  task :autoupgrade, :roles => :app do
+    run "cd #{current_path} && rake db:autoupgrade"
+  end
 
   task :delayed_job, :roles => :app do
     run "/etc/init.d/delayed_job restart"
