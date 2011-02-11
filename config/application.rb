@@ -14,7 +14,6 @@ DataMapper::Property::Text.length(65535)
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)
-require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger
 
 module Salesflip
   class Application < Rails::Application
