@@ -16,10 +16,10 @@ set :scm, :git
 ssh_options[:paranoid] = false
 default_run_options[:pty] = true
 
+before 'deploy:restart', 'deploy:symlinks'
 before 'deploy:restart', 'deploy:bundle'
 after 'deploy:bundle', 'deploy:delayed_job'
 after 'deploy:bundle', 'deploy:solr'
-after 'deploy:restart', 'deploy:symlinks'
 
 namespace :deploy do
   task :start do; end
@@ -35,7 +35,6 @@ namespace :deploy do
 
   task :restart, :roles => :app do
     run "kill -USR2 `cat /tmp/unicorn.pid`"
-    run "/etc/init.d/delayed_job restart"
   end
 
   task :symlinks, :roles => :app do
