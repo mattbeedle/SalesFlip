@@ -12,10 +12,7 @@ class LeadsController < InheritedResources::Base
   respond_to :xml, :only => [ :new, :create, :index, :show ]
   respond_to :csv, :only => [ :index ]
 
-  has_scope :with_status, :type => :array
-  has_scope :unassigned,  :type => :boolean
-  has_scope :assigned_to
-  has_scope :source_is,   :type => :array
+  has_scope :status_is
 
   helper_method :leads_index_cache_key
 
@@ -46,6 +43,7 @@ class LeadsController < InheritedResources::Base
   def update
     params[:lead].merge!(:updater_id => current_user.id)
     update! do |success, failure|
+      success.js { render :text => "true" }
       success.html { return_to_or_default lead_path(@lead) }
     end
   end
@@ -81,7 +79,10 @@ class LeadsController < InheritedResources::Base
 
   def reject
     @lead.reject!(updater: current_user)
-    redirect_to leads_path
+    respond_to do |format|
+      format.js { render :text => "true" }
+      format.html { redirect_to leads_path }
+    end
   end
 
   def export
@@ -96,18 +97,16 @@ protected
   end
 
   def leads
-    @leads = apply_scopes(Lead).for_company(current_user.company).not_deleted.
-      permitted_for(current_user).desc(:status).desc(:created_at)
+    @leads = apply_scopes(Lead).
+      assigned_to(current_user).not_deleted.desc(:created_at)
   end
 
   def collection
-    unless read_fragment(leads_index_cache_key)
-      @page = params[:page] || 1
-      @per_page = 10
-      @leads ||= hook(:leads_collection, self, :pages => { :page => @page, :per_page => @per_page }).
-        last
-      @leads ||= leads.paginate(:per_page => @per_page, :page => @page)
-    end
+    @page = params[:page] || 1
+    @per_page = 30
+    @leads ||= hook(:leads_collection, self, :pages => { :page => @page, :per_page => @per_page }).
+      last
+    @leads ||= leads.paginate(:per_page => @per_page, :page => @page)
   end
 
   def set_filters

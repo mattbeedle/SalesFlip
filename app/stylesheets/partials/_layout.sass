@@ -168,6 +168,12 @@ a#new
   font-size: 13px
   float: right
 
+button
+  +border-radius(14px)
+  +silver-button
+  padding: 5px 9px
+  font-size: 13px
+
 //----------------------------------------------------
 // Index Listing
 //----------------------------------------------------
@@ -278,67 +284,66 @@ div.item, dl.item dd
   float: left
   width: 26%
   padding-left: 2%
-  .box
-    +clearfix
   h3
     margin: 0px
   ul.filters
     +horizontal-list
     width: 100%
     +silver-tabs
-  .box
-    +border-radius(3px)
-    +box-shadow(#666)
-    padding: 12px
-    &.gold
-      background: $gold
-      margin-bottom: 20px
-      label
-        font-size: 12px
-      h3
-        color: $gold - 90
+.box
+  +clearfix
+  +border-radius(3px)
+  +box-shadow(#666)
+  padding: 12px
+  &.gold
+    background: $gold
+    margin-bottom: 20px
+    label
+      font-size: 12px
+    h3
+      color: $gold - 90
+    input[type="submit"]
+      border-color: #b9bca0
+      +shiny-button(white, #fcfcc3, #b9bca0)
+      color: black
+      +letterpress
+    &#filter
+      .check
+        clear: both
+        padding-left: 20%
+        input
+          width: 13px
+      label.left, input
+        float: left
+        clear: none
+      label.left
+        width: 20%
+        padding-top: 4px
+      .name input
+        width: 75%
+      .source select
+        width: 50%
+        float: left
       input[type="submit"]
-        border-color: #b9bca0
-        +shiny-button(white, #fcfcc3, #b9bca0)
-        color: black
-        +letterpress
-      &#filter
-        .check
-          clear: both
-          padding-left: 20%
-          input
-            width: 13px
-        label.left, input
-          float: left
-          clear: none
-        label.left
-          width: 20%
-          padding-top: 4px
-        .name input
-          width: 75%
-        .source select
-          width: 50%
-          float: left
-        input[type="submit"]
-          float: left
-          margin-left: 2%
-          width: 24%
-    &.ice
-      background: $ice
-      dl.info dt
-        color: $ice - 70
-    &#recent_items
-      ul
-        color: $ice - 90
-        li
-          padding: 0px 0px 5px 0px
-        span
-          display: block
-          float: left
-          font-size: 12px
-          padding-right: 6px
-          text-align: right
-          width: 60px
+        float: left
+        margin-left: 2%
+        width: 24%
+  &.ice
+    background: $ice
+    dl.info dt
+      color: $ice - 70
+  &#recent_items
+    ul
+      color: $ice - 90
+      li
+        padding: 0px 0px 5px 0px
+      span
+        display: block
+        float: left
+        font-size: 12px
+        padding-right: 6px
+        text-align: right
+        width: 60px
 
 #search
   padding-bottom: 12px

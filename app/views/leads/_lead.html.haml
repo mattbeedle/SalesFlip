@@ -1,6 +1,4 @@
 %dl.item.lead
-  %dt
-    %span{ :class => I18n.in_locale(:en) { lead.status.downcase } }= lead.status
   %dd{ :class => lead.assignee == current_user ? nil : 'accept' }
     %strong
       - if lead.permitted_for?(current_user)
