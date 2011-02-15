@@ -20,8 +20,7 @@ gem 'dm-transactions'
 gem 'dm-types', :git => 'git://github.com/datamapper/dm-types.git'
 gem 'dm-validations', :git => 'git://github.com/datamapper/dm-validations.git'
 
-gem 'delayed_job'
-gem 'delayed_job_data_mapper', '1.0.0.rc'
+gem 'resque'
 
 gem 'compass'
 gem 'uuid'

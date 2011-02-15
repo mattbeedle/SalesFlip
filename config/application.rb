@@ -74,7 +74,6 @@ module Salesflip
     config.action_mailer.default_url_options = { :host => 'salesflip.com' }
 
     config.after_initialize do
-      Delayed::Worker.backend.auto_upgrade!
       I18n.locale = I18n.default_locale
     end
   end

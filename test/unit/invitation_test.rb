@@ -41,11 +41,8 @@ class InvitationTest < ActiveSupport::TestCase
     end
 
     should 'send invitation email after creation' do
-      Delayed::Worker.new.work_off
-      ActionMailer::Base.deliveries.clear
+      Resque.expects(:enqueue)
       @invitation.save
-      Delayed::Worker.new.work_off
-      assert_equal 1, ActionMailer::Base.deliveries.length
     end
   end
 end

@@ -18,7 +18,7 @@ default_run_options[:pty] = true
 
 before 'deploy:restart', 'deploy:symlinks'
 before 'deploy:restart', 'deploy:bundle'
-after 'deploy:bundle', 'deploy:delayed_job'
+after 'deploy:bundle', 'deploy:resque'
 after 'deploy:bundle', 'deploy:solr'
 after 'deploy:bundle', 'deploy:autoupgrade'
 
@@ -30,8 +30,8 @@ namespace :deploy do
     run "cd #{current_path} && rake db:autoupgrade"
   end
 
-  task :delayed_job, :roles => :app do
-    run "/etc/init.d/delayed_job restart"
+  task :resque, :roles => :app do
+    run "/etc/init.d/resque restart"
   end
 
   task :solr, :roles => :app do

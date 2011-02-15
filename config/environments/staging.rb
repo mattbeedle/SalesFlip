@@ -19,7 +19,7 @@ Salesflip::Application.configure do
   # just comment this out and Rails will serve the files
 
   # See everything in the log (default is :info)
-  # config.log_level = :debug
+  config.log_level = :debug
 
   # Use a different logger for distributed setups
   # config.logger = SyslogLogger.new
@@ -40,29 +40,33 @@ Salesflip::Application.configure do
   # Enable threaded mode
   # config.threadsafe!
 
+  config.i18n.default_locale = :de
+
   config.active_support.deprecation = :log
 
-  #config.middleware.use Rack::GridFS, :hostname => ENV['MONGODB_STAGING_HOST'],
-  #  :port => ENV['MONGODB_STAGING_PORT'],
-  #  :database => 'salesflip_staging', :prefix => 'uploads',
-  #  :user => ENV['MONGODB_STAGING_USER'],
-  #  :password => ENV['MONGODB_STAGING_PASSWORD']
+  config.i18n.default_locale = :de
 
-  #config.after_initialize do
-  #  require 'sunspot/rails'
-  #  Sunspot.config.solr.url = ENV['WEBSOLR_URL']
-  #end
+  config.middleware.use Rack::GridFS, :hostname => ENV['MONGODB_HOST'],
+    :port => ENV['MONGODB_PORT'], :database => 'salesflip_staging',
+    :prefix => 'uploads', :user => ENV['MONGODB_USER'],
+    :password => ENV['MONGODB_PASSWORD']
 
-  #require 'heroku/autoscale'
-  #config.middleware.use Heroku::Autoscale,
-  #  :username  => ENV['HEROKU_USERNAME'],
-  #  :password  => ENV['HEROKU_PASSWORD'],
-  #  :app_name  => ENV['HEROKU_STAGING_APP_NAME'],
-  #  :min_dynos => 1,
-  #  :max_dynos => 20,
-  #  :queue_wait_low  => 100,  # milliseconds
-  #  :queue_wait_high => 2000, # milliseconds
-  #  :min_frequency   => 10    # seconds
+  config.after_initialize do
+    I18n.locale = :de
+    require 'sunspot/rails'
+    Sunspot.config.solr.url = ENV['WEBSOLR_URL']
+  end
+
+  # require 'heroku/autoscale'
+  # config.middleware.use Heroku::Autoscale,
+    # :username  => ENV["HEROKU_USERNAME"],
+    # :password  => ENV["HEROKU_PASSWORD"],
+    # :app_name  => ENV["HEROKU_APP_NAME"],
+    # :min_dynos => 1,
+    # :max_dynos => 20,
+    # :queue_wait_low  => 100,  # milliseconds
+    # :queue_wait_high => 2000, # milliseconds
+    # :min_frequency   => 60    # seconds
 
   config.action_mailer.delivery_method = :remail
   config.action_mailer.remail_settings = {

@@ -72,7 +72,6 @@ class Opportunity
       contact.name
     end
   end
-  handle_asynchronously :solr_index
 
   def self.stage_is( stages )
     stages = stages.lines.to_a if stages.respond_to?(:lines)

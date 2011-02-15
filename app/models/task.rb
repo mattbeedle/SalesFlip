@@ -214,7 +214,7 @@ protected
   end
 
   def notify_assignee
-    TaskMailer.delay.assignment_notification(self) if reassigned?
+    Resque.enqueue(TaskMailerJob, id) if reassigned?
   end
 
   def log_update
