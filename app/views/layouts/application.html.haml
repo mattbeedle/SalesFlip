@@ -4,11 +4,19 @@
     = render :partial => 'shared/javascripts'
     = yield(:javascripts)
     = stylesheet_link_tag 'compiled/application.css'
+    = yield(:stylesheets)
     = title_tag 'SalesFlip'
     = description_tag 'An unobtrusive, slim CRM built with Mongoid and RightJS'
     = keywords_tag 'SalesFlip salesflip CRM unobtrusive mongoid rightjs mongoDB'
     %meta{ :content => "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
   = body do
+    - if cookies[:on_call] && lead = Lead.get(cookies[:on_call])
+      = render :partial => "leads/call_box", :locals => { :lead => lead }
+      #on_call
+        %p
+          You're currently on the phone with #{lead.full_name}.
+          %a(href="#" onclick="CallBox.show('#{dom_id lead, "call"}'); return false;") Done?
+
     #header
       .pad
         %h1

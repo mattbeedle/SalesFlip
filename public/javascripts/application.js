@@ -145,3 +145,71 @@ function text2html(string) {
   }
   event.stop();
 });
+
+// Call Box
+
+var CallBox = {}
+
+CallBox.show = function(id) {
+  if ( !$("overlay") )
+    $(document.body).insert($E("div").set("id", "overlay").setStyle("display", "none"));
+
+  $("overlay").show();
+  $(id).show();
+  $(window).on({
+    keydown: function(e) {
+      if ( e.keyCode == 27 )
+        CallBox.hide();
+    }
+  });
+}
+
+CallBox.hide = function() {
+  $("overlay").hide();
+  $$('.call_box').each('hide');
+}
+
+CallBox.not_interested = function(button, id) {
+  CallBox.hide();
+  var lead = $("lead_"+id);
+  if ( lead )
+    lead.hide('fade');
+
+  var on_call = $('on_call')
+  if ( on_call ) {
+    on_call.hide('slide');
+  }
+
+  new Xhr("/leads/"+ id)
+    .send("_method=put&lead[status]=Not+Interested&on_call=false");
+}
+
+CallBox.reject = function(button, id) {
+  CallBox.hide();
+  var lead = $("lead_"+id);
+  if ( lead )
+    lead.hide('fade');
+
+  var on_call = $('on_call')
+  if ( on_call ) {
+    on_call.hide('slide');
+  }
+
+  new Xhr("/leads/"+ id + '/reject')
+    .send("_method=put&on_call=false");
+}
+
+CallBox.send_infomail = function(button, id) {
+  CallBox.hide();
+  var lead = $("lead_"+id);
+  if ( lead )
+    lead.hide('fade');
+
+  var on_call = $('on_call')
+  if ( on_call ) {
+    on_call.hide('slide');
+  }
+
+  new Xhr("/leads/"+ id)
+    .send("_method=put&lead[status]=Contacted&on_call=false");
+}

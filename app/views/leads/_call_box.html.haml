@@ -1,0 +1,36 @@
+.call_box.box(style="display: none" id="#{dom_id lead, "call"}")
+  %a.close(href="#" title="Close" onclick="CallBox.hide(); return false;") x
+  %h3= link_to lead.full_name, edit_lead_path(lead, :on_call => lead.id)
+  %dl.info
+    - if campaign = lead.campaign
+      %dt= t('campaign')
+      %dd= link_to campaign.name, campaign_path(campaign)
+    = show_attribute(lead, 'company')
+    = show_attribute(lead, 'job_title')
+    = show_attribute(lead, 'department')
+    = show_attribute(lead, 'email', mail_to(lead.email, nil, :bcc => current_user.dropbox_email))
+    = show_attribute(lead, 'phone')
+    = show_attribute(lead, 'city')
+    = show_attribute(lead, 'website', link_to(t(:visit_website), lead.website))
+
+  .actions
+    %button Reschedule
+    %button(onclick="CallBox.send_infomail(this, '#{lead.id}'); return false;")
+      Send Infomail
+      %img(src="/images/spinner.gif" style="display: none")
+
+  %hr
+
+  %ul
+    %li
+      %a(href="#" onclick="CallBox.not_interested(this, '#{lead.id}'); return false;")
+        The customer wasn't interested
+        %img(src="/images/spinner.gif" style="display: none")
+    %li
+      %a(href="#" onclick="CallBox.reject(this, '#{lead.id}'); return false;")
+        Customer requested to be removed from our list
+        %img(src="/images/spinner.gif" style="display: none")
+    %li
+      %a(href="#" onclick="CallBox.reject(this, '#{lead.id}'); return false;")
+        Reject this lead
+        %img(src="/images/spinner.gif" style="display: none")

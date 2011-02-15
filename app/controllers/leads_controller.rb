@@ -12,7 +12,7 @@ class LeadsController < InheritedResources::Base
   respond_to :xml, :only => [ :new, :create, :index, :show ]
   respond_to :csv, :only => [ :index ]
 
-  has_scope :status_is
+  has_scope :status_is, :default => "New"
 
   helper_method :leads_index_cache_key
 

@@ -1,66 +1,6 @@
-:javascript
-  var CallBox = {}
-  CallBox.show = function(id) {
-    $("overlay").show();
-    $(id).show();
-    $(window).on({
-      keydown: function(e) {
-        if ( e.keyCode == 27 )
-          CallBox.hide();
-      }
-    });
-  }
-  CallBox.hide = function() {
-    $("overlay").hide();
-    $$('.call_box').each('hide');
-  }
-
-  CallBox.not_interested = function(button, id) {
-    new Xhr("/leads/"+ id, { spinner: $(button).first("img") })
-      .on("create", function() {
-        $(button)
-          .set('onclick', function() { return false; })
-          .addClass('disabled');
-      })
-      .on("success", function() {
-        CallBox.hide();
-        $("lead_"+id).hide('fade');
-      })
-      .send("_method=put&lead[status]=Not+Interested");
-  }
-
-  CallBox.reject = function(button, id) {
-    new Xhr("/leads/"+ id + '/reject', { spinner: $(button).first("img") })
-      .on("create", function() {
-        $(button)
-          .set('onclick', function() { return false; })
-          .addClass('disabled');
-      })
-      .on("success", function() {
-        CallBox.hide();
-        $("lead_"+id).hide('fade');
-      })
-      .send("_method=put");
-  }
-
-  CallBox.send_infomail = function(button, id) {
-    new Xhr("/leads/"+ id, { spinner: $(button).first("img") })
-      .on("create", function() {
-        $(button).set('disabled', true);
-      })
-      .on("success", function() {
-        CallBox.hide();
-        $("lead_"+id).hide('fade');
-      })
-      .send(
-        "_method=put&lead[status]=Converted"
-      );
-  }
-
 %h2.title
   Leads
   = add_new t(:add_lead), new_lead_path(:return_to => request.fullpath)
-  -# %button(style="float: right; height: 28px; margin-right: 20px;") Request New Lead
 
 %ul.tabs
   %li{:class => "#{'active' if current_scopes[:status_is] == "New"}"}= link_to "New", :status_is => "New"
@@ -78,59 +18,13 @@
       %td
         %button(onclick="CallBox.show('#{dom_id lead, "call"}'); return false;") Rufen
     - content_for :call_boxes do
-      .call_box.box(style="display: none" id="#{dom_id lead, "call"}")
-        %a.close(href="#" title="Close" onclick="CallBox.hide(); return false;") x
-        %h3= lead.full_name
-        %dl.info
-          - if campaign = lead.campaign
-            %dt= t('campaign')
-            %dd= link_to campaign.name, campaign_path(campaign)
-          = show_attribute(lead, 'company')
-          = show_attribute(lead, 'job_title')
-          = show_attribute(lead, 'department')
-          = show_attribute(lead, 'email', mail_to(lead.email, nil, :bcc => current_user.dropbox_email))
-          = show_attribute(lead, 'phone')
-          = show_attribute(lead, 'city')
-          = show_attribute(lead, 'website', link_to(t(:visit_website), lead.website))
-
-        .actions
-          %button Reschedule
-          %button(onclick="CallBox.send_infomail(this, '#{lead.id}'); return false;")
-            Send Infomail
-            %img(src="/images/spinner.gif" style="display: none")
-
-        %hr
-
-        %ul
-          %li <a href="#">Customer requested an offer</a>
-          %li
-            %a(href="#" onclick="CallBox.not_interested(this, '#{lead.id}'); return false;")
-              The customer wasn't interested
-              %img(src="/images/spinner.gif" style="display: none")
-          %li <a href="#">This was the wrong contact</a>
-          %li
-            %a(href="#" onclick="CallBox.reject(this, '#{lead.id}'); return false;")
-              Customer requested to be removed from our list
-              %img(src="/images/spinner.gif" style="display: none")
-          %li
-            %a(href="#" onclick="CallBox.reject(this, '#{lead.id}'); return false;")
-              Reject this lead
-              %img(src="/images/spinner.gif" style="display: none")
+      = render :partial => 'leads/call_box', :locals => { :lead => lead }
 
 = will_paginate @leads
 
-#overlay(style="display: none")
 = yield :call_boxes
 
 :css
-  #content {
-    margin-bottom: 30px;
-    }
-  hr {
-    border: 0;
-    border-bottom: 1px solid #ddd;
-    margin: 1em 0;
-  }
   table {
     border-collapse: collapse;
     width: 100%;
@@ -142,61 +36,7 @@
   td button {
     font-size: 0.8em;
   }
-  #overlay {
-    background-color: rgba(0, 0, 0, 0.6);
-    height: 100%;
-    left: 0;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-  }
-  .call_box {
-    background-color: #fff;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    margin-left: -270px;
-    margin-top: -220px;
-    overflow: visible;
-    padding: 15px 30px 30px 30px;
-    width: 480px;
-    z-index: 1001;
-  }
-  .call_box .actions {
-    clear: both;
-    overflow: auto;
-    text-align: center;
-  }
-  .call_box .actions button:first-child {
-    display: block;
-    float: left;
-  }
-  .call_box .actions button:last-child {
-    display: block;
-    float: right;
-  }
-  .call_box ul {
-    line-height: 2em;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .call_box .close {
-    color: #ccc;
-    display: block;
-    font-family: arial;
-    font-size: 1.2em;
-    font-weight: bold;
-    width: 20px;
-    position: absolute;
-    right: -24px;
-    top: -24px;
-    text-decoration: none;
-  }
-  .call_box .close:hover {
-    color: #fff;
-  }
+
   div#main h3 { cursor: auto; }
   tr:hover {
     background-color: #ffd;
@@ -237,18 +77,4 @@
   .tabs .active a {
     background-color: #0073B1;
     color: #fff;
-  }
-
-  button img {
-    height: 13px;
-  }
-
-  button[disabled] {
-    background: #ddd;
-    font-style: italic;
-  }
-
-  a.disabled {
-    color: #999;
-    font-style: italic;
   }

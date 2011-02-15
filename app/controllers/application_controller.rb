@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
     redirect_to root_url
   end
 
+  before_filter :store_on_call
   before_filter :authenticate_user!
   before_filter :fix_array_params
   before_filter "hook(:app_before_filter, self)"
@@ -52,6 +53,14 @@ protected
       redirect_to params[:return_to]
     else
       redirect_to default
+    end
+  end
+
+  def store_on_call
+    if params[:on_call] == "false"
+      cookies.delete(:on_call)
+    elsif params[:on_call]
+      cookies[:on_call] = params[:on_call]
     end
   end
 end
