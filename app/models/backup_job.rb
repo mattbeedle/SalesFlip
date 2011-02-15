@@ -10,8 +10,9 @@ class BackupJob
       Net::SSH.start("78.47.226.213", "root") do |ssh|
         ssh.exec("tar -cf ~/main.tar /var/lib/postgresql/9.0/main")
       end
-      Net::SCP.download!("78.47.226.213", "root", "~/main.tar", "~/main.tar")
+      Net::SCP.download!("78.47.226.213", "root", "main.tar", "main.tar")
       upload_backup
+      delete_backup
     end
 
     private
@@ -23,10 +24,14 @@ class BackupJob
       )
     end
 
+    def delete_backup
+      File.delete("main.tar")
+    end
+
     def upload_backup
       bucket.files.create(
         key: "main.tar",
-        body: File.open("~/main.tar"),
+        body: File.open("main.tar"),
         public: false
       )
     end
