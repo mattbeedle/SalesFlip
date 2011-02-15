@@ -5,8 +5,8 @@ GIT
     aaronh-chronic (0.3.9)
 
 GIT
-  remote: git://github.com/bernerdschaefer/dm-core.git
-  revision: a1c61098bab5cf7e8033b735adabdfa9a7ce2021
+  remote: git://github.com/datamapper/dm-core.git
+  revision: b3fd21a00c4eaf5fe0b7d4e8a1ac4f318d5f3323
   specs:
     dm-core (1.0.2)
       addressable (~> 2.2)
@@ -97,7 +97,7 @@ GEM
       activemodel (= 3.0.3)
       activesupport (= 3.0.3)
     activesupport (3.0.3)
-    addressable (2.2.2)
+    addressable (2.2.4)
     amatch (0.2.5)
     archive-tar-minitar (0.5.2)
     arel (2.0.7)
