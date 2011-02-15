@@ -1,10 +1,13 @@
 %h2.title
   Leads
   = add_new t(:add_lead), new_lead_path(:return_to => request.fullpath)
+  %button(onclick="CallBox.show('#{dom_id @leads.last, "call"}');" style="float: right;margin: 0 10px 0px 0; height: 28px;") Next Lead
 
 %ul.tabs
-  %li{:class => "#{'active' if current_scopes[:status_is] == "New"}"}= link_to "New", :status_is => "New"
-  %li{:class => "#{'active' if current_scopes[:status_is] == "Contacted"}"}= link_to "Infomail Sent", :status_is => "Contacted"
+  %li{:class => "#{'active' if params[:status] == "New"}"}= link_to "New", :status => "New"
+  %li{:class => "#{'active' if params[:status] == "Scheduled"}"}= link_to "Scheduled", :status => "Scheduled"
+  %li{:class => "#{'active' if params[:status] == "Contacted"}"}= link_to "Infomail Sent", :status => "Contacted"
+  %li{:class => "#{'active' if params[:status] == "All"}"}= link_to "All", :status => "All"
 
 %table
   - @leads.each do |lead|

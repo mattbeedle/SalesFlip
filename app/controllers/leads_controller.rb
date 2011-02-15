@@ -12,8 +12,6 @@ class LeadsController < InheritedResources::Base
   respond_to :xml, :only => [ :new, :create, :index, :show ]
   respond_to :csv, :only => [ :index ]
 
-  has_scope :status_is, :default => "New"
-
   helper_method :leads_index_cache_key
 
   def index
@@ -97,8 +95,23 @@ protected
   end
 
   def leads
-    @leads = apply_scopes(Lead).
-      assigned_to(current_user).not_deleted.desc(:created_at)
+    params[:status] ||= "New"
+
+    leads = case params[:status]
+            when "Scheduled"
+              Lead.all(
+                :links => [Lead.relationships['tasks'].inverse],
+                :order => Lead.tasks.due_at.desc
+              )
+            when "Contacted"
+              Lead.all(:status => "Contacted")
+            when "All"
+              Lead.all
+            when "New"
+              Lead.all(:status => "New")
+            end
+
+    @leads = leads.assigned_to(current_user).not_deleted.desc(:created_at)
   end
 
   def collection

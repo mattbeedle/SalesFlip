@@ -14,7 +14,7 @@
     = show_attribute(lead, 'website', link_to(t(:visit_website), lead.website))
 
   .actions
-    %button Reschedule
+    %button(onclick="CallBox.reschedule(this, '#{lead.id}'); return false;") Reschedule
     %button(onclick="CallBox.send_infomail(this, '#{lead.id}'); return false;")
       Send Infomail
       %img(src="/images/spinner.gif" style="display: none")

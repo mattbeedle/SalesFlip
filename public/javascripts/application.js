@@ -184,6 +184,10 @@ CallBox.not_interested = function(button, id) {
     .send("_method=put&lead[status]=Not+Interested&on_call=false");
 }
 
+CallBox.reschedule = function(button, id) {
+
+}
+
 CallBox.reject = function(button, id) {
   CallBox.hide();
   var lead = $("lead_"+id);
