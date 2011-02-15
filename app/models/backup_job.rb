@@ -8,7 +8,7 @@ class BackupJob
 
     def perform
       Net::SSH.start("78.47.226.213", "root") do |ssh|
-        ssh.exec("tar -vf ~/main.tar /var/lib/postgresql/9.0/main")
+        ssh.exec("tar -cf ~/main.tar /var/lib/postgresql/9.0/main")
       end
       Net::SCP.download!("78.47.226.213", "root", "~/main.tar", "~/main.tar")
       upload_backup
