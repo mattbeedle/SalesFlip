@@ -20,6 +20,7 @@ log/*
 solr/*
 .sass-cache/*
 public/javascripts/all.js
+public/stylesheets/compiled/*
 doc/*
 .yardoc/*
 public/uploads/*
