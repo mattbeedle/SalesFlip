@@ -33,6 +33,6 @@ protected
   end
 
   def send_invitation
-    InvitationMailer.delay.invitation(self)
+    Resque.enqueue(InvitationMailerJob, id)
   end
 end

@@ -76,7 +76,6 @@ class Contact
       account.try(:name)
     end
   end
-  #handle_asynchronously :solr_index
 
   def self.assigned_to( user_id )
     any_of({ :assignee_id => user_id }, { :user_id => user_id, :assignee_id => nil })
