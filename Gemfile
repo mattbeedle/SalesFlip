@@ -42,6 +42,7 @@ gem 'amatch'
 gem 'gravtastic'
 gem 'cancan'
 gem 'unicorn'
+gem 'exceptional'
 
 # Plugins
 gem 'salesflip-lead_notifications', :require => 'lead_notifications'
