@@ -25,7 +25,7 @@ staging:
   <<: *base
 
 production:
-  database: salesflip_production
+  database: <%= ENV['SALESFLIP_DATABASE_NAME'] %>
   user: postgres
   password: <%= ENV['SALESFLIP_POSTGRES_PASSWORD'] %>
   host: <%= ENV['SALESFLIP_POSTGRES_HOST'] %>
