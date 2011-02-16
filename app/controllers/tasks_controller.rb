@@ -1,8 +1,6 @@
 class TasksController < InheritedResources::Base
   load_and_authorize_resource
 
-  cache_sweeper :task_sweeper
-
   has_scope :assigned,              :type => :boolean
   has_scope :completed,             :type => :boolean
   has_scope :incomplete,            :type => :boolean
@@ -18,10 +16,10 @@ class TasksController < InheritedResources::Base
   has_scope :completed_this_month,  :type => :boolean
   has_scope :completed_last_month,  :type => :boolean
   has_scope :for do |controller, scope, value|
-    scope.for(User.find(BSON::ObjectId.from_string(value)))
+    scope.for(User.get(value))
   end
   has_scope :assigned_by do |controller, scope, value|
-    scope.assigned_by(User.find(value))
+    scope.assigned_by(User.get(value))
   end
 
   helper_method :tasks_index_cache_key
@@ -51,14 +49,27 @@ class TasksController < InheritedResources::Base
 
 protected
   def tasks_index_cache_key
+    return @cache_key if defined?(@cache_key)
+
     tasks = Task.for(current_user)
-    Digest::SHA1.hexdigest([
-      'tasks', tasks.desc(:updated_at).first.try(:updated_at).
-      try(:to_i), tasks.count, params.flatten.join('-')].join('-'))
+
+    most_recent_task = tasks.all(:order => [:updated_at.desc]).first
+    most_recent_task_with_asset = tasks.all(
+      :asset_updated_at.not => nil,
+      :order => [:asset_updated_at.desc]
+    ).first
+
+    @cache_key = Digest::SHA1.hexdigest([
+      'tasks',
+      most_recent_task.try(:updated_at).try(:to_i),
+      most_recent_task_with_asset.try(:asset_updated_at).try(:to_i),
+      tasks.count,
+      params.flatten.join('-')
+    ].join('-'))
   end
 
   def build_resource
-    @task ||= begin_of_association_chain.tasks.build({ :assignee_id => current_user.id }.
+    @task ||= begin_of_association_chain.tasks.new({ :assignee_id => current_user.id }.
                                                      merge(params[:task] || {}))
     @task.asset_id = params[:asset_id] if params[:asset_id]
     @task.asset_type = params[:asset_type] if params[:asset_type]
@@ -66,11 +77,14 @@ protected
   end
 
   def collection
-    unless read_fragment(tasks_index_cache_key)
+    unless fragment_exist?(tasks_index_cache_key)
       if params[:scopes]
         @tasks = {}
-        params[:scopes].keys.map(&:to_sym).each do |scope|
-          @tasks[scope] = apply_scopes(Task).asc(:due_at).send(scope)
+        scopes = %w(overdue due_today due_tomorrow due_this_week due_next_week due_later)
+
+        scopes.each do |scope|
+          scope = scope.to_sym
+          @tasks[scope] = apply_scopes(Task).asc(:due_at).send(scope) if params[:scopes][scope]
         end
       else
         @overdue ||= apply_scopes(Task).overdue.asc(:due_at)
@@ -84,7 +98,7 @@ protected
   end
 
   def resource
-    @task ||= Task.for(current_user).where(:_id => params[:id]).first
+    @task ||= Task.for(current_user).where(:id => params[:id]).first
   end
 
   def begin_of_association_chain

@@ -12,7 +12,7 @@
         = raw comment.text.gsub(/\n/, '<br />')
         .attachments
           - comment.attachments.each do |attachment|
-            = link_to attachment.attachment_filename, attachment.attachment.url
+            = link_to attachment.attachment.filename, attachment.attachment.url
     - else
       .message
         .user
@@ -21,4 +21,4 @@
         = raw comment.text
         .attachments
           - comment.attachments.each do |attachment|
-            = link_to attachment.attachment_filename, attachment.attachment.url
+            = link_to attachment.attachment.filename, attachment.attachment.url

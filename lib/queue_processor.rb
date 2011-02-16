@@ -21,11 +21,11 @@ loop do
       item = MailQueue.find_by_id(job_hash[:item]) if job_hash[:item]
       if item and EmailReader.parse_email(Mail.new(item.mail))
         job.delete
-        item.update_attributes :status => 'Success'
+        item.update :status => 'Success'
       else
         @logger.warn("Did not process email: #{job_hash.inspect}")
         job.bury
-        item.update_attributes :status => 'Failed'
+        item.update :status => 'Failed'
       end
     rescue StandardError => e
       @logger.warn("The following error occurred in the queue processor loop: #{e} at #{Time.zone.now}")

@@ -2,6 +2,7 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  include ActionController::Caching::Sweeping
 
   # internal application, doesn't really need forgery protection
   #protect_from_forgery
@@ -14,7 +15,6 @@ class ApplicationController < ActionController::Base
   end
 
   before_filter :authenticate_user!
-  before_filter :bson_ids
   before_filter :fix_array_params
   before_filter "hook(:app_before_filter, self)"
   after_filter  "hook(:app_after_filter, self)"
@@ -23,14 +23,6 @@ class ApplicationController < ActionController::Base
   helper :all
 
 protected
-  def bson_ids
-    params.each do |key, value|
-      if key.to_s.match(/_id$/) || key.to_s.match(/^id$/) and BSON::ObjectId.legal?(value.to_s)
-        params[key] = BSON::ObjectId.from_string(value.to_s)
-      end
-    end
-  end
-
   def fix_array_params
     [:lead, :contact, :account, :opportunity].each do |type|
       if params[type] && params[type][:permitted_user_ids] && params[type][:permitted_user_ids].is_a?(String)
@@ -50,7 +42,7 @@ protected
 
   def log_viewed_item
     subject = instance_variable_get("@#{controller_name.singularize}")
-    if subject and current_user and not subject.is_a?(Search)
+    if subject and current_user and subject.respond_to?(:activities) and not subject.is_a?(Search)
       Activity.log(current_user, subject, 'Viewed')
     end
   end

@@ -23,15 +23,15 @@ class EmailReaderTest < ActiveSupport::TestCase
       end
     end
   end
-  
+
   context 'when email has weirdo german characters in the subject line' do
     setup do
       @user = User.make(:annika, :email => 'annika.fleischer@1000jobboersen.de')
       @email = Mail.new(File.read("#{Rails.root}/test/support/weirdo_german_characters_in_subject.txt"))
     end
-    
+
     should 'encode the subject line correctly' do
-      EmailReader.parse_email(@email)
+      comment = EmailReader.parse_email(@email)
       assert_equal 'Ärsche gibte hier genug!', Email.first.subject
     end
   end
@@ -62,7 +62,7 @@ class EmailReaderTest < ActiveSupport::TestCase
 
       context 'when receiver exists as a lead' do
         setup do
-          @lead = Lead.make(:erich, :email => 'Test@Test.com')
+          @lead = Lead.make(:erich, :email => 'test@test.com')
           EmailReader.parse_email(@email)
         end
 
@@ -80,10 +80,6 @@ class EmailReaderTest < ActiveSupport::TestCase
 
         should 'save attachments against comment' do
           assert_equal 1, @lead.comments.first.attachments.length
-        end
-
-        should 'mark comment as "from_email"' do
-          assert @lead.comments.first.from_email
         end
       end
 
@@ -122,7 +118,7 @@ class EmailReaderTest < ActiveSupport::TestCase
 
         context 'when lead is new' do
           setup do
-            @lead.update_attributes :status => 'New'
+            @lead.update :status => 'New'
             EmailReader.parse_email(@email)
           end
 
@@ -138,7 +134,7 @@ class EmailReaderTest < ActiveSupport::TestCase
 
         context 'when lead is converted' do
           setup do
-            @lead.update_attributes :status => 'Converted'
+            @lead.update :status => 'Converted'
             EmailReader.parse_email(@email)
           end
 

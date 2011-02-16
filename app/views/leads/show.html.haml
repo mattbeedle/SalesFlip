@@ -43,7 +43,7 @@
   %br/
   %small
     = raw t(:added_ago_by, :time => l(@lead.created_at, :format => :short), :by => @lead.user.username)
-    = " : #{t(:assigned_to, :user => User.find(@lead.assignee_id).full_name) if @lead.assignee_id.present?}"
+    = " : #{t(:assigned_to, :user => @lead.assignee.full_name) if @lead.assignee_id.present?}"
 - if @lead.notes.present?
   .notes= raw @lead.notes
 
@@ -57,6 +57,9 @@
     %h3= t(:contact_info)
     - if @lead.assigned_to?(current_user)
       %dl.info
+        - if campaign = @lead.campaign
+          %dt= t('campaign')
+          %dd= link_to campaign.name, campaign_path(campaign)
         = show_attribute(@lead, 'identifier')
         = show_attribute(@lead, 'company')
         = show_attribute(@lead, 'job_title')

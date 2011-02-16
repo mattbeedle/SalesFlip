@@ -15,14 +15,14 @@ class UserTest < ActiveSupport::TestCase
         @user = User.make(:annika)
         @benny = User.make(:benny)
         @lead = Lead.make(:erich, :user => @user, :tracker_ids => [@benny.id])
-        @comment = @lead.comments.create! :user => @user, :subject => 'a comment',
+        @comment = @lead.comments.create :user => @user, :subject => 'a comment',
           :text => 'This is a good lead'
-        @email = Email.create! :user => @benny, :subject => 'an offer',
+        @email = Email.create :user => @benny, :subject => 'an offer',
           :text => 'Here is your offer', :commentable => @lead, :from => 'test@test.com',
           :received_at => Time.zone.now
-        @attachment = @email.attachments.create! :subject => @email,
+        @attachment = @email.attachments.create \
           :attachment => File.open('test/upload-files/erich_offer.pdf')
-        @task = @lead.tasks.create! :name => 'Call this guy', :due_at => 'due_today',
+        @task = @lead.tasks.create :name => 'Call this guy', :due_at => 'due_today',
           :category => 'Call', :user => @user
         ActionMailer::Base.deliveries.clear
       end
@@ -37,7 +37,7 @@ class UserTest < ActiveSupport::TestCase
         assert_sent_email do |email|
           email.body =~ /#{@lead.name}/ && email.body =~ /#{@comment.text}/ &&
             email.body =~ /#{@email.text}/ && email.body =~ /#{@task.name}/ &&
-            email.body =~ /#{@attachment.attachment_filename}/ && email.to.include?(@benny.email)
+            email.body =~ /#{@attachment.attachment.filename}/ && email.to.include?(@benny.email)
         end
       end
 
@@ -50,14 +50,14 @@ class UserTest < ActiveSupport::TestCase
 
       should 'not include activities in the email which have already been sent in a previous email' do
         User.send_tracked_items_mail
-        comment2 = @lead.comments.create! :subject => 'another comment',
+        comment2 = @lead.comments.create :subject => 'another comment',
           :text => 'a second comment', :user => @user
         ActionMailer::Base.deliveries.clear
         User.send_tracked_items_mail
         assert_sent_email do |email|
           email.body.match(/#{@lead.name}/) && !email.body.match(/#{@comment.text}/) &&
             !email.body.match(/#{@email.text}/) && !email.body.match(/#{@task.name}/) &&
-            !email.body.match(/#{@attachment.attachment_filename}/) &&
+            !email.body.match(/#{@attachment.attachment.filename}/) &&
             email.to.include?(@benny.email) && email.body.match(/#{comment2.text}/)
         end
       end
@@ -83,41 +83,74 @@ class UserTest < ActiveSupport::TestCase
       @user = User.make_unsaved(:annika, :company => Company.make(:jobboersen))
     end
 
-    # TODO, decide what to do about dropbox integration (e.g google app engine, postfix, some other solution...)
-    #should 'add user to postfix after creation' do
-    #  @user.save!
-    #  assert Domain.find_by_domain("#{@user.api_key}.salesflip.com")
-    #  assert Alias.find_by_mail_and_destination("@#{@user.api_key}.salesflip.com",
-    #                                            'catch.all@salesflip.com')
-    #end
-    
+    context '#redistribute_leads' do
+      setup do
+        @user.save!
+        4.times do
+          Lead.make(:status => 'New', :user => @user, :assignee => @user)
+        end
+      end
+
+      should 'assign all status=new leads to the rest of the sales team' do
+        user = User.make :company => @user.company
+        @user.redistribute_leads
+        assert_equal 4, Lead.assigned_to(user).status_is('New').count
+      end
+
+      should 'unassign all leads from salesperson' do
+        User.make :company => @user.company
+        @user.redistribute_leads
+        assert_equal 0, Lead.assigned_to(@user).count
+      end
+
+      should 'not redistribute leads when there are no other sales people' do
+        @user.redistribute_leads
+        assert_equal 4, Lead.assigned_to(@user).count
+      end
+
+      should 'be able to specify sales people' do
+        user = User.make :company => @user.company
+        user2 = User.make :company => @user.company
+        user3 = User.make :company => @user.company
+        @user.redistribute_leads(users: [user2, user3])
+        assert_equal 2, Lead.assigned_to(user2).count
+        assert_equal 2, Lead.assigned_to(user3).count
+        assert_equal 0, Lead.assigned_to(user).count
+      end
+    end
+
+    should 'cache assigned lead count' do
+      @user.save!
+      Lead.make :user => @user, :assignee => @user
+      assert_equal 1, @user.reload.assigned_lead_count
+    end
+
     should 'default role to "Sales Person"' do
       @user.role = nil
-      @user.save!
+      @user.save
       assert @user.role_is?('Sales Person')
     end
-    
+
     should 'not default role to "Sales Person" if a role is already set' do
       @user.role = 'Freelancer'
-      @user.save!
+      @user.save
       assert @user.role_is?('Freelancer')
     end
 
     should 'create company from company name' do
-      @user = User.new User.plan(:annika, :company_name => 'A test company', :company => nil)
-      @user.save!
+      @user = User.make(:annika, :company_name => 'A test company', :company => nil)
       assert Company.first(:conditions => { :name => 'A test company' })
       assert_equal 'A test company', @user.company.name
     end
 
     should 'have dropbox email' do
-      @user.save!
+      @user.save
       assert_equal "#{@user.api_key}@salesflip.appspotmail.com", @user.dropbox_email
     end
 
     context 'when invited' do
       setup do
-        @user.save!
+        @user.save
         @invitation = Invitation.make :inviter => @user, :role => 'Freelancer',
           :email => 'test@test.com'
       end
@@ -139,17 +172,18 @@ class UserTest < ActiveSupport::TestCase
       should 'update invitation with invited id after creation' do
         user = User.new :invitation_code => @invitation.code, :password => 'password',
           :password_confirmation => 'password'
-        user.save!
+        user.save
         assert user.invitation
       end
     end
 
     should 'update invitation with invited id after create' do
-      @user.save!
+      @user.save
     end
 
     context 'deleted_items_count' do
       setup do
+        @user.save
         @lead = Lead.make
         @contact = Contact.make
         @account = Account.make
@@ -174,20 +208,19 @@ class UserTest < ActiveSupport::TestCase
 
     context 'full_name' do
       should 'return username if present' do
-        @user.update_attributes(:username => 'annie')
-        @user.save!
+        @user.username = 'annie'
         assert_equal @user.full_name, "annie"
       end
 
       should 'return email username if username is not present' do
-        @user.save!
+        @user.save
         assert_equal @user.full_name, "annika.fleischer1"
       end
     end
 
     context 'tracked_items' do
       setup do
-        @user.save!
+        @user.save
       end
 
       should 'return all tracked leads' do
@@ -213,14 +246,17 @@ class UserTest < ActiveSupport::TestCase
         assert @user.recent_items.include?(@lead)
       end
 
+      should 'not return nil subjects' do
+        Activity.create! :user => @user, :subject => nil, :action => 'Viewed'
+        assert_equal 0, @user.recent_items.length
+      end
+
       should 'order items by when they where viewed' do
         @lead = Lead.make
         @contact = Contact.make
         @contact2 = Contact.make
         Activity.log(@user, @lead, 'Viewed')
-        sleep 1
         Activity.log(@user, @contact2, 'Viewed')
-        sleep 1
         Activity.log(@user, @contact, 'Viewed')
         assert_equal [@contact, @contact2, @lead], @user.recent_items
       end
@@ -235,7 +271,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     should 'have uuid after creation' do
-      @user.save!
+      @user.save
       assert !@user.api_key.blank?
     end
   end

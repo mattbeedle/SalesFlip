@@ -12,6 +12,9 @@ en:
   tasks: Tasks
   lead: Lead
   leads: Leads
+  campaign: Campaign
+  campaigns: Campaigns
+  objectives: Objectives
   account: Account
   accounts: Accounts
   contacts: Contacts
@@ -161,6 +164,7 @@ en:
     labels:
       task:
         name: Subject
+      conversion_percentage: Conversion (%)
       identifier: Identifier
       address: Address
       account_name: Account Name
@@ -313,6 +317,13 @@ en:
   contacts_created_accepted: Contacts (created/accepted)
 
   #--------------------------------------------------------------
+  # Campaigns
+  #--------------------------------------------------------------
+  add_campaign: Add Campaign
+  edit_campaign: Edit Campaign
+  save_campaign: Save Campaign
+
+  #--------------------------------------------------------------
   # Leads
   #--------------------------------------------------------------
   lead_already_accepted: This lead was just accepted by %{user}, you can no longer accept it
@@ -389,6 +400,8 @@ en:
   comments_closed: Comments are closed. To comment please
   view_contact_for_lead: view the contact for this lead
   lead_converted_by: This lead was converted by %{link} on %{time}
+  company_sizes:
+    - '1-5'
 
   #--------------------------------------------------------------
   # Task

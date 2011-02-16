@@ -10,10 +10,6 @@ class EmailTest < ActiveSupport::TestCase
       @email = Email.make_unsaved(:erich_offer_email)
     end
 
-    should 'be valid with all required attributes' do
-      assert @email.valid?
-    end
-
     should 'return subject for name' do
       assert @email.subject == @email.name
     end

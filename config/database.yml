@@ -1,15 +1,16 @@
 # This is not actually being used, just set up to get pickle working properly
 base: &base
-  adapter: sqlite3
+  adapter: postgres
+  port: 5432
   pool: 5
   timeout: 5000
 
 development:
-  database: db/lean_crm_development.sqlite3
+  database: salesflip_development
   <<: *base
 
 test:
-  database: db/lean_crm_test.sqlite3
+  database: salesflip_test
   <<: *base
 
 cucumber:
@@ -17,9 +18,15 @@ cucumber:
   <<: *base
 
 staging:
-  database: db/salesflip_staging.sqlite3
+  database: salesflip_staging
+  user: postgres
+  password: <%= ENV['SALESFLIP_POSTGRES_PASSWORD'] %>
+  host: <%= ENV['SALESFLIP_POSTGRES_HOST'] %>
   <<: *base
 
 production:
-  database: db/salesflip_production.sqlite3
+  database: salesflip_production
+  user: postgres
+  password: <%= ENV['SALESFLIP_POSTGRES_PASSWORD'] %>
+  host: <%= ENV['SALESFLIP_POSTGRES_HOST'] %>
   <<: *base

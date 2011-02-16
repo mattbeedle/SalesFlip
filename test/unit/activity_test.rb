@@ -3,19 +3,18 @@ require 'test_helper.rb'
 class ActivityTest < ActiveSupport::TestCase
   context 'Class' do
     should_have_constant :actions
-    should_require_key :user
+    should_require_key :creator_id
 
     context 'log' do
       setup do
         @lead = Lead.make(:erich)
-        Activity.delete_all
+        Activity.all.destroy
       end
 
       should 'create a new activity with the supplied user, model and action' do
         Activity.log(@lead.user, @lead, 'Viewed')
         assert_equal 1, Activity.count
-        assert Activity.first(:conditions => { :user_id => @lead.user_id, :subject_id => @lead.id,
-                              :subject_type => 'Lead', :action => Activity.actions.index('Viewed') })
+        assert Activity.first(:user => @lead.user, :lead => @lead, :action => 'Viewed')
       end
 
       should 'create a new activity for "Deleted"' do
@@ -27,10 +26,9 @@ class ActivityTest < ActiveSupport::TestCase
         I18n.in_locale(:de) do
           Activity.log(@lead.user, @lead, 'Viewed')
         end
-        assert Activity.where(:user_id => @lead.user_id,
-                              :subject_id => @lead.id,
-                              :subject_type => 'Lead',
-                              :action => Activity.actions.index('Viewed')).first
+        assert Activity.where(:creator_id => @lead.user_id,
+                              :lead_id => @lead.id,
+                              :action => 'Viewed').first
       end
 
       should 'find and update the last activity if action is "Viewed"' do
@@ -65,7 +63,7 @@ class ActivityTest < ActiveSupport::TestCase
 
       should 'NOT create "Viewed" activity for tasks' do
         task = Task.make(:call_erich)
-        Activity.delete_all
+        Activity.all.destroy
         Activity.log(task.user, task, 'Viewed')
         assert_equal 0, Activity.count
       end
@@ -73,33 +71,20 @@ class ActivityTest < ActiveSupport::TestCase
   end
 
   context 'Named Scopes' do
-    context 'limit' do
-      setup do
-        12.times do
-          Account.make
-        end
-      end
-
-      should 'limit the results to the specified length' do
-        assert_equal 2, Activity.limit(2).length
-        assert_equal 10, Activity.limit(10).length
-      end
-    end
-
     context 'already_notified' do
       setup do
         @user = User.make(:annika)
         @lead = Lead.make(:erich)
         @contact = Contact.make(:florian)
-        Activity.delete_all
+        Activity.all.destroy
         @activity1 = Activity.log(@user, @lead, 'Created')
         @activity2 = Activity.log(@user, @contact, 'Created')
-        @activity2.update_attributes :notified_user_ids => [@user.id]
+        @activity2.update :notified_user_ids => [@user.id]
       end
 
       should 'return activities where the supplied user has already been notified' do
-        assert Activity.already_notified(@user).include?(@activity2)
-        assert !Activity.already_notified(@user).include?(@activity)
+        assert_includes Activity.already_notified(@user), @activity2
+        refute_includes Activity.already_notified(@user), @activity
         assert_equal 1, Activity.already_notified(@user).count
       end
     end
@@ -109,15 +94,15 @@ class ActivityTest < ActiveSupport::TestCase
         @user = User.make(:annika)
         @lead = Lead.make(:erich)
         @contact = Contact.make(:florian)
-        Activity.delete_all
+        Activity.all.destroy
         @activity1 = Activity.log(@user, @lead, 'Created')
         @activity2 = Activity.log(@user, @contact, 'Created')
-        @activity2.update_attributes :notified_user_ids => [@user.id]
+        @activity2.update :notified_user_ids => [@user.id]
       end
 
       should 'return activities where the supplied user needs to be notified' do
-        assert Activity.not_notified(@user).include?(@activity1)
-        assert !Activity.not_notified(@user).include?(@activity2)
+        assert_includes Activity.not_notified(@user), @activity1
+        refute_includes Activity.not_notified(@user), @activity2
         assert_equal 1, Activity.not_notified(@user).count
       end
     end
@@ -128,13 +113,13 @@ class ActivityTest < ActiveSupport::TestCase
         @deleted.destroy
         @restored = Lead.make
         @restored.destroy
-        @restored = Lead.find(@restored.id)
-        @restored.update_attributes :deleted_at => nil
+        @restored = Lead.get(@restored.id)
+        @restored.update :deleted_at => nil
       end
 
       should 'only return activities where the subject deleted_at is not nil' do
         assert_equal 1, Activity.action_is('Deleted').not_restored.count
-        assert Activity.not_restored.map(&:subject).include?(@deleted)
+        assert_includes Activity.not_restored.map(&:subject), @deleted
       end
     end
 
@@ -147,51 +132,35 @@ class ActivityTest < ActiveSupport::TestCase
       end
 
       should 'NOT return activities where subject permission is private and subject user is not owner' do
-        assert !Activity.visible_to(@benny).include?(@activity)
+        refute_includes Activity.visible_to(@benny), @activity
       end
 
       should 'return activities where subject permission is private and subject user is owner' do
-        assert Activity.visible_to(@annika).include?(@activity)
+        assert_includes Activity.visible_to(@annika), @activity
       end
 
       should 'return activities where subject user is owner' do
-        @contact.update_attributes :user_id => @benny.id, :permission => 'Public'
-        assert Activity.visible_to(@benny).include?(@activity)
+        @contact.update :user_id => @benny.id, :permission => 'Public'
+        assert_includes Activity.visible_to(@benny), @activity
       end
 
       should 'return activities where subject permission is public' do
-        @contact.update_attributes :permission => 'Public'
-        assert Activity.visible_to(@benny).include?(@activity)
-        assert Activity.visible_to(@annika).include?(@activity)
+        @contact.update :permission => 'Public'
+        assert_includes Activity.visible_to(@benny), @activity
+        assert_includes Activity.visible_to(@annika), @activity
       end
 
       should 'return activities where subject permission is shared and user is in subjects permitted user list' do
-        @contact.update_attributes :permission => 'Shared', :permitted_user_ids => [@benny.id]
-        assert Activity.visible_to(@benny).include?(@activity)
-        assert Activity.visible_to(@annika).include?(@activity)
+        @contact.update :permission => 'Shared', :permitted_user_ids => [@benny.id]
+        assert_includes Activity.visible_to(@benny), @activity
+        assert_includes Activity.visible_to(@annika), @activity
       end
 
       should 'NOT return activities where subject permission is shared and user is NOT in subjects permitted user list' do
-        @contact.update_attributes :permission => 'Shared', :permitted_user_ids => [@annika.id]
-        assert Activity.visible_to(@annika).include?(@activity)
-        assert !Activity.visible_to(@benny).include?(@activity)
+        @contact.update :permission => 'Shared', :permitted_user_ids => [@annika.id]
+        assert_includes Activity.visible_to(@annika), @activity
+        refute_includes Activity.visible_to(@benny), @activity
       end
-    end
-  end
-
-  context 'Instance' do
-    setup do
-      @activity = Activity.make_unsaved(:viewed_erich)
-    end
-
-    should 'be valid' do
-      assert @activity.valid?
-    end
-
-    should 'be invalid without subject' do
-      @activity.subject = nil
-      assert !@activity.valid?
-      assert @activity.errors[:subject]
     end
   end
 end

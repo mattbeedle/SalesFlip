@@ -1,0 +1,24 @@
+%h2.title
+  Campaigns
+  = add_new t(:add_campaign), new_campaign_path
+
+.campaigns
+  - @campaigns.each do |campaign|
+    - objective = campaign.objective if campaign.objective?
+    %dl.item
+      %dd
+        = link_to campaign.name, campaign
+        = render :partial => 'campaigns/date_range', :locals => { :campaign => campaign }
+
+        %small
+          - if campaign.start_date? || campaign.end_date?
+            |
+          Leads: #{campaign.leads.count}
+          - if objective
+            %span> /#{objective.number_of_leads}
+
+        %small
+          |
+          Conversions: #{campaign.leads.converted.count}
+          - if objective && objective.conversion_percentage?
+            %span> /#{objective.number_of_conversions}

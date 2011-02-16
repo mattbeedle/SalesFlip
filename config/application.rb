@@ -1,6 +1,15 @@
 require File.expand_path('../boot', __FILE__)
 
-require 'rails/all'
+require "active_model/railtie"
+require "action_controller/railtie"
+require "action_mailer/railtie"
+require "active_resource/railtie"
+require "rails/test_unit/railtie"
+
+require "dm-core"
+
+DataMapper::Property::String.length(255)
+DataMapper::Property::Text.length(65535)
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
@@ -8,12 +17,31 @@ Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 module Salesflip
   class Application < Rails::Application
+    I18n.load_path += Dir[Rails.root + 'config/locales/*.{rb,yml}']
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
     # Add additional load paths for your own custom dirs
     config.autoload_paths += %W( #{config.root}/lib #{config.root}/app/sweepers )
+
+    require 'cancan/ext/inherited_resource'
+
+    require 'data_mapper/postgres'
+
+    require 'data_mapper/any_of'
+    require 'data_mapper/changes'
+    require 'data_mapper/collection_extensions'
+    require 'data_mapper/multiparameter_attribute_support'
+    require 'data_mapper/polymorphic'
+    require 'data_mapper/scope'
+    require 'data_mapper/sweeper'
+    require 'data_mapper/validations'
+    require 'data_mapper/will_paginate'
+    require 'data_mapper/yaml'
+
+    require 'rails/partials'
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named
@@ -28,7 +56,7 @@ module Salesflip
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
-    config.i18n.default_locale = :de
+    config.i18n.default_locale = :en
 
     # Configure generators values. Many other options are available, be sure to check the documentation.
     # config.generators do |g|
@@ -46,7 +74,7 @@ module Salesflip
     config.action_mailer.default_url_options = { :host => 'salesflip.com' }
 
     config.after_initialize do
-      I18n.locale = :de
+      I18n.locale = I18n.default_locale
     end
   end
 end

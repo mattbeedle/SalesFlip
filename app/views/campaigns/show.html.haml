@@ -1,0 +1,57 @@
+.title
+  %h2
+    = @campaign.name
+  %ul.actions
+    %li= link_to t(:edit), edit_campaign_path(@campaign)
+    %li= button_to t(:delete), campaign_path(@campaign), :method => :delete
+  %br/
+  = render :partial => 'campaigns/date_range', :locals => { :campaign => @campaign }
+
+- if @campaign.objective? && objective = @campaign.objective
+  .objectives
+    %h3.grad= t('objectives')
+
+    %table
+      %thead
+        %tr
+          %th
+          %th.target Target
+          %th.actual Actual
+      %tbody
+        %tr
+          %th Leads
+          %td.target= objective.number_of_leads
+          %td.actual= @campaign.leads.count
+        %tr
+          %th Conversions
+          %td.target== #{objective.number_of_conversions}
+          %td.actual== #{@campaign.leads.converted.count}
+
+.tasks
+  %h3.grad= t('tasks')
+  - if @campaign.tasks.count == 0
+    %p No tasks have been created yet.
+  - else
+    = render @campaign.tasks
+  %ul.actions
+    = add_new t(:add_task), new_task_path(:return_to => request.fullpath, :task => { :asset_id => @campaign.id, :asset_type => 'Campaign' })
+
+.clear
+
+.leads
+  %h3.grad= t('leads')
+  - if @campaign.leads.count == 0
+    %p This campaign currently has no leads.
+  - else
+    = render @campaign.leads
+  %ul.actions
+    = add_new t(:add_lead), new_lead_path(:return_to => request.fullpath, :lead => { :campaign_id => @campaign.id })
+
+.clear
+
+= render :partial => 'comments/comments', :locals => { :object => @campaign, :comments => @campaign.comments }
+
+- content_for :sidebar do
+  #recent_activity.box.ice
+    %h3= t(:recent_activity_for, :name => @campaign.name )
+    = render :partial => 'shared/activity_for', :collection => @campaign.related_activities.desc(:updated_at).limit(6), :as => :activity

@@ -4,7 +4,7 @@
 %h3= t(:attachments)
 - if @opportunity.attachments.any?
   - @opportunity.attachments.each do |attachment|
-    = link_to attachment.attachment_filename, attachment.attachment.url
+    = link_to attachment.attachment.filename, attachment.attachment.url
 - else
   %p= t(:no_opportunity_attachments)
     

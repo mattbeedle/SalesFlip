@@ -1,4 +1,3 @@
-require 'lead'
 class Ability
   include CanCan::Ability
 
@@ -13,6 +12,7 @@ class Ability
       can :profile, User
       can :read, User
       can :read, Contact
+      can :read, Campaign
       can :read, Invitation
       can :manage, Task
       can :read, Search

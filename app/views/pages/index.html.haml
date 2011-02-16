@@ -1,14 +1,18 @@
 %h2.title= t(:dashboard)
 #tasks
   %h3= t(:tasks)
+
   - if @overdue.any?
     %h4.deadline{ :id => 'overdue_tasks' }= t(:overdue)
-    = render :partial => @overdue
+    = render :partial => "tasks/task", :collection => @overdue
+
   - if @due_today.any?
     %h4.deadline{ :id => 'due_today_tasks' }= t(:due_today)
-    = render :partial => @due_today
-  - if !@overdue.any? && !@due_today.any?
+    = render :partial => "tasks/task", :collection => @due_today
+
+  - if @overdue.empty? && @due_today.empty?
     %p= t(:no_outstanding_tasks)
+
 .activities
   %h3= t(:recent_activity)
   = render :partial => 'shared/activity', :collection => @activities

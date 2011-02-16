@@ -12,7 +12,7 @@ Salesflip::Application.configure do
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
   config.action_view.debug_rjs             = true
-  config.action_controller.perform_caching = false
+  config.action_controller.perform_caching = true
 
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
@@ -20,9 +20,8 @@ Salesflip::Application.configure do
   config.action_mailer.default_url_options = { :host => 'salesflip.local' }
 
   config.active_support.deprecation = :log
-  
   config.middleware.use Rack::GridFS, :hostname => 'localhost',
     :port => 27017, :database => 'salesflip_development', :prefix => 'uploads'
-end
 
-Sunspot.config.solr.url = 'http://localhost:8982/solr'
+  config.logger = Logger.new(Rails.root.join("log",Rails.env + ".log"),3,5*1024*1024)
+end

@@ -17,15 +17,15 @@ class ApplicationHelperTest < ActionView::TestCase
     end
 
     should "display I18n label and a model's attribute if it is present" do
-      assert_equal show_attribute(@lead,'first_name'), '<dt>First Name</dt><dd>Fern</dd>'
+      assert_equal "<dt>#{I18n.t('simple_form.labels.first_name')}</dt><dd>Fern</dd>", show_attribute(@lead,'first_name')
     end
 
     should "display I18n label and custom text if a model's attribute is present" do
-      assert_equal show_attribute(@lead,'first_name',"<b>#{@lead.first_name}</b>"), '<dt>First Name</dt><dd><b>Fern</b></dd>'
+      assert_equal "<dt>#{I18n.t('simple_form.labels.first_name')}</dt><dd><b>Fern</b></dd>", show_attribute(@lead,'first_name',"<b>#{@lead.first_name}</b>")
     end
 
     should 'use to_s if attribute is not a string' do
-      assert_equal show_attribute(@lead, 'identifier'), "<dt>Identifier</dt><dd>#{@lead.identifier}</dd>"
+      assert_equal "<dt>#{I18n.t('simple_form.labels.identifier')}</dt><dd>#{@lead.identifier}</dd>", show_attribute(@lead, 'identifier')
     end
   end
 

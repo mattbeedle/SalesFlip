@@ -80,8 +80,7 @@ class LeadsController < InheritedResources::Base
   end
 
   def reject
-    @lead.updater_id = current_user.id
-    @lead.reject!
+    @lead.reject!(updater: current_user)
     redirect_to leads_path
   end
 
@@ -91,7 +90,7 @@ class LeadsController < InheritedResources::Base
 
 protected
   def leads_index_cache_key
-    Digest::SHA1.hexdigest([
+    @index_cache_key ||= Digest::SHA1.hexdigest([
       'leads', Lead.for_company(current_user.company).desc(:updated_at).
       first.try(:updated_at).try(:to_i), params.flatten.join('-')].join('-'))
   end
@@ -122,7 +121,7 @@ protected
 
   def resource
     @lead ||= hook(:leads_resource, self).last
-    @lead ||= Lead.for_company(current_user.company).find(params[:id]) if params[:id]
+    @lead ||= Lead.for_company(current_user.company).get(params[:id]) if params[:id]
   end
 
   def begin_of_association_chain

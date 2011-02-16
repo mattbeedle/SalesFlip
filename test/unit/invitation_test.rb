@@ -31,19 +31,19 @@ class InvitationTest < ActiveSupport::TestCase
 
   context 'Instance' do
     setup do
-      @invitation = Invitation.make_unsaved
+      @invitation = Invitation.make_unsaved(:inviter => User.make)
     end
 
     should 'generate code on creation' do
       @invitation.code = nil
-      @invitation.save!
+      @invitation.save
       assert @invitation.code
     end
 
     should 'send invitation email after creation' do
       Delayed::Worker.new.work_off
       ActionMailer::Base.deliveries.clear
-      @invitation.save!
+      @invitation.save
       Delayed::Worker.new.work_off
       assert_equal 1, ActionMailer::Base.deliveries.length
     end

@@ -1,7 +1,7 @@
 class PagesController < ApplicationController
 
   before_filter :find_activities, :only => [ :index ]
-  before_filter :find_tasks,      :only => [ :index ]
+  before_filter :find_tasks,      :only => [ :index ], :if => :current_user
 
 protected
   def find_activities

@@ -49,13 +49,13 @@ protected
   end
 
   def collection
-    @opportunities ||= opportunities.desc(:opportunity_stage_id).
+    @opportunities ||= opportunities.desc(:stage_id).
       desc(:created_at).paginate(:per_page => params[:per_page] || 10,
                                  :page => params[:page] || 1)
   end
 
   def resource
     @opportunity ||= Opportunity.for_company(current_user.company).permitted_for(current_user).
-      where(:_id => params[:id]).first
+      where(:id => params[:id]).first
   end
 end

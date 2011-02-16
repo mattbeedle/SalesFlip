@@ -52,13 +52,18 @@
     .50.z= form.input :xing
     .50.a= form.input :career_site
 
+%h3.toggler.open=t('campaign')
+.toggle
+  %fieldset
+    .33.a= form.input :campaign_id, :as => :select, :collection => Campaign.all.map { |c| [c.name, c.id] }
+
 %h3.toggler.open= raw "#{t(:tracking)} &amp; #{t('simple_form.labels.permissions')}"
 .toggle
   %fieldset
     %span.col.seventy-five.first
       %span.wrap
         .50.a= form.input :source, :collection => Lead.sources
-        .50.z= form.input :assignee_id, :collection => current_user.company.users.map {|u| [u.email, u.id]}
+        .50.z= form.input :assignee_id, :collection => current_user.company.users.asc(:email).map {|u| [u.email, u.id]}
 
         .50.a= form.input :status, :as => :select, :collection => Lead.statuses.map(&:to_s), :include_blank => false
         .50.z= form.input :permission, :collection => Lead.permissions, :include_blank => false

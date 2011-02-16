@@ -1,5 +1,14 @@
 # encoding: utf-8
-require 'machinist/mongoid'
+require 'machinist/data_mapper'
+
+module Machinist
+  class DataMapperAdapter
+    def self.has_association?(object, attribute)
+      object.class.relationships.named?(attribute)
+    end
+  end
+end
+
 require 'sham'
 require 'faker'
 
@@ -31,6 +40,7 @@ User.blueprint(:carsten_werner) do
 end
 
 User.blueprint do
+  confirmed_at { Time.now }
   company { Company.make }
   email
   password { 'password' }
@@ -51,6 +61,20 @@ end
 User.blueprint(:matt) do
   email { 'matt.beedle@1000jobboersen.de' }
   role { 'Administrator' }
+end
+
+Campaign.blueprint do
+  name
+  start_date { Date.today }
+  end_date { 14.days.from_now }
+end
+
+Campaign.blueprint(:generate_leads) do
+  name { "Generate 100 leads this month" }
+  start_date { Date.today }
+  end_date { 1.month.from_now }
+
+  objective { Objective.new(:number_of_leads => 100, :conversion_percentage => 5) }
 end
 
 Lead.blueprint do
@@ -98,7 +122,7 @@ Task.blueprint(:call_erich) do
   user { User.make(:annika) }
   name { 'Call erich to get offer details' }
   category { 'Call' }
-  asset { Lead.make(:erich) }
+  # asset { Lead.make(:erich) }
   due_at { 'due_today' }
 end
 

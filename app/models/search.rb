@@ -1,11 +1,16 @@
 class Search
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include DataMapper::Resource
+  include DataMapper::Timestamps
 
-  field :terms
-  field :collections, :type => Array
+  property :id, Serial
+  property :collections, Object, :default => []
+  property :terms, String
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
-  referenced_in :user, :index => true
+  belongs_to :user, :required => false
 
   validates_presence_of :terms
 

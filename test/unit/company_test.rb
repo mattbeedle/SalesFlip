@@ -8,6 +8,10 @@ class CompanyTest < ActiveSupport::TestCase
   end
 
   context 'Instance' do
+    setup do
+      @company = Company.make_unsaved(:jobboersen)
+    end
+
     should 'validate uniqueness of name' do
       Company.make(:jobboersen)
       @company = Company.make_unsaved(:jobboersen)
@@ -17,8 +21,36 @@ class CompanyTest < ActiveSupport::TestCase
 
     should 'get default opportunity stages on creation' do
       company = Company.make
-      I18n.t(:opportunity_stages).each do |stage|
-        assert company.opportunity_stages.map(&:name).include?(stage)
+      I18n.t(:opportunity_stages, :locale => :en).each do |stage|
+        assert_includes company.opportunity_stages.map(&:name), stage
+      end
+    end
+
+    context 'caching' do
+      setup do
+        @company.save!
+        @user = User.make :company => @company
+      end
+
+      Lead.statuses.each do |status|
+        should "cache #{status} lead count" do
+          Lead.make :user => @user, :status => status
+          assert_equal 1, @company.reload.
+            send("#{status.downcase.gsub(/[\s\-]/, '_')}_lead_count")
+        end
+      end
+
+      should 'cache unassigned lead count' do
+        Lead.make :user => @user
+        assert_equal 1, @company.reload.unassigned_lead_count
+      end
+
+      Lead.sources.each do |source|
+        should "cache #{source} lead count" do
+          Lead.make :user => @user, :source => source
+          assert_equal 1, @company.reload.
+            send("#{source.downcase.gsub(/[\s\-]/, '_')}_lead_count")
+        end
       end
     end
   end

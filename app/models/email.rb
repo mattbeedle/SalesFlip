@@ -1,8 +1,8 @@
 class Email < Comment
-  field :received_at,   :type => Time
-  field :from
+  property :received_at, Time
+  property :from, String, lazy: false
 
-  validates_presence_of :subject, :received_at, :from
+  validates_presence_of :received_at, :subject, :from
 
   alias :name :subject
 end

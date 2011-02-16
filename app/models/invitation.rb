@@ -1,25 +1,30 @@
 class Invitation
-  include Mongoid::Document
-  include Mongoid::Timestamps
-  include HasConstant
-  include HasConstant::Orm::Mongoid
+  include DataMapper::Resource
+  include DataMapper::Timestamps
+  include HasConstant::Orm::DataMapper
 
-  field :email
-  field :code
-  field :role,   :type => Integer
+  property :id, Serial
+  property :email, String, :required => true
+  property :code, String, :required => true
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
 
-  referenced_in :invited,  :class_name => 'User'
-  referenced_in :inviter,  :class_name => 'User'
+  belongs_to :invited, :model => 'User', :required => false
+  belongs_to :inviter, :model => 'User', :required => true
 
-  validates_presence_of :inviter, :email, :code, :role
+  before :valid? do
+    generate_code if new?
+  end
+  after :create, :send_invitation
 
-  before_validation :generate_code, :on => :create
-  after_create :send_invitation
+  has_constant :roles, ROLES,
+    required: true, auto_validation: true
 
-  has_constant :roles, ROLES
-
-  named_scope :by_company, lambda { |company| { :where => {
-    :inviter_id.in => company.users.map(&:id) } } }
+  def self.by_company(company)
+    all(:inviter_id => company.users.map(&:id))
+  end
 
 protected
   def generate_code

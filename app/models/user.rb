@@ -1,8 +1,7 @@
 class User
-  include Mongoid::Document
-  include Mongoid::Timestamps
-  include HasConstant
-  include HasConstant::Orm::Mongoid
+  include DataMapper::Resource
+  include DataMapper::Timestamps
+  include HasConstant::Orm::DataMapper
   include Gravtastic
   is_gravtastic
 
@@ -11,53 +10,65 @@ class User
   devise :database_authenticatable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable
 
-  field :username
-  field :api_key
-  field :role,      :type => Integer
-  field :type
-
-  index :email, :background => true
+  property :id, Serial
+  property :username, String
+  property :api_key, String
+  property :first_name, String
+  property :last_name, String
+  property :type, String
+  property :created_at, DateTime
+  property :created_on, Date
+  property :updated_at, DateTime
+  property :updated_on, Date
+  property :assigned_lead_count, Integer, default: 0
 
   attr_accessor :company_name
 
-  references_many  :leads,       :index => true
-  references_many  :comments,    :index => true
-  references_many  :emails,      :index => true
-  references_many  :tasks,       :index => true
-  references_many  :accounts,    :index => true
-  references_many  :contacts,    :index => true
-  references_many  :activities,  :index => true
-  references_many  :searches,    :index => true
-  references_many  :invitations, :as => :inviter, :dependent => :destroy, :index => true
-  references_one   :invitation,  :as => :invited, :index => true
-  references_many  :opportunities, :index => true
-  references_many  :assigned_opportunities, :foreign_key => 'assignee_id',
-    :class_name => 'Opportunity', :index => true
-  references_many  :lead_imports
+  has n,  :leads
+  has n,  :comments
+  has n,  :emails
+  has n,  :tasks
+  has n,  :accounts
+  has n,  :contacts
+  has n,  :activities,  child_key: 'creator_id'
+  has n,  :searches
+  has n,  :invitations, :inverse => :inviter#, :dependent => :destroy
+  has 1,  :invitation,  :inverse => :invited
+  has n,  :opportunities
+  has n,  :assigned_opportunities, child_key: 'assignee_id',
+    model: 'Opportunity'
+  has n, :lead_imports
 
-  referenced_in :company
+  belongs_to :company, :required => true
 
-  before_validation :set_api_key, :create_company, :on => :create
-  before_create :set_default_role
-  after_create :update_invitation
+  before :valid? do
+    set_api_key if new?
+  end
+
+  before :valid? do
+    create_company if new?
+  end
+
+  before :create, :set_default_role
+  after :create, :update_invitation
 
   has_constant :roles, ROLES
 
-  validates_presence_of :company
-
   def invitation_code=( invitation_code )
-    if @invitation = Invitation.first(:conditions => { :code => invitation_code })
-      self.company_id = @invitation.inviter.company_id
-      self.username = @invitation.email.split('@').first if self.username.blank?
-      self.email = @invitation.email if self.email.blank?
-      self.role = @invitation.role
+    if invitation = Invitation.first(:code => invitation_code)
+      self.invitation = invitation
+      self.company_id = invitation.inviter.company_id
+      self.username = invitation.email.split('@').first if self.username.blank?
+      self.email = invitation.email if self.email.blank?
+      self.role = invitation.role
     end
   end
 
   def deleted_items_count
-    [Lead, Contact, Account, Comment].map do |model|
-      model.permitted_for(self).deleted.count
-    end.inject {|sum, n| sum += n }
+    count  = Lead.permitted_for(self).deleted.count
+    count += Contact.permitted_for(self).deleted.count
+    count += Account.permitted_for(self).deleted.count
+    count += Comment.permitted_for(self).deleted.count
   end
 
   def full_name
@@ -66,14 +77,15 @@ class User
   alias :name :full_name
 
   def recent_items
-    Activity.where(:user_id => self.id,
-                   :action => I18n.locale_around(:en) { Activity.actions.index('Viewed') }).
-                   desc(:updated_at).limit(5).map(&:subject)
+    activities.where(:action => 'Viewed', :order => :updated_at.desc,
+                     :limit => 5).map(&:subject).compact
   end
 
   def tracked_items
-    (Lead.tracked_by(self) + Contact.tracked_by(self) + Account.tracked_by(self)).
-      sort_by(&:created_at)
+    (Lead.tracked_by(self).entries +
+     Contact.tracked_by(self).entries +
+     Account.tracked_by(self).entries
+    ).sort_by &:created_at
   end
 
   def self.send_tracked_items_mail
@@ -81,7 +93,7 @@ class User
       UserMailer.tracked_items_update(user).deliver if user.new_activity?
       user.tracked_items.each do |item|
         item.related_activities.not_notified(user).each do |activity|
-          activity.update_attributes :notified_user_ids => (activity.notified_user_ids || []) << user.id
+          activity.update :notified_user_ids => (activity.notified_user_ids || []) << user.id
         end
       end
     end
@@ -96,6 +108,25 @@ class User
     "#{api_key}@salesflip.appspotmail.com"
   end
 
+  def self.update_cached_lead_counts(user_id)
+    user = User.find(user_id)
+    user.assigned_lead_count = Lead.for_company(user.company).
+      assigned_to(user).count
+    user.save
+  end
+
+  def redistribute_leads(options = {})
+    return false if company.users.count == 1
+    users = options[:users] || company.reload.users.where(:id.not => id)
+    chunks = leads.to_a.chunk(users.count)
+    users.each_with_index do |user, index|
+      chunks[index].each do |lead|
+        lead.update_attributes :assignee => user, :do_not_log => true,
+          :do_not_notify => true
+      end
+    end
+  end
+
 protected
   def set_api_key
     UUID.state_file = false # for heroku
@@ -108,7 +139,7 @@ protected
   end
 
   def update_invitation
-    @invitation.update_attributes :invited_id => self.id unless @invitation.nil?
+    # invitation.update :invited_id => self.id if invitation
   end
 
   def set_default_role

@@ -11,11 +11,13 @@
   %ul#navigation
     %li.first= link_to t(:dashboard), root_path, :class => active_if(controller_is('pages'))
     - if can? :read, Task
-      %li= link_to t(:tasks), tasks_path(:incomplete => true, :for => current_user.id), :class => active_if(controller_is('tasks'))
+      %li= link_to t(:tasks), tasks_path(:incomplete => true, :for => current_user.id, 'scopes[overdue]' => true, 'scopes[due_today]' => true, 'scopes[due_tomorrow]' => true, 'scopes[due_this_week]' => true), :class => active_if(controller_is('tasks'))
     - if can? :read, Lead
       %li= link_to t(:leads), leads_path('with_status[]' => Lead.statuses[I18n.in_locale(:en) { Lead.statuses.index('New') }], :unassigned => true, 'source_is[]' => Lead.sources[I18n.in_locale(:en) { Lead.sources.index('Imported') }]), :class => active_if(controller_is('leads'))
     - if can? :read, Opportunity
       %li= link_to t(:opportunities), opportunities_path(:assigned_to => current_user.id), :id => 'opportunities', :class => active_if(controller_is('opportunities'))
+    - if can? :read, Campaign
+      %li= link_to t(:campaigns), campaigns_path, :id => 'campaigns', :class => active_if(controller_is('campaigns'))
     - if can? :read, Account
       %li= link_to t(:accounts), accounts_path, :id => 'accounts', :class => active_if(controller_is('accounts'))
     - if can? :read, Contact

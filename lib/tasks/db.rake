@@ -1,8 +1,12 @@
 namespace :db do
+  namespace :test do
+    task :prepare do
+    end
+  end
 
   desc 'Import leads csv'
   task :import_leads_csv => :environment do
-    user = User.where(:email => /beedle/i).first
+    user = User.first(:email => /beedle/i)
     data = {}
     File.open('leads.csv', 'r').each_with_index do |line, index|
       next if index == 0
@@ -20,6 +24,7 @@ namespace :db do
     end
 
     data.each do |key, attributes|
+
       contact_names = attributes.delete(:contact_names)
       contact_names.each_with_index do |name, index|
         names = name.strip.gsub(/\"/, '').split(/\s/)
@@ -32,7 +37,7 @@ namespace :db do
               url.match(/@/)
             }.map { |url| "<a href='#{url}' target='_blank'>#{url}</a>" }.join('<br/>'),
             :source => 'Other'
-          next if Lead.where(:email => /#{lead.email}/i).first
+          next if Lead.first(:email => /#{lead.email}/i)
 
           ids = Account.only(:id, :name).map do |account|
             [account.id, lead.company.levenshtein_similar(account.name)]
@@ -40,13 +45,13 @@ namespace :db do
 
           unless ids.blank?
             puts "Skipped lead #{lead.name} (#{lead.company})"
-            puts "Similar accounts: #{Account.where(:_id.in => ids).map(&:name).join(', ')}"
+            puts "Similar accounts: #{Account.all(:_id => ids).map(&:name).join(', ')}"
             next
           end
 
           if lead.similar(0.85).any?
             puts "Skipped lead #{lead.name}, (#{lead.company})"
-            puts "Similar leads: #{Lead.where(:_id.in => ids).map(&:company).join(', ')}"
+            puts "Similar leads: #{Lead.all(:_id => ids).map(&:company).join(', ')}"
             next
           end
           if lead.save
@@ -60,5 +65,51 @@ namespace :db do
         end
       end
     end
+  end
+
+  desc "Convert MongoDB data to Postgres"
+  task :migrate_data => :environment do
+    Dir[ File.join(Rails.root, "db", "migrate", "*.rb") ].sort.each { |file| require file }
+
+    puts "Migrating the MongoDB data to PostgreSQL"
+    [ MigrateAccounts, MigrateActivities, MigrateAttachments, MigrateComments,
+      MigrateCompanies, MigrateContacts, MigrateDomains, MigrateLeads, MigrateTasks ].each do |migration|
+      migration.up
+    end
+  end
+
+  desc "Convert MongoDB users to Postgres"
+  task :migrate_users => :environment do
+    Dir[ File.join(Rails.root, "db", "migrate", "*.rb") ].sort.each { |file| require file }
+
+    puts "Migrating the users"
+    MigrateUsers.up
+  end
+
+  desc "Re-relate the Postgre relations"
+  task :re_relate => :environment do
+    Dir[ File.join(Rails.root, "db", "migrate", "*.rb") ].sort.each { |file| require file }
+
+    puts "Hooking up the Postgre Relations"
+    [ AssociateAccounts, AssociateActivities, AssociateAttachments, AssociateComments,
+      AssociateContacts, AssociateLeads, AssociateTasks, AssociateUsers ].each do |migration|
+      migration.up
+    end
+  end
+
+  desc "Fix has constants"
+  task :fix_has_constants => :environment do
+    Dir[ File.join(Rails.root, "db", "migrate", "*.rb") ].sort.each { |file| require file }
+
+    puts "Fixing has constants"
+    FixHasConstants.up
+  end
+
+  desc "Fix Attachments"
+  task :fix_attachments => :environment do
+    Dir[ File.join(Rails.root, "db", "migrate", "*.rb") ].sort.each { |file| require file }
+
+    puts 'Fixing attachments'
+    FixAttachments.up
   end
 end

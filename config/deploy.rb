@@ -10,27 +10,31 @@ set :git_shallow_clone, 1
 set :keep_releases, 5
 set :user, "root"
 set :runner, "root"
-set :repository,  "git@careerme.unfuddle.com:careerme/salesflip.git"
+set :repository,  "git@github.com:HRNewMedia/SalesFlip.git"
 set :scm, :git
 
 ssh_options[:paranoid] = false
 default_run_options[:pty] = true
 
+before 'deploy:restart', 'deploy:symlinks'
 before 'deploy:restart', 'deploy:bundle'
 after 'deploy:bundle', 'deploy:delayed_job'
 after 'deploy:bundle', 'deploy:solr'
-after 'deploy:restart', 'deploy:symlinks'
 
 namespace :deploy do
   task :start do; end
   task :stop do; end
 
+  task :autoupgrade, :roles => :app do
+    run "cd #{current_path} && rake db:autoupgrade"
+  end
+
   task :delayed_job, :roles => :app do
-    run "cd #{current_path} && /etc/init.d/delayed_job restart"
+    run "/etc/init.d/delayed_job restart"
   end
 
   task :solr, :roles => :app do
-    run "cd #{current_path} && /etc/init.d/solr restart"
+    run "/etc/init.d/solr restart"
   end
 
   task :restart, :roles => :app do

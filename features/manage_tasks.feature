@@ -25,6 +25,14 @@ Feature: Manage tasks
     And I should not see "Today" within "#tasks"
     And I should see "You have no outstanding tasks" within "#tasks"
 
+  Scenario: Tasks on the dashboard for campaigns
+    Given I am registered and logged in as annika
+    And a campaign: "generate_leads" exists
+    And a task exists with user: Annika, name: "Task for Annika", asset: generate_leads
+    When I go to the dashboard page
+    Then I should see "Task for Annika" within "#tasks"
+    And I should see "Generate 100 leads" within "#tasks"
+
   Scenario: Creating a new task
     Given I am registered and logged in as annika
     And I am on the tasks page
@@ -36,7 +44,7 @@ Feature: Manage tasks
     When I press "task_submit"
     Then I should be on the tasks page
     And I should see "a test task"
-    
+
   Scenario: Assigning a new task to a user, with a lead, when the lead is private
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -51,7 +59,7 @@ Feature: Manage tasks
     And I press "Create Task"
     Then 0 tasks should exist
     And I should see "Cannot assign this task to anyone else because the lead that it is associated with is private. Please change the lead permission first"
-    
+
   Scenario: Assigning a new task to a user, with an account, when the account is private
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -66,7 +74,7 @@ Feature: Manage tasks
     And I press "Create Task"
     Then 0 tasks should exist
     And I should see "Cannot assign this task to anyone else because the account that it is associated with is private. Please change the account permission first"
-    
+
   Scenario: Assigning a new task to a user, with a contact, when the contact is private
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -81,7 +89,7 @@ Feature: Manage tasks
     And I press "Create Task"
     Then 0 tasks should exist
     And I should see "Cannot assign this task to anyone else because the contact that it is associated with is private. Please change the contact permission first"
-    
+
   Scenario: Assigning a new task to a user, with a lead, when the lead is not shared with them
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -98,7 +106,7 @@ Feature: Manage tasks
     And I press "Create Task"
     Then 0 tasks should exist
     And I should see "Cannot assign this task to benjamin.pochhammer@1000jobboersen.de because the lead associated with it is not shared with that user"
-    
+
   Scenario: Assigning a new task to a user, with an account, when the account is not shared with them
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -115,7 +123,7 @@ Feature: Manage tasks
     And I press "Create Task"
     Then 0 tasks should exist
     And I should see "Cannot assign this task to benjamin.pochhammer@1000jobboersen.de because the account associated with it is not shared with that user"
-    
+
   Scenario: Assigning an existing task to a user, with a contact, when the contact is private
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -137,6 +145,19 @@ Feature: Manage tasks
     When I follow "Tasks"
     Then I should see "Task for Annika"
     And I should not see "Task for Benny"
+
+  Scenario: Updating a task
+    Given I am registered and logged in as annika
+    And a task: "call_erich" exists with user: annika, assignee: annika
+    And all emails have been delivered
+    And I follow "Tasks"
+    And I follow the edit link for the task
+    And I follow "preset_date"
+    And I select "Today" from "task_due_at"
+    And I press "update_task"
+    And all delayed jobs have finished
+    Then I should be on the tasks page
+    And 0 emails should be delivered
 
   Scenario: Re-assiging a task
     Given I am registered and logged in as annika
