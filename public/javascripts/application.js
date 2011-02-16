@@ -202,16 +202,25 @@ CallBox.hide = function() {
   $$('.call_box').each('hide');
 }
 
-"#preset_date".on('click', function() {
-  $$(".realdate")[0].setStyle("display: none");
-  $$(".presetdate")[0].setStyle("display: block");
-  return false;
-});
+$(document).on('ready', function() {
+  var realdate = $$(".realdate")[0];
+  var presetdate = $$(".presetdate")[0];
 
-"#real_date".on('click', function() {
-  $$(".presetdate")[0].setStyle("display: none");
-  $$(".realdate")[0].setStyle("display: block");
-  return false;
+  if ( realdate && presetdate ) {
+    $("preset_date").on('click', function() {
+      realdate.setStyle("display: none;");
+      presetdate.setStyle("display: block;");
+      realdate.insert(presetdate, 'after');
+      return false;
+    });
+
+    $("real_date").on('click', function() {
+      presetdate.setStyle("display: none;");
+      realdate.setStyle("display: block;");
+      presetdate.insert(realdate, 'after');
+      return false;
+    });
+  }
 });
 
 "#on_call a".on('click', function() {
