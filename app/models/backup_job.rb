@@ -31,7 +31,7 @@ class BackupJob
 
     def bucket
       @bucket ||= Fog::Storage.new(provider: "AWS").directories.create(
-        key: "salesflip-backup-#{Time.now.to_i}",
+        key: "salesflip-#{Rails.env}-backup-#{Time.now.to_i}",
         public: false
       )
     end
