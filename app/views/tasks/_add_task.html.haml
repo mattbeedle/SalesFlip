@@ -3,5 +3,11 @@
   - if object.tasks.for(current_user).incomplete.any?
     = render :partial => 'tasks/task', :collection => object.tasks.for(current_user).incomplete
 
+  #new_task_form(style="display: none")
+    = simple_form_for object.tasks.new(:assignee => current_user) do |form|
+      - params[:return_to] = request.fullpath
+      = render :partial => "tasks/form", :locals => { :form => form }
+      = form.button :submit
+
   .add= link_to raw("<b>+</b>#{t(:add_task)}"), new_task_path(:asset_id => object.id, :asset_type => object.class.to_s, :return_to => request.fullpath), :id => 'add_task'
 .clear

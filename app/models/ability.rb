@@ -24,6 +24,7 @@ class Ability
       end
       can :create, Opportunity
       can :update, Opportunity
+      can :next, Lead
       can :reject, Lead do |lead|
         lead && lead.permitted_for?(user)
       end

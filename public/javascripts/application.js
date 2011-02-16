@@ -14,8 +14,12 @@ var Base = new Class({
 
   opportunitiesAdminFilter: function() {
     var format = "%Y-%m-%d";
-    new Calendar({ format: format }).assignTo($('start_date'));
-    new Calendar({ format: format }).assignTo($('end_date'));
+
+    if ( $('start_date') )
+      new Calendar({ format: format }).assignTo($('start_date'));
+
+    if ( $('end_date') )
+      new Calendar({ format: format }).assignTo($('end_date'));
   },
 
   hideElements: function() {
@@ -150,12 +154,41 @@ function text2html(string) {
 
 var CallBox = {}
 
-CallBox.show = function(id) {
-  if ( !$("overlay") )
-    $(document.body).insert($E("div").set("id", "overlay").setStyle("display", "none"));
+CallBox.show = function(url) {
+  if ( !$("overlay") ) {
+    var overlay = $E("div").set("id", "overlay").setStyle("display", "none");
+    $(document.body).insert(overlay);
+  }
 
   $("overlay").show();
-  $(id).show();
+
+  var close = $E("a")
+    .set({href: "#", title: "Close"})
+    .addClass("close")
+    .html("x")
+    .on('click', function() {
+      CallBox.hide();
+      return false;
+    });
+
+  var call_box = $E("div").addClass("call_box box");
+  call_box.insert(close);
+
+  var spinner = $E("img")
+    .set("src", "/images/spinner.gif")
+    .setStyle("position: absolute; top: 50%; left: 50%; margin-left: -8px; margin-top: -8px;");
+
+  call_box.insert(spinner);
+  $(document.body).insert(call_box);
+
+  Xhr.load(url, {
+    method: 'get',
+    spinner: spinner,
+    onSuccess: function() {
+      call_box.insert(this.responseText);
+    }
+  });
+
   $(window).on({
     keydown: function(e) {
       if ( e.keyCode == 27 )
@@ -169,51 +202,40 @@ CallBox.hide = function() {
   $$('.call_box').each('hide');
 }
 
-CallBox.not_interested = function(button, id) {
-  CallBox.hide();
-  var lead = $("lead_"+id);
-  if ( lead )
-    lead.hide('fade');
+"#preset_date".on('click', function() {
+  $$(".realdate")[0].setStyle("display: none");
+  $$(".presetdate")[0].setStyle("display: block");
+  return false;
+});
 
-  var on_call = $('on_call')
-  if ( on_call ) {
-    on_call.hide('slide');
+"#real_date".on('click', function() {
+  $$(".presetdate")[0].setStyle("display: none");
+  $$(".realdate")[0].setStyle("display: block");
+  return false;
+});
+
+"#on_call a".on('click', function() {
+  new Cookie("on_call", { path: "/" })
+    .remove();
+  $("on_call").hide();
+  CallBox.show(this.get("href"));
+  return false;
+});
+
+"#add_task".on('click', function() {
+  $("new_task_form").show();
+  return false;
+});
+
+".leads.show a.telified".on('click', function() {
+  var out = function() {
+    var on_call = $('on_call');
+
+    new Cookie("on_call", { path: "/" })
+      .set(on_call.get("data-id"));
+    on_call.show();
+
+    this.stopObserving('blur', out);
   }
-
-  new Xhr("/leads/"+ id)
-    .send("_method=put&lead[status]=Not+Interested&on_call=false");
-}
-
-CallBox.reschedule = function(button, id) {
-
-}
-
-CallBox.reject = function(button, id) {
-  CallBox.hide();
-  var lead = $("lead_"+id);
-  if ( lead )
-    lead.hide('fade');
-
-  var on_call = $('on_call')
-  if ( on_call ) {
-    on_call.hide('slide');
-  }
-
-  new Xhr("/leads/"+ id + '/reject')
-    .send("_method=put&on_call=false");
-}
-
-CallBox.send_infomail = function(button, id) {
-  CallBox.hide();
-  var lead = $("lead_"+id);
-  if ( lead )
-    lead.hide('fade');
-
-  var on_call = $('on_call')
-  if ( on_call ) {
-    on_call.hide('slide');
-  }
-
-  new Xhr("/leads/"+ id)
-    .send("_method=put&lead[status]=Contacted&on_call=false");
-}
+  $(window).on('blur', out);
+});

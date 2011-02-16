@@ -1,7 +1,7 @@
 %h2.title
   Leads
   = add_new t(:add_lead), new_lead_path(:return_to => request.fullpath)
-  %button(onclick="CallBox.show('#{dom_id @leads.last, "call"}');" style="float: right;margin: 0 10px 0px 0; height: 28px;") Next Lead
+  %button{ :onclick => "CallBox.show('#{next_leads_path}');", :style => "float: right;margin: 0 10px 0px 0; height: 28px;" } Next Lead
 
 %ul.tabs
   %li{:class => "#{'active' if params[:status] == "New"}"}= link_to "New", :status => "New"
@@ -18,10 +18,6 @@
         = raw rating_for(lead)
         %small
           = "at #{lead.company}" if !lead.company.blank?
-      %td
-        %button(onclick="CallBox.show('#{dom_id lead, "call"}'); return false;") Rufen
-    - content_for :call_boxes do
-      = render :partial => 'leads/call_box', :locals => { :lead => lead }
 
 = will_paginate @leads
 

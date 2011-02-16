@@ -86,6 +86,11 @@ class Lead
     status_is('Converted')
   end
 
+  def self.scheduled
+    all(:links => [relationships['tasks'].inverse],
+        :order => tasks.due_at.desc)
+  end
+
   searchable do
     text :first_name, :last_name, :email, :phone, :notes, :company,
       :alternative_email, :mobile, :address, :referred_by, :website, :twitter,

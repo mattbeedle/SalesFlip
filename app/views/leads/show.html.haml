@@ -16,30 +16,6 @@
     - if @lead.assigned_to?(current_user)
       %li
         = link_to t(:edit), edit_lead_path(@lead, :return_to => request.fullpath), :id => "edit_#{dom_id @lead}"
-    - if @lead.assignee.nil?
-      %li
-        = simple_form_for @lead, :html => { :class => 'accept' } do |form|
-          = form.hidden_field :do_not_notify, :value => true
-          = form.hidden_field :assignee_id, :value => current_user.id
-          = hidden_field_tag :return_to, request.fullpath
-          = form.button :submit, t(:accept).capitalize, :id => 'accept'
-    %li
-      - if @lead.tracked_by?(current_user)
-        = simple_form_for @lead, :html => { :class => 'stop update' } do |form|
-          = hidden_field_tag 'lead[remove_tracker_ids][]', current_user.id
-          = hidden_field_tag :return_to, request.fullpath
-          = form.button :submit, t(:stop_updating_me), :id => 'stop_updating_me'
-      - else
-        = simple_form_for @lead, :html => { :class => 'start update' } do |form|
-          = hidden_field_tag 'lead[tracker_ids][]', current_user.id
-          = hidden_field_tag :return_to, request.fullpath
-          = form.button :submit, t(:keep_me_updated), :id => 'keep_me_updated'
-    - if @lead.assigned_to?(current_user)
-      - unless I18n.in_locale(:en) { @lead.status_is?('Converted') || @lead.status_is?('Rejected') }
-        %li= link_to t(:convert), convert_lead_path(@lead), :id => 'convert_lead'
-        %li
-          = simple_form_for @lead, :url => reject_lead_path(@lead), :html => { :method => :put } do |form|
-            = form.button :submit, t(:reject), :id => 'reject_lead'
   %br/
   %small
     = raw t(:added_ago_by, :time => l(@lead.created_at, :format => :short), :by => @lead.user.username)
@@ -47,10 +23,29 @@
 - if @lead.notes.present?
   .notes= raw @lead.notes
 
+%ul.quick
+  %li
+    = simple_form_for @lead, :url => lead_path(@lead) do |form|
+      = form.hidden_field :status, :value => "Contacted"
+      = form.button :submit, "Send Infomail", :id => "send_infomail"
+
+  - if @lead.assigned_to?(current_user)
+    - unless I18n.in_locale(:en) { @lead.status_is?('Converted') || @lead.status_is?('Rejected') }
+      %li
+        = simple_form_for @lead, :url => convert_lead_path(@lead), :html => { :method => :get } do |form|
+          = form.button :submit, t(:convert), :id => "convert_lead"
+      %li
+        = simple_form_for @lead, :url => reject_lead_path(@lead) do |form|
+          = form.button :submit, t(:reject), :id => 'reject_lead'
+
 = render :partial => 'tasks/add_task', :locals => { :object => @lead }
 
 = render :partial => 'comments/comments', :locals => { :object => @lead, :comments => @lead.comments.desc(:created_at) }
 
+#on_call(style="display: none" data-id="#{@lead.id}")
+  %p
+    You're currently on the phone with #{@lead.full_name}.
+    = link_to "Done?", next_leads_path
 
 - content_for :sidebar do
   .box.gold

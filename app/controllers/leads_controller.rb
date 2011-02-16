@@ -32,6 +32,13 @@ class LeadsController < InheritedResources::Base
     @lead.assignee_id = current_user.id
   end
 
+  def next
+    @task = Task.incomplete.assigned_to(current_user).asc(:due_at).first
+    @lead = Lead.assigned_to(current_user).status_is('New').desc(:created_at).first
+
+    render :layout => nil
+  end
+
   def create
     create! do |success, failure|
       success.html { return_to_or_default lead_path(@lead) }
@@ -99,10 +106,7 @@ protected
 
     leads = case params[:status]
             when "Scheduled"
-              Lead.all(
-                :links => [Lead.relationships['tasks'].inverse],
-                :order => Lead.tasks.due_at.desc
-              )
+              Lead.scheduled
             when "Contacted"
               Lead.all(:status => "Contacted")
             when "All"

@@ -1,13 +1,18 @@
 - method_class = form.object.class.properties[method.to_s].primitive
 - date = method_class == Date ? true : false
 - object_name = form.object.class.to_s.underscore
-- if params[:preset_date]
-  %span.date.presetdate
-    = form.input method, :collection => %w(overdue due_today due_tomorrow due_this_week due_next_week due_later).map {|key| [t(key), key] }, :required => true
-    = link_to t(:or_real_date), params.delete_if { |k,v| k == 'preset_date' }, :id => 'real_date'
-- else
-  %span.date.realdate
-    %span= form.input method, :as => (date ? :date : :datetime), :required => true, :label => method.to_s.titleize
-    = link_to t(:or_preset_date), params.merge(:preset_date => true), :id => 'preset_date'
-    .value{ :format => method_class.to_s, :style => 'display:none', :title => method.to_s.titleize, :name => "#{object_name}[#{method.to_s}]", :object => "#{object_name}_#{method.to_s}", :required => form.object.class.properties[method].required?}
-      = l(form.object.send(method), :format => date ? :datestamp : :timestamp) if form.object.send(method)
+
+%span.date.presetdate(style="display: none")
+  = form.input method, :collection => %w(overdue due_today due_tomorrow due_this_week due_next_week due_later).map {|key| [t(key), key] }, :required => true
+  = link_to t(:or_real_date), "#", :id => 'real_date'
+
+%span.date.realdate
+  %span= form.input method, :as => (date ? :date : :datetime), :required => true, :label => method.to_s.titleize, :id => "#{object_name}_#{method.to_s}_real"
+  = link_to t(:or_preset_date), "#", :id => 'preset_date'
+  .value{ :format => method_class.to_s,
+    :style => 'display:none',
+    :title => method.to_s.titleize,
+    :name => "#{object_name}[#{method.to_s}]",
+    :object => "#{object_name}_#{method.to_s}_real",
+    :required => form.object.class.properties[method].required?}
+    = l(form.object.send(method), :format => date ? :datestamp : :timestamp) if form.object.send(method)

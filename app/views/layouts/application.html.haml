@@ -11,11 +11,10 @@
     %meta{ :content => "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
   = body do
     - if cookies[:on_call] && lead = Lead.get(cookies[:on_call])
-      = render :partial => "leads/call_box", :locals => { :lead => lead }
       #on_call
         %p
           You're currently on the phone with #{lead.full_name}.
-          %a(href="#" onclick="CallBox.show('#{dom_id lead, "call"}'); return false;") Done?
+          = link_to "Done?", next_leads_path
 
     #header
       .pad

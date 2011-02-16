@@ -27,6 +27,38 @@ body
       span.actions
         width: 7.2em
 
+#convert_lead
+  +shiny-button(#afa, #5c5, #2a2)
+  +text-shadow(#5c5 - 30, 2px, 2px,2px)
+  border-color: #2a2
+
+#send_infomail
+  +black-button
+
+#reject_lead
+  +shiny-button(#faa, #c55, #a22)
+  +text-shadow(#c55 - 30, 2px, 2px,2px)
+  border-color: #a22
+
+.leads.show
+  .quick
+    list-style: none
+    margin: 0
+    padding: 0
+    text-align: right
+    a.button, input
+      display: block
+      font-weight: normal
+      font-size: 13px
+      line-height: 26px
+      height: 26px
+      padding: 0 12px
+    input
+      height: 28px
+      padding: 0 16px 0 12px
+    li
+      display: inline-block
+
 div#main .title
   //----------------------------------------------------
   // Convert or Reject
