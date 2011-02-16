@@ -24,7 +24,7 @@ class BackupJob
 
     def backup_mongo
       Net::SSH.start("46.4.62.14", "root") do |ssh|
-        ssh.exec("tar -cf ~/mongodb.tar /var/lib/postgresql/9.0/main")
+        ssh.exec("tar -cf ~/mongodb.tar /data/db/salesflip.*")
       end
       Net::SCP.download!("178.63.20.76", "root", "mongodb.tar", "mongodb.tar")
     end
