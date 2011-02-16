@@ -91,6 +91,25 @@ class Lead
         :order => tasks.due_at.desc)
   end
 
+  def self.reserve_for(user)
+    id = repository.adapter.select(<<-SQL, user.id)
+    update leads set assignee_id = ?
+    where
+      id = (
+        select id from leads
+        where
+          assignee_id is null and
+          status = #{status.flag_map.invert["New"]} and
+          deleted_at is null
+        order by created_at desc
+        limit 1
+      )
+    returning id
+    SQL
+
+    Lead.get(id)
+  end
+
   searchable do
     text :first_name, :last_name, :email, :phone, :notes, :company,
       :alternative_email, :mobile, :address, :referred_by, :website, :twitter,

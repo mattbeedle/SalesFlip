@@ -34,7 +34,11 @@ class LeadsController < InheritedResources::Base
 
   def next
     @task = Task.incomplete.assigned_to(current_user).asc(:due_at).first
-    @lead = Lead.assigned_to(current_user).status_is('New').desc(:created_at).first
+    @lead = Lead.all(:tasks => nil).assigned_to(current_user).status_is('New').desc(:created_at).first
+
+    unless @lead
+      @lead = Lead.reserve_for(current_user)
+    end
 
     render :layout => nil
   end
@@ -112,7 +116,7 @@ protected
             when "All"
               Lead.all
             when "New"
-              Lead.all(:status => "New")
+              Lead.all(:tasks => nil, :status => "New")
             end
 
     @leads = leads.assigned_to(current_user).not_deleted.desc(:created_at)
