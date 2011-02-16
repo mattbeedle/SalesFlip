@@ -1,0 +1,5 @@
+backup:
+  cron: "0 0 * * *"
+  class: BackupJob
+  args:
+  description: "This backs up all the data in the application and sends to S3"

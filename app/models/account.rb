@@ -57,7 +57,6 @@ class Account
   searchable do
     text :name, :email, :phone, :website, :fax
   end
-  #handle_asynchronously :solr_index
 
   def self.for_company(company)
     where(:user_id => company.users.map(&:id))

@@ -19,7 +19,7 @@ class LeadImportsController < ApplicationController
     update! do |success, failure|
       success.html do
         flash[:notice] = "Your leads are being imported now. You will receive a summary email when the import has finished. You can also keep refreshing this page to see the import progress."
-        @lead_import.delay.import
+        @lead_import.async(:import)
         redirect_to lead_import_path(@lead_import)
       end
     end

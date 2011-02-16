@@ -91,7 +91,6 @@ class Lead
       :alternative_email, :mobile, :address, :referred_by, :website, :twitter,
       :linked_in, :facebook, :xing
   end
-  handle_asynchronously :solr_index
 
   def self.with_status( statuses )
     statuses = statuses.lines if statuses.respond_to?(:lines)
@@ -182,7 +181,7 @@ protected
 
   def notify_assignee
     if reassigned? && !do_not_notify
-      UserMailer.delay.lead_assignment_notification(self)
+      Resque.enqueue(UserMailerJob, id)
     end
   end
 
@@ -212,7 +211,7 @@ private
   def maybe_auto_index
     unless self.do_not_index
       if @marked_for_auto_indexing
-        solr_index
+        async(:solr_index)
         remove_instance_variable(:@marked_for_auto_indexing)
       end
     end

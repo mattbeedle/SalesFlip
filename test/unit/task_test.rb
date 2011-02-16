@@ -425,14 +425,9 @@ class TaskTest < ActiveSupport::TestCase
       @task.assignee = User.make
       @task.save
       @benny = User.make(:benny)
-      ActionMailer::Base.deliveries.clear
+      Resque.expects(:enqueue).with(TaskMailerJob, @task.id)
       @task.update :assignee_id => @benny.id
       assert_equal @benny, @task.assignee
-      Delayed::Worker.new.work_off
-      assert_sent_email do |email|
-        email.to.include?(@benny.email) && email.body.match(/\/tasks/) &&
-          email.subject == I18n.t('emails.task_reassigned.subject')
-      end
     end
 
     should 'not send a notification email if the assignee was not changed' do

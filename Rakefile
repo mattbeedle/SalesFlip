@@ -6,5 +6,9 @@ require File.expand_path('../config/application', __FILE__)
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
+require 'resque/tasks'
+require 'resque_scheduler/tasks'
+
+task "resque:scheduler_setup" => :environment
 
 Salesflip::Application.load_tasks

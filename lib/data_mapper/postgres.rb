@@ -256,7 +256,6 @@ module DataMapper
       # the views, functions, and triggers for the model.
       def auto_upgrade!(repository_name = self.repository_name)
         super
-      ensure
         create_views!(repository_name)
         create_functions!(repository_name)
         create_triggers!(repository_name)
