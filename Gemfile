@@ -25,6 +25,7 @@ gem 'net-scp'
 gem 'fog'
 gem 'redis'
 gem 'resque'
+gem 'resque-scheduler'
 
 gem 'compass'
 gem 'uuid'
