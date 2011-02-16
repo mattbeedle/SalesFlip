@@ -31,11 +31,11 @@ namespace :deploy do
   end
 
   task :resque, :roles => :app do
-    run "/etc/init.d/resque restart"
+    run "cd #{current_path} && /etc/init.d/resque restart"
   end
 
   task :solr, :roles => :app do
-    run "/etc/init.d/solr restart"
+    run "cd #{current_path} && /etc/init.d/solr restart"
   end
 
   task :restart, :roles => :app do
