@@ -31,7 +31,12 @@ namespace :deploy do
   end
 
   task :resque, :roles => :app do
-    run "cd #{current_path} && /etc/init.d/resque restart"
+    run "cd #{current_path} && /etc/init.d/resque stop"
+    run "cd #{current_path} && /etc/init.d/resque start"
+  end
+
+  task :resque_scheduler, :roles => :app do
+
   end
 
   task :solr, :roles => :app do
