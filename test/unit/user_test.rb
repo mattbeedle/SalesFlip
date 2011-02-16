@@ -83,6 +83,42 @@ class UserTest < ActiveSupport::TestCase
       @user = User.make_unsaved(:annika, :company => Company.make(:jobboersen))
     end
 
+    context '#redistribute_leads' do
+      setup do
+        @user.save!
+        4.times do
+          Lead.make(:status => 'New', :user => @user, :assignee => @user)
+        end
+      end
+
+      should 'assign all status=new leads to the rest of the sales team' do
+        user = User.make :company => @user.company
+        @user.redistribute_leads
+        assert_equal 4, Lead.assigned_to(user).status_is('New').count
+      end
+
+      should 'unassign all leads from salesperson' do
+        User.make :company => @user.company
+        @user.redistribute_leads
+        assert_equal 0, Lead.assigned_to(@user).count
+      end
+
+      should 'not redistribute leads when there are no other sales people' do
+        @user.redistribute_leads
+        assert_equal 4, Lead.assigned_to(@user).count
+      end
+
+      should 'be able to specify sales people' do
+        user = User.make :company => @user.company
+        user2 = User.make :company => @user.company
+        user3 = User.make :company => @user.company
+        @user.redistribute_leads(users: [user2, user3])
+        assert_equal 2, Lead.assigned_to(user2).count
+        assert_equal 2, Lead.assigned_to(user3).count
+        assert_equal 0, Lead.assigned_to(user).count
+      end
+    end
+
     should 'cache assigned lead count' do
       @user.save!
       Lead.make :user => @user, :assignee => @user

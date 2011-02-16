@@ -115,6 +115,18 @@ class User
     user.save
   end
 
+  def redistribute_leads(options = {})
+    return false if company.users.count == 1
+    users = options[:users] || company.reload.users.where(:id.not => id)
+    chunks = leads.to_a.chunk(users.count)
+    users.each_with_index do |user, index|
+      chunks[index].each do |lead|
+        lead.update_attributes :assignee => user, :do_not_log => true,
+          :do_not_notify => true
+      end
+    end
+  end
+
 protected
   def set_api_key
     UUID.state_file = false # for heroku
