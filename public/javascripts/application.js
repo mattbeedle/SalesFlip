@@ -207,6 +207,8 @@ $(document).on('ready', function() {
   var presetdate = $$(".presetdate")[0];
 
   if ( realdate && presetdate ) {
+    presetdate.insert(realdate, 'after');
+
     $("preset_date").on('click', function() {
       realdate.setStyle("display: none;");
       presetdate.setStyle("display: block;");
