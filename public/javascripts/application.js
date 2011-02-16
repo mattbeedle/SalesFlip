@@ -232,7 +232,7 @@ $(document).on('ready', function() {
 });
 
 "#add_task".on('click', function() {
-  $("new_task_form").show();
+  $("new_task_form").toggle();
   return false;
 });
 
