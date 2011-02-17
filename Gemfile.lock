@@ -153,6 +153,8 @@ GEM
     dm-active_model (1.0.3)
       activemodel (~> 3.0.0)
       dm-core (~> 1.0.2)
+    dm-aggregates (1.0.2)
+      dm-core (~> 1.0.2)
     dm-devise (1.1.6)
       bcrypt-ruby (~> 2.1.2)
       bcrypt-ruby (~> 2.1.2)
@@ -418,6 +420,7 @@ DEPENDENCIES
   database_cleaner
   devise
   dm-accepts_nested_attributes
+  dm-aggregates
   dm-core!
   dm-devise
   dm-migrations!
