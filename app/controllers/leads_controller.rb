@@ -111,8 +111,8 @@ protected
     leads = case params[:status]
             when "Scheduled"
               Lead.scheduled
-            when "Contacted"
-              Lead.all(:status => "Contacted")
+            when "Infomail Sent"
+              Lead.all(:status => "Infomail Sent")
             when "All"
               Lead.all
             when "New"

@@ -12,6 +12,7 @@ class Company
   # Cached lead counts
   property :new_lead_count, Integer, default: 0
   property :contacted_lead_count, Integer, default: 0
+  property :infomail_sent_lead_count, Integer, default: 0
   property :converted_lead_count, Integer, default: 0
   property :rejected_lead_count, Integer, default: 0
   property :interested_lead_count, Integer, default: 0

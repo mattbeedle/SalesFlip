@@ -29,7 +29,7 @@
   - if @lead.assigned_to?(current_user)
     %li
       = simple_form_for @lead, :url => lead_path(@lead) do |form|
-        = form.hidden_field :status, :value => "Contacted"
+        = form.hidden_field :status, :value => "Infomail Sent"
         = form.button :submit, "Send Infomail", :id => "send_infomail"
     - unless I18n.in_locale(:en) { @lead.status_is?('Converted') || @lead.status_is?('Rejected') }
       %li

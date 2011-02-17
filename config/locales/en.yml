@@ -348,7 +348,7 @@ en:
   leads_created_accepted: Leads (created/accepted)
   lead_statuses:
     - New
-    - Contacted
+    - Infomail Sent
     - Converted
     - Rejected
     - Not Interested
