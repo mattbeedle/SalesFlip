@@ -181,7 +181,7 @@ protected
 
   def notify_assignee
     if reassigned? && !do_not_notify
-      Resque.enqueue(UserMailerJob, id)
+      Resque.enqueue(UserMailerJob, self.id)
     end
   end
 

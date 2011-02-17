@@ -1,7 +1,7 @@
 class UserMailerJob
   @queue = :background
 
-  def self.perform(user_id)
-    UserMailer.lead_assignment_notification(User.find(user_id)).deliver
+  def self.perform(lead_id)
+    UserMailer.lead_assignment_notification(Lead.find(lead_id)).deliver
   end
 end
