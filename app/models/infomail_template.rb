@@ -4,7 +4,10 @@ class InfomailTemplate
 
   property :id, Serial
   property :name, String
+  property :subject, String
   property :body, Text
+
+  validates_presence_of :name, :subject, :body
 
   belongs_to :campaign, required: false
   has n, :attachments, as: :subject

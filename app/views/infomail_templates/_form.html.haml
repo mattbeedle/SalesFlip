@@ -1,6 +1,7 @@
 = simple_form_for @infomail_template, :html => { :multipart => true } do |form|
   %fieldset
     = form.input :name
+    = form.input :subject
     = form.label :body
     = form.text_area :body
 

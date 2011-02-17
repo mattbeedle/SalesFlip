@@ -1,0 +1,12 @@
+%h2.title
+  Send Infomail to #{lead.name}
+
+= simple_form_for :infomail, :url => lead_infomails_path do |form|
+  %fieldset
+    .33
+      = form.label :template
+      = form.select :template,
+        infomail_templates.map { |t| [t.name, t.id] },
+        :selected => lead.campaign_id ? InfomailTemplate.first(:campaign_id => lead.campaign_id).try(:id) : nil,
+        :include_blank => true
+  = form.button :submit, "Send Infomail"

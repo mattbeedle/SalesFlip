@@ -7,6 +7,7 @@ Feature: User manages infomail templates
     Then I should be on the new infomail template page
 
     When I fill in "Name" with "Generic Template"
+    And I fill in "Subject" with "An introduction to 1000jobboersen.de"
     And I fill in "Body" with "Thanks for your interest. Here's some details about us."
     And I press "Create"
     Then I should see "Generic Template"

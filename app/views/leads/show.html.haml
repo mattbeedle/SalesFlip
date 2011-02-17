@@ -27,10 +27,9 @@
 
 %ul.quick
   - if @lead.assigned_to?(current_user)
-    %li
-      = simple_form_for @lead, :url => lead_path(@lead) do |form|
-        = form.hidden_field :status, :value => "Infomail Sent"
-        = form.button :submit, "Send Infomail", :id => "send_infomail"
+    - unless @lead.email.blank? || @lead.status == "Infomail Sent"
+      %li
+        = link_to "Send Infomail", new_lead_infomail_path(@lead), :id => "send_infomail", :class => "button"
     - unless I18n.in_locale(:en) { @lead.status_is?('Converted') || @lead.status_is?('Rejected') }
       %li
         = simple_form_for @lead, :url => convert_lead_path(@lead), :html => { :method => :get } do |form|

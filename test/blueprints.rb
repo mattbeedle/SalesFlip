@@ -260,3 +260,12 @@ OpportunityStage.blueprint(:closed_won) do
   name { 'closed/won' }
   percentage { 100 }
 end
+
+InfomailTemplate.blueprint do
+end
+
+InfomailTemplate.blueprint(:default) do
+  name { 'Default' }
+  subject { 'Default Template' }
+  body { 'Please replace me' }
+end

@@ -11,6 +11,8 @@ Salesflip::Application.routes.draw do
   resources :infomail_templates
 
   resources :leads do
+    resources :infomails, :only => [:new, :create]
+
     member do
       get :convert
       put :promote
