@@ -117,9 +117,12 @@ protected
               Lead.all
             when "New"
               Lead.all(:tasks => nil, :status => "New")
+            when "Unassigned"
+              raise CanCan::AccessDenied unless can? :view_unassigned, Lead, current_user
+              return Lead.status_is("New").unassigned.not_deleted.desc(:created_at)
             end
 
-    @leads = leads.assigned_to(current_user).not_deleted.desc(:created_at)
+    leads.assigned_to(current_user).not_deleted.desc(:created_at)
   end
 
   def collection

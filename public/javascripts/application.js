@@ -250,3 +250,7 @@ $(document).on('ready', function() {
   }
   $(window).on('blur', out);
 });
+
+".leads.show #lead_assignee_id".on('change', function() {
+  this.form().submit();
+});

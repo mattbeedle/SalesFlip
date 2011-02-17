@@ -13,6 +13,10 @@
       %strong &#10008;
       = t(:rejected)
   %ul.actions
+    - if @lead.assignee_id.blank? && can?(:view_unassigned, Lead)
+      %li
+        = simple_form_for @lead, :url => lead_path(@lead) do |form|
+          = form.select :assignee_id, [["Assign to...", nil]] + current_user.company.users.asc(:email).map {|u| [u.email, u.id]}
     - if @lead.assigned_to?(current_user)
       %li
         = link_to t(:edit), edit_lead_path(@lead, :return_to => request.fullpath), :id => "edit_#{dom_id @lead}"
@@ -20,16 +24,13 @@
   %small
     = raw t(:added_ago_by, :time => l(@lead.created_at, :format => :short), :by => @lead.user.username)
     = " : #{t(:assigned_to, :user => @lead.assignee.full_name) if @lead.assignee_id.present?}"
-- if @lead.notes.present?
-  .notes= raw @lead.notes
 
 %ul.quick
-  %li
-    = simple_form_for @lead, :url => lead_path(@lead) do |form|
-      = form.hidden_field :status, :value => "Contacted"
-      = form.button :submit, "Send Infomail", :id => "send_infomail"
-
   - if @lead.assigned_to?(current_user)
+    %li
+      = simple_form_for @lead, :url => lead_path(@lead) do |form|
+        = form.hidden_field :status, :value => "Contacted"
+        = form.button :submit, "Send Infomail", :id => "send_infomail"
     - unless I18n.in_locale(:en) { @lead.status_is?('Converted') || @lead.status_is?('Rejected') }
       %li
         = simple_form_for @lead, :url => convert_lead_path(@lead), :html => { :method => :get } do |form|
@@ -37,6 +38,9 @@
       %li
         = simple_form_for @lead, :url => reject_lead_path(@lead) do |form|
           = form.button :submit, t(:reject), :id => 'reject_lead'
+
+- if @lead.notes.present?
+  .notes= raw @lead.notes
 
 = render :partial => 'tasks/add_task', :locals => { :object => @lead }
 

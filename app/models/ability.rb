@@ -7,7 +7,7 @@ class Ability
     if user.role_is?('Administrator')
       can :manage, :all
     elsif user.role_is?('Sales Person') || user.role_is?('Service Person') ||
-      user.role_is?('Key Account Manager')
+      user.role_is?('Key Account Manager') || user.role_is?('Sales Team Leader')
       can :create, :all
       can :profile, User
       can :read, User
@@ -25,6 +25,11 @@ class Ability
       can :create, Opportunity
       can :update, Opportunity
       can :next, Lead
+
+      can :view_unassigned, Lead do |lead|
+        user.role_is?('Sales Team Leader')
+      end
+
       can :reject, Lead do |lead|
         lead && lead.permitted_for?(user)
       end
