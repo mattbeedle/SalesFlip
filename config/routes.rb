@@ -8,6 +8,8 @@ Salesflip::Application.routes.draw do
   resources :users, :comments, :tasks, :deleted_items,
     :searches, :invitations, :emails, :opportunities, :campaigns
 
+  resources :infomail_templates
+
   resources :leads do
     member do
       get :convert

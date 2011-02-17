@@ -1,0 +1,16 @@
+= simple_form_for @infomail_template, :html => { :multipart => true } do |form|
+  %fieldset
+    = form.input :name
+    = form.label :body
+    = form.text_area :body
+
+  %fieldset(style="width: 46%; margin-right: 20px; float: left;")
+    = form.simple_fields_for 'attachments_attributes[]', @infomail_template.attachments.build do |attachment_form|
+      - 3.times do |i|
+        = attachment_form.input :attachment, :as => :file, :label => "Attachment #{i+1}"
+
+  %fieldset
+    = form.input :campaign_id, :collection => Campaign.all.asc(:name)
+
+  .clear
+  = form.button :submit

@@ -1,0 +1,6 @@
+%h2.title
+  Infomail Templates
+  = add_new "New", new_infomail_template_path
+
+- @infomail_templates.each do |template|
+  = link_to template.name, infomail_template_path(template)

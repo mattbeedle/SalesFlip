@@ -1,0 +1,18 @@
+%h2.title
+  = @infomail_template.name
+  %ul.actions
+    %li
+      = link_to t(:edit), edit_infomail_template_path
+
+- @infomail_template.body.split($/).each do |paragraph|
+  %p= paragraph
+
+- if campaign = @infomail_template.campaign
+  - content_for :sidebar do
+    .box.gold
+      %h3 Campaign
+      %p= campaign.name
+
+%h3 Attachments
+- @infomail_template.attachments.each do |attachment|
+  %p= link_to attachment.attachment.filename, attachment.attachment.url
