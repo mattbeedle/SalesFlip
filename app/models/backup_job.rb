@@ -1,5 +1,6 @@
 require "net/ssh"
 require "net/scp"
+require "benchmark"
 
 class BackupJob
   @queue = :backup
@@ -7,10 +8,14 @@ class BackupJob
   class << self
 
     def perform
-      backup_postgres
-      backup_mongo
-      upload_backups
-      delete_backups
+      Benchmark.bm do |bm|
+        bm.report("Running Salesflip and Jobboersen backups") do
+          backup_postgres
+          backup_mongo
+          upload_backups
+          delete_backups
+        end
+      end
     end
 
     private
@@ -33,7 +38,7 @@ class BackupJob
     def backup_mongo
       Net::SSH.start("46.4.62.14", "root") do |ssh|
         puts("Creating mongodb.tar")
-        ssh.exec("tar -cf ~/mongodb.tar /data/db/salesflip.*")
+        ssh.exec("tar -cf ~/mongodb.tar /data/db")
         puts("Gzipping mongodb.tar")
         ssh.exec("gzip -9 ~/mongodb.tar")
       end
@@ -48,7 +53,7 @@ class BackupJob
     def bucket
       puts("Creating new S3 bucket")
       @bucket ||= Fog::Storage.new(provider: "AWS").directories.create(
-        key: "salesflip-#{Rails.env}-backup-#{Time.now.to_i}",
+        key: "#{Rails.env}-backups-#{Time.now.to_i}",
         public: false
       )
     end
