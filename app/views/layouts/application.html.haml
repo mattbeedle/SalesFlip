@@ -14,7 +14,7 @@
       #on_call
         %p
           You're currently on the phone with #{lead.full_name}.
-          = link_to "Done?", next_leads_path
+          = link_to "Done?", finish_lead_path(lead)
 
     #header
       .pad

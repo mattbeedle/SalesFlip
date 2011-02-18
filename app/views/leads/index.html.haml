@@ -4,7 +4,7 @@
   %button{ :onclick => "CallBox.show('#{next_leads_path}');", :style => "float: right;margin: 0 10px 0px 0; height: 28px;" } Next Lead
 
 %ul.tabs
-  - if can? :view_unassigned, Lead, current_user
+  - if can? :view_unassigned, Lead
     %li{:class => "#{'active' if params[:status] == "Unassigned"}"}= link_to "Unassigned", :status => "Unassigned"
   %li{:class => "#{'active' if params[:status] == "New"}"}= link_to "New", :status => "New"
   %li{:class => "#{'active' if params[:status] == "Scheduled"}"}= link_to "Scheduled", :status => "Scheduled"

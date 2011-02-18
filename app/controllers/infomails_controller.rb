@@ -5,7 +5,10 @@ class InfomailsController < ApplicationController
       lead.update :status => "Infomail Sent"
       InfomailMailer.mailer(lead, infomail_template).deliver
 
-      redirect_to lead_path(lead)
+      respond_to do |format|
+        format.js { render :text => "true" }
+        format.html { redirect_to lead_path(lead) }
+      end
     else
       render :new
     end

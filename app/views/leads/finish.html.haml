@@ -1,0 +1,132 @@
+- lead = Lead.get(params[:id])
+- infomail_templates = InfomailTemplate.all
+
+#step_1
+  %h3
+    How did the call go?
+
+  %ol
+    %li= link_to "Customer requested infomail", "#", :"data-next" => "infomail"
+    %li= link_to "Customer wasn't interested", lead_path(lead, :lead => { :status => "Not Interested"}), :"data-next" => "not_interested"
+    %li= link_to "Customer wants to be called back", lead_path(lead, :lead => { :status => "Contacted" }), :"data-next" => "call_back"
+    %li= link_to "Customer doesn't want to be contacted again", lead_path(lead, :lead => { :status => "Rejected" })
+
+= simple_form_for :infomail,
+  :url => lead_infomails_path(:lead_id => lead.id),
+  :html => { :style => "display: none", :"data-next" => "schedule_infomail_followup", :id => "infomail" } do |form|
+  %h3
+    Which infomail should be sent to the customer?
+
+  %fieldset
+    .33
+      = form.label :template
+      = form.select :template,
+        infomail_templates.map { |t| [t.name, t.id] },
+        :selected => lead.campaign_id ? InfomailTemplate.first(:campaign_id => lead.campaign_id).try(:id) : nil
+  = form.button :submit, "Send Infomail"
+
+= simple_form_for lead.tasks.new(:name => "Follow up about infomail", :due_at => 3.days.from_now),
+  :html => { :style => "display: none", :id => "schedule_infomail_followup" } do |form|
+  %h3
+    Would you like to schedule a followup call?
+
+  %fieldset
+    = form.hidden_field :asset_id
+    = form.hidden_field :asset_type
+    = form.hidden_field :assignee_id, :value => current_user.id
+    = form.hidden_field :category, :value => "Follow-up"
+
+    = form.input :name
+    = datepicker_for(form, :due_at, :preset_date => false, :id => "infomail_task_due_at")
+
+  %input(type="submit" value="Schedule")
+  %input(type="submit" name="skip" value="Skip" style="float: right;")
+
+= simple_form_for lead.tasks.new(:name => "Rescheduled", :due_at => 30.minutes.from_now),
+  :html => { :style => "display: none", :id => "call_back" } do |form|
+  %h3
+    Would you like to schedule a followup call?
+
+  %fieldset
+    = form.hidden_field :asset_id
+    = form.hidden_field :asset_type
+    = form.hidden_field :assignee_id, :value => current_user.id
+    = form.hidden_field :category, :value => "Call"
+
+    = form.input :name
+    = datepicker_for(form, :due_at, :preset_date => false, :id => "call_back_due_at")
+
+  %input(type="submit" value="Schedule")
+  %input(type="submit" name="skip" value="Skip" style="float: right;")
+
+= simple_form_for lead.tasks.new(:name => "See if customer is interested", :due_at => 6.months.from_now),
+  :html => { :style => "display: none", :id => "not_interested" } do |form|
+  %h3
+    Would you like to schedule a followup call?
+
+  %fieldset
+    = form.hidden_field :asset_id
+    = form.hidden_field :asset_type
+    = form.hidden_field :assignee_id, :value => current_user.id
+    = form.hidden_field :category, :value => "Call"
+
+    = form.input :name
+    = datepicker_for(form, :due_at, :preset_date => false, :id => "not_interested_due_at")
+
+  %input(type="submit" value="Schedule")
+  %input(type="submit" name="skip" value="Skip" style="float: right;")
+
+:javascript
+  function after_load_callback() {
+    RealDateSelector.bind($$(".call_box").first());
+
+    function show_next(next) {
+      if (next) {
+        $(next).show();
+      }
+      else {
+        window.location = "/leads"
+      }
+    }
+
+    $$(".call_box #step_1 a").each('on', 'click', function() {
+      var next = this.get("data-next");
+
+      $('step_1').hide();
+
+      if ( !this.get("href").match("#") ) {
+        xhr = new Xhr(this.get("href"), {
+          method: "put",
+          spinner: $("call_box_spinner"),
+          onSuccess: function() { show_next(next) }
+        }).send();
+      }
+      else {
+        show_next(next);
+      }
+
+      return false;
+    });
+
+    $$(".call_box form input[name=skip]").each('on', 'click', function() {
+      var form = this.form();
+      form.hide();
+      show_next(form.get("data-next"));
+
+      return false;
+    });
+
+    $$(".call_box form").each('on', 'submit', function() {
+      var next = this.get("data-next");
+      this.hide();
+
+      this.send({
+        spinner: $("call_box_spinner"),
+        onSuccess: function() {
+          show_next(next);
+        }
+      });
+
+      return false;
+    });
+  }

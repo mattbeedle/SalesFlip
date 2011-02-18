@@ -26,6 +26,7 @@ class TasksController < InheritedResources::Base
 
   def create
     create! do |success, failure|
+      success.js { render :text => "true" }
       success.html { return_to_or_default tasks_path(:incomplete => true, :for => current_user.id) }
     end
   end

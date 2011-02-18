@@ -14,3 +14,8 @@
 %h4
   = link_to @lead.full_name, lead_path(@lead)
   %small @ #{@lead.company}
+
+%hr
+%p
+  Or
+  = link_to "return to your leads", leads_path

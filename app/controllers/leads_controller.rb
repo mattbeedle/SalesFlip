@@ -43,6 +43,10 @@ class LeadsController < InheritedResources::Base
     render :layout => nil
   end
 
+  def finish
+    render :layout => nil
+  end
+
   def create
     create! do |success, failure|
       success.html { return_to_or_default lead_path(@lead) }

@@ -1,8 +1,25 @@
+var RealDateSelector = {
+  bind: function(scope) {
+    $$('.realdate', scope).each(function(realdate) {
+      var value_div = realdate.find('.value').first();
+      var id        = value_div.get('object');
+      var name      = value_div.get('name');
+      var value     = value_div.html().trim();
+      var abbr      = value_div.get('required')=='true' ? "<abbr>*</abbr>" : '';
+      var input     = '<div class="string"><label for="' + id + '">' + abbr + value_div.get('title') + '</label><input id="' + id + '" type="text" name="' + name + '" value="' + value + '"/ autocomplete="off"></div>';
+      var date_or_time = value_div.get('format')=='Date' ? "%Y-%m-%d" : "%Y-%m-%d %H:%M"; 
+      realdate.find('span').first().remove();
+      realdate.insert(input, 'top');
+      new Calendar({ format: date_or_time}).assignTo(id);
+    });
+  }
+}
+
 var Base = new Class({
 
   initialize: function() {
+    RealDateSelector.bind();
     this.watchTitleTogglers();
-    this.addRealTaskCalendar();
     this.hideActivityBodies();
     this.growTextAreas();
     this.truncateMessages();
@@ -86,21 +103,6 @@ var Base = new Class({
     });
   },
 
-  addRealTaskCalendar: function() {
-    $$('.realdate').each(function(realdate) {
-      var value_div = realdate.find('.value').first();
-      var id        = value_div.get('object');
-      var name      = value_div.get('name');
-      var value     = value_div.html().trim();
-      var abbr      = value_div.get('required')=='true' ? "<abbr>*</abbr>" : '';
-      var input     = '<div class="string"><label for="' + id + '">' + abbr + value_div.get('title') + '</label><input id="' + id + '" type="text" name="' + name + '" value="' + value + '"/ autocomplete="off"></div>';
-      var date_or_time = value_div.get('format')=='Date' ? "%Y-%m-%d" : "%Y-%m-%d %H:%M"; 
-      realdate.find('span').first().remove();
-      realdate.insert(input, 'top');
-      new Calendar({ format: date_or_time}).assignTo(id);
-    });
-  },
-
   watchTitleTogglers: function() {
     $$("h3.toggler").each(function(h3) {
       h3.insert(new Element('span'), 'top');
@@ -175,6 +177,7 @@ CallBox.show = function(url) {
   call_box.insert(close);
 
   var spinner = $E("img")
+    .set("id", "call_box_spinner")
     .set("src", "/images/spinner.gif")
     .setStyle("position: absolute; top: 50%; left: 50%; margin-left: -8px; margin-top: -8px;");
 
@@ -186,6 +189,8 @@ CallBox.show = function(url) {
     spinner: spinner,
     onSuccess: function() {
       call_box.insert(this.responseText);
+      if ( typeof after_load_callback !== "undefined" )
+        after_load_callback();
     }
   });
 
@@ -199,24 +204,30 @@ CallBox.show = function(url) {
 
 CallBox.hide = function() {
   $("overlay").hide();
-  $$('.call_box').each('hide');
+  $$('.call_box').each('remove');
 }
 
 $(document).on('ready', function() {
-  var realdate = $$(".realdate")[0];
-  var presetdate = $$(".presetdate")[0];
+  var realdates = $$(".realdate");
+  var presetdates = $$(".presetdate");
 
-  if ( realdate && presetdate ) {
+  for (var i = 0; i < realdates.length; i++ ) {
+    var realdate = realdates[i];
+    var presetdate = presetdates[i];
+
+    if ( !realdate || !presetdate )
+      continue;
+
     presetdate.insert(realdate, 'after');
 
-    $("preset_date").on('click', function() {
+    realdate.children("#preset_date")[0].on('click', function() {
       realdate.setStyle("display: none;");
       presetdate.setStyle("display: block;");
       realdate.insert(presetdate, 'after');
       return false;
     });
 
-    $("real_date").on('click', function() {
+    presetdate.children("#real_date")[0].on('click', function() {
       presetdate.setStyle("display: none;");
       realdate.setStyle("display: block;");
       presetdate.insert(realdate, 'after');
@@ -239,16 +250,18 @@ $(document).on('ready', function() {
 });
 
 ".leads.show a.telified".on('click', function() {
-  var out = function() {
-    var on_call = $('on_call');
+  if ( $('on_call') ) {
+    var out = function() {
+      var on_call = $('on_call');
 
-    new Cookie("on_call", { path: "/" })
-      .set(on_call.get("data-id"));
-    on_call.show();
+      new Cookie("on_call", { path: "/" })
+        .set(on_call.get("data-id"));
+      on_call.show();
 
-    this.stopObserving('blur', out);
+      this.stopObserving('blur', out);
+    }
+    $(window).on('blur', out);
   }
-  $(window).on('blur', out);
 });
 
 ".leads.show #lead_assignee_id".on('change', function() {

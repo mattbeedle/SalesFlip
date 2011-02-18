@@ -25,9 +25,10 @@ class Ability
       can :create, Opportunity
       can :update, Opportunity
       can :next, Lead
+      can :finish, Lead
 
-      can :view_unassigned, Lead do |lead|
-        user.role_is?('Sales Team Leader')
+      if user.role_is?('Sales Team Leader')
+        can :view_unassigned, Lead
       end
 
       can :reject, Lead do |lead|

@@ -20,23 +20,17 @@
     - if @lead.assigned_to?(current_user)
       %li
         = link_to t(:edit), edit_lead_path(@lead, :return_to => request.fullpath), :id => "edit_#{dom_id @lead}"
+      - unless I18n.in_locale(:en) { @lead.status_is?('Converted') || @lead.status_is?('Rejected') }
+        %li
+          = simple_form_for @lead, :url => convert_lead_path(@lead), :html => { :method => :get } do |form|
+            = form.button :submit, t(:convert), :id => "convert_lead"
+        %li
+          = simple_form_for @lead, :url => reject_lead_path(@lead) do |form|
+            = form.button :submit, t(:reject), :id => 'reject_lead'
   %br/
   %small
     = raw t(:added_ago_by, :time => l(@lead.created_at, :format => :short), :by => @lead.user.username)
     = " : #{t(:assigned_to, :user => @lead.assignee.full_name) if @lead.assignee_id.present?}"
-
-%ul.quick
-  - if @lead.assigned_to?(current_user)
-    - unless @lead.email.blank? || @lead.status == "Infomail Sent"
-      %li
-        = link_to "Send Infomail", new_lead_infomail_path(@lead), :id => "send_infomail", :class => "button"
-    - unless I18n.in_locale(:en) { @lead.status_is?('Converted') || @lead.status_is?('Rejected') }
-      %li
-        = simple_form_for @lead, :url => convert_lead_path(@lead), :html => { :method => :get } do |form|
-          = form.button :submit, t(:convert), :id => "convert_lead"
-      %li
-        = simple_form_for @lead, :url => reject_lead_path(@lead) do |form|
-          = form.button :submit, t(:reject), :id => 'reject_lead'
 
 - if @lead.notes.present?
   .notes= raw @lead.notes
@@ -45,10 +39,11 @@
 
 = render :partial => 'comments/comments', :locals => { :object => @lead, :comments => @lead.comments.desc(:created_at) }
 
-#on_call(style="display: none" data-id="#{@lead.id}")
-  %p
-    You're currently on the phone with #{@lead.full_name}.
-    = link_to "Done?", next_leads_path
+- if @lead.status == "New"
+  #on_call(style="display: none" data-id="#{@lead.id}")
+    %p
+      You're currently on the phone with #{@lead.full_name}.
+      = link_to "Done?", finish_lead_path
 
 - content_for :sidebar do
   .box.gold
