@@ -4,8 +4,9 @@
     %span{ :class => I18n.locale_around(:en) {@task.category.downcase} }= @task.category
     = @task.name
     %small= "(#{@task.due_at_in_words})"
-    %br
-    %small= link_to(@task.asset.name, @task.asset)
+    - if @task.asset
+      %br
+      %small= link_to(@task.asset.name, @task.asset)
 
   %hr
 
