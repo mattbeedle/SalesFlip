@@ -116,13 +116,16 @@ class User
   end
 
   def redistribute_leads(options = {})
-    return false if company.users.count == 1
-    users = options[:users] || company.reload.users.where(:id.not => id)
-    chunks = leads.to_a.chunk(users.count)
-    users.each_with_index do |user, index|
-      chunks[index].each do |lead|
-        lead.update_attributes :assignee => user, :do_not_log => true,
-          :do_not_notify => true
+    sales_people = company.reload.users.where(:id.not => id).
+      role_is('Sales Person')
+    unless sales_people.blank?
+      users = options[:users] || sales_people
+      chunks = leads.to_a.chunk(users.count)
+      users.each_with_index do |user, index|
+        chunks[index].each do |lead|
+          lead.update_attributes :assignee => user, :do_not_log => true,
+            :do_not_notify => true
+        end
       end
     end
   end
