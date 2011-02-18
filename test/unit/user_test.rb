@@ -123,6 +123,14 @@ class UserTest < ActiveSupport::TestCase
         assert_equal 2, Lead.assigned_to(user3).count
         assert_equal 0, Lead.assigned_to(user).count
       end
+
+      should 'also assign tasks' do
+        user = User.make company: @user.company, role: 'Sales Person'
+        Lead.first.tasks.create name: 'Do something', category: 'Call',
+          due_at: Time.now, user: @user
+        @user.redistribute_leads
+        assert_equal 1, Task.assigned_to(user).count
+      end
     end
 
     should 'cache assigned lead count' do

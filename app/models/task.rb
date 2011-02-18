@@ -37,6 +37,8 @@ class Task
   after :update,  :log_update
   after :save,    :notify_assignee
 
+  attr_accessor :do_not_notify
+
   def self.incomplete
     all({ :completed_at => nil })
   end
@@ -214,7 +216,7 @@ protected
   end
 
   def notify_assignee
-    Resque.enqueue(TaskMailerJob, id) if reassigned?
+    Resque.enqueue(TaskMailerJob, id) if reassigned? && !self.do_not_notify
   end
 
   def log_update

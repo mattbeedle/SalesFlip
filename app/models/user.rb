@@ -123,8 +123,12 @@ class User
       chunks = leads.to_a.chunk(users.count)
       users.each_with_index do |user, index|
         chunks[index].each do |lead|
-          lead.update_attributes :assignee => user, :do_not_log => true,
-            :do_not_notify => true
+          lead.update_attributes assignee: user, do_not_log: true,
+            do_not_notify: true
+          lead.tasks.each do |t|
+            t.update_attributes assignee: user, do_not_log: true,
+              do_not_notify: true
+          end
         end
       end
     end
