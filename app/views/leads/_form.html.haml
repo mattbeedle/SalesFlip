@@ -65,7 +65,10 @@
         .50.a= form.input :source, :collection => Lead.sources
         .50.z= form.input :assignee_id, :collection => current_user.company.users.asc(:email).map {|u| [u.email, u.id]}
 
-        .50.a= form.input :status, :as => :select, :collection => Lead.statuses.map(&:to_s), :include_blank => false
+        .50.a= form.input :status,
+          :as => :select,
+          :collection => t('lead_form.statuses').zip(t('lead_form.statuses', :locale => :en)),
+          :include_blank => false
         .50.z= form.input :permission, :collection => Lead.permissions, :include_blank => false
 
         .33.a= form.input :rating, :as => :select, :collection => 1..5

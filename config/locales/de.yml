@@ -333,6 +333,14 @@ de:
   web_and_social_media: "Web &amp; Social Media"
   contact_already_exists: "Kontakt %{contact} exisitert schon. Drücke auf Konvertieren, um den Lead diesem Kontakt zuzuordnen."
   leads_created_accepted: Leads (erstellt/angenommen)
+  lead_form:
+    statuses:
+      - Neu
+      - Kontaktiert
+      - Infomail gesendet
+      - Nicht interessiert
+      - Abgelehnt
+      - Konvertiert
   lead_statuses:
     - Neu
     - Kontaktiert
@@ -340,6 +348,7 @@ de:
     - Abgelehnt
     - Nicht interessiert
     - Interessiert
+    - Infomail gesendet
   lead_sources:
     - Kampagne
     - Kaltakquise

@@ -346,13 +346,22 @@ en:
   web_and_social_media: "Web &amp; Social Media"
   contact_already_exists: "Contact %{contact} already exists. Press convert to add this lead to that contact"
   leads_created_accepted: Leads (created/accepted)
+  lead_form:
+    statuses:
+      - New
+      - Contacted
+      - Infomail Sent
+      - Not Interested
+      - Rejected
+      - Converted
   lead_statuses:
     - New
-    - Infomail Sent
+    - Contacted
     - Converted
     - Rejected
     - Not Interested
     - Interested
+    - Infomail Sent
   lead_sources:
     - Campaign
     - Cold Call
