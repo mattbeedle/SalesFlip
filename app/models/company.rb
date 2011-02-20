@@ -17,6 +17,7 @@ class Company
   property :rejected_lead_count, Integer, default: 0
   property :interested_lead_count, Integer, default: 0
   property :not_interested_lead_count, Integer, default: 0
+  property :offer_requested_lead_count, Integer, default: 0
   property :unassigned_lead_count, Integer, default: 0
   property :campaign_lead_count, Integer, default: 0
   property :cold_call_lead_count, Integer, default: 0

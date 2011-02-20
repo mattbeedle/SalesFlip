@@ -86,11 +86,6 @@ class Lead
     status_is('Converted')
   end
 
-  def self.scheduled
-    all(:links => [relationships['tasks'].inverse],
-        :order => tasks.due_at.desc)
-  end
-
   def self.reserve_for(user)
     id = repository.adapter.select(<<-SQL, user.id)
     update leads set assignee_id = ?

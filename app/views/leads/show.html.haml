@@ -20,7 +20,7 @@
     - if @lead.assigned_to?(current_user)
       %li
         = link_to t(:edit), edit_lead_path(@lead, :return_to => request.fullpath), :id => "edit_#{dom_id @lead}"
-      - unless I18n.in_locale(:en) { @lead.status_is?('Converted') || @lead.status_is?('Rejected') }
+      - unless @lead.status == "New" || I18n.in_locale(:en) { @lead.status_is?('Converted') || @lead.status_is?('Rejected') }
         %li
           = simple_form_for @lead, :url => convert_lead_path(@lead), :html => { :method => :get } do |form|
             = form.button :submit, t(:convert), :id => "convert_lead"
@@ -35,9 +35,13 @@
 - if @lead.notes.present?
   .notes= raw @lead.notes
 
-= render :partial => 'tasks/add_task', :locals => { :object => @lead }
+- if @lead.status != "New"
+  = render :partial => 'tasks/add_task', :locals => { :object => @lead }
 
 = render :partial => 'comments/comments', :locals => { :object => @lead, :comments => @lead.comments.desc(:created_at) }
+
+- if @lead.status == "New"
+  = render :partial => 'tasks/add_task', :locals => { :object => @lead }
 
 - if @lead.status == "New"
   #on_call(style="display: none" data-id="#{@lead.id}")
@@ -72,6 +76,9 @@
         = show_attribute(@lead, 'facebook', link_to('Facebook', @lead.facebook))
         = show_attribute(@lead, 'xing', link_to('Xing', @lead.xing))
         = show_attribute(@lead, 'referred_by')
+      %hr
+      %p
+        = link_to "Already contacted?", finish_lead_path, :onclick => "CallBox.show(this.href); return false;"
     - elsif @lead.assignee.blank?
       = simple_form_for @lead, :html => { :class => 'accept' } do |form|
         = form.hidden_field :do_not_notify, :value => true

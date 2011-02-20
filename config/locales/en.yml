@@ -351,7 +351,7 @@ en:
       - New
       - Contacted
       - Infomail Sent
-      - Not Interested
+      - Offer Requested
       - Rejected
       - Converted
   lead_statuses:
@@ -362,6 +362,7 @@ en:
     - Not Interested
     - Interested
     - Infomail Sent
+    - Offer Requested
   lead_sources:
     - Campaign
     - Cold Call

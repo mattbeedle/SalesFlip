@@ -33,14 +33,17 @@ class LeadsController < InheritedResources::Base
   end
 
   def next
-    @task = Task.incomplete.assigned_to(current_user).asc(:due_at).first
-    @lead = Lead.all(:tasks => nil).assigned_to(current_user).status_is('New').desc(:created_at).first
+    lead = Lead.all(:tasks => nil)
+      .assigned_to(current_user)
+      .status_is('New')
+      .desc(:created_at)
+      .first
 
-    unless @lead
-      @lead = Lead.reserve_for(current_user)
+    unless lead
+      lead = Lead.reserve_for(current_user)
     end
 
-    render :layout => nil
+    redirect_to lead
   end
 
   def finish
@@ -113,8 +116,10 @@ protected
     params[:status] ||= "New"
 
     leads = case params[:status]
-            when "Scheduled"
-              Lead.scheduled
+            when "Contacted"
+              Lead.all(:status => "Contacted")
+            when "Offer Requested"
+              Lead.all(:status => "Offer Requested")
             when "Infomail Sent"
               Lead.all(:status => "Infomail Sent")
             when "All"

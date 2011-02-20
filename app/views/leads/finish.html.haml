@@ -7,9 +7,9 @@
 
   %ol
     %li= link_to "Customer requested infomail", "#", :"data-next" => "infomail"
-    %li= link_to "Customer wasn't interested", lead_path(lead, :lead => { :status => "Not Interested"}), :"data-next" => "not_interested"
     %li= link_to "Customer wants to be called back", lead_path(lead, :lead => { :status => "Contacted" }), :"data-next" => "call_back"
     %li= link_to "Customer doesn't want to be contacted again", lead_path(lead, :lead => { :status => "Rejected" })
+    %li= link_to "Customer requested an offer", lead_path(lead, :lead => { :status => "Offer Requested" }), :"data-next" => "offer_requested"
 
 = simple_form_for :infomail,
   :url => lead_infomails_path(:lead_id => lead.id),
@@ -59,19 +59,19 @@
   %input(type="submit" value="Schedule")
   %input(type="submit" name="skip" value="Skip" style="float: right;")
 
-= simple_form_for lead.tasks.new(:name => "See if customer is interested", :due_at => 6.months.from_now),
-  :html => { :style => "display: none", :id => "not_interested" } do |form|
+= simple_form_for lead.tasks.new(:name => "Send offer", :due_at => 30.minutes.from_now),
+  :html => { :style => "display: none", :id => "offer_requested" } do |form|
   %h3
-    Would you like to schedule a followup call?
+    Would you like to schedule a task for sending the offer?
 
   %fieldset
     = form.hidden_field :asset_id
     = form.hidden_field :asset_type
     = form.hidden_field :assignee_id, :value => current_user.id
-    = form.hidden_field :category, :value => "Call"
+    = form.hidden_field :category, :value => "Email"
 
     = form.input :name
-    = datepicker_for(form, :due_at, :preset_date => false, :id => "not_interested_due_at")
+    = datepicker_for(form, :due_at, :preset_date => false, :id => "call_back_due_at")
 
   %input(type="submit" value="Schedule")
   %input(type="submit" name="skip" value="Skip" style="float: right;")

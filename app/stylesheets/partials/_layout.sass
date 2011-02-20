@@ -162,6 +162,15 @@ div#main
       font-size: 12px
       margin-right: 5px
 
+.title
+  .button
+    +border-radius(14px)
+    +silver-button
+    padding: 5px 9px
+    font-size: 13px
+    margin-right: 10px
+    float: right
+
 a#new
   +border-radius(14px)
   +black-button
@@ -312,6 +321,9 @@ div.item, dl.item dd
   &.gold
     background: $gold
     margin-bottom: 20px
+    hr
+      clear: both
+      display: block
     label
       font-size: 12px
     h3

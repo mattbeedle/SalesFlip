@@ -338,7 +338,7 @@ de:
       - Neu
       - Kontaktiert
       - Infomail gesendet
-      - Nicht interessiert
+      - Angebot angefordert
       - Abgelehnt
       - Konvertiert
   lead_statuses:
@@ -349,6 +349,7 @@ de:
     - Nicht interessiert
     - Interessiert
     - Infomail gesendet
+    - Angebot angefordert
   lead_sources:
     - Kampagne
     - Kaltakquise
