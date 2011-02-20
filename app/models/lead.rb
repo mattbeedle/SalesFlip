@@ -116,7 +116,7 @@ class Lead
     accounts = Account.search { keywords self.company }.results
 
     accounts.select do |account|
-      company.levenshtein_similar(account.company) > threshold
+      company.levenshtein_similar(account.name) > threshold
     end
   end
 
