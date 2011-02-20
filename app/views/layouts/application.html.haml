@@ -47,6 +47,7 @@
                           - name = "#{item.name} (#{item.account.name})"
                         - elsif item.is_a?(Account)
                           - name = item.name
+                        - name = truncate(name, length: 50)
                         = item.deleted_at.blank? ? link_to(name, item) : name
                       - else
                         = link_to(item.name, item)
