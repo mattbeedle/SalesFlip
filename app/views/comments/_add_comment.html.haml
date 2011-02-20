@@ -1,5 +1,5 @@
 - comment = @comment || Comment.new
-- 3.times { comment.attachments.build }
+- 5.times { comment.attachments.build }
 .add_comment
   = simple_form_for comment, :html => { :multipart => true } do |form|
     = form.hidden_field :commentable_type, :value => object.class.to_s
