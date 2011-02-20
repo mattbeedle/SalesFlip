@@ -54,7 +54,7 @@ class LeadImport
   end
 
   def lines
-    file.read.encode('utf-8').split("\n")
+    file.read.force_encoding('utf-8').split("\n")
   end
 
   def progress

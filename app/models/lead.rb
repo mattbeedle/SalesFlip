@@ -108,7 +108,7 @@ class Lead
     leads = Lead.search { keywords self.company }.results
 
     leads.select do |lead|
-      company.levenshtein_similar(lead.company) > threshold
+      company.levenshtein_similar(lead.company) > threshold rescue false
     end
   end
 
