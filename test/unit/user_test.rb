@@ -91,10 +91,16 @@ class UserTest < ActiveSupport::TestCase
         end
       end
 
-      should 'assign all status=new leads to the rest of the sales team' do
+      should 'assign all leads to the rest of the sales team' do
         user = User.make :company => @user.company
         @user.redistribute_leads
-        assert_equal 4, Lead.assigned_to(user).status_is('New').count
+        assert_equal 4, Lead.assigned_to(user).count
+      end
+
+      should 'not assign any leads to the service team' do
+        user = User.make :company => @user.company, :role => 'Service Person'
+        @user.redistribute_leads
+        assert_equal 0, Lead.assigned_to(user).count
       end
 
       should 'unassign all leads from salesperson' do
@@ -116,6 +122,14 @@ class UserTest < ActiveSupport::TestCase
         assert_equal 2, Lead.assigned_to(user2).count
         assert_equal 2, Lead.assigned_to(user3).count
         assert_equal 0, Lead.assigned_to(user).count
+      end
+
+      should 'also assign tasks' do
+        user = User.make company: @user.company, role: 'Sales Person'
+        Lead.first.tasks.create name: 'Do something', category: 'Call',
+          due_at: Time.now, user: @user
+        @user.redistribute_leads
+        assert_equal 1, Task.assigned_to(user).count
       end
     end
 

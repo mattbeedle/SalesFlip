@@ -233,9 +233,9 @@ protected
 
 private
   def maybe_auto_index
-    unless self.do_not_index
+    unless self.do_not_index || self.deleted_at
       if @marked_for_auto_indexing
-        async(:solr_index)
+        async(:solr_index!)
         remove_instance_variable(:@marked_for_auto_indexing)
       end
     end
