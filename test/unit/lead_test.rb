@@ -401,6 +401,11 @@ class LeadTest < ActiveSupport::TestCase
         assert_equal @lead.reload.contact, Account.first(:conditions => { :name => 'company name' }).contacts.first
       end
 
+      should 'assign account to user' do
+        @lead.promote!('A company')
+        assert_equal @lead.user, Account.first.assignee
+      end
+
       should 'be able to specify a "Private" permission level' do
         @lead.promote!('A company', :permission => 'Private')
         assert_equal 'Private', Account.first.permission

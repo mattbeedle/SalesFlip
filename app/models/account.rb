@@ -103,7 +103,7 @@ class Account
     end
     account = object.updater_or_user.accounts.build :permission => permission,
       :name => name, :permitted_user_ids => permitted,
-      :account_type => Account.account_types[I18n.in_locale(:en) { Account.account_types.index('Prospect') }]
+      :account_type => Account.account_types[I18n.in_locale(:en) { Account.account_types.index('Prospect') }], :assignee => object.updater_or_user
     account.save unless options[:just_validate] == true
     account
   end
