@@ -45,6 +45,7 @@ class Lead
   property :country, String
   property :referred_by, String
   property :do_not_call, Boolean
+  property :industry, String
 
   property :homepage, String
   property :identifier, Integer
