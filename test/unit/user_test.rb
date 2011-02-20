@@ -275,12 +275,12 @@ class UserTest < ActiveSupport::TestCase
         assert_equal [@contact, @contact2, @lead], @user.recent_items
       end
 
-      should 'return a maximum of 5 items' do
-        6.times do
+      should 'return a maximum of 15 items' do
+        16.times do
           @lead = Lead.make
           Activity.log(@user, @lead, 'Viewed')
         end
-        assert_equal 5, @user.recent_items.length
+        assert_equal 15, @user.recent_items.length
       end
     end
 

@@ -41,7 +41,13 @@
                       - if item.instance_of?(Comment)
                         = 'on ' + link_to(item.commentable.full_name, item.commentable)
                       - elsif item.respond_to?(:deleted_at)
-                        = item.deleted_at.blank? ? link_to(item.name, item) : item.name
+                        - if item.is_a?(Lead)
+                          - name = "#{item.name} (#{item.company})"
+                        - elsif item.is_a?(Contact)
+                          - name = "#{item.name} (#{item.account.name})"
+                        - elsif item.is_a?(Account)
+                          - name = item.name
+                        = item.deleted_at.blank? ? link_to(name, item) : name
                       - else
                         = link_to(item.name, item)
       .clear
