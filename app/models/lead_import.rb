@@ -32,7 +32,7 @@ class LeadImport
       if index == 0
         get_included_fields(line)
       else
-        values = line.split(deliminator)
+        values = line.encode('utf-8').split(deliminator)
         lead = Lead.new(build_attributes(values))
         lead.last_name = 'n/a' if lead.last_name.blank?
         similar = lead.similar(0.9)
@@ -54,7 +54,8 @@ class LeadImport
   end
 
   def lines
-    file.read.force_encoding('iso-8859-1').encode('utf-8').split("\n")
+    #file.read.force_encoding('iso-8859-1').encode('utf-8').split("\n")
+    file.lines
   end
 
   def progress
