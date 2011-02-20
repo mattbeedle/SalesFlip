@@ -33,11 +33,12 @@ class LeadsController < InheritedResources::Base
   end
 
   def next
-    lead = Lead.all(:tasks => nil)
-      .assigned_to(current_user)
-      .status_is('New')
-      .desc(:created_at)
-      .first
+    lead = I18n.with_locale(:en) do
+      Lead.all(:tasks => nil, :status => "New")
+        .assigned_to(current_user)
+        .desc(:created_at)
+        .first
+    end
 
     unless lead
       lead = Lead.reserve_for(current_user)

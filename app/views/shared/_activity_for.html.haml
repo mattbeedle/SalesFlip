@@ -1,4 +1,4 @@
-.item{ :class => activity.action.downcase }
+.item{ :class => activity.action.try(:downcase) }
   - subject = activity.subject
   - if subject.is_a?(Task) || subject.is_a?(Comment)
     .item-head

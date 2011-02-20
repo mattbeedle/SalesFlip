@@ -16,11 +16,11 @@
     - if @lead.assignee_id.blank? && can?(:view_unassigned, Lead)
       %li
         = simple_form_for @lead, :url => lead_path(@lead) do |form|
-          = form.select :assignee_id, [["Assign to...", nil]] + current_user.company.users.asc(:email).map {|u| [u.email, u.id]}
+          = form.select :assignee_id, [[t(:assign_to)+"...", nil]] + current_user.company.users.asc(:email).map {|u| [u.email, u.id]}
     - if @lead.assigned_to?(current_user)
       %li
         = link_to t(:edit), edit_lead_path(@lead, :return_to => request.fullpath), :id => "edit_#{dom_id @lead}"
-      - unless @lead.status == "New" || I18n.in_locale(:en) { @lead.status_is?('Converted') || @lead.status_is?('Rejected') }
+      - unless I18n.in_locale(:en) { @lead.status_is?('New') } || I18n.in_locale(:en) { @lead.status_is?('Converted') || @lead.status_is?('Rejected') }
         %li
           = simple_form_for @lead, :url => convert_lead_path(@lead), :html => { :method => :get } do |form|
             = form.button :submit, t(:convert), :id => "convert_lead"
@@ -46,8 +46,8 @@
 - if @lead.status == "New"
   #on_call(style="display: none" data-id="#{@lead.id}")
     %p
-      You're currently on the phone with #{@lead.full_name}.
-      = link_to "Done?", finish_lead_path
+      #{t(:on_the_phone_with, :lead => @lead.full_name)}.
+      = link_to t(:done?), finish_lead_path
 
 - content_for :sidebar do
   .box.gold
@@ -76,9 +76,10 @@
         = show_attribute(@lead, 'facebook', link_to('Facebook', @lead.facebook))
         = show_attribute(@lead, 'xing', link_to('Xing', @lead.xing))
         = show_attribute(@lead, 'referred_by')
-      %hr
-      %p
-        = link_to "Already contacted?", finish_lead_path, :onclick => "CallBox.show(this.href); return false;"
+      - if I18n.in_locale(:en) { @lead.status_is?('New') }
+        %hr
+        %p
+          = link_to t(:already_contacted?), finish_lead_path, :onclick => "CallBox.show(this.href); return false;"
     - elsif @lead.assignee.blank?
       = simple_form_for @lead, :html => { :class => 'accept' } do |form|
         = form.hidden_field :do_not_notify, :value => true

@@ -1,17 +1,17 @@
 %h2.title
   Leads
   = add_new t(:add_lead), new_lead_path(:return_to => request.fullpath)
-  = link_to "Next Lead", next_leads_path, :class => "button"
+  = link_to t(:next_lead), next_leads_path, :class => "button"
   -# %button{ :onclick => "CallBox.show('#{next_leads_path}');", :style => "float: right;margin: 0 10px 0px 0; height: 28px;" } Next Lead
 
 %ul.tabs
   - if can? :view_unassigned, Lead
-    %li{:class => "#{'active' if params[:status] == "Unassigned"}"}= link_to "Unassigned", :status => "Unassigned"
-  %li{:class => "#{'active' if params[:status] == "New"}"}= link_to "New", :status => "New"
-  %li{:class => "#{'active' if params[:status] == "Contacted"}"}= link_to "Contacted", :status => "Contacted"
-  %li{:class => "#{'active' if params[:status] == "Infomail Sent"}"}= link_to "Infomail Sent", :status => "Infomail Sent"
-  %li{:class => "#{'active' if params[:status] == "Offer Requested"}"}= link_to "Offer Requested", :status => "Offer Requested"
-  %li{:class => "#{'active' if params[:status] == "All"}"}= link_to "All", :status => "All"
+    %li{:class => "#{'active' if params[:status] == "Unassigned"}"}= link_to t(:unassigned), :status => "Unassigned"
+  %li{:class => "#{'active' if params[:status] == "New"}"}= link_to t(:new), :status => "New"
+  %li{:class => "#{'active' if params[:status] == "Contacted"}"}= link_to t(:contacted), :status => "Contacted"
+  %li{:class => "#{'active' if params[:status] == "Infomail Sent"}"}= link_to t(:infomail_sent), :status => "Infomail Sent"
+  %li{:class => "#{'active' if params[:status] == "Offer Requested"}"}= link_to t(:offer_requested), :status => "Offer Requested"
+  %li{:class => "#{'active' if params[:status] == "All"}"}= link_to t(:all), :status => "All"
 
 %table
   - @leads.each do |lead|

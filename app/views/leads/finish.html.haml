@@ -2,20 +2,25 @@
 - infomail_templates = InfomailTemplate.all
 
 #step_1
-  %h3
-    How did the call go?
+  %h3= t(:how_did_the_call_go)
 
   %ol
-    %li= link_to "Customer requested infomail", "#", :"data-next" => "infomail"
-    %li= link_to "Customer wants to be called back", lead_path(lead, :lead => { :status => "Contacted" }), :"data-next" => "call_back"
-    %li= link_to "Customer doesn't want to be contacted again", lead_path(lead, :lead => { :status => "Rejected" })
-    %li= link_to "Customer requested an offer", lead_path(lead, :lead => { :status => "Offer Requested" }), :"data-next" => "offer_requested"
+    %li= link_to t(:customer_requested_infomail),
+      "#",
+      :"data-next" => "infomail"
+    %li= link_to t(:customer_wants_to_be_called_back),
+      lead_path(lead, :lead => { :status => "Contacted" }),
+      :"data-next" => "call_back"
+    %li= link_to t(:customer_doesnt_want_to_be_contacted),
+      lead_path(lead, :lead => { :status => "Rejected" })
+    %li= link_to t(:customer_requested_offer),
+      lead_path(lead, :lead => { :status => "Offer Requested" }),
+      :"data-next" => "offer_requested"
 
 = simple_form_for :infomail,
   :url => lead_infomails_path(:lead_id => lead.id),
   :html => { :style => "display: none", :"data-next" => "schedule_infomail_followup", :id => "infomail" } do |form|
-  %h3
-    Which infomail should be sent to the customer?
+  %h3= t(:which_infomail_should_be_sent)
 
   %fieldset
     .33
@@ -23,12 +28,11 @@
       = form.select :template,
         infomail_templates.map { |t| [t.name, t.id] },
         :selected => lead.campaign_id ? InfomailTemplate.first(:campaign_id => lead.campaign_id).try(:id) : nil
-  = form.button :submit, "Send Infomail"
+  = form.button :submit, t(:send_infomail)
 
-= simple_form_for lead.tasks.new(:name => "Follow up about infomail", :due_at => 3.days.from_now),
+= simple_form_for lead.tasks.new(:name => t(:follow_up_about_infomail), :due_at => 3.days.from_now),
   :html => { :style => "display: none", :id => "schedule_infomail_followup" } do |form|
-  %h3
-    Would you like to schedule a followup call?
+  %h3= t(:want_to_schedule_a_followup_call)
 
   %fieldset
     = form.hidden_field :asset_id
@@ -39,13 +43,12 @@
     = form.input :name
     = datepicker_for(form, :due_at, :preset_date => false, :id => "infomail_task_due_at")
 
-  %input(type="submit" value="Schedule")
-  %input(type="submit" name="skip" value="Skip" style="float: right;")
+  = form.button :submit, t(:schedule)
+  = form.button :submit, t(:skip), :name => "skip", :style => "float: right;"
 
-= simple_form_for lead.tasks.new(:name => "Rescheduled", :due_at => 30.minutes.from_now),
+= simple_form_for lead.tasks.new(:name => t(:rescheduled), :due_at => 30.minutes.from_now),
   :html => { :style => "display: none", :id => "call_back" } do |form|
-  %h3
-    Would you like to schedule a followup call?
+  %h3= t(:want_to_schedule_a_followup_call)
 
   %fieldset
     = form.hidden_field :asset_id
@@ -56,13 +59,12 @@
     = form.input :name
     = datepicker_for(form, :due_at, :preset_date => false, :id => "call_back_due_at")
 
-  %input(type="submit" value="Schedule")
-  %input(type="submit" name="skip" value="Skip" style="float: right;")
+  = form.button :submit, t(:schedule)
+  = form.button :submit, t(:skip), :name => "skip", :style => "float: right;"
 
-= simple_form_for lead.tasks.new(:name => "Send offer", :due_at => 30.minutes.from_now),
+= simple_form_for lead.tasks.new(:name => t(:send_offer), :due_at => 30.minutes.from_now),
   :html => { :style => "display: none", :id => "offer_requested" } do |form|
-  %h3
-    Would you like to schedule a task for sending the offer?
+  %h3= t(:want_to_schedule_task_with_offer)
 
   %fieldset
     = form.hidden_field :asset_id
@@ -73,8 +75,8 @@
     = form.input :name
     = datepicker_for(form, :due_at, :preset_date => false, :id => "call_back_due_at")
 
-  %input(type="submit" value="Schedule")
-  %input(type="submit" name="skip" value="Skip" style="float: right;")
+  = form.button :submit, t(:schedule)
+  = form.button :submit, t(:skip), :name => "skip", :style => "float: right;"
 
 :javascript
   function after_load_callback() {

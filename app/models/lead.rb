@@ -237,7 +237,7 @@ private
   end
 
   def update_cached_lead_counts
-    Company.update_cached_lead_counts(self.user.company_id)
-    User.update_cached_lead_counts(self.user_id)
+    # Company.update_cached_lead_counts(self.user.company_id)
+    # User.update_cached_lead_counts(self.user_id)
   end
 end
