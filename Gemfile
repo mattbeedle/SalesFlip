@@ -74,6 +74,7 @@ group :test do
   gem 'autotest-rails',   :require => 'autotest/rails'
   gem 'fakeweb'
   gem 'faker', '0.3.1'
+  gem 'resque_unit'
   gem 'shoulda'
   gem 'mocha'
   gem 'database_cleaner'

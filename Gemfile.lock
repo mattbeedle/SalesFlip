@@ -323,6 +323,8 @@ GEM
       redis (>= 2.0.1)
       resque (>= 1.8.0)
       rufus-scheduler
+    resque_unit (0.3.4)
+      json (~> 1.4.6)
     rsolr (0.12.1)
       builder (>= 2.1.2)
     rspec (2.5.0)
@@ -457,6 +459,7 @@ DEPENDENCIES
   remail
   resque
   resque-scheduler
+  resque_unit
   ruby-debug19
   salesflip-lead_notifications
   shoulda

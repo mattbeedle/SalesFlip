@@ -3,15 +3,15 @@ module EmailHelpers
 
   def email_for(to)
     case to
-  
+
     # add your own name => email address mappings here
-  
+
     when /^#{capture_model}$/
       model($1).email
-  
+
     when /^"(.*)"$/
       $1
-  
+
     else
       to
     end
@@ -19,3 +19,7 @@ module EmailHelpers
 end
 
 World(EmailHelpers)
+
+Before do
+  Resque.reset!
+end
