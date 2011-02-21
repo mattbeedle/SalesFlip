@@ -6,8 +6,8 @@
 
   %ol
     %li= link_to t(:customer_requested_infomail),
-      "#",
-      :"data-next" => "infomail"
+      lead_path(lead, :lead => { :status => "Infomail Requested" }),
+      :"data-next" => "schedule_infomail_followup"
     %li= link_to t(:customer_wants_to_be_called_back),
       lead_path(lead, :lead => { :status => "Contacted" }),
       :"data-next" => "call_back"
@@ -16,19 +16,6 @@
     %li= link_to t(:customer_requested_offer),
       lead_path(lead, :lead => { :status => "Offer Requested" }),
       :"data-next" => "offer_requested"
-
-= simple_form_for :infomail,
-  :url => lead_infomails_path(:lead_id => lead.id),
-  :html => { :style => "display: none", :"data-next" => "schedule_infomail_followup", :id => "infomail" } do |form|
-  %h3= t(:which_infomail_should_be_sent)
-
-  %fieldset
-    .33
-      = form.label :template
-      = form.select :template,
-        infomail_templates.map { |t| [t.name, t.id] },
-        :selected => lead.campaign_id ? InfomailTemplate.first(:campaign_id => lead.campaign_id).try(:id) : nil
-  = form.button :submit, t(:send_infomail)
 
 = simple_form_for lead.tasks.new(:name => t(:follow_up_about_infomail), :due_at => 3.days.from_now),
   :html => { :style => "display: none", :id => "schedule_infomail_followup" } do |form|

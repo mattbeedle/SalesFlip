@@ -121,6 +121,8 @@ protected
               Lead.all(:status => "Contacted")
             when "Offer Requested"
               Lead.all(:status => "Offer Requested")
+            when "Infomail Requested"
+              Lead.all(:status => "Infomail Requested")
             when "Infomail Sent"
               Lead.all(:status => "Infomail Sent")
             when "All"

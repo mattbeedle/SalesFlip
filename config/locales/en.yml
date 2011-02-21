@@ -350,6 +350,7 @@ en:
     statuses:
       - New
       - Contacted
+      - Infomail Requested
       - Infomail Sent
       - Offer Requested
       - Rejected
@@ -363,6 +364,7 @@ en:
     - Interested
     - Infomail Sent
     - Offer Requested
+    - Infomail Requested
   lead_sources:
     - Campaign
     - Cold Call
@@ -564,6 +566,7 @@ en:
   new: "New"
   contacted: "Contacted"
   infomail_sent: "Infomail Sent"
+  infomail_requested: "Infomail Requested"
   offer_requested: "Offer Requested"
   all: "All"
   assign_to: "Assign to"
