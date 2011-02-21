@@ -20,41 +20,6 @@ Feature: Manage leads
     And an import summary email should have been sent
     And I should see "Your leads are being imported now. You will receive a summary email when the import has finished"
 
-  Scenario: Accepting a lead
-    Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika
-    And all emails have been delivered
-    And I am on the leads page
-    When I press "accept"
-    Then I should be on the lead's page
-    And the lead: "erich" should be assigned to annika
-    And 0 emails should be delivered
-
-  Scenario: Accepting a lead from the show page
-    Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika
-    And I am on the lead's page
-    When I press "accept"
-    Then I should be on the lead's page
-    And the lead: "erich" should be assigned to annika
-
-  Scenario: Leads index when the leads are accepted
-    Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: Annika, assignee: Annika
-    When I go to the leads page
-    Then I should not see "Accept"
-    And I should see "Edit"
-
-  Scenario: Trying to accept a lead when it has already been accepted, but the UI has not updated
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And a lead: "erich" exists with user: Annika
-    When I go to the leads page
-    And Benny accepts the lead
-    And I press "accept"
-    Then I should be on the leads page
-    And I should see "This lead was just accepted by benjamin.pochhammer, you can no longer accept it"
-
   Scenario: Re-assigning a lead
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -194,22 +159,12 @@ Feature: Manage leads
   Scenario: Editing a lead
     Given I am registered and logged in as annika
     And a lead: "erich" exists with user: annika, assignee: annika
-    And I am on the leads page
+    And I am on the lead's page
     And I follow the edit link for the lead
     And I fill in "lead_phone" with "999"
     When I press "lead_submit"
-    Then I should be on the leads page
-    And a lead should exist with phone: "999"
+    Then a lead should exist with phone: "999"
     And an updated activity should exist for lead with first_name "Erich"
-
-  Scenario: Editing a lead from index page
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And benny belongs to the same company as annika
-    And lead: "erich" exists with user: benny, assignee: annika
-    And I am on the leads page
-    When I follow the edit link for the lead
-    Then I should be on the lead's edit page
 
   #Scenario: Deleting a lead from the index page
   #  Given I am registered and logged in as annika
@@ -226,53 +181,28 @@ Feature: Manage leads
     Given a user: "annika" exists
     And I have accepted an invitation from annika
     And a lead: "erich" exists with user: annika
-    And a lead: "markus" exists with user: user
+    And a lead: "markus" exists with user: user, assignee: user
     When I am on the leads page
+    And I follow "All"
     Then I should not see "Erich"
     And I should see "Markus"
-    And I should not see "filter"
 
-  Scenario: Filtering leads
+  Scenario: Filtering new leads (default)
     Given I am registered and logged in as annika
-    And a lead exists with user: annika, status: "New", first_name: "Erich"
-    And a lead exists with user: annika, status: "Rejected", first_name: "Markus"
-    And I go to the leads page
-    When I check "New"
-    And I press "Filter"
-    Then I should see "Erich"
-    And I should not see "Markus"
-
-  Scenario: Filtering unassigned leads
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And a lead exists with user: annika, status: "New", first_name: "Erich"
-    And a lead exists with user: annika, status: "New", assignee: benny, first_name: "Markus"
-    And I go to the leads page
-    When I check "unassigned"
-    And I press "filter"
-    Then I should see "Erich"
-    And I should not see "Markus"
-
-  Scenario: Filtering leads assigned to me
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
     And a lead exists with user: annika, status: "New", first_name: "Erich", assignee: annika
-    And a lead exists with user: annika, status: "New", first_name: "Markus", assignee: benny
+    And a lead exists with user: annika, status: "Rejected", first_name: "Markus", assignee: annika
     And I go to the leads page
-    When I check "assigned_to"
-    And I press "filter"
     Then I should see "Erich"
     And I should not see "Markus"
 
-  Scenario: Filtering leads by source
+  Scenario: Filtering new leads
     Given I am registered and logged in as annika
-    And a lead exists with user: annika, status: "New", first_name: "Erich", source: "Website"
-    And a lead exists with user: annika, status: "New", first_name: "Markus", source: "Imported"
+    And a lead exists with user: annika, status: "New", first_name: "Erich", assignee: annika
+    And a lead exists with user: annika, status: "Rejected", first_name: "Markus", assignee: annika
     And I go to the leads page
-    When I check "source_imported"
-    And I press "filter"
-    Then I should see "Markus"
-    And I should not see "Erich"
+    And I follow "New"
+    Then I should see "Erich"
+    And I should not see "Markus"
 
   Scenario: Deleted leads
     Given I am registered and logged in as annika
@@ -282,7 +212,7 @@ Feature: Manage leads
 
   Scenario: Viewing a lead
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika, source: "Imported"
+    And a lead: "erich" exists with user: annika, source: "Imported", assignee: annika
     And I am on the dashboard page
     And I follow "Leads"
     When I follow "erich-feldmeier"
@@ -368,7 +298,7 @@ Feature: Manage leads
   Scenario: Rejecting a lead
     Given I am registered and logged in as annika
     And Annika has invited Benny
-    And a lead: "erich" exists with user: benny, assignee: Annika
+    And a lead: "erich" exists with user: benny, assignee: Annika, status: "Contacted"
     And I am on the lead's page
     When I press "Reject"
     Then I should be on the leads page
@@ -378,7 +308,7 @@ Feature: Manage leads
   Scenario: Converting a lead to a new account
     Given I am registered and logged in as annika
     And Annika has invited Benny
-    And a lead: "erich" exists with user: benny, assignee: Annika
+    And a lead: "erich" exists with user: benny, assignee: Annika, status: "Contacted"
     And I am on the lead's page
     When I follow "Convert"
     And I fill in "account_name" with "World Dating"
@@ -396,7 +326,7 @@ Feature: Manage leads
   Scenario: Converting a lead to a new account and with an opportunity
     Given I am registered and logged in as annika
     And Annika has invited Benny
-    And a lead: "erich" exists with user: benny, assignee: Annika
+    And a lead: "erich" exists with user: benny, assignee: Annika, status: "Contacted"
     And I am on the lead's page
     When I follow "Convert"
     And I fill in "account_name" with "World Dating"
@@ -409,7 +339,7 @@ Feature: Manage leads
 
   Scenario: Converting a lead to a new account, but entering an invalid opportunity
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: Annika, assignee: Annika
+    And a lead: "erich" exists with user: Annika, assignee: Annika, status: "Contacted"
     And I am on the lead's page
     When I follow "Convert"
     And I fill in "account_name" with "World Dating"
@@ -423,7 +353,7 @@ Feature: Manage leads
 
   Scenario: Converting a lead to an existing account
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika, assignee: Annika
+    And a lead: "erich" exists with user: annika, assignee: Annika, status: "Contacted"
     And a account: "careermee" exists with user: annika
     And I am on the lead's page
     When I follow "Convert"
@@ -437,7 +367,7 @@ Feature: Manage leads
 
   Scenario: Converting a lead to an existing contact
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com", assignee: Annika
+    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com", assignee: Annika, status: "Contacted"
     And account: "careermee" exists with user: annika
     And contact: "florian" exists with email: "erich.feldmeier@gmail.com", account: careermee
     And I am on the lead's page
@@ -449,7 +379,7 @@ Feature: Manage leads
 
   Scenario: Converting a lead to an existing contact that has no account
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com", assignee: Annika
+    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com", assignee: Annika, status: "Contacted"
     And contact: "florian" exists with email: "erich.feldmeier@gmail.com", account: nil, user: annika
     And I am on the lead's page
     When I follow "Convert"
@@ -459,7 +389,7 @@ Feature: Manage leads
 
   Scenario: Converting a lead with a blank email when a contact already exists with a blank email
     Given I am registered and logged in as annika
-    And a lead exists with user: annika, email: "", assignee: Annika
+    And a lead exists with user: annika, email: "", assignee: Annika, status: "Contacted"
     And account: "careermee" exists with user: annika
     And contact: "florian" exists with email: "", account: careermee
     And I am on the lead's page
@@ -470,7 +400,7 @@ Feature: Manage leads
 
   Scenario: Convert page when converting to an existing account
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com", assignee: Annika
+    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com", assignee: Annika, status: "Contacted"
     And account: "careermee" exists with user: annika
     And contact: "florian" exists with email: "erich.feldmeier@gmail.com", account: careermee
     And I am on the lead's page
@@ -480,7 +410,7 @@ Feature: Manage leads
 
   Scenario: Trying to convert a lead without entering an account name
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika, assignee: Annika
+    And a lead: "erich" exists with user: annika, assignee: Annika, status: "Contacted"
     And I am on the lead's page
     When I follow "Convert"
     And I press "convert"
@@ -490,7 +420,7 @@ Feature: Manage leads
 
   Scenario: Viewing a converted lead
     Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com", assignee: Annika
+    And a lead: "erich" exists with user: annika, email: "erich.feldmeier@gmail.com", assignee: Annika, status: "Contacted"
     And account: "careermee" exists with user: annika
     And contact: "florian" exists with email: "erich.feldmeier@gmail.com", account: careermee
     And I am on the lead's page
@@ -499,56 +429,6 @@ Feature: Manage leads
     And I go to the lead's page
     Then I should see "This lead was converted by annika.fleischer"
     And I should see "Comments are closed"
-
-  Scenario: Private lead (in)visiblity on leads page
-    Given I am registered and logged in as annika
-    And user: "benny" exists
-    And benny belongs to the same company as annika
-    And a lead: "erich" exists with user: benny, permission: "Private"
-    And a lead: "markus" exists with user: benny, permission: "Public"
-    When I go to the leads page
-    Then I should not see "Erich"
-    And I should see "Markus"
-
-  Scenario: Shared lead visibility on leads page
-    Given I am registered and logged in as benny
-    And a lead: "markus" exists with user: benny, permission: "Private"
-    And user: "annika" exists with email: "annika.fleischer@1000jobboersen.de"
-    And annika belongs to the same company as benny
-    And I go to the new lead page
-    And I fill in "lead_first_name" with "Erich"
-    And I fill in "lead_last_name" with "Feldmeier"
-    And I select "Shared" from "lead_permission"
-    And I select "annika.fleischer@1000jobboersen.de" from "lead_permitted_user_ids"
-    And I press "lead_submit"
-    And I logout
-    And I login as annika
-    When I go to the leads page
-    Then I should see "Erich"
-    And I should not see "Markus"
-
-  Scenario: Shared lead (in)visibility on leads page
-    Given I am registered and logged in as annika
-    And user: "benny" exists
-    And benny belongs to the same company as annika
-    And a lead: "erich" exists with user: benny
-    And a lead: "markus" exists with user: benny
-    And erich is shared with annika
-    And markus is not shared with annika
-    When I go to the leads page
-    Then I should see "Erich"
-    And I should not see "Markus"
-
-  Scenario: Viewing a shared lead details
-    Given I am registered and logged in as annika
-    And user: "benny" exists
-    And benny belongs to the same company as annika
-    And a lead: "erich" exists with user: benny
-    And erich is shared with annika
-    And I am on the leads page
-    When I follow "erich-feldmeier"
-    Then I should see "Erich"
-    And I should be on the lead's page
 
   Scenario: Actions for a converted lead
     Given I am registered and logged in as annika
