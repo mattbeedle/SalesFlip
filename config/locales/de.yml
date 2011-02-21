@@ -403,10 +403,10 @@ de:
   #--------------------------------------------------------------
   # Task
   #--------------------------------------------------------------
-  add_task: Anwendung hinzufügen
-  delete_task: Anwendung löschen
-  edit_task: Anwendung bearbeiten
-  update_task: Anwendung aktualisieren
+  add_task: Aufgabe hinzufügen
+  delete_task: Aufgabe löschen
+  edit_task: Aufgabe bearbeiten
+  update_task: Aufgabe aktualisieren
   due_today: Heute
   due_tomorrow: Morgen
   due_this_week: Diese Woche

@@ -16,6 +16,10 @@ Given /^I have accepted an invitation from annika$/ do
   click_link_or_button 'user_submit'
 end
 
+When /^the lead is stored$/ do
+  store_model('lead', 'lead', Lead.last)
+end
+
 Given /I execute "([^\"]*)"$/ do |command|
   eval command
 end

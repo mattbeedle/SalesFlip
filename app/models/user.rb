@@ -77,7 +77,7 @@ class User
 
   def recent_items
     activities.where(:action => 'Viewed', :order => :updated_at.desc,
-                     :limit => 5).map(&:subject).compact
+                     :limit => 15).map(&:subject).compact
   end
 
   def tracked_items

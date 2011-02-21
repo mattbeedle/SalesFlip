@@ -45,6 +45,7 @@ class Lead
   property :country, String
   property :referred_by, String
   property :do_not_call, Boolean
+  property :industry, String
 
   property :homepage, String
   property :identifier, Integer
@@ -125,7 +126,7 @@ class Lead
     leads = Lead.search { keywords self.company }.results
 
     leads.select do |lead|
-      company.levenshtein_similar(lead.company) > threshold
+      company.levenshtein_similar(lead.company) > threshold rescue false
     end
   end
 
@@ -133,7 +134,7 @@ class Lead
     accounts = Account.search { keywords self.company }.results
 
     accounts.select do |account|
-      company.levenshtein_similar(account.company) > threshold
+      company.levenshtein_similar(account.name) > threshold
     end
   end
 

@@ -1,6 +1,6 @@
 %h2.title
   Leads
-  = add_new t(:add_lead), new_lead_path(:return_to => request.fullpath)
+  = add_new t(:add_lead), new_lead_path
   = link_to t(:next_lead), next_leads_path, :class => "button"
   -# %button{ :onclick => "CallBox.show('#{next_leads_path}');", :style => "float: right;margin: 0 10px 0px 0; height: 28px;" } Next Lead
 
@@ -27,6 +27,16 @@
 = will_paginate @leads
 
 = yield :call_boxes
+
+- if can?(:export, current_user) || can?(:import, current_user)
+  - content_for :sidebar do
+    .gold.box
+      %h3= t(:data_actions)
+      %ul.plain
+        - if can?(:export, current_user)
+          %li= link_to t(:export_as_csv), export_leads_path(@filters), :id => 'export_as_csv'
+        - if can?(:import, current_user)
+          %li= link_to t(:import_from_csv), new_lead_import_path(:return_to => request.fullpath)
 
 :css
   td button {
