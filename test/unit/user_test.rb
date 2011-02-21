@@ -133,12 +133,6 @@ class UserTest < ActiveSupport::TestCase
       end
     end
 
-    should 'cache assigned lead count' do
-      @user.save!
-      Lead.make :user => @user, :assignee => @user
-      assert_equal 1, @user.reload.assigned_lead_count
-    end
-
     should 'default role to "Sales Person"' do
       @user.role = nil
       @user.save

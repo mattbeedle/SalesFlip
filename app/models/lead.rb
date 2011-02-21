@@ -69,7 +69,6 @@ class Lead
   after  :save do
     notify_assignee unless do_not_notify
   end
-  after :save, :update_cached_lead_counts
   after :save do
     tasks.update! :asset_updated_at => updated_at
   end
@@ -234,10 +233,5 @@ private
         remove_instance_variable(:@marked_for_auto_indexing)
       end
     end
-  end
-
-  def update_cached_lead_counts
-    # Company.update_cached_lead_counts(self.user.company_id)
-    # User.update_cached_lead_counts(self.user_id)
   end
 end

@@ -20,7 +20,6 @@ class User
   property :created_on, Date
   property :updated_at, DateTime
   property :updated_on, Date
-  property :assigned_lead_count, Integer, default: 0
 
   attr_accessor :company_name
 
@@ -106,13 +105,6 @@ class User
 
   def dropbox_email
     "#{api_key}@salesflip.appspotmail.com"
-  end
-
-  def self.update_cached_lead_counts(user_id)
-    user = User.find(user_id)
-    user.assigned_lead_count = Lead.for_company(user.company).
-      assigned_to(user).count
-    user.save
   end
 
   def redistribute_leads(options = {})
