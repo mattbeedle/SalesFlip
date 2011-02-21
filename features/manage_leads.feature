@@ -76,7 +76,8 @@ Feature: Manage leads
     And I fill in "lead_first_name" with "Erich"
     And I fill in "lead_last_name" with "Feldmeier"
     When I press "lead_submit"
-    Then I should be on the leads page
+    And the lead is stored
+    Then I should be on the lead's page
     And I should see "Erich Feldmeier"
     And a created activity should exist for lead with first_name "Erich"
     And 0 emails should be delivered
@@ -91,7 +92,8 @@ Feature: Manage leads
     And I fill in "lead_first_name" with "Erich"
     And I fill in "lead_last_name" with "Feldmeier"
     When I press "lead_submit"
-    Then I should be on the leads page
+    And the lead is stored
+    Then I should be on the lead's page
     And 1 leads should exist with first_name: "Erich", last_name: "Feldmeier"
     And I should see "Erich Feldmeier"
     And a created activity should exist for lead with first_name "Erich"
