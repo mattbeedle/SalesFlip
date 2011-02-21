@@ -53,9 +53,10 @@ ActionController::Base.allow_rescue = false
 # http://github.com/bmabey/database_cleaner for more info.
 
 DataMapper.auto_migrate!
-DatabaseCleaner.strategy = :transaction
 
-FakeWeb.allow_net_connect = false
+FakeWeb.allow_net_connect = %r[^https?://127.0.0.1]
+
+Capybara.javascript_driver = :akephalos
 
 class Sunspot::Rails::StubSessionProxy::Search
   def results; [].paginate; end
@@ -63,6 +64,15 @@ end
 Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
 
 I18n.locale = :en
+DatabaseCleaner.orm = :data_mapper
+
+Before('~@javascript') do
+  DatabaseCleaner.strategy = :transaction
+end
+
+Before('@javascript') do
+  DatabaseCleaner.strategy = :truncation
+end
 
 Before do
   DatabaseCleaner.start

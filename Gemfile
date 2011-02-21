@@ -65,6 +65,7 @@ group :development do
 end
 
 group :test do
+  gem 'akephalos'
   gem 'pickle'
   gem 'capybara'
   gem 'cucumber-rails'
@@ -76,7 +77,7 @@ group :test do
   gem 'faker', '0.3.1'
   gem 'shoulda'
   gem 'mocha'
-  gem 'database_cleaner'
+  gem 'database_cleaner', :git => 'git://github.com/bernerdschaefer/database_cleaner.git'
   gem 'timecop'
   gem 'test_notifier'
   gem 'watchr'
