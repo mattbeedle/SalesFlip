@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class LeadImport
   include DataMapper::Resource
   include DataMapper::Timestamps
@@ -54,7 +56,7 @@ class LeadImport
   end
 
   def lines
-    file.read.force_encoding('utf-8').split("\n")
+    file.read.force_encoding('iso-8859-1').encode('utf-8').split("\r")
   end
 
   def progress
