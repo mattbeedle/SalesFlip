@@ -17,10 +17,14 @@
 %table
   - @leads.each do |lead|
     %tr.item[lead]
-      %td(width="100%")
+      - if params[:status] == "All"
+        %td.status= t(lead.status)
+      %td
         %strong
           = link_to lead.full_name, lead, :id => lead.full_name.to_dom_id
+      %td(width="65")
         = raw rating_for(lead)
+      %td
         %small
           = "at #{lead.company}" if !lead.company.blank?
 
@@ -38,46 +42,57 @@
         - if can?(:import, current_user)
           %li= link_to t(:import_from_csv), new_lead_import_path(:return_to => request.fullpath)
 
-:css
-  td button {
-    font-size: 0.8em;
-  }
+- content_for :stylesheets do
+  :css
 
-  div#main h3 { cursor: auto; }
+    td.status {
+      color: #555;
+      font-size: 10px;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+      width: 120px;
+    }
 
-  .tabs {
-    border-bottom: 5px solid #eee;
-    height: 28px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
+    td button {
+      font-size: 0.8em;
+    }
 
-  .tabs li {
-    float: left;
-    margin-right: 1px;
-  }
+    div#main h3 { cursor: auto; }
 
-  .tabs a {
-    background-color: #eee;
-    border-bottom: 5px solid #ccc;
-    color: #999;
-    display: block;
-    font-weight: bold;
-    padding: 0.5em 1em;
-    text-decoration: none;
-  }
+    .tabs {
+      border-bottom: 5px solid #eee;
+      height: 28px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
 
-  .tabs a:hover {
-    border-bottom-color: #555;
-    color: #555;
-  }
+    .tabs li {
+      float: left;
+      margin-right: 1px;
+    }
 
-  .tabs .active a {
-    border-bottom-color: #0073B1;
-  }
+    .tabs a {
+      background-color: #eee;
+      border-bottom: 5px solid #ccc;
+      color: #999;
+      display: block;
+      font-weight: bold;
+      padding: 0.5em 1em;
+      text-decoration: none;
+    }
 
-  .tabs .active a {
-    background-color: #0073B1;
-    color: #fff;
-  }
+    .tabs a:hover {
+      border-bottom-color: #555;
+      color: #555;
+    }
+
+    .tabs .active a {
+      border-bottom-color: #0073B1;
+    }
+
+    .tabs .active a {
+      background-color: #0073B1;
+      color: #fff;
+    }
