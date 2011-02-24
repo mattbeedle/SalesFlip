@@ -53,8 +53,6 @@ Salesflip::Application.configure do
 
   config.after_initialize do
     I18n.locale = :de
-    require 'sunspot/rails'
-    Sunspot.config.solr.url = ENV['WEBSOLR_URL']
   end
 
   # require 'heroku/autoscale'
