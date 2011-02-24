@@ -61,11 +61,11 @@ module DataMapper
     end
 
     def asc(*keys)
-      all(order: keys.map(&:asc))
+      all(order: keys.map(&:to_sym).map(&:asc))
     end
 
     def desc(*keys)
-      all(order: keys.map(&:desc))
+      all(order: keys.map(&:to_sym).map(&:desc))
     end
 
     def limit(limit)
