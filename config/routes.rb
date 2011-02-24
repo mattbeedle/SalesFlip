@@ -39,6 +39,15 @@ Salesflip::Application.routes.draw do
 
   namespace :administration do
     root :to => 'pages#index'
+    resources :leads do
+      collection do
+        put :assignee
+        put :campaign
+        put :rating
+        put :source
+        put :status, :to => "leads#update_status"
+      end
+    end
 
     resources :opportunity_stages do
       get :confirm_delete, :on => :member

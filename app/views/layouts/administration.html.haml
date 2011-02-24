@@ -2,10 +2,11 @@
 %html
   %head
     %title= t(:administration)
+    :css
+      body {
+        font: 10px/18px 'lucida grande', helvetica, sans-serif;
+      }
     = render :partial => 'shared/javascripts'
   %body
-    %ul.navigation
-      %li= link_to t(:sales_site), root_path
-      %li= link_to t(:admin_dashboard), administration_root_path
     = yield
     = render :partial => 'shared/chart_beat'

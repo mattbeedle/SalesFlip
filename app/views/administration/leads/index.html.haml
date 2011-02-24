@@ -1,0 +1,331 @@
+#bar
+  %ul#bulk.disabled
+    %li
+      Assignee
+      %ul
+        - User.each do |assignee|
+          %li= link_to assignee.name, assignee_administration_leads_path(:assignee_id => assignee.id)
+
+    %li
+      Campaign
+      %ul
+        - Campaign.each do |campaign|
+          %li= link_to campaign.name, campaign_administration_leads_path(:campaign_id => campaign.id)
+
+    %li
+      Source
+      %ul
+        - t(:lead_sources, :locale => :en).each do |source|
+          %li= link_to source, source_administration_leads_path(:source => source)
+
+    %li
+      Status
+      %ul
+        - t(:lead_statuses, :locale => :en).each do |status|
+          %li= link_to status, status_administration_leads_path(:status => status)
+
+    %li
+      Rating
+      %ul
+        %li
+          = link_to rating_administration_leads_path(:rating => 0), :class => :rating do
+            %span.off &#9733;
+            %span.off &#9733;
+            %span.off &#9733;
+            %span.off &#9733;
+            %span.off &#9733;
+        %li
+          = link_to rating_administration_leads_path(:rating => 1), :class => :rating do
+            %span.on &#9733;
+            %span.off &#9733;
+            %span.off &#9733;
+            %span.off &#9733;
+            %span.off &#9733;
+        %li
+          = link_to rating_administration_leads_path(:rating => 2), :class => :rating do
+            %span.on &#9733;
+            %span.on &#9733;
+            %span.off &#9733;
+            %span.off &#9733;
+            %span.off &#9733;
+        %li
+          = link_to rating_administration_leads_path(:rating => 3), :class => :rating do
+            %span.on &#9733;
+            %span.on &#9733;
+            %span.on &#9733;
+            %span.off &#9733;
+            %span.off &#9733;
+        %li
+          = link_to rating_administration_leads_path(:rating => 4), :class => :rating do
+            %span.on &#9733;
+            %span.on &#9733;
+            %span.on &#9733;
+            %span.on &#9733;
+            %span.off &#9733;
+        %li
+          = link_to rating_administration_leads_path(:rating => 5), :class => :rating do
+            %span.on &#9733;
+            %span.on &#9733;
+            %span.on &#9733;
+            %span.on &#9733;
+            %span.on &#9733;
+  #search
+    = form_tag nil, :method => :get do
+      %input(type="search" name="terms" placeholder="Search..." value="#{params[:terms]}")
+
+= form_tag nil, :method => :put, :id => "leads" do
+  %table
+    %thead
+      %tr
+        %th(width="70")
+          = link_to "Status", :sort => ["status", params[:sort] == %w(status asc) ? "desc" : "asc"]
+        %th
+          = link_to "Name", :sort => ["name", params[:sort] == %w(name asc) ? "desc" : "asc"]
+        %th(width="20")
+          = link_to raw("&#9733;"), :sort => ["rating", params[:sort] == %w(rating asc) ? "desc" : "asc"]
+        %th
+          = link_to "Company", :sort => ["company", params[:sort] == %w(company asc) ? "desc" : "asc"]
+        %th
+          = link_to "Source", :sort => ["source", params[:sort] == %w(source asc) ? "desc" : "asc"]
+        %th
+          = link_to "Assignee", :sort => ["assignee", params[:sort] == %w(assignee asc) ? "desc" : "asc"]
+        %th
+          = link_to "Campaign", :sort => ["campaign", params[:sort] == %w(campaign asc) ? "desc" : "asc"]
+        %th
+          = link_to "City", :sort => ["city", params[:sort] == %w(city asc) ? "desc" : "asc"]
+        %th(width="30")
+          = link_to "PLZ", :sort => ["postal_code", params[:sort] == %w(postal_code asc) ? "desc" : "asc"]
+        %th
+          = link_to "Size", :sort => ["company_size", params[:sort] == %w(company_size asc) ? "desc" : "asc"]
+        %th(width="20")
+          = link_to raw("&#9998;"), :sort => ["comments", params[:sort] == %w(comments asc) ? "desc" : "asc"]
+        %th(style="width: 75px;")
+          = link_to "Next Task", :sort => ["tasks", params[:sort] == %w(tasks asc) ? "desc" : "asc"]
+        %th(style="width: 8px;")
+    %tbody
+      - @leads.each do |lead|
+        %tr
+          %td(align="center" style="display: none;")
+            = check_box_tag 'leads[]', lead.id
+          %td= lead.status
+          %td= lead.full_name
+          %td(align="center")= lead.rating
+          %td.company
+            .elide{:title => lead.company}
+              = lead.company
+          %td= lead.source
+          %td= lead.assignee.try(:name)
+          %td= lead.campaign.try(:name)
+          %td= lead.city
+          %td(align="center")= lead.postal_code
+          %td(align="center")= lead.company_size
+          %td(align="center")= lead.comments.count
+          %td
+            - if task = lead.tasks.first(:due_at.gt => Time.now, :order => :due_at.asc)
+              = l task.due_at.to_date
+          %td
+            = link_to image_tag("external-link.png"), lead_path(lead), :target => :blank
+
+= will_paginate @leads, :inner_window => 10
+
+:css
+  body {
+    padding-top: 50px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  thead th {
+    background-color: #eee;
+    border-bottom: 2px solid #ccc;
+    border-right: 1px solid #fff;
+  }
+  tbody td {
+    border-bottom: 1px solid #eee;
+    border-right: 1px solid #eee;
+    padding: 2px 5px;
+  }
+  tbody tr:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+    cursor: hand;
+  }
+
+  th a {
+    color: #555;
+    display: block;
+    padding: 2px 5px;
+    text-decoration: none;
+  }
+
+  .company {
+    width: 180px;
+  }
+
+  .elide {
+    text-overflow:ellipsis;
+    overflow:hidden;
+    white-space:nowrap;
+    width: inherit;
+  }
+
+  tbody tr.selected {
+    background-color: #ffc;
+  }
+
+  tbody tr.selected td {
+    border-color: #eeb;
+  }
+
+  .rating {
+    font-size: 13px;
+    padding-top: 4px;
+    text-decoration: none;
+  }
+
+  .rating span.on {
+    color: #666666;
+  }
+
+  .rating span.off {
+    color: #cccccc;
+  }
+
+  #bar {
+    background-color: #555;
+    border-bottom: 4px solid #333;
+    height: 24px;
+    left: 0;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+
+  #search {
+    float: right;
+    margin-right: 10px;
+  }
+
+  #search input:focus {
+    width: 200px;
+  }
+
+  #bulk {
+    float: left;
+    list-style: none;
+    margin: 0;
+    margin-left: 10px;
+    padding: 0;
+  }
+
+  #bulk > li {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    background-color: #333;
+    color: #fff;
+    display: inline-block;
+    font-weight: bold;
+    padding: 4px 8px;
+    position: relative;
+    text-align: center;
+  }
+
+  #bulk.disabled li {
+    background-color: #444;
+    color: #999;
+  }
+
+  #bulk:not(.disabled) > li:hover ul {
+    display: block;
+  }
+
+  #bulk ul {
+    -webkit-box-shadow: #7E7D7D 0px 5px 5px 0px;
+    -moz-box-shadow: #7E7D7D 0px 5px 5px 0px;
+    box-shadow: #7E7D7D 0px 5px 5px 0px;
+    background-color: #fff;
+    display: none;
+    list-style: none;
+    margin: 0;
+    max-height: 180px;
+    overflow: auto;
+    padding: 4px;
+    position: absolute;
+    text-align: left;
+    width: 160px;
+    z-index: 2;
+  }
+
+  #bulk ul li {
+    border-bottom: 1px solid #eee;
+  }
+
+  #bulk ul a {
+    color: #000;
+    display: block;
+    padding: 4px;
+  }
+
+  #bulk ul a:hover {
+    background-color: #ffe;
+  }
+
+  .pagination {
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  .pagination a,
+  .pagination span {
+    margin: 0 5px;
+  }
+
+:javascript
+  var last_selected_row;
+
+  $$("tbody tr").each('delegate', 'mousedown', 'td, div', function(e) {
+    var row = this.parent("tr");
+
+    if ( e._.shiftKey && last_selected_row ) {
+      e.preventDefault();
+
+      var rows = $$("tbody tr");
+      var range = [rows.indexOf(last_selected_row), rows.indexOf(row)].sort();
+
+      rows.slice(range[0], range[1]+1).each(function(el) {
+        var checkbox = el.first("input");
+
+        checkbox.checked(true).fire('change');
+      });
+
+    }
+    else {
+      var checkbox = row.first("input");
+
+      checkbox.checked(!checkbox.checked()).fire('change');
+    }
+
+    last_selected_row = row;
+  });
+
+  "tbody input".on('change', function() {
+    if ( $$("input:checked").length > 0 )
+      $("bulk").removeClass("disabled");
+    else
+      $("bulk").addClass("disabled");
+
+    if ( this.checked() )
+      this.parent("tr").addClass("selected");
+    else
+      this.parent("tr").removeClass("selected");
+  });
+
+  $$("#bulk a").each('on', 'click', function(e) {
+    var form = $("leads");
+    form.set('action', this.get('href'));
+    form.submit();
+    return false;
+  });

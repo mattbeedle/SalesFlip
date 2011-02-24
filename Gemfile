@@ -1,6 +1,6 @@
 source :gemcutter
 
-gem 'rails'
+gem 'rails', '3.0.4'
 
 gem 'haml'
 gem 'inherited_resources'
@@ -11,10 +11,12 @@ gem 'mongo'
 gem 'dm-accepts_nested_attributes'
 gem 'dm-aggregates'
 gem 'dm-core', :git => 'git://github.com/bernerdschaefer/dm-core.git'
+gem 'dm-do-adapter', :git => 'git://github.com/bernerdschaefer/dm-do-adapter.git'
 gem 'dm-devise'
 gem 'dm-migrations', :git => 'git://github.com/datamapper/dm-migrations.git'
 gem 'dm-observer'
 gem 'dm-postgres-adapter'
+gem 'dm-sqlite-adapter'
 gem 'dm-rails'
 gem 'dm-timestamps'
 gem 'dm-transactions'
