@@ -1,0 +1,35 @@
+!!!
+%html
+  %head
+    %title Help
+    :css
+      body {
+        font: 14px/24px "Lucida Grande", helvetica, arial, sans-serif;
+        margin: 4em auto;
+        width: 800px;
+      }
+      section {
+        margin: 0 auto;
+        width: 42em;
+      }
+      img {
+        max-width: 100%;
+      }
+
+      p.note {
+        background-color: #ffc;
+        color: #767667;
+        font-size: 0.8em;
+        font-style: italic;
+        padding: 1em;
+      }
+
+      .active {
+        position: absolute;
+        left: 0;
+        text-align: center;
+        width: 100%;
+      }
+  %body
+    = yield
+    = render :partial => 'shared/chart_beat'

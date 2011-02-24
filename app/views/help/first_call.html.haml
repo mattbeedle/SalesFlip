@@ -1,0 +1,98 @@
+%section
+  %h1 First Call
+
+
+%section
+  %p
+    When you view your leads, you'll see that they're broken up into "buckets" 
+    according to their status: <strong>New</strong>, <strong>Contacted</strong>,
+    <strong>Infomail Requested</strong>, <strong>Infomail Sent</strong>,
+    <strong>Offer Requested</strong>, and <strong>All</strong>.
+
+= image_tag "help/first_call/no-leads.png", :width => "800", :height => 343
+
+%section
+  %p
+    As you can see, you currently have no new leads assigned to you. If you click
+    <strong>"Next Lead"</strong>, Salesflip will assign you a new lead from the
+    pool of unassigned leads and take you directly to the page for that lead. If
+    you already had a new lead, it would instead just take you to the next one
+    on the list.
+
+= image_tag "help/first_call/lead.png", :width => "800", :height => 343
+
+%section
+  %p
+    Okay! Everything looks in order. Give them a call! When you click the lead's
+    phone number from this page, a bar will appear at the bottom of the page
+    indicating that you're on the phone. This bar will follow you around while
+    you interact with the site: adding comments, editing the lead, etc.
+
+= image_tag "help/first_call/on-call.png", :width => "800", :height => 343
+
+%section
+  %p
+    When you're finished with the call, just click <strong>"Done"</strong>.
+
+    You'll be prompted to take action on the lead based on the customer's
+    response.
+
+  %p.note
+    Note: if you don't use the automatic dialer (for example, you call your
+    leads from a personal phone), then you can click <strong>"Already
+    Contacted?"</strong> to see this window.
+
+= image_tag "help/first_call/call-box.png", :width => "800", :height => 414
+
+%section
+
+  %p
+    Let's say that they requested our infomail. In that case, we'd click 
+    <strong>"Customer requested infomail"</strong>. This will move the lead
+    into the "Infomail Requested" bucket, and then prompt you to create a
+    task to follow up about the infomail. By default, it will be scheduled
+    three days in the future.
+
+= image_tag "help/first_call/call-box-infomail.png", :width => "800", :height => 414
+
+%section
+  %p
+    If you press <strong>Schedule</strong> a new task will be created, and you
+    will be returned to your list of leads. <strong>Skip</strong> will take
+    you to the same place, but won't create a task.
+
+  %p
+    The other options work almost identically:
+
+  %ul
+    %li
+      <strong>"Customer wants to be called back"</strong> will mark the lead as
+      "Contacted" and then let you schedule another call. You should use this
+      option when the contact asked to reschedule, or if you need to call a
+      different contact within the company.
+
+    %li
+      <strong>"Customer does't want to be contacted again"</strong> will reject
+      the lead and send you directly back to your list of leads.
+
+    %li
+      <strong>"Customer requested an offer"</strong> will mark the lead as
+      "Offer Requested" and prompt you to set up a taks to follow up about the
+      offer.
+
+  %p
+    Once you're back on the list of leads, you can click the different status
+    tabs to see what leads are in that state. For example, if you had previously
+    said that the customer requested an offer, when you click
+    <strong>"Offer Requested"</strong>, you'll see that lead again.
+
+= image_tag "help/first_call/offer-requested.png", :width => "800", :height => 337
+
+%section
+  %p
+    And that's it! Now you're ready to #{link_to "start making calls", leads_path}!
+
+  %p
+    Oh, and if you have any feedback about this process, or anything else about
+    Salesflip, just click the red <strong>"Feedback"</strong> button that
+    appears on every page to share your ideas with us!

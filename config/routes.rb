@@ -5,6 +5,8 @@ Salesflip::Application.routes.draw do
 
   match 'profile', :to => 'users#profile'
 
+  match 'help(/:action)', :to => "help"
+
   resources :users, :comments, :tasks, :deleted_items,
     :searches, :invitations, :emails, :opportunities, :campaigns
 
