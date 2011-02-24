@@ -43,7 +43,7 @@
 - if @lead.status == "New"
   = render :partial => 'tasks/add_task', :locals => { :object => @lead }
 
-- if @lead.status == "New"
+- if %w(New Contacted).include?(@lead.status)
   #on_call(style="display: none" data-id="#{@lead.id}")
     %p
       #{t(:on_the_phone_with, :lead => @lead.full_name)}.
@@ -76,7 +76,7 @@
         = show_attribute(@lead, 'facebook', link_to('Facebook', @lead.facebook))
         = show_attribute(@lead, 'xing', link_to('Xing', @lead.xing))
         = show_attribute(@lead, 'referred_by')
-      - if I18n.in_locale(:en) { @lead.status_is?('New') }
+      - if %w(New Contacted).include?(@lead.status)
         %hr
         %p
           = link_to t(:already_contacted?), finish_lead_path, :onclick => "CallBox.show(this.href); return false;"

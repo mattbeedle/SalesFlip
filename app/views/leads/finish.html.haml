@@ -31,7 +31,7 @@
     = datepicker_for(form, :due_at, :preset_date => false, :id => "infomail_task_due_at")
 
   = form.button :submit, t(:schedule)
-  = form.button :submit, t(:skip), :name => "skip", :style => "float: right;"
+  = link_to t(:skip), leads_path, :class => "skip"
 
 = simple_form_for lead.tasks.new(:name => t(:rescheduled), :due_at => 30.minutes.from_now),
   :html => { :style => "display: none", :id => "call_back" } do |form|
@@ -47,7 +47,7 @@
     = datepicker_for(form, :due_at, :preset_date => false, :id => "call_back_due_at")
 
   = form.button :submit, t(:schedule)
-  = form.button :submit, t(:skip), :name => "skip", :style => "float: right;"
+  = link_to t(:skip), leads_path, :class => "skip"
 
 = simple_form_for lead.tasks.new(:name => t(:send_offer), :due_at => 30.minutes.from_now),
   :html => { :style => "display: none", :id => "offer_requested" } do |form|
@@ -63,7 +63,21 @@
     = datepicker_for(form, :due_at, :preset_date => false, :id => "call_back_due_at")
 
   = form.button :submit, t(:schedule)
-  = form.button :submit, t(:skip), :name => "skip", :style => "float: right;"
+  = link_to t(:skip), leads_path, :class => "skip"
+
+:css
+  form .button {
+    float: right;
+  }
+
+  form .skip {
+    clear: both;
+    color: #999;
+    float: right;
+    font-size: 12px;
+    margin-top: 10px;
+    font-style: italic;
+  }
 
 :javascript
   function after_load_callback() {
@@ -93,14 +107,6 @@
       else {
         show_next(next);
       }
-
-      return false;
-    });
-
-    $$(".call_box form input[name=skip]").each('on', 'click', function() {
-      var form = this.form();
-      form.hide();
-      show_next(form.get("data-next"));
 
       return false;
     });
