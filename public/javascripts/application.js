@@ -183,12 +183,14 @@ CallBox.show = function(url) {
 
   call_box.insert(spinner);
   $(document.body).insert(call_box);
+  call_box.setStyle("margin-top", (-call_box.dimensions().height/2)+"px");
 
   Xhr.load(url, {
     method: 'get',
     spinner: spinner,
     onSuccess: function() {
       call_box.insert(this.responseText);
+      call_box.setStyle("margin-top", (-call_box.dimensions().height/2)+"px");
       if ( typeof after_load_callback !== "undefined" )
         after_load_callback();
     }
