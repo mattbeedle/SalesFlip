@@ -3,7 +3,7 @@
     %li
       Assignee
       %ul
-        - User.each do |assignee|
+        - User.all(:order => :email).each do |assignee|
           %li= link_to assignee.name, assignee_administration_leads_path(:assignee_id => assignee.id)
 
     %li
