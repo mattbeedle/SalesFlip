@@ -1,23 +1,28 @@
 %section
   %h1 First Call
 
-
 %section
   %p
-    When you view your leads, you'll see that they're broken up into "buckets" 
+    When you view your leads, you'll see that they're broken up into "buckets"
     according to their status: <strong>New</strong>, <strong>Contacted</strong>,
     <strong>Infomail Requested</strong>, <strong>Infomail Sent</strong>,
     <strong>Offer Requested</strong>, and <strong>All</strong>.
 
-= image_tag "help/first_call/no-leads.png", :width => "800", :height => 343
+= image_tag "help/first_call/leads.png", :width => "800", :height => 343
 
 %section
   %p
-    As you can see, you currently have no new leads assigned to you. If you click
-    <strong>"Next Lead"</strong>, Salesflip will assign you a new lead from the
-    pool of unassigned leads and take you directly to the page for that lead. If
-    you already had a new lead, it would instead just take you to the next one
-    on the list.
+    When you visit the leads page, by default you'll see all new leads assigned
+    to you. You can click a lead to view information about it, or you can hit
+    <strong>"Next Lead"</strong> to see the first new lead.
+
+  %p
+    Already called all of your new leads? When there are no leads in the "New"
+    bucket and you click "Next Lead", Salesflip will assign you a new lead from
+    the pool of available leads.
+
+  %p
+    Anyway, let's say you've clicked on your first lead.
 
 = image_tag "help/first_call/lead.png", :width => "800", :height => 343
 
@@ -47,7 +52,7 @@
 %section
 
   %p
-    Let's say that they requested our infomail. In that case, we'd click 
+    Let's say that they requested our infomail. In that case, we'd click
     <strong>"Customer requested infomail"</strong>. This will move the lead
     into the "Infomail Requested" bucket, and then prompt you to create a
     task to follow up about the infomail. By default, it will be scheduled
