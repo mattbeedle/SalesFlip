@@ -1,6 +1,7 @@
 module Administration
   class LeadsController < AdministrationController
     def index
+      params[:sort] ||= ["name", "asc"]
       params[:statuses] ||= I18n.t(:lead_statuses, :locale => :en)
 
       if params[:terms].present?
