@@ -74,33 +74,139 @@
       %input(type="search" name="terms" placeholder="Search..." value="#{params[:terms]}")
 
 = form_tag nil, :method => :put, :id => "leads" do
+  = hidden_field_tag 'sort[]', params[:sort][0]
+  = hidden_field_tag 'sort[]', params[:sort][1]
   %table
     %thead
       %tr
         %th(width="70")
-          = link_to "Status", :sort => ["status", params[:sort] == %w(status asc) ? "desc" : "asc"]
+          .filter.left
+            Status
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["status", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["status", "desc"] )
+              %ul
+                - t(:lead_statuses, :locale => :en).each do |status|
+                  %li
+                    %label
+                      = check_box_tag "statuses[]", status, params[:statuses].include?(status)
+                      = status
+              %input(type="submit" value="Filter")
+
         %th
-          = link_to "Name", :sort => ["name", params[:sort] == %w(name asc) ? "desc" : "asc"]
+          .filter
+            Name
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["name", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["name", "desc"] )
         %th(width="20")
-          = link_to raw("&#9733;"), :sort => ["rating", params[:sort] == %w(rating asc) ? "desc" : "asc"]
+          .filter
+            &#9733;
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "0-5", params.merge( :sort => ["rating", "asc"] )
+                = link_to "5-0", params.merge( :sort => ["rating", "desc"] )
         %th
-          = link_to "Company", :sort => ["company", params[:sort] == %w(company asc) ? "desc" : "asc"]
+          .filter
+            Company
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["company", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["company", "desc"] )
         %th
-          = link_to "Source", :sort => ["source", params[:sort] == %w(source asc) ? "desc" : "asc"]
+          .filter
+            Source
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["source", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["source", "desc"] )
         %th
-          = link_to "Assignee", :sort => ["assignee", params[:sort] == %w(assignee asc) ? "desc" : "asc"]
+          .filter
+            Assignee
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["assignee", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["assignee", "desc"] )
         %th
-          = link_to "Campaign", :sort => ["campaign", params[:sort] == %w(campaign asc) ? "desc" : "asc"]
+          .filter
+            Campaign
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["campaign", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["campaign", "desc"] )
         %th
-          = link_to "City", :sort => ["city", params[:sort] == %w(city asc) ? "desc" : "asc"]
+          .filter
+            City
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["city", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["city", "desc"] )
         %th(width="30")
-          = link_to "PLZ", :sort => ["postal_code", params[:sort] == %w(postal_code asc) ? "desc" : "asc"]
+          .filter
+            PLZ
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["postal_code", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["postal_code", "desc"] )
         %th
-          = link_to "Size", :sort => ["company_size", params[:sort] == %w(company_size asc) ? "desc" : "asc"]
+          .filter
+            Size
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["company_size", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["company_size", "desc"] )
         %th(width="20")
-          = link_to raw("&#9998;"), :sort => ["comments", params[:sort] == %w(comments asc) ? "desc" : "asc"]
+          .filter
+            &#9998;
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["comments", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["comments", "desc"] )
         %th(style="width: 75px;")
-          = link_to "Next Task", :sort => ["tasks", params[:sort] == %w(tasks asc) ? "desc" : "asc"]
+          .filter.right
+            Next Task
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["tasks", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["tasks", "desc"] )
         %th(style="width: 8px;")
     %tbody
       - @leads.each do |lead|
@@ -130,7 +236,7 @@
 
 :css
   body {
-    padding-top: 50px;
+    padding-top: 60px;
   }
   table {
     border-collapse: collapse;
@@ -201,6 +307,7 @@
     position: fixed;
     top: 0;
     width: 100%;
+    z-index: 1;
   }
 
   #search {
@@ -257,6 +364,102 @@
     text-align: left;
     width: 160px;
     z-index: 2;
+  }
+
+  .filter {
+    display: inline-block;
+    position: relative;
+  }
+
+  .sort {
+    font-size: 0.9em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .menu {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: #7E7D7D 0 0 10px;
+    -moz-box-shadow: #7E7D7D 0 0 10px;
+    box-shadow: #7E7D7D 0 0 10px;
+    top: 20px;
+    background-color: #fff;
+    color: #000;
+    left: 50%;
+    list-style: none;
+    margin: 0;
+    margin-left: -80px;
+    max-height: 220px;
+    overflow: auto;
+    padding: 10px;
+    position: absolute;
+    text-align: left;
+    width: 160px;
+    z-index: 2;
+    border: 2px solid #000;
+  }
+
+  th .arrow,
+  th .arrow-border,
+  th .menu {
+    display: none;
+  }
+
+  th:hover .arrow,
+  th:hover .arrow-border,
+  th:hover .menu {
+    display: block;
+  }
+
+  .menu a {
+    color: #55A;
+    display: inline;
+    padding: 4px;
+  }
+
+  .menu a:hover {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    background-color: #55A;
+    color: #fff;
+  }
+
+  .arrow {
+    border-color: transparent transparent #fff transparent;
+    border-style: solid;
+    border-width: 6px;
+    height:0;
+    left: 50%;
+    margin-left: -5px;
+    width:0;
+    position:absolute;
+    z-index: 3;
+    top: 11px;
+  }
+
+  .arrow-border {
+    border-color: transparent transparent #000 transparent;
+    top: 8px;
+  }
+
+  .left .menu {
+    left: -14px;
+    margin: 0;
+  }
+
+  .right .menu {
+    left: auto;
+    right: -14px;
+    margin: 0;
+  }
+
+  .menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
   #bulk ul li {
@@ -328,4 +531,9 @@
     form.set('action', this.get('href'));
     form.submit();
     return false;
+  });
+
+  $$(".filter input[type='submit']").each('on', 'click', function(e) {
+    var form = $("leads");
+    form.set('method', 'get');
   });

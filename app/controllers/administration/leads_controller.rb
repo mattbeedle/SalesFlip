@@ -1,13 +1,17 @@
 module Administration
   class LeadsController < AdministrationController
     def index
+      params[:statuses] ||= I18n.t(:lead_statuses, :locale => :en)
+
       if params[:terms].present?
         @leads = Lead.search do
           keywords params[:terms]
           paginate(:per_page => 100, :page => params[:page])
         end.results
       else
-        @leads = Lead::Sorter.new(params[:sort]).paginate(:per_page => 100, :page => params[:page])
+        @leads = Lead::Sorter.new(params[:sort])
+          .all(:status => params[:statuses])
+          .paginate(:per_page => 100, :page => params[:page])
       end
     end
 
