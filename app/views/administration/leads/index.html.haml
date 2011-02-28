@@ -90,12 +90,8 @@
                 = link_to "ASC", params.merge( :sort => ["status", "asc"] )
                 = link_to "DESC", params.merge( :sort => ["status", "desc"] )
               %ul
-                - t(:lead_statuses, :locale => :en).each do |status|
-                  %li
-                    %label
-                      = check_box_tag "statuses[]", status, params[:statuses].include?(status)
-                      = status
-              %input(type="submit" value="Filter")
+                %li
+                  = select_tag "status_is", options_for_select(t(:lead_statuses, :locale => :en), current_scopes[:status_is]), :include_blank => 'All'
 
         %th
           .filter
@@ -149,8 +145,8 @@
                 = link_to "DESC", params.merge( :sort => ["assignee", "desc"] )
               %ul
                 %li
-                  = select_tag "assigned_to", options_from_collection_for_select(@users, :id, :email, params[:assigned_to].to_i), :include_blank => 'Unassigned'
-              %input(type="submit" value="Filter")
+                  = select_tag "assigned_to",
+                    options_for_select([["All", "All"], ["Unassigned", ""]], current_scopes[:assigned_to]) + grouped_options_for_select( [['---', @users.map { |u| [u.email, u.id] }]], current_scopes[:assigned_to].to_i )
         %th
           .filter
             Campaign
@@ -161,6 +157,10 @@
                 Sort:
                 = link_to "ASC", params.merge( :sort => ["campaign", "asc"] )
                 = link_to "DESC", params.merge( :sort => ["campaign", "desc"] )
+              %ul
+                %li
+                  = select_tag "in_campaign",
+                    options_for_select([["All", "All"], ["None", ""]], current_scopes[:in_campaign]) + grouped_options_for_select( [['---', Campaign.all.asc(:name).map { |c| [c.name, c.id] }]], current_scopes[:in_campaign].to_i )
         %th
           .filter
             City
@@ -542,7 +542,8 @@
     return false;
   });
 
-  $$(".filter input[type='submit']").each('on', 'click', function(e) {
+  $$(".filter select").each('on', 'change', function(e) {
     var form = $("leads");
     form.set('method', 'get');
+    form.submit();
   });

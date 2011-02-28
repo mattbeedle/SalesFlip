@@ -1,11 +1,15 @@
 module Administration
   class LeadsController < AdministrationController
 
-    has_scope :assigned_to, :allow_blank => true
-    has_scope :statuses, :type => :array,
-      :default => I18n.t(:lead_statuses, :locale => :en) do |controller, scope, value|
-      scope.status_is(value)
+    has_scope :in_campaign, :allow_blank => true do |controller, scope, value|
+      value == "All" ? scope.all : scope.in_campaign(value)
     end
+
+    has_scope :assigned_to, :allow_blank => true do |controller, scope, value|
+      value == "All" ? scope.all : scope.assigned_to(value)
+    end
+
+    has_scope :status_is
 
     def index
       @users = User.all(:order => DataMapper::Query::Direction.new('lower(email)'))
