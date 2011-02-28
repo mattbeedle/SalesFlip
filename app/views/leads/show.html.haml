@@ -35,13 +35,9 @@
 - if @lead.notes.present?
   .notes= raw @lead.notes
 
-- if @lead.status != "New"
-  = render :partial => 'tasks/add_task', :locals => { :object => @lead }
+= render :partial => 'tasks/add_task', :locals => { :object => @lead }
 
 = render :partial => 'comments/comments', :locals => { :object => @lead, :comments => @lead.comments.desc(:created_at) }
-
-- if @lead.status == "New"
-  = render :partial => 'tasks/add_task', :locals => { :object => @lead }
 
 - if %w(New Contacted).include?(@lead.status)
   #on_call(style="display: none" data-id="#{@lead.id}")
