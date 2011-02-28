@@ -3,7 +3,7 @@
     %li
       Assignee
       %ul
-        - User.all(:order => :email).each do |assignee|
+        - @users.each do |assignee|
           %li= link_to assignee.name, assignee_administration_leads_path(:assignee_id => assignee.id)
 
     %li
@@ -147,6 +147,10 @@
                 Sort:
                 = link_to "ASC", params.merge( :sort => ["assignee", "asc"] )
                 = link_to "DESC", params.merge( :sort => ["assignee", "desc"] )
+              %ul
+                %li
+                  = select_tag "assigned_to", options_from_collection_for_select(@users, :id, :email, params[:assigned_to].to_i), :include_blank => 'Unassigned'
+              %input(type="submit" value="Filter")
         %th
           .filter
             Campaign
@@ -400,6 +404,10 @@
       width: 160px;
       z-index: 2;
       border: 2px solid #000;
+    }
+
+    .menu select {
+      width: 160px;
     }
 
     th .arrow,

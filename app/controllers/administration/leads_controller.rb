@@ -1,8 +1,16 @@
 module Administration
   class LeadsController < AdministrationController
+
+    has_scope :assigned_to, :allow_blank => true
+    has_scope :statuses, :type => :array,
+      :default => I18n.t(:lead_statuses, :locale => :en) do |controller, scope, value|
+      scope.status_is(value)
+    end
+
     def index
+      @users = User.all(:order => DataMapper::Query::Direction.new('lower(email)'))
+
       params[:sort] ||= ["name", "asc"]
-      params[:statuses] ||= I18n.t(:lead_statuses, :locale => :en)
 
       if params[:terms].present?
         @leads = Lead.search do
@@ -10,8 +18,8 @@ module Administration
           paginate(:per_page => 100, :page => params[:page])
         end.results
       else
-        @leads = Lead::Sorter.new(params[:sort])
-          .all(:status => params[:statuses])
+        @leads = Lead::Sorter.new(apply_scopes(Lead))
+          .sort_by(*params[:sort])
           .paginate(:per_page => 100, :page => params[:page])
       end
     end
