@@ -114,6 +114,10 @@ protected
   end
 
   def leads
+    if current_user.role_is?('Service Person')
+      return Lead.all(:status => "Offer Requested")
+    end
+
     params[:status] ||= "New"
 
     leads = case params[:status]
