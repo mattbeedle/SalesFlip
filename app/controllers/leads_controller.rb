@@ -132,7 +132,7 @@ protected
             when "All"
               Lead.all
             when "New"
-              Lead.all(:tasks => nil, :status => "New")
+              Lead.all(:status => "New")
             when "Unassigned"
               raise CanCan::AccessDenied unless can? :view_unassigned, Lead, current_user
               return Lead.status_is("New").unassigned.not_deleted.desc(:created_at)
