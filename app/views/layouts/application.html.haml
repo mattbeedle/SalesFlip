@@ -51,7 +51,10 @@
                         - if item.is_a?(Lead)
                           - name = "#{item.name} (#{item.company})"
                         - elsif item.is_a?(Contact)
-                          - name = "#{item.name} (#{item.account.name})"
+                          - if item.account
+                            - name = "#{item.name} (#{item.account.name})"
+                          - else
+                            - name = item.name
                         - elsif item.is_a?(Account)
                           - name = item.name
                         - name = truncate(name, length: 35)
