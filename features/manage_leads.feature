@@ -75,17 +75,6 @@ Feature: Manage leads
     Then 0 leads should exist
     And I should see "Cannot assign a private lead to another user, please change the permissions first"
 
-  Scenario: Trying to assign an existing private lead
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And a lead: "erich" exists with user: Annika, permission: "Private"
-    And I am on the lead's edit page
-    When I select "benjamin.pochhammer@1000jobboersen.de" from "lead_assignee_id"
-    And I press "Update Lead"
-    Then I should be on the lead's page
-    And I should see "Cannot assign a private lead to another user, please change the permissions first"
-    And 1 leads should exist with assignee_id: nil
-
   Scenario: Trying to assign a new shared lead to a user it is not shared with
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -98,18 +87,6 @@ Feature: Manage leads
     Then 0 leads should exist
     And I should see "Cannot assign a shared lead to a user it is not shared with. Please change the permissions first"
 
-  Scenario: Trying to assign an existing shared lead to a user it is not shared with
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And another user exists
-    And a lead exists with user: Annika
-    And the lead is shared with the other user
-    And I am on the lead's edit page
-    When I select "benjamin.pochhammer@1000jobboersen.de" from "lead_assignee_id"
-    And I press "Update Lead"
-    Then I should be on the lead's page
-    And I should see "Cannot assign a shared lead to a user it is not shared with. Please change the permissions first"
-
   Scenario: Creating a lead with a campaign
     Given I am registered and logged in as annika
     And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010"
@@ -120,14 +97,6 @@ Feature: Manage leads
     And I select "Generate 100 leads this month" from "Campaign"
     And I press "lead_submit"
     Then I should see "Generate 100 leads this month"
-
-  Scenario: Logging activity
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And a lead: "erich" exists with user: benny
-    And I am on the lead's edit page
-    When I press "lead_submit"
-    Then an activity should have been created with for lead: "erich" and user: "annika"
 
   @wip
   Scenario: Creating a lead via XML

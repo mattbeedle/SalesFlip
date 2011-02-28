@@ -17,7 +17,7 @@
       %li
         = simple_form_for @lead, :url => lead_path(@lead) do |form|
           = form.select :assignee_id, [[t(:assign_to)+"...", nil]] + current_user.company.users.asc(:email).map {|u| [u.email, u.id]}
-    - if @lead.assigned_to?(current_user)
+    - if can?(:update, @lead)
       %li
         = link_to t(:edit), edit_lead_path(@lead, :return_to => request.fullpath), :id => "edit_#{dom_id @lead}"
       - unless I18n.in_locale(:en) { @lead.status_is?('New') } || I18n.in_locale(:en) { @lead.status_is?('Converted') || @lead.status_is?('Rejected') }

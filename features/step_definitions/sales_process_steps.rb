@@ -12,6 +12,16 @@ Given /^I am signed in as a sales person$/ do
   click_link_or_button 'user_submit'
 end
 
+Given /^I am signed in as a service person$/ do
+  user = User.make(role: 'Service Person')
+  user.confirm!
+  store_model('user', 'me', user)
+  visit new_user_session_path
+  fill_in 'user_email', :with => user.email
+  fill_in 'user_password', :with => 'password'
+  click_link_or_button 'user_submit'
+end
+
 Given /^there is a new unassigned lead$/ do
   store_model('lead', 'lead', Lead.make(user: model('user')))
 end
