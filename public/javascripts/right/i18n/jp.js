@@ -1,7 +1,7 @@
 /**
  * RightJS UI Internationalization: Japanese module
  *
- * Copyright (C) Nikolay V. Nemshilov aka St.
+ * Copyright (C) Nikolay Nemshilov
  */
 if (self.Calendar) {
   $ext(Calendar.Options, {
@@ -11,8 +11,8 @@ if (self.Calendar) {
   $ext(Calendar.i18n, {
     Done:           'Done',
     Now:            '今日',
-    Next:           '翌月',
-    Prev:           '前の月',
+    NextMonth:      '翌月',
+    PrevMonth:      '前の月',
     NextYear:       '翌年',
     PrevYear:       '前年',
 
@@ -26,15 +26,37 @@ if (self.Calendar) {
 
 if (self.Lightbox) {
   $ext(Lightbox.i18n, {
-    CloseTitle: 'Close',
-    PrevTitle:  'Previous Image',
-    NextTitle:  'Next Image'
+    Close: '閉じる',
+    Prev:  '前の画像',
+    Next:  '次の画像'
   });
 }
 
 if (self.InEdit) {
   $ext(InEdit.i18n, {
-    save:   "Save",
-    cancel: "Cancel"
+    Save:   "保存",
+    Cancel: "キャンセル"
   });
 }
+
+if (self.Colorpicker) {
+  $ext(Colorpicker.i18n, {
+    Done: 'Done'
+  });
+}
+
+if (self.Dialog) {
+  $ext(Dialog.i18n, {
+    Ok:       'Ok',
+    Close:    'Close',
+    Cancel:   'Cancel',
+    Help:     'Help',
+    Expand:   'Expand',
+    Collapse: 'Collapse',
+
+    Alert:    'Warning!',
+    Confirm:  'Confirm',
+    Prompt:   'Enter'
+  })
+}
+

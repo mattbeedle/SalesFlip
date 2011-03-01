@@ -1,16 +1,16 @@
 /**
  * RightJS UI Internationalization: French module
  *
- * Copyright (C) Nikolay V. Nemshilov aka St.
+ * Copyright (C) Nikolay Nemshilov
  */
 if (self.Calendar) {
   $ext(Calendar.i18n, {
     Done:            "Fait",
     Now:             "Maint.",
-    Next:            "Mois prochain",
-    Prev:            "Mois précédent",
+    NextMonth:       "Mois prochain",
+    PrevMonth:       "Mois précédent",
     NextYear:        "L'année prochain",
-    PrevYear:        "L'année précédent",
+    PrevYear:        "L'année précédente",
 
     dayNames:        $w('Dimanche Lundi Mardi Mercredi Jeudi Vendredi Samedi'),
     dayNamesShort:   $w('Dim Lun Mar Mer Jeu Ven Sam'),
@@ -22,15 +22,37 @@ if (self.Calendar) {
 
 if (self.Lightbox) {
   $ext(Lightbox.i18n, {
-    CloseTitle: 'Fin',
-    PrevTitle:  'Image précédente',
-    NextTitle:  'Prochaine image'
+    Close: 'Fermer',
+    Prev:  'Image précédente',
+    Next:  'Image suivante'
   });
 }
 
 if (self.InEdit) {
   $ext(InEdit.i18n, {
-    save:   "Enregistrer",
-    cancel: "Annuler"
+    Save:   "Enregistrer",
+    Cancel: "Annuler"
   });
 }
+
+if (self.Colorpicker) {
+  $ext(Colorpicker.i18n, {
+    Done: 'Fait'
+  });
+}
+
+if (self.Dialog) {
+  $ext(Dialog.i18n, {
+    Ok:       'Ok',
+    Close:    'Close',
+    Cancel:   'Cancel',
+    Help:     'Help',
+    Expand:   'Expand',
+    Collapse: 'Collapse',
+
+    Alert:    'Warning!',
+    Confirm:  'Confirm',
+    Prompt:   'Enter'
+  })
+}
+

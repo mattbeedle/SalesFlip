@@ -1,15 +1,14 @@
 /**
  * RightJS UI Internationalization: Hungarian module
  *
- * Copyright (C) Arnold Mészáros aka netangel
- * Copyright (C) Nikolay V. Nemshilov aka St.
+ * Copyright (C) Arnold Mészáros
  */
 if (self.Calendar) {
   $ext(Calendar.i18n, {
     Done:            'Kész',
     Now:             'Most',
-    Next:            'Következő hónap',
-    Prev:            'Előző hónap',
+    NextMonth:       'Következő hónap',
+    PrevMonth:       'Előző hónap',
     NextYear:        'Következő év',
     PrevYear:        'Előző év',
 
@@ -30,15 +29,37 @@ if (self.Calendar) {
 
 if (self.Lightbox) {
   $ext(Lightbox.i18n, {
-    CloseTitle: 'Bezár',
-    PrevTitle:  'Előző kép',
-    NextTitle:  'Következő kép'
+    Close: 'Bezár',
+    Prev:  'Előző kép',
+    Next:  'Következő kép'
   });
 }
 
 if (self.InEdit) {
   $ext(InEdit.i18n, {
-    save:   "Save",
-    cancel: "Cancel"
+    Save:   "Save",
+    Cancel: "Cancel"
   });
 }
+
+if (self.Colorpicker) {
+  $ext(Colorpicker.i18n, {
+    Done: 'Kész'
+  });
+}
+
+if (self.Dialog) {
+  $ext(Dialog.i18n, {
+    Ok:       'Ok',
+    Close:    'Close',
+    Cancel:   'Cancel',
+    Help:     'Help',
+    Expand:   'Expand',
+    Collapse: 'Collapse',
+
+    Alert:    'Warning!',
+    Confirm:  'Confirm',
+    Prompt:   'Enter'
+  })
+}
+
