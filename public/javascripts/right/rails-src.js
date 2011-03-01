@@ -1,18 +1,181 @@
 /**
- * Ruby On Rails common Ajax operations conventional wrapper
- * and underscored aliases for core methods
+ * RubyOnRails Support Module v2.2.1
+ * http://rightjs.org/plugins/rails
  *
- *    http://github.com/MadRabbit/right-rails
- *
- * Copyright (C) Nikolay V. Nemshilov aka St.
+ * Copyright (C) 2009-2011 Nikolay Nemshilov
  */
+(function(window, document, RightJS) {
+/**
+ * The Rails plugin initialization script
+ *
+ * Copyright (C) 2010-2011 Nikolay Nemshilov
+ */
+
+var R      = RightJS,
+    $      = RightJS.$,
+    $$     = RightJS.$$,
+    $E     = RightJS.$E,
+    Xhr    = RightJS.Xhr,
+    Object = RightJS.Object;
+
+RightJS.Rails = {
+  version: '2.2.1'
+};
+
+
+
+/**
+ * Underscored aliases for Ruby On Rails
+ *
+ * Copyright (C) 2009-2010 Nikolay Nemshilov
+ */
+
+// the language and window level aliases
+R([
+  RightJS.String.prototype,
+  RightJS.Array.prototype,
+  RightJS.Function.prototype,
+  RightJS.Object,
+  RightJS.Options,
+  RightJS.Observer,
+  RightJS.Observer.prototype,
+  window,
+  document
+]).each(function(object) {
+  for (var key in object) {
+    try { // some keys are not accessable
+      
+      if (/[A-Z]/.test(key) && typeof(object[key]) === 'function') {
+        var u_key = R(key).underscored();
+        if (object[u_key] === null || object[u_key] === undefined) {
+          object[u_key] = object[key];
+        }
+      }
+    } catch (e) {}
+  }
+});
+
+
+// DOM package aliases
+R([
+  RightJS.Element,
+  RightJS.Event,
+  RightJS.Form,
+  RightJS.Input
+]).each(function(object) {
+  if (!object) { return; }
+  
+  var aliases = {}, methods = object.prototype;
+    
+  for (var key in methods) {
+    if (/[A-Z]/.test(key) && typeof(methods[key]) === 'function') {
+      object.prototype[R(key).underscored()] = methods[key];
+    }
+  }
+});
+
+// various ruby-like method aliases
+RightJS.$alias(RightJS.String.prototype, {
+  index_of:      'indexOf',
+  last_index_of: 'lastIndexOf',
+  to_f:          'toFloat',
+  to_i:          'toInt',
+  gsub:          'replace',
+  downcase:      'toLowerCase',
+  upcase:        'toUpperCase',
+  index:         'indexOf',
+  rindex:        'lastIndexOf',
+  strip:         'trim'
+});
+
+RightJS.$alias(RightJS.Array.prototype, {
+  collect:       'map',
+  detect:        'filter',
+  index_of:      'indexOf',
+  last_index_of: 'lastIndexOf',
+  index:         'indexOf',
+  rindex:        'lastIndexOf'
+});
+
+/**
+ * Rails 3 UJS support module
+ *
+ * Copyright (C) 2010-2011 Nikolay Nemshilov
+ */
+// tries to cancel the event via confirmation
+var user_cancels = function(event, element) {
+  var message = element.get('data-confirm');
+  if (message && !confirm(message)) {
+    event.stop();
+    return true;
+  }
+};
+
+// adds XHR events to the element
+var add_xhr_events = function(element, options) {
+  return Object.merge({
+    onCreate:   function() { element.fire('ajax:loading',  {xhr: this}); },
+    onComplete: function() { element.fire('ajax:complete', {xhr: this}); },
+    onSuccess:  function() { element.fire('ajax:success',  {xhr: this}); },
+    onFailure:  function() { element.fire('ajax:failure',  {xhr: this}); }
+  }, options);
+};
+
+// processes link clicks
+var try_link_submit = function(event) {
+  var link   = event.target,
+      method = link.get('data-method'),
+      remote = link.get('data-remote'),
+      url    = link.get('href');
+
+  if (user_cancels(event, link)) { return; }
+  if (method || remote) { event.stop(); }
+
+  if (remote) {
+    Xhr.load(url, add_xhr_events(link, {
+      method:     method || 'get',
+      spinner:    link.get('data-spinner')
+    }));
+
+  } else if (method) {
+    var param = $$('meta[name=csrf-param]')[0],
+        token = $$('meta[name=csrf-token]')[0],
+        form  = $E('form', {action: url, method: 'post'});
+
+    if (param && token) {
+      form.insert('<input type="hidden" name="'+param.get('content')+'" value="'+token.get('content')+'" />');
+    }
+
+    form.insert('<input type="hidden" name="_method" value="'+method+'"/>')
+      .insertTo(document.body).submit();
+  }
+};
+
+// global events listeners
+$(document).on({
+  click: function(event) {
+    var tag = event.target._.tagName;
+    if (tag === 'A' || tag === 'BUTTON') {
+      try_link_submit(event);
+    }
+  },
+
+  submit: function(event) {
+    var form = event.target;
+    if (form.has('data-remote') && !user_cancels(event, form)) {
+      event.stop();
+      form.send(add_xhr_events(form, {
+        spinner:  form.get('data-spinner') || form.first('.spinner')
+      }));
+    }
+  }
+});
 
 /**
  * RR is the common ajax operations wrapper for ruby on rails
  *
- * Copyright (C) 2009 Nikolay V. Nemshilov aka St.
+ * Copyright (C) 2009-2010 Nikolay Nemshilov
  */
-;
 var RR = {
   /**
    * Basic options
@@ -22,18 +185,24 @@ var RR = {
    */
   Options: {
     format:           'js',      // the working format for remote requests over the application
-    
+
     flashId:          'flashes', // the flashes element id
     flashHideFx:      'slide',   // use null if you don't want any fx in here
     flashHideDelay:   3200,      // use -1 to disable the flash element hidding
-    
+
     highlightUpdates: true,
-    
-    removeFx:         'fade',
-    
+
+    removeFx:         'fade',    // blocks removing fx
+    insertFx:         'fade',    // blocks insertion fx
+
+    insertPosition:   'bottom',  // default insert position
+
+    linkToAjaxEdit:   '.ajax_edit',
+    linkToAjaxDelete: '.ajax_delete',
+
     rescanWithScopes: true       // if it should rescan only updated elements
   },
-  
+
   /**
    * Updates the flashes block with the source
    *
@@ -47,7 +216,7 @@ var RR = {
     }
     return this;
   },
-  
+
   /**
    * Initializes the delayed flashes hide call
    *
@@ -62,43 +231,64 @@ var RR = {
     }
     return this;
   },
-  
+
   /**
    * Highlights the element according to the options
-   * 
+   *
    * @param String element id
    * @return RR this
    */
   highlight: function(id) {
-    if (this.Options.highlightUpdates) {
+    if ($(id) && this.Options.highlightUpdates) {
       $(id).highlight();
     }
     return this;
   },
-  
+
   /**
    * Inserts the content into the given element
    *
-   * @param String destination id
-   * @param String content
+   * @param destination String destination id
+   * @param content String content
+   * @param position String position
    * @return RR this
    */
-  insert: function(where, what) {
-    return this.highlight($(where).insert(what).lastChild).rescan(where);
+  insert: function(where, what, in_position) {
+    var position  = in_position || this.Options.insertPosition, new_element,
+        container = $(where).insert(what, position);
+
+    // trying to find the new block
+    switch (position) {
+      case 'bottom':  new_element = container.children().last(); break;
+      case 'top':     new_element = container.first(); break;
+      case 'before':  new_element = container.prev();  break;
+      case 'after':   new_element = container.next();  break;
+    }
+
+    // necely displaying the new block
+    if (new_element && this.Options.insertFx) {
+      new_element.hide().show(this.Options.insertFx, {
+        onFinish: this.highlight.bind(this, new_element)
+      });
+    } else {
+      this.highlight(new_element);
+    }
+
+    return this.rescan(where);
   },
-  
+
   /**
    * Replaces the given element with a new content
    *
-   * @param String destination id
-   * @param String content
+   * @param destination String destination id
+   * @param content String content
    * @return RR this
    */
   replace: function(id, source) {
     $(id).replace(source);
     return this.highlight(id).rescan(id);
   },
-  
+
   /**
    * removes the element by id
    *
@@ -106,18 +296,11 @@ var RR = {
    * @return RR this
    */
   remove: function(id) {
-    var element = $(id);
-    if (element) {
-      var remove_element = element.remove.bind(element).chain(Lightbox.rescan);
-      
-      if (this.Options.removeFx) {
-        element.hide(this.Options.removeFx, {onFinish: remove_element});
-      } else {
-        remove_element;
-      }
+    if ($(id)) {
+      $(id).remove(this.Options.removeFx);
     }
   },
-  
+
   /**
    * Makes a remote form out of the form
    *
@@ -127,16 +310,16 @@ var RR = {
   remotize_form: function(id) {
     var form = $(id);
     if (form) {
-      form.remotize().enable().action += '.'+this.Options.format;
+      form.remotize().enable()._.action += '.'+this.Options.format;
     }
     return this;
   },
-  
+
   /**
    * Replaces the form with new content and makes it remote
    *
-   * @param String form id
-   * @param String content
+   * @param form id String form id
+   * @param content String content
    * @return RR this
    */
   replace_form: function(id, source) {
@@ -145,127 +328,73 @@ var RR = {
       form.replace(source);
       this.remotize_form(id);
     }
-    
+
     return this.rescan(id);
   },
-  
+
   /**
    * Inserts the form source into the given element
    *
-   * @param String target id
-   * @param String form source
+   * @param target id String target id
+   * @param source String form source
    * @return RR this
    */
   show_form_for: function(id, source) {
-    $(id).select('form').each('remove'); // removing old forms
+    $(id).find('form').each('remove'); // removing old forms
     $(id).insert(source);
-    
+
     return this.remotize_form($(id).first('form')).rescan(id);
   },
-  
+
   /**
-   * Hijacks the action links and makes them remote
+   * watches link clicks and processes the ajax edit/delete operations
    *
-   * @return RR self
+   * @param Event event
    */
-  hijack_links: function() {
-    this._links = this._links || [];
-    
-    $$('a.edit, a.destroy').each(function(link) {
-      var uid = $uid(link);
-      if (!this._links[uid]) {
-        this._links[uid] = true;
-        
-        if (link.hasClass('destroy')) {
-          link.onclick = eval('({f:'+ link.onclick.toString().replace('.submit', '.send')+'})').f;
-        } else if (link.hasClass('edit')) {
-          link.onclick = function(event) { event.stop();
-            Xhr.load(link.href + '.' + this.Options.format);
-          }.bind(this);
-        }
-      }
-    }, this);
-    
-    return this;
+  process_click: function(event) {
+    var link;
+
+    if ((link = event.find('a'+ this.Options.linkToAjaxEdit))) {
+      event.stop();
+      Xhr.load(link.get('href') + '.' + this.Options.format);
+    } else if ((link = event.find('a'+ this.Options.linkToAjaxDelete)) && link.has('onclick')) {
+      event.stop();
+      new Function('return '+ link.onclick.toString().replace('.submit', '.send'))().call(link);
+    }
   },
-  
+
   /**
    * Scans for updated elements
    *
    * @return RR this
    */
   rescan: function(scope) {
-    this.hijack_links();
-    
-    $w('Lightbox Calendar Autocompleter Draggable Droppable Sortable Tabs Slider Rater Selectable'
-    ).each(function(name) {
-      if (self[name]) self[name].rescan(this.Options.rescanWithScopes ? scope : null);
+    $w('Draggable Droppable Tabs Slider Selectable').each(function(name) {
+      if (name in window) {
+        window[name].rescan(this.Options.rescanWithScopes ? scope : null);
+      }
     }, this);
-    
-    
+
+
     return this;
   }
 };
 
-// the document onload hook
-document.onReady(function() {
-  RR.hide_flash().rescan();
-});
+
 /**
- * Underscored aliases for Ruby On Rails
+ * the document onload hooks
  *
- * Copyright (C) 2009 Nikolay V. Nemshilov aka St.
+ * Copyright (C) 2010 Nikolay Nemshilov
  */
-
-// the language and window level aliases
-[String.prototype, Array.prototype, Function.prototype, Object, Options, Observer, Observer.prototype, window, document].each(function(object) {
-  for (var key in object) {
-    try { // some keys are not accessable
-      
-      if (/[A-Z]/.test(key) && typeof(object[key]) == 'function') {
-        var u_key = key.underscored();
-        if (object[u_key] === null || object[u_key] === undefined) {
-          object[u_key] = object[key];
-        }
-      }
-    } catch (e) {}
-  }
-});
-
-
-// DOM package aliases
-[Element, Event, Form, Form.Element].each(function(object) {
-  var aliases = {}, methods = object.Methods;
-    
-  for (var key in methods) {
-    if (/[A-Z]/.test(key) && typeof(methods[key]) == 'function') {
-      aliases[key.underscored()] = methods[key];
-    }
-  }
+$(document).on({
+  ready: function() {
+    RR.hide_flash();
+  },
   
-  object.addMethods(aliases);
+  click: function(event) {
+    RR.process_click(event);
+  }
 });
-
-
-// various ruby-like method aliases
-$alias(String.prototype, {
-  index_of:      'indexOf',
-  last_index_of: 'lastIndexOf',
-  to_f:          'toFloat',
-  to_i:          'toInt',
-  gsub:          'replace',
-  downcase:      'toLowerCase',
-  upcase:        'toUpperCase',
-  index:         'indexOf',
-  rindex:        'lastIndexOf',
-  strip:         'trim'
-});
-
-$alias(Array.prototype, {
-  collect:       'map',
-  detect:        'filter',
-  index_of:      'indexOf',
-  last_index_of: 'lastIndexOf',
-  index:         'indexOf',
-  rindex:        'lastIndexOf'
-});
+  
+window.RR = RR;
+})(window, document, RightJS);

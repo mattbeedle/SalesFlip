@@ -114,6 +114,10 @@ protected
   end
 
   def leads
+    if current_user.role_is?('Service Person')
+      return Lead.all(:status => "Offer Requested")
+    end
+
     params[:status] ||= "New"
 
     leads = case params[:status]
@@ -128,7 +132,7 @@ protected
             when "All"
               Lead.all
             when "New"
-              Lead.all(:tasks => nil, :status => "New")
+              Lead.all(:status => "New")
             when "Unassigned"
               raise CanCan::AccessDenied unless can? :view_unassigned, Lead, current_user
               return Lead.status_is("New").unassigned.not_deleted.desc(:created_at)

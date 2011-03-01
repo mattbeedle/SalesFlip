@@ -12,6 +12,16 @@ Given /^I am signed in as a sales person$/ do
   click_link_or_button 'user_submit'
 end
 
+Given /^I am signed in as a service person$/ do
+  user = User.make(role: 'Service Person')
+  user.confirm!
+  store_model('user', 'me', user)
+  visit new_user_session_path
+  fill_in 'user_email', :with => user.email
+  fill_in 'user_password', :with => 'password'
+  click_link_or_button 'user_submit'
+end
+
 Given /^there is a new unassigned lead$/ do
   store_model('lead', 'lead', Lead.make(user: model('user')))
 end
@@ -21,8 +31,23 @@ Given /^there is a new lead assigned to me$/ do
   store_model('lead', 'lead', lead)
 end
 
+Given /^I have a lead with the status "([^"]*)"$/ do |status|
+  lead = Lead.make(
+    user: model('me'),
+    assignee: model('me'),
+    status: status
+  )
+  store_model('lead', 'lead', lead)
+end
+
 Then /^I should see no leads$/ do
   page.should have_no_css("tr.item")
+end
+
+Then /^I should see the lead$/ do
+  within "#main" do
+    page.should have_content model('lead').full_name
+  end
 end
 
 When /^I ask for my next lead$/ do

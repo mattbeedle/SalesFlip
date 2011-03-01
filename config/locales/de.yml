@@ -571,3 +571,4 @@ de:
   done?: "Anruf beendet?"
   already_contacted?: "Bereits kontaktiert?"
   template: "Vorlage"
+  infomail_sent: "Infomail gesendet?"

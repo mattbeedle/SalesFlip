@@ -1,23 +1,38 @@
 module Administration
   class LeadsController < AdministrationController
-    def index
-      params[:sort] ||= ["name", "asc"]
-      params[:statuses] ||= I18n.t(:lead_statuses, :locale => :en)
 
-      if params[:terms].present?
-        @leads = Lead.search do
-          keywords params[:terms]
-          paginate(:per_page => 100, :page => params[:page])
-        end.results
-      else
-        @leads = Lead::Sorter.new(params[:sort])
-          .all(:status => params[:statuses])
-          .paginate(:per_page => 100, :page => params[:page])
-      end
+    has_scope :in_campaign, :allow_blank => true do |controller, scope, value|
+      value == "All" ? scope.all : scope.in_campaign(value)
+    end
+
+    has_scope :assigned_to, :allow_blank => true do |controller, scope, value|
+      value == "All" ? scope.all : scope.assigned_to(value)
+    end
+
+    has_scope :source_is, :allow_blank => true do |controller, scope, value|
+      value == "All" ? scope.all : scope.all(:source => value)
+    end
+
+    has_scope :terms do |controller, scope, value|
+      hits = Lead.search { keywords value }.hits
+      scope.all(id: hits.map(&:primary_key))
+    end
+
+    has_scope :status_is
+
+    def index
+      @users = User.all(:order => DataMapper::Query::Direction.new('lower(email)'))
+
+      params[:sort] ||= ["name", "asc"]
+
+      @leads = Lead::Sorter.new(apply_scopes(Lead))
+        .sort_by(*params[:sort])
+        .paginate(:per_page => 100, :page => params[:page])
     end
 
     def assignee
       Lead.all(:id => params[:leads]).update!(:assignee_id => params[:assignee_id])
+      Task.all(:lead_id => params[:leads]).update!(:assignee_id => params[:assignee_id])
       redirect_to request.referrer
     end
 

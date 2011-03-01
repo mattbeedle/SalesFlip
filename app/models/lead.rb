@@ -86,6 +86,10 @@ class Lead
     status_is('Converted')
   end
 
+  def self.in_campaign(id)
+    all(:campaign_id => id)
+  end
+
   def self.reserve_for(user)
     id = repository.adapter.select(<<-SQL, user.id)
     update leads set assignee_id = ?

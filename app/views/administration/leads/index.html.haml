@@ -3,7 +3,7 @@
     %li
       Assignee
       %ul
-        - User.all(:order => :email).each do |assignee|
+        - @users.each do |assignee|
           %li= link_to assignee.name, assignee_administration_leads_path(:assignee_id => assignee.id)
 
     %li
@@ -76,11 +76,12 @@
 = form_tag nil, :method => :put, :id => "leads" do
   = hidden_field_tag 'sort[]', params[:sort][0]
   = hidden_field_tag 'sort[]', params[:sort][1]
+  = hidden_field_tag 'terms', current_scopes[:terms]
   %table
     %thead
       %tr
         %th(width="70")
-          .filter.left
+          .filter
             Status
             .arrow.arrow-border
             .arrow
@@ -90,12 +91,19 @@
                 = link_to "ASC", params.merge( :sort => ["status", "asc"] )
                 = link_to "DESC", params.merge( :sort => ["status", "desc"] )
               %ul
-                - t(:lead_statuses, :locale => :en).each do |status|
-                  %li
-                    %label
-                      = check_box_tag "statuses[]", status, params[:statuses].include?(status)
-                      = status
-              %input(type="submit" value="Filter")
+                %li
+                  = select_tag "status_is", options_for_select(t(:lead_statuses, :locale => :en), current_scopes[:status_is]), :include_blank => 'All'
+
+        %th(style="width: 75px;")
+          .filter.left
+            Created
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["created_at", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["created_at", "desc"] )
 
         %th
           .filter
@@ -127,7 +135,7 @@
                 Sort:
                 = link_to "ASC", params.merge( :sort => ["company", "asc"] )
                 = link_to "DESC", params.merge( :sort => ["company", "desc"] )
-        %th
+        %th(width="95")
           .filter
             Source
             .arrow.arrow-border
@@ -137,6 +145,10 @@
                 Sort:
                 = link_to "ASC", params.merge( :sort => ["source", "asc"] )
                 = link_to "DESC", params.merge( :sort => ["source", "desc"] )
+              %ul
+                %li
+                  = select_tag "source_is",
+                    options_for_select([["All", "All"], ["None", ""]], current_scopes[:source_is]) + grouped_options_for_select( [['---', t(:lead_sources, :locale => :en)]], current_scopes[:source_is] )
         %th
           .filter
             Assignee
@@ -147,6 +159,10 @@
                 Sort:
                 = link_to "ASC", params.merge( :sort => ["assignee", "asc"] )
                 = link_to "DESC", params.merge( :sort => ["assignee", "desc"] )
+              %ul
+                %li
+                  = select_tag "assigned_to",
+                    options_for_select([["All", "All"], ["Unassigned", ""]], current_scopes[:assigned_to]) + grouped_options_for_select( [['---', @users.map { |u| [u.email, u.id] }]], current_scopes[:assigned_to].to_i )
         %th
           .filter
             Campaign
@@ -157,6 +173,10 @@
                 Sort:
                 = link_to "ASC", params.merge( :sort => ["campaign", "asc"] )
                 = link_to "DESC", params.merge( :sort => ["campaign", "desc"] )
+              %ul
+                %li
+                  = select_tag "in_campaign",
+                    options_for_select([["All", "All"], ["None", ""]], current_scopes[:in_campaign]) + grouped_options_for_select( [['---', Campaign.all.asc(:name).map { |c| [c.name, c.id] }]], current_scopes[:in_campaign].to_i )
         %th
           .filter
             City
@@ -214,6 +234,7 @@
           %td(align="center" style="display: none;")
             = check_box_tag 'leads[]', lead.id
           %td= lead.status
+          %td= l lead.created_at.to_date
           %td= lead.full_name
           %td(align="center")= lead.rating
           %td.company
@@ -239,22 +260,8 @@
     body {
       padding-top: 60px;
     }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-    thead th {
-      background-color: #eee;
-      border-bottom: 2px solid #ccc;
-      border-right: 1px solid #fff;
-    }
-    tbody td {
-      border-bottom: 1px solid #eee;
-      border-right: 1px solid #eee;
-      padding: 2px 5px;
-    }
+
     tbody tr:hover {
-      background-color: #f5f5f5;
       cursor: pointer;
       cursor: hand;
     }
@@ -402,6 +409,10 @@
       border: 2px solid #000;
     }
 
+    .menu select {
+      width: 160px;
+    }
+
     th .arrow,
     th .arrow-border,
     th .menu {
@@ -534,7 +545,8 @@
     return false;
   });
 
-  $$(".filter input[type='submit']").each('on', 'click', function(e) {
+  $$(".filter select").each('on', 'change', function(e) {
     var form = $("leads");
     form.set('method', 'get');
+    form.submit();
   });

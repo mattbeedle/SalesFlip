@@ -4,10 +4,10 @@ class Ability
   def initialize( user )
     user ||= User.new :role => 'Freelancer'
 
-    if user.role_is?('Administrator')
+    case user.role
+    when 'Administrator', 'Service Person'
       can :manage, :all
-    elsif user.role_is?('Sales Person') || user.role_is?('Service Person') ||
-      user.role_is?('Key Account Manager') || user.role_is?('Sales Team Leader')
+    when 'Sales Person', 'Key Account Manager', 'Sales Team Leader'
       can :create, :all
       can :profile, User
       can :read, User
@@ -29,6 +29,13 @@ class Ability
 
       if user.role_is?('Sales Team Leader')
         can :view_unassigned, Lead
+        can :update, Lead do |lead|
+          lead && (lead.assigned_to?(user) || !lead.assignee)
+        end
+      else
+        can :update, Lead do |lead|
+          lead && lead.assigned_to?(user)
+        end
       end
 
       can :reject, Lead do |lead|
@@ -49,16 +56,13 @@ class Ability
       can :read, Contact do |contact| 
         contact && contact.permitted_for?(user)
       end
-      can :update, Lead do |lead|
-        lead && lead.permitted_for?(user)
-      end
       can :update, Account do |account|
         account && account.permitted_for?(user)
       end
       can :update, Contact do |contact|
         contact && contact.permitted_for?(user)
       end
-    elsif user.role_is?('Freelancer')
+    when 'Freelancer'
       can :create, User
       can :profile, User
       can :read, Lead
