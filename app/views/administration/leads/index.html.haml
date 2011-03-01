@@ -76,6 +76,7 @@
 = form_tag nil, :method => :put, :id => "leads" do
   = hidden_field_tag 'sort[]', params[:sort][0]
   = hidden_field_tag 'sort[]', params[:sort][1]
+  = hidden_field_tag 'terms', current_scopes[:terms]
   %table
     %thead
       %tr

@@ -13,6 +13,11 @@ module Administration
       value == "All" ? scope.all : scope.all(:source => value)
     end
 
+    has_scope :terms do |controller, scope, value|
+      hits = Lead.search { keywords value }.hits
+      scope.all(id: hits.map(&:primary_key))
+    end
+
     has_scope :status_is
 
     def index
@@ -20,16 +25,9 @@ module Administration
 
       params[:sort] ||= ["name", "asc"]
 
-      if params[:terms].present?
-        @leads = Lead.search do
-          keywords params[:terms]
-          paginate(:per_page => 100, :page => params[:page])
-        end.results
-      else
-        @leads = Lead::Sorter.new(apply_scopes(Lead))
-          .sort_by(*params[:sort])
-          .paginate(:per_page => 100, :page => params[:page])
-      end
+      @leads = Lead::Sorter.new(apply_scopes(Lead))
+        .sort_by(*params[:sort])
+        .paginate(:per_page => 100, :page => params[:page])
     end
 
     def assignee
