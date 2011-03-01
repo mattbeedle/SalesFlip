@@ -1,42 +1,94 @@
+%ul
+  %li= link_to "Leads", administration_leads_path
+  %li= link_to "Salesflip", root_path
+
 %h2= t(:data_summary)
-%dl
-  %dt= t(:leads)
-  %dd
-    %table
+
+.left
+  %h3= t(:leads)
+  %table
+    %thead
       %tr
         %th= t(:status)
         %th= t(:total)
+    %tbody
       - Lead.statuses.each do |status|
         %tr
           %td= status
           %td= Lead.for_company(current_user.company).status_is(status).count
-      %tr
-        %td= t(:total)
-        %td= Lead.count
-  %dt= t(:accounts)
-  %dd
-    %table
+    %tr
+      %td= t(:total)
+      %td= Lead.count
+
+  %h3= t(:accounts)
+  %table
+    %thead
       %tr
         %th= t(:account_type)
         %th= t(:total)
+    %tbody
       - Account.account_types.each do |account_type|
         %tr
           %td= account_type
           %td= Account.for_company(current_user.company).account_type_is(account_type).count
-  %dt= t(:contacts)
-  %dd= Contact.for_company(current_user.company).count
 
-%h2= t(:opportunity_stages_heading)
-= link_to t(:add_opportunity_stage), new_administration_opportunity_stage_path
-%table
-  %tr
-    %th= t(:name)
-    %th= t(:percentage)
-    %th= t(:notes)
-    %th= t(:actions)
-  - @opportunity_stages.each do |stage|
-    %tr
-      %td= stage.name
-      %td= number_to_percentage stage.percentage, :precision => 0 if stage.percentage
-      %td= stage.notes
-      %td= link_to t(:delete), [:confirm_delete, :administration, stage]
+  %h3= t(:contacts)
+  %p= Contact.for_company(current_user.company).count
+
+  %h2= t(:opportunity_stages_heading)
+  = link_to t(:add_opportunity_stage), new_administration_opportunity_stage_path
+  %table
+    %thead
+      %tr
+        %th= t(:name)
+        %th= t(:percentage)
+        %th= t(:notes)
+        %th= t(:actions)
+    %tbody
+      - @opportunity_stages.each do |stage|
+        %tr
+          %td= stage.name
+          %td= number_to_percentage stage.percentage, :precision => 0 if stage.percentage
+          %td= stage.notes
+          %td= link_to t(:delete), [:confirm_delete, :administration, stage]
+.right
+  %h3= t(:users)
+  %table
+    %thead
+      %tr
+        %th
+        - t('lead_form.statuses', :locale => :en).each do |status|
+          %th= status
+    %tbody
+      - User.role_is('Sales Person', 'Sales Team Leader').asc(:email).each do |user|
+        %tr
+          %td= user.email
+          - t('lead_form.statuses', :locale => :en).each do |status|
+            %td= Lead.all(:status => status, :assignee => user).count
+
+
+- content_for :stylesheets do
+  :css
+    .left {
+      float: left;
+      width: 30%;
+    }
+
+    .right {
+      float: left;
+      margin-left: 20px;
+    }
+
+    dl {
+      margin: 0;
+      padding: 0;
+    }
+
+    dt {
+      font-weight: bold;
+    }
+
+    dd {
+      margin: 0 0 20px;
+    }
+
