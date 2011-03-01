@@ -81,7 +81,7 @@
     %thead
       %tr
         %th(width="70")
-          .filter.left
+          .filter
             Status
             .arrow.arrow-border
             .arrow
@@ -93,6 +93,17 @@
               %ul
                 %li
                   = select_tag "status_is", options_for_select(t(:lead_statuses, :locale => :en), current_scopes[:status_is]), :include_blank => 'All'
+
+        %th(style="width: 75px;")
+          .filter.left
+            Created
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["created_at", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["created_at", "desc"] )
 
         %th
           .filter
@@ -124,7 +135,7 @@
                 Sort:
                 = link_to "ASC", params.merge( :sort => ["company", "asc"] )
                 = link_to "DESC", params.merge( :sort => ["company", "desc"] )
-        %th
+        %th(width="95")
           .filter
             Source
             .arrow.arrow-border
@@ -223,6 +234,7 @@
           %td(align="center" style="display: none;")
             = check_box_tag 'leads[]', lead.id
           %td= lead.status
+          %td= l lead.created_at.to_date
           %td= lead.full_name
           %td(align="center")= lead.rating
           %td.company
