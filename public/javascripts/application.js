@@ -1,3 +1,22 @@
+"a[data-method]".on('click', function(event) {
+  var link   = event.target,
+      method = link.get('data-method'),
+      url    = link.get('href');
+
+  event.stop();
+
+  var param = $$('meta[name=csrf-param]')[0],
+      token = $$('meta[name=csrf-token]')[0],
+      form  = $E('form', {action: url, method: 'post'});
+
+  if (param && token) {
+    form.insert('<input type="hidden" name="'+param.get('content')+'" value="'+token.get('content')+'" />');
+  }
+
+  form.insert('<input type="hidden" name="_method" value="'+method+'"/>')
+    .insertTo(document.body).submit();
+});
+
 var RealDateSelector = {
   bind: function(scope) {
     $$('.realdate', scope).each(function(realdate) {

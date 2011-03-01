@@ -76,6 +76,10 @@
         %hr
         %p
           = link_to t(:already_contacted?), finish_lead_path, :onclick => "CallBox.show(this.href); return false;"
+      - elsif @lead.status == "Infomail Requested"
+        %hr
+        %p
+          = link_to t(:sent_infomail?), lead_path(:lead => {:status => "Infomail Sent"}), :method => :put
     - elsif @lead.assignee.blank?
       = simple_form_for @lead, :html => { :class => 'accept' } do |form|
         = form.hidden_field :do_not_notify, :value => true
