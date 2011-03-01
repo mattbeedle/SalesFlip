@@ -133,6 +133,10 @@
                 Sort:
                 = link_to "ASC", params.merge( :sort => ["source", "asc"] )
                 = link_to "DESC", params.merge( :sort => ["source", "desc"] )
+              %ul
+                %li
+                  = select_tag "source_is",
+                    options_for_select([["All", "All"], ["None", ""]], current_scopes[:source_is]) + grouped_options_for_select( [['---', t(:lead_sources, :locale => :en)]], current_scopes[:source_is] )
         %th
           .filter
             Assignee

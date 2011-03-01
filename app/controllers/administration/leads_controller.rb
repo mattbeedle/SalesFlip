@@ -9,6 +9,10 @@ module Administration
       value == "All" ? scope.all : scope.assigned_to(value)
     end
 
+    has_scope :source_is, :allow_blank => true do |controller, scope, value|
+      value == "All" ? scope.all : scope.all(:source => value)
+    end
+
     has_scope :status_is
 
     def index
