@@ -147,3 +147,7 @@ Then /^an import summary email should have been sent$/ do
       mail.body.to_s =~ /1 leads were not imported/ && mail.subject == 'Import Summary'
   end
 end
+
+Then /^the comment should have been created for the lead$/ do
+  assert_equal Comment.last.commentable, Lead.last
+end

@@ -1,8 +1,8 @@
 %fieldset.comment
   = hidden_field_tag :return_to, params[:return_to]
   - if action_is('new', 'create', 'show')
-    = form.hidden_field :commentable_id, :value => params[:id]
-    = form.hidden_field :commentable_type, :value => controller_name.singularize.titleize
+    = form.hidden_field :commentable_id, :value => form.object.commentable.try(:id) || params[:id]
+    = form.hidden_field :commentable_type, :value => form.object.commentable.try(:class) || controller_name.singularize.titleize
   - else
     = form.hidden_field :commentable_id
     = form.hidden_field :commentable_type

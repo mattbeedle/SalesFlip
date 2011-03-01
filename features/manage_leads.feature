@@ -3,6 +3,16 @@ Feature: Manage leads
   A user
   wants manage leads
 
+  Scenario: Adding a comment after first attempt was invalid
+    Given I am registered and logged in as Matt
+    And a lead exists with user: Matt
+    And I am on the lead's page
+    When I press "Save Comment"
+    And I fill in "Add Comment" with "some text"
+    And I press "Save Comment"
+    Then I should be on the lead's page
+    And the comment should have been created for the lead
+
   Scenario: Importing leads from a CSV
     Given I am registered and logged in as Matt
     And Annika exists with email: "annika.fleischer@1000jobboersen.de"
