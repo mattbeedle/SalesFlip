@@ -6,6 +6,7 @@ Salesflip::Application.routes.draw do
   match 'profile', :to => 'users#profile'
 
   match 'help(/:action)(/:locale)', :to => "help"
+  match "external_updates/user", to: "external_updates#update_user", as: "user_external_updates"
 
   resources :users, :comments, :tasks, :deleted_items,
     :searches, :invitations, :emails, :opportunities, :campaigns

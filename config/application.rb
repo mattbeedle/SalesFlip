@@ -76,5 +76,14 @@ module Salesflip
     config.after_initialize do
       I18n.locale = I18n.default_locale
     end
+
+    # This is set here for dev and test environments.
+    config.external_user_update_url = "http://localhost/external"
+
+    # The access key should be stored in the environment on the servers so the
+    # information being sent can be encrypted.
+    config.external_access_key = ENV["HR_NEW_MEDIA_ACCESS_KEY"]
+
+    Encryptor.default_options.merge!(key: config.external_access_key)
   end
 end

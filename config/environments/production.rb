@@ -73,4 +73,6 @@ Salesflip::Application.configure do
     :app_id  => 'salesflip',
     :api_key => '20015510-959d-012d-a4ae-001c25a0b06f'
   }
+
+  config.external_user_update_url = "http://staging.1000jobboersen.de/external_updates/user"
 end

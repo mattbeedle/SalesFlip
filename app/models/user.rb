@@ -50,6 +50,7 @@ class User
 
   before :create, :set_default_role
   after :create, :update_invitation
+  after :save, :update_external_applications
 
   has_constant :roles, ROLES
 
@@ -143,5 +144,13 @@ protected
 
   def set_default_role
     self.role = 'Sales Person' if self.role.blank?
+  end
+
+  # Sends updated user data over to salesflip so the user matches on both apps.
+  def update_external_applications
+    Resque.enqueue(
+      UpdateExternalUserJob,
+      to_json(except: [ :password, :created_at, :updated_at ])
+    )
   end
 end
