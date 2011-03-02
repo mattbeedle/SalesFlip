@@ -34,6 +34,10 @@ class Campaign
     tasks.update! :asset_updated_at => updated_at
   end
 
+  def self.assigned_to(user)
+    all("leads.assignee_id" => user.id, :unique => true)
+  end
+
   def start_date?
     start_date.present?
   end

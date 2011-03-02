@@ -4,32 +4,43 @@
   = link_to t(:next_lead), next_leads_path, :class => "button"
   -# %button{ :onclick => "CallBox.show('#{next_leads_path}');", :style => "float: right;margin: 0 10px 0px 0; height: 28px;" } Next Lead
 
-%ul.tabs
-  - if current_user.role_is?('Service Person')
-    %li{:class => "active"}= link_to t(:offer_requested), :status => "Offer Requested"
-  - else
-    - if can? :view_unassigned, Lead
-      %li{:class => "#{'active' if params[:status] == "Unassigned"}"}= link_to t(:unassigned), :status => "Unassigned"
-    %li{:class => "#{'active' if params[:status] == "New"}"}= link_to t(:new), :status => "New"
-    %li{:class => "#{'active' if params[:status] == "Contacted"}"}= link_to t(:contacted), :status => "Contacted"
-    %li{:class => "#{'active' if params[:status] == "Infomail Requested"}"}= link_to t(:infomail_requested), :status => "Infomail Requested"
-    %li{:class => "#{'active' if params[:status] == "Infomail Sent"}"}= link_to t(:infomail_sent), :status => "Infomail Sent"
-    %li{:class => "#{'active' if params[:status] == "Offer Requested"}"}= link_to t(:offer_requested), :status => "Offer Requested"
-    %li{:class => "#{'active' if params[:status] == "All"}"}= link_to t(:all), :status => "All"
+.tabs
+  %ul.states
+    - if current_user.role_is?('Service Person')
+      %li{:class => "active"}= link_to t(:offer_requested), :status => "Offer Requested"
+    - else
+      - if can? :view_unassigned, Lead
+        %li{:class => "#{'active' if params[:status] == "Unassigned"}"}= link_to t(:unassigned), :status => "Unassigned"
+      %li{:class => "#{'active' if params[:status] == "New"}"}= link_to t(:new), :status => "New"
+      %li{:class => "#{'active' if params[:status] == "Contacted"}"}= link_to t(:contacted), :status => "Contacted"
+      %li{:class => "#{'active' if params[:status] == "Infomail Requested"}"}= link_to t(:infomail_requested), :status => "Infomail Requested"
+      %li{:class => "#{'active' if params[:status] == "Infomail Sent"}"}= link_to t(:infomail_sent), :status => "Infomail Sent"
+      %li{:class => "#{'active' if params[:status] == "Offer Requested"}"}= link_to t(:offer_requested), :status => "Offer Requested"
+      %li{:class => "#{'active' if params[:status] == "All"}"}= link_to t(:all), :status => "All"
+  %ul.filters
+    - if params[:campaign] == "Self-Generated"
+      %li.active
+        = t(:self_generated)
+        = link_to "x", params.merge(:campaign => ""), :class => "remove"
+    - else
+      %li= link_to t(:self_generated), params.merge(:campaign => "Self-Generated")
+    - Campaign.assigned_to(current_user).asc(:name).each do |campaign|
+      - if params[:campaign].to_i == campaign.id
+        %li.active
+          = campaign.name
+          = link_to "x", params.merge(:campaign => ""), :class => "remove"
+      - else
+        %li= link_to campaign.name, params.merge(:campaign => campaign.id)
 
-%table
+.leads
   - @leads.each do |lead|
-    %tr.item[lead]
-      - if params[:status] == "All"
-        %td.status= t(lead.status)
-      %td
-        %strong
-          = link_to lead.full_name, lead, :id => lead.full_name.to_dom_id
-      %td(width="65")
-        = raw rating_for(lead)
-      %td
+    .lead[lead]
+      %h3
+        = link_to lead.full_name, lead, :id => lead.full_name.to_dom_id
+      %p
         %small
-          = "at #{lead.company}" if !lead.company.blank?
+          = raw rating_for(lead)
+          = "#{lead.company}" if !lead.company.blank?
 
 = will_paginate @leads
 
@@ -64,38 +75,90 @@
     div#main h3 { cursor: auto; }
 
     .tabs {
-      border-bottom: 5px solid #eee;
-      height: 28px;
+      border-right: 1px solid #eee;
+      float: left;
+      width: 170px;
+      padding-right: 20px;
+      margin: 0 20px 0 0;
+    }
+
+    .tabs ul {
       list-style: none;
       margin: 0;
       padding: 0;
     }
 
-    .tabs li {
-      float: left;
-      margin-right: 1px;
+    .tabs .states {
+      border-bottom: 1px solid #eee;
+      font-size: 0.9em;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
     }
 
-    .tabs a {
-      background-color: #eee;
-      border-bottom: 5px solid #ccc;
-      color: #999;
+    .tabs li a {
+      color: #0073B1;
       display: block;
-      font-weight: bold;
-      padding: 0.5em 1em;
+      line-height: 28px;
+      padding-left: 8px;
       text-decoration: none;
     }
 
-    .tabs a:hover {
-      border-bottom-color: #555;
-      color: #555;
+    .tabs li a:hover {
+      text-decoration: underline;
     }
 
-    .tabs .active a {
-      border-bottom-color: #0073B1;
+    .tabs li.active a {
+      color: #000;
+      font-weight: bold;
     }
 
-    .tabs .active a {
-      background-color: #0073B1;
-      color: #fff;
+    .filters li a {
+      display: inline;
+      line-height: 22px;
+    }
+
+    .filters li a:hover {
+      background-color: inherit;
+    }
+
+    .filters li.active {
+      color: #111;
+      font-weight: bold;
+      line-height: 22px;
+      padding-left: 8px;
+    }
+
+    .filters li.active .remove {
+      background-color: inherit;
+      color: #bbb;
+      padding: 0 5px;
+      float: right;
+    }
+
+    .filters li.active .remove:hover {
+      color: #c00;
+      text-decoration: none;
+    }
+
+    div#main .leads {
+      margin-left: 210px;
+    }
+
+    .lead {
+      margin-bottom: 0.5em;
+    }
+
+    .lead .rating {
+      font-size: inherit;
+      margin-right: 5px;
+      padding: 0;
+    }
+
+    div#main .leads h3 {
+      line-height: 16px;
+      margin: 0;
+    }
+
+    div#main .leads p {
+      margin: 0;
     }

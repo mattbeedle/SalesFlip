@@ -385,6 +385,7 @@ en:
     - Word of Mouth
     - Other
     - Imported
+  self_generated: "Self-generated"
   salutations:
     - Mr
     - Ms
