@@ -8,10 +8,30 @@
         margin: 4em auto;
         width: 800px;
       }
+
+      h1 {
+        text-align: center;
+      }
+
       section {
         margin: 0 auto;
         width: 42em;
       }
+
+      footer {
+        border-top: 1px solid #eee;
+        color: #999;
+        font-size: 0.8em;
+        margin: 2em 0;
+        padding-top: 1em;
+        text-align: center;
+      }
+
+      footer a {
+        color: #777;
+        padding: 0 5px;
+      }
+
       img {
         max-width: 100%;
       }
@@ -23,13 +43,12 @@
         font-style: italic;
         padding: 1em;
       }
-
-      .active {
-        position: absolute;
-        left: 0;
-        text-align: center;
-        width: 100%;
-      }
   %body
     = yield
     = render :partial => 'shared/chart_beat'
+    %footer
+      %p
+        - if action_name != "index"
+          = link_to "Return to Help", "/help"
+          |
+        = link_to "Salesflip", root_url
