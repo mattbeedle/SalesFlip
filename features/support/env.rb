@@ -85,6 +85,7 @@ end
 require "#{Rails.root.to_s}/test/blueprints"
 
 Before do
+  HTTParty.stubs(:post).returns(true)
   ActionMailer::Base.deliveries.clear
   Sham.reset
 end
