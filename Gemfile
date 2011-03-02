@@ -24,6 +24,7 @@ gem 'dm-transactions'
 gem 'dm-types', :git => 'git://github.com/datamapper/dm-types.git'
 gem 'dm-validations', :git => 'git://github.com/datamapper/dm-validations.git'
 
+gem 'httparty'
 gem 'net-ssh'
 gem 'net-scp'
 gem 'encryptor'
