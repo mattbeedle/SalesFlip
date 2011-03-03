@@ -1,5 +1,9 @@
 .title
   %h2= @user.username || @user.email
+
+  - if current_user.role == 'Administrator'
+    = link_to "Log in as #{@user.name}", masquerade_administration_user_path, :class => "button", :method => :put
+
 = image_tag @user.gravatar_url
 %dl.profile
   %dt= t(:leads_created_accepted)

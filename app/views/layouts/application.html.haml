@@ -11,10 +11,15 @@
     %meta{ :content => "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
   = body do
     - if cookies[:on_call] && lead = Lead.get(cookies[:on_call])
-      #on_call
+      #on_call.bottom-bar
         %p
           You're currently on the phone with #{lead.full_name}.
           = link_to "Done?", finish_lead_path(lead)
+    - if session[:_user_id]
+      .bottom-bar
+        %p
+          You are logged in as #{current_user.name}.
+          = link_to "Return to your account.", unmasquerade_administration_users_path, :method => :put
 
     #header
       .pad

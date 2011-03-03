@@ -49,6 +49,11 @@ Salesflip::Application.routes.draw do
       end
     end
 
+    resources :users, :only => [] do
+      put :masquerade, :on => :member
+      put :unmasquerade, :on => :collection
+    end
+
     resources :opportunity_stages do
       get :confirm_delete, :on => :member
     end
