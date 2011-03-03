@@ -421,8 +421,6 @@ en:
   comments_closed: Comments are closed. To comment please
   view_contact_for_lead: view the contact for this lead
   lead_converted_by: This lead was converted by %{link} on %{time}
-  company_sizes:
-    - '1-5'
 
   #--------------------------------------------------------------
   # Task
