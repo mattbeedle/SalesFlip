@@ -23,6 +23,7 @@ Feature: Manage leads
     When follow "Import from CSV"
     And I attach the file "test/support/leads.csv" to "lead_import_file"
     And I select "annika.fleischer@1000jobboersen.de" from "Assignee"
+    And I fill in "Deliminator" with ";"
     And I press "Upload"
     And I press "Confirm"
     And all delayed jobs have finished

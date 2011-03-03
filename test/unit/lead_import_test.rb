@@ -69,7 +69,7 @@ class LeadImportTest < ActiveSupport::TestCase
         should 'get the lead details correct' do
           @import.import
           assert Lead.where(:first_name => 'Torsten', :last_name => 'Hehenberger',
-                            :company_size => Lead.company_sizes.index('6-10'),
+                            :company_size => '6-10',
                             :phone => '0351 4943-0', :company => 'DATEV eG'
                            ).first
         end
