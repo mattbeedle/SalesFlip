@@ -1,30 +1,38 @@
+- I18n.locale = :de
 %h2.title
   Leads
   = add_new t(:add_lead), new_lead_path
   = link_to t(:next_lead), next_leads_path, :class => "button"
-  -# %button{ :onclick => "CallBox.show('#{next_leads_path}');", :style => "float: right;margin: 0 10px 0px 0; height: 28px;" } Next Lead
 
 .tabs
   %ul.states
     - if current_user.role_is?('Service Person')
       %li{:class => "active"}
         = link_to t(:offer_requested), :status => "Offer Requested"
+        .arrow
     - else
       - if can? :view_unassigned, Lead
         %li{:class => "#{'active' if params[:status] == "Unassigned"}"}
           = link_to t(:unassigned), :status => "Unassigned"
+          .arrow
       %li{:class => "#{'active' if params[:status] == "New"}"}
         = link_to t(:new), :status => "New"
+        .arrow
       %li{:class => "#{'active' if params[:status] == "Contacted"}"}
         = link_to t(:contacted), :status => "Contacted"
+        .arrow
       %li{:class => "#{'active' if params[:status] == "Infomail Requested"}"}
         = link_to t(:infomail_requested), :status => "Infomail Requested"
+        .arrow
       %li{:class => "#{'active' if params[:status] == "Infomail Sent"}"}
         = link_to t(:infomail_sent), :status => "Infomail Sent"
+        .arrow
       %li{:class => "#{'active' if params[:status] == "Offer Requested"}"}
         = link_to t(:offer_requested), :status => "Offer Requested"
+        .arrow
       %li{:class => "#{'active' if params[:status] == "All"}"}
         = link_to t(:all), :status => "All"
+        .arrow
   %ul.filters
     - if params[:campaign] == "Self-Generated"
       %li.active
@@ -85,9 +93,8 @@
     .tabs {
       border-right: 1px solid #eee;
       float: left;
-      width: 170px;
-      padding-right: 20px;
-      margin: 0 20px 0 0;
+      width: 180px;
+      margin: 0 30px 0 0;
     }
 
     .tabs ul {
@@ -104,7 +111,7 @@
     }
 
     .tabs li a {
-      color: #0073B1;
+      color: #999;
       display: block;
       line-height: 28px;
       padding-left: 8px;
@@ -112,12 +119,42 @@
     }
 
     .tabs li a:hover {
+      color: #000;
+    }
+
+    .tabs .states a:hover {
       text-decoration: underline;
     }
 
+    .tabs .states .active a {
+      border-right: 5px solid #0073B1;
+      text-decoration: none;
+    }
+
     .tabs li.active a {
-      color: #000;
+      background-color: #0073B1;
+      color: #fff;
       font-weight: bold;
+    }
+
+    .states li {
+      position: relative;
+    }
+
+    .states .active .arrow {
+      border-color: transparent transparent transparent #0073B1;
+      border-style: solid;
+      height:0;
+      width:0;
+      position:absolute;
+      z-index: 3;
+      border-width: 14px;
+      right: -28px;
+      top: 0;
+    }
+
+    .filters li {
+      padding-right: 10px;
     }
 
     .filters li a {
@@ -153,7 +190,9 @@
     }
 
     .lead {
+      border-bottom: 1px solid #eee;
       margin-bottom: 0.5em;
+      padding-bottom: 0.5em;
     }
 
     .lead .rating {
