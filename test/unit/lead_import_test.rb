@@ -20,7 +20,7 @@ class LeadImportTest < ActiveSupport::TestCase
         setup do
           @import = LeadImport.create!(:user => @user,
                                        :file => File.open('test/support/leads.csv'),
-                                       :deliminator => ',')
+                                       :deliminator => ';')
         end
 
         should 'know the number of lines in the file' do
@@ -68,25 +68,10 @@ class LeadImportTest < ActiveSupport::TestCase
 
         should 'get the lead details correct' do
           @import.import
-          assert Lead.where(:salutation => 'Mrs',
-                            :first_name => 'Joe', :last_name => 'Smith',
-                            :job_title => 'Personalreferentin',
-                            :company => 'Just some company', :postal_code => '20354',
-                            :city => 'Hamburg',
-                            :address => 'Neuer Jungfernstieg 9-14', :country => 'Germany'
+          assert Lead.where(:first_name => 'Torsten', :last_name => 'Hehenberger',
+                            :company_size => Lead.company_sizes.index('6-10'),
+                            :phone => '0351 4943-0', :company => 'DATEV eG'
                            ).first
-        end
-
-        should 'generate a list of unimported items' do
-          @import.import
-          @search = Lead.search { keywords '' }
-          @search.stubs(:results).returns([Lead.where(:last_name => 'Smith').first])
-          Lead.stubs(:search).returns(@search)
-          @import = LeadImport.create(:user => @user,
-                                      :file => File.open('test/support/duplicate_lead.csv'),
-                                      :deliminator => ',')
-          @import.import
-          assert_equal 1, @import.unimported.length
         end
       end
 
@@ -95,7 +80,7 @@ class LeadImportTest < ActiveSupport::TestCase
           @assignee = User.make
           @import = LeadImport.new(:user => @user,
                                    :file => File.open('test/support/leads.csv'),
-                                   :deliminator => ',', :assignee => @assignee)
+                                   :deliminator => ';', :assignee => @assignee)
           @import.import
         end
 

@@ -27,9 +27,11 @@ var RealDateSelector = {
       var abbr      = value_div.get('required')=='true' ? "<abbr>*</abbr>" : '';
       var input     = '<div class="string"><label for="' + id + '">' + abbr + value_div.get('title') + '</label><input id="' + id + '" type="text" name="' + name + '" value="' + value + '"/ autocomplete="off"></div>';
       var date_or_time = value_div.get('format')=='Date' ? "%Y-%m-%d" : "%Y-%m-%d %H:%M"; 
-      realdate.find('span').first().remove();
-      realdate.insert(input, 'top');
-      new Calendar({ format: date_or_time}).assignTo(id);
+      if ( realdate.find('span').first() ) {
+        realdate.find('span').first().remove();
+        realdate.insert(input, 'top');
+        new Calendar({ format: date_or_time}).assignTo(id);
+      }
     });
   }
 }

@@ -1,1 +1,4 @@
-Salutation,Title,First Name,Last Name,Job Title,Company,Postal Code,City,Phone,Address,Country,FaxMrs,,Joe,Smith,Personalreferentin,Just some company,20354,Hamburg,4.94E+11,Neuer Jungfernstieg 9-14,Germany,4.94E+11Mr,,Sam,Johnson,Personalleiter,another company,27568,Bremerhaven,494714923,BrÙckenstr. 25,Germany,Mr,,Paul,Martins,Personalleiter,the third company,20097,Hamburg,4.94E+11,Hammerbrookstra¤e 90,Germany,4.94E+11
+company;title;first_name;last_name;company_size;industry;notes;phone;fax;email;homepage
+secunet Security Networks AG;;;;6-10;EDV-Dienstleistungsunternehmen;Links:0;0351 43959-0;0351 43959-59;info@secunet.com;www.secunet.de
+ANECON Software Design und Beratung G.m.b.H.;Dr.;Johannes;Adler;bis 5;EDV-Dienstleistungsunternehmen;Links:0; ; ;;
+DATEV eG;;Torsten;Hehenberger;6-10;EDV-Dienstleistungsunternehmen;Links:0;0351 4943-0;0351 4980155;;

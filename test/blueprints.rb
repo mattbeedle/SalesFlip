@@ -50,6 +50,7 @@ end
 
 User.blueprint(:annika) do
   email { Sham.annika_email }
+  username { 'Annika' }
   role { 'Service Person' }
 end
 

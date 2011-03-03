@@ -40,7 +40,7 @@
 = render :partial => 'comments/comments', :locals => { :object => @lead, :comments => @lead.comments.desc(:created_at) }
 
 - if %w(New Contacted).include?(@lead.status)
-  #on_call(style="display: none" data-id="#{@lead.id}")
+  #on_call.bottom_bar(style="display: none" data-id="#{@lead.id}")
     %p
       #{t(:on_the_phone_with, :lead => @lead.full_name)}.
       = link_to t(:done?), finish_lead_path

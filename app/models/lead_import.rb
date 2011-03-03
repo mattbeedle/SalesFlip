@@ -56,7 +56,8 @@ class LeadImport
   end
 
   def lines
-    file.read.force_encoding('iso-8859-1').encode('utf-8').split("\r")
+    #file.read.force_encoding('iso-8859-1').encode('utf-8').split("\r")
+    file.read.lines
   end
 
   def progress
@@ -71,7 +72,7 @@ class LeadImport
 
   def get_included_fields(line)
     @fields ||= line.split(deliminator).map do |field|
-      field.downcase.gsub(/\s/, '_')
+      field.gsub(/\n/, '').downcase.gsub(/\s/, '_')
     end
   end
 
