@@ -7,16 +7,24 @@
 .tabs
   %ul.states
     - if current_user.role_is?('Service Person')
-      %li{:class => "active"}= link_to t(:offer_requested), :status => "Offer Requested"
+      %li{:class => "active"}
+        = link_to t(:offer_requested), :status => "Offer Requested"
     - else
       - if can? :view_unassigned, Lead
-        %li{:class => "#{'active' if params[:status] == "Unassigned"}"}= link_to t(:unassigned), :status => "Unassigned"
-      %li{:class => "#{'active' if params[:status] == "New"}"}= link_to t(:new), :status => "New"
-      %li{:class => "#{'active' if params[:status] == "Contacted"}"}= link_to t(:contacted), :status => "Contacted"
-      %li{:class => "#{'active' if params[:status] == "Infomail Requested"}"}= link_to t(:infomail_requested), :status => "Infomail Requested"
-      %li{:class => "#{'active' if params[:status] == "Infomail Sent"}"}= link_to t(:infomail_sent), :status => "Infomail Sent"
-      %li{:class => "#{'active' if params[:status] == "Offer Requested"}"}= link_to t(:offer_requested), :status => "Offer Requested"
-      %li{:class => "#{'active' if params[:status] == "All"}"}= link_to t(:all), :status => "All"
+        %li{:class => "#{'active' if params[:status] == "Unassigned"}"}
+          = link_to t(:unassigned), :status => "Unassigned"
+      %li{:class => "#{'active' if params[:status] == "New"}"}
+        = link_to t(:new), :status => "New"
+      %li{:class => "#{'active' if params[:status] == "Contacted"}"}
+        = link_to t(:contacted), :status => "Contacted"
+      %li{:class => "#{'active' if params[:status] == "Infomail Requested"}"}
+        = link_to t(:infomail_requested), :status => "Infomail Requested"
+      %li{:class => "#{'active' if params[:status] == "Infomail Sent"}"}
+        = link_to t(:infomail_sent), :status => "Infomail Sent"
+      %li{:class => "#{'active' if params[:status] == "Offer Requested"}"}
+        = link_to t(:offer_requested), :status => "Offer Requested"
+      %li{:class => "#{'active' if params[:status] == "All"}"}
+        = link_to t(:all), :status => "All"
   %ul.filters
     - if params[:campaign] == "Self-Generated"
       %li.active
