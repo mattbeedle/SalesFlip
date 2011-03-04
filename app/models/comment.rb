@@ -3,7 +3,6 @@ class Comment
   include DataMapper::Timestamps
   include HasConstant::Orm::DataMapper
   include Activities
-  include Permission
   include ParanoidDelete
   include ActiveModel::Observing
 

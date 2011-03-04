@@ -137,31 +137,6 @@ Feature: Manage Opportunities
     And 0 emails should be delivered
     And the opportunity should be assigned to Annika
 
-  Scenario: Private lead (in)visiblity on leads page
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And an opportunity exists with title: "Private Opportunity", user: Benny, permission: "Private"
-    And a opportunity exists with title: "Public Opportunity", user: Benny, permission: "Public"
-    When I go to the opportunities page
-    Then I should not see "Private Opportunity"
-    And I should see "Public Opportunity"
-
-  Scenario: Shared opportunity visibility on leads page
-    Given I am registered and logged in as benny
-    And an opportunity exists with user: benny, permission: "Private", title: "Private Opportunity"
-    And user: "annika" exists with email: "annika.fleischer@1000jobboersen.de"
-    And annika belongs to the same company as benny
-    And I go to the new opportunity page
-    And I fill in "opportunity_title" with "Shared Opportunity"
-    And I select "Shared" from "opportunity_permission"
-    And I select "annika.fleischer@1000jobboersen.de" from "opportunity_permitted_user_ids"
-    And I press "Create Opportunity"
-    And I logout
-    And I login as annika
-    When I go to the opportunities page
-    Then I should see "Shared Opportunity"
-    And I should not see "Private Opportunity"
-
   Scenario: Adding a contact to an opportunity
     Given I am registered and logged in as annika
     And an opportunity exists with user: Annika

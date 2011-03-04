@@ -45,13 +45,13 @@ class ContactsController < InheritedResources::Base
 protected
   def contacts_index_cache_key
     Digest::SHA1.hexdigest([
-      'contacts', Contact.permitted_for(current_user).not_deleted.
+      'contacts', Contact.not_deleted.
       for_company(current_user.company).desc(:updated_at).first.
       try(:updated_at).try(:to_i), params.flatten.join('-')].join('-'))
   end
 
   def contacts
-    apply_scopes(Contact).permitted_for(current_user).not_deleted.asc(:last_name).
+    apply_scopes(Contact).not_deleted.asc(:last_name).
       for_company(current_user.company)
   end
 

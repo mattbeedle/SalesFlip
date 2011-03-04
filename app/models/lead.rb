@@ -3,7 +3,6 @@ class Lead
   include DataMapper::Timestamps
   include HasConstant::Orm::DataMapper
   include ParanoidDelete
-  include Permission
   include Trackable
   include Activities
   include Sunspot::DataMapper
@@ -122,7 +121,7 @@ class Lead
 
   def self.exportable_fields
     properties.map { |p| p.name.to_s }.sort.delete_if do |f|
-      f.match(/access|permission|permitted_user_ids|tracker_ids/)
+      f.match(/access|tracker_ids/)
     end
   end
 

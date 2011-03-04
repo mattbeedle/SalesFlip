@@ -59,28 +59,3 @@ Feature: Manage users
     When I press "user_submit"
     Then I should be on the users page
     And I should see "can't be blank"
-
-  Scenario: Inviting a user as a freelancer
-    Given a user: "annika" exists
-    And I have accepted an invitation from annika
-    When I go to the new invitation page
-    Then I should be on the dashboard page
-
-  Scenario: Viewing invitations as a freelancer
-    Given a user: "annika" exists
-    And I have accepted an invitation from annika
-    When I go to the invitations page
-    Then I should be on the dashboard page
-
-  Scenario: Viewing users as a freelancer
-    Given a user: "annika" exists
-    And I have accepted an invitation from annika
-    When I go to the users page
-    Then I should be on the dashboard page
-
-  Scenario: Navigation as a freelancer
-    Given a user: "annika" exists
-    And I have accepted an invitation from annika
-    When I am on the dashboard page
-    Then I should not see "Users"
-    And I should not see "invitations"

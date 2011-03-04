@@ -39,15 +39,6 @@ Feature: Manage accounts
     And I should see "World Dating"
     And I should not see "CareerMee"
 
-  Scenario: Viewing accounts as a freelancer
-    Given Annika exists
-    And I have accepted an invitation from annika
-    And an account exists with name: "annikas account", user: Annika
-    And an account exists with name: "another account", user: Annika, assignee: user
-    When I go to the accounts page
-    Then I should see "another account"
-    And I should not see "annikas account"
-
   Scenario: Creating a sub account (The parent account name should be displayed)
     Given I am registered and logged in as annika
     And account: "careermee" exists with user: annika
@@ -121,29 +112,6 @@ Feature: Manage accounts
     And I press "No, Create New Account"
     Then 1 accounts should exist with name: "CareerWee"
     
-  Scenario: Trying to re-assign a private account
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And an account exists with user: Annika, permission: "Private"
-    And I am on the account's edit page
-    When I select "benjamin.pochhammer@1000jobboersen.de" from "account_assignee_id"
-    And I press "Update Account"
-    Then I should be on the account's page
-    And I should see "Cannot assign a private account to another user, please change the permissions first"
-    And 1 accounts should exist with assignee_id: nil
-
-  Scenario: Trying to re-assign a shared account to a user it is not shared with
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And another user exists
-    And an account exists with user: Annika
-    And the account is shared with the other user
-    And I am on the account's edit page
-    When I select "benjamin.pochhammer@1000jobboersen.de" from "account_assignee_id"
-    And I press "Update Account"
-    Then I should be on the account's page
-    And I should see "Cannot assign a shared account to a user it is not shared with. Please change the permissions first"
-
   Scenario: Editing an account
     Given I am registered and logged in as annika
     And account: "careermee" exists with user: annika
@@ -223,43 +191,6 @@ Feature: Manage accounts
     And I should not see "CareerMee" within "#main"
     And a new "Deleted" activity should have been created for "Account" with "name" "CareerMee" and user: "annika"
 
-  Scenario: Private account (in)visibility on the accounts page
-    Given I am registered and logged in as annika
-    And a user: "benny" exists
-    And benny belongs to the same company as annika
-    And an account: "careermee" exists with user: benny, permission: "Public", name: "CareerMee"
-    And an account: "world_dating" exists with user: benny, permission: "Private"
-    When I go to the accounts page
-    Then I should see "CareerMee"
-    And I should not see "World Dating"
-
-  Scenario: Shared lead visibility on accounts page
-    Given I am registered and logged in as benny
-    And an account: "careermee" exists with user: benny, permission: "Private"
-    And user: "annika" exists with email: "annika.fleischer@1000jobboersen.de"
-    And annika belongs to the same company as benny
-    And I go to the new account page
-    And I fill in "account_name" with "World Dating"
-    And I select "Shared" from "account_permission"
-    And I select "annika.fleischer@1000jobboersen.de" from "account_permitted_user_ids"
-    And I press "account_submit"
-    And I logout
-    And I login as annika
-    When I go to the accounts page
-    Then I should see "World Dating"
-    And I should not see "CareerMee"
-
-  Scenario: Viewing a shared accounts details
-    Given I am registered and logged in as annika
-    And a user: "benny" exists
-    And benny belongs to the same company as annika
-    And an account: "careermee" exists with user: benny, name: "CareerMee"
-    And careermee is shared with annika
-    And I am on the accounts page
-    When I follow "careermee"
-    Then I should be on the account's page
-    And I should see "CareerMee"
-
   Scenario: Adding a task to an account
     Given I am registered and logged in as annika
     And an account: "careermee" exists with user: annika
@@ -318,19 +249,6 @@ Feature: Manage accounts
     And I should see "Sent offer"
     And I should see "erich_offer.pdf"
 
-  @wip
-  Scenario: Editing a comment
-    Given I am registered and logged in as annika
-    And account: "careermee" exists with user: annika, permission: "Public"
-    And a comment exists with user: annika, commentable: account, text: "Excellent account!"
-    And I am on the account's page
-    When I follow "Edit this Comment"
-    Then I should be on the comment's edit page
-    And I fill in "comment_text" with "Excellent account!!!"
-    When I press "Update Comment"
-    Then I should be on the account's page
-    And I should see "Excellent account!!!"
-
   Scenario: Viewing activites on the show page
     Given I am registered and logged in as annika
     And account: "careermee" exists with user: annika
@@ -341,18 +259,6 @@ Feature: Manage accounts
     Then I should be on the account's page
     And I should see "Updated"
     And I should see "Account Updated by annika.fleischer"
-
-  Scenario: Exporting Accounts as a normal user
-    Given I am registered and logged in as annika
-    And an account exists with user: Annika
-    And I am on the accounts page
-    Then I should not see "Export this list as a CSV"
-
-  Scenario: Accounts index with format csv as a normal user
-    Given I am registered and logged in as annika
-    And an account exists with user: Annika
-    When I go to the accounts csv page
-    Then I should be on the root page
 
   Scenario: Exporting Accounts as an admin
     Given I am registered and logged in as Matt
@@ -371,4 +277,3 @@ Feature: Manage accounts
     And I press "contact_submit"
     Then I should be on the account's page
     And I should see "Matt Beedle"
-    And I should not see "Delete" in the source

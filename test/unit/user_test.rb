@@ -221,6 +221,7 @@ class UserTest < ActiveSupport::TestCase
       end
 
       should 'return email username if username is not present' do
+        @user.username = nil
         @user.save
         assert_equal @user.full_name, "annika.fleischer1"
       end

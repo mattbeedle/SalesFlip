@@ -51,15 +51,6 @@ Feature: Manage contacts
     And account: "careermee" should have a contact with first_name: "Florian"
     And a new "Created" activity should have been created for "Contact" with "first_name" "Florian"
     
-  Scenario: Viewing contacts as a freelancer
-    Given Annika exists
-    And I have accepted an invitation from annika
-    And contact: "florian" exists with user: Annika
-    And contact: "steven" exists with user: Annika, assignee: user
-    When I go to the contacts page
-    Then I should see "Steven"
-    And I should not see "Florian"
-
   Scenario: Adding a contact when the account does not exist
     Given I am registered and logged in as annika
     And I am on the new contact page
@@ -76,29 +67,6 @@ Feature: Manage contacts
     And an account should exist with name: "World Dating"
     And a contact should exist with first_name: "Florian", last_name: "Behn"
     
-  Scenario: Trying to re-assign a private contact
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And a contact exists with user: Annika, permission: "Private"
-    And I am on the contact's edit page
-    When I select "benjamin.pochhammer@1000jobboersen.de" from "contact_assignee_id"
-    And I press "Update Contact"
-    Then I should be on the contact's page
-    And I should see "Cannot assign a private contact to another user, please change the permissions first"
-    And 1 contacts should exist with assignee_id: nil
-
-  Scenario: Trying to re-assign a shared contact to a user it is not shared with
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And another user exists
-    And a contact exists with user: Annika
-    And the contact is shared with the other user
-    And I am on the contact's edit page
-    When I select "benjamin.pochhammer@1000jobboersen.de" from "contact_assignee_id"
-    And I press "Update Contact"
-    Then I should be on the contact's page
-    And I should see "Cannot assign a shared contact to a user it is not shared with. Please change the permissions first"
-
   Scenario: Updating a contact
     Given I am registered and logged in as annika
     And Annika has invited Benny
@@ -170,44 +138,6 @@ Feature: Manage contacts
   #  Then I should be on the contacts page
   #  And I should not see "Florian" within "#main"
   #  And a new "Deleted" activity should have been created for "Contact" with "first_name" "Florian" and user: "annika"
-
-  Scenario: Private contact (in)visibility on the contacts page
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And benny belongs to the same company as annika
-    And a contact: "florian" exists with user: benny, permission: "Public"
-    And a contact exists with user: benny, first_name: "Joe", permission: "Private"
-    When I go to the contacts page
-    Then I should see "Florian"
-    And I should not see "Joe"
-
-  Scenario: Shared lead visibility on contacts page
-    Given I am registered and logged in as benny
-    And a contact: "florian" exists with user: benny, permission: "Private"
-    And user: "annika" exists with email: "annika.fleischer@1000jobboersen.de"
-    And annika belongs to the same company as benny
-    And I go to the new contact page
-    And I fill in "contact_first_name" with "Steven"
-    And I fill in "contact_last_name" with "Garcia"
-    And I select "Shared" from "contact_permission"
-    And I select "annika.fleischer@1000jobboersen.de" from "contact_permitted_user_ids"
-    And I press "contact_submit"
-    And I logout
-    And I login as annika
-    When I go to the contacts page
-    Then I should see "Steven"
-    And I should not see "Florian"
-
-  Scenario: Viewing a shared contact details
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And benny belongs to the same company as annika
-    And a contact: "florian" exists with user: benny
-    And florian is shared with annika
-    And I am on the contacts page
-    When I follow "florian-behn"
-    Then I should be on the contact's page
-    And I should see "Florian"
 
   Scenario: Adding an opportunity to a contact
     Given I am registered and logged in as annika
@@ -292,18 +222,6 @@ Feature: Manage contacts
     Then I should be on the contact's page
     And I should see "Updated"
     And I should see "Contact Updated by annika.fleischer"
-
-  Scenario: Exporting Contacts as a normal user
-    Given I am registered and logged in as annika
-    And an contact exists with user: Annika
-    And I am on the contacts page
-    Then I should not see "Export this list as a CSV"
-
-  Scenario: Contacts index with format csv as a normal user
-    Given I am registered and logged in as annika
-    And an contact exists with user: Annika
-    When I go to the contacts csv page
-    Then I should be on the root page
 
   Scenario: Exporting Contacts as an admin
     Given I am registered and logged in as Matt

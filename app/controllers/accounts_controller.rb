@@ -55,12 +55,12 @@ protected
   def accounts_index_cache_key
     Digest::SHA1.hexdigest([
       'accounts', Account.for_company(current_user.company).
-      permitted_for(current_user).desc(:updated_at).first.try(:updated_at).
+      desc(:updated_at).first.try(:updated_at).
       try(:to_i), params.flatten.join('-')].join('-'))
   end
 
   def accounts
-    @accounts = apply_scopes(Account).for_company(current_user.company).permitted_for(current_user).
+    @accounts = apply_scopes(Account).for_company(current_user.company).
       not_deleted.asc(:name)
   end
 

@@ -62,12 +62,6 @@
               = raw social_media.join(', ')
           = show_attribute(contact, 'website', link_to(c.website, c.website))
 
-          %dt Permissions
-          %dd
-            - permissions = []
-            - permissions << c.permission
-            - permissions << c.permitted_user_ids.map(&:to_s).join(',') unless c.permitted_user_ids.blank?
-            = permissions.compact.join(' | ')
       %small.timestamp
         = raw t(:added_ago_by, :time => l(contact.created_at, :format => :short), :by => contact.user.username)
     .details

@@ -69,15 +69,11 @@
           :as => :select,
           :collection => t('lead_form.statuses').zip(t('lead_form.statuses', :locale => :en)),
           :include_blank => false
-        .50.z= form.input :permission, :collection => Lead.permissions, :include_blank => false
 
         .33.a= form.input :rating, :as => :select, :collection => 1..5
         .33= form.input :source, :as => :select, :collection => Lead.sources.map(&:to_s)
         .33.z= form.input :referred_by
         .clear
-    %span.col.twenty-five.last
-      %span.wrap
-        .100= form.input :permitted_user_ids, :collection => current_user.company.users.asc(:email).map {|u| [u.email, u.id] }, :include_blank => false, :input_html => { :multiple => true, :size => 8 }
 
 %h3.toggler.open= t(:notes)
 .toggle
