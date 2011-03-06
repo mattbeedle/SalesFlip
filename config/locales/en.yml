@@ -584,3 +584,5 @@ en:
   next_lead: "Next Lead"
   template: "Template"
   sent_infomail?: "Infomail Sent?"
+  help: "Help"
+  return_to_help: "Return to Help"
