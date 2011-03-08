@@ -171,8 +171,57 @@ class LeadTest < ActiveSupport::TestCase
 
   context 'Instance' do
     setup do
-      @lead = Lead.make_unsaved(:erich, :user => User.make)
+      @lead = Lead.make_unsaved(:erich, user: User.make, company: 'test')
       @user = User.make(:benny)
+    end
+
+    context 'when duplicate_check is true' do
+      setup do
+        results = mock()
+        Lead.stubs(:search).returns(results)
+        results.stubs(:results).returns([@lead])
+      end
+
+      should 'check for duplicates when validating' do
+        @lead.save!
+        lead = Lead.make_unsaved(:erich, user: User.make,
+                                 duplicate_check: true, company: 'test')
+        assert !lead.valid?
+      end
+    end
+
+    context 'duplicate checking' do
+      context 'when there is a duplicate' do
+        setup do
+          results = mock()
+          Lead.stubs(:search).returns(results)
+          results.stubs(:results).returns([@lead])
+        end
+
+        should 'not be valid if duplicate checking is on' do
+          lead = Lead.make_unsaved(company: 'test', duplicate_check: true,
+                                   user: User.make)
+          assert !lead.valid?
+        end
+
+        should 'be valid is duplicate checking is off' do
+          lead = Lead.make_unsaved(company: 'test', user: User.make)
+          assert lead.valid?
+        end
+      end
+
+      context 'when there is no duplicate' do
+        should 'be valid when duplicate checking is on' do
+          lead = Lead.make_unsaved(company: 'test', duplicate_check: true,
+                                   user: User.make)
+          assert lead.valid?
+        end
+
+        should 'be valid when duplicate checking is off' do
+          lead = lead = Lead.make_unsaved(company: 'test', user: User.make)
+          assert lead.valid?
+        end
+      end
     end
 
     context 'similar' do

@@ -54,7 +54,7 @@ class Lead
   property :updated_at, DateTime, :index => true
   property :updated_on, Date
 
-  attr_accessor :do_not_notify, :do_not_index
+  attr_accessor :do_not_notify, :do_not_index, :duplicate_check
 
   belongs_to   :user, :required => true
   belongs_to   :contact, :required => false
@@ -62,6 +62,15 @@ class Lead
   has n, :comments, :as => :commentable#, :dependent => :delete_all
   has n, :tasks, :as => :asset#, :dependent => :delete_all
   has n, :emails, :as => :commentable#, :dependent => :delete_all
+
+  validates_with_block do
+    if duplicate_check
+      if similar(0.9).any? || similar_accounts(0.9).any?
+        return [false, 'This lead is a duplicate']
+      end
+    end
+    true
+  end
 
   before :valid?, :set_initial_state
   before :create,     :set_identifier
