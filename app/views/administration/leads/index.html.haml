@@ -81,7 +81,7 @@
     %thead
       %tr
         %th(width="70")
-          .filter
+          .filter.left
             Status
             .arrow.arrow-border
             .arrow
@@ -95,7 +95,7 @@
                   = select_tag "status_is", options_for_select(t(:lead_statuses, :locale => :en), current_scopes[:status_is]), :include_blank => 'All'
 
         %th(style="width: 75px;")
-          .filter.left
+          .filter
             Created
             .arrow.arrow-border
             .arrow

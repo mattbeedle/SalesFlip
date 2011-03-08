@@ -6,11 +6,21 @@ class LeadsController < InheritedResources::Base
   before_filter :export_allowed?,   :only => [ :index ]
   before_filter :already_assigned?, :only => [ :update ]
 
+  prepend_before_filter :manage_campaign_filter_cookie, :only => :index
+
   cache_sweeper :lead_sweeper
 
   respond_to :html
   respond_to :xml, :only => [ :new, :create, :index, :show ]
   respond_to :csv, :only => [ :index ]
+
+  has_scope :campaign do |controller, leads, campaign|
+    if campaign == "Self-Generated"
+      leads.all(:source => "Self-Generated")
+    else
+      leads.all(:campaign_id => campaign)
+    end
+  end
 
   helper_method :leads_index_cache_key
 
@@ -120,24 +130,24 @@ protected
 
     params[:status] ||= "New"
 
+    leads = apply_scopes(Lead)
     leads = case params[:status]
-            when "Contacted"
-              Lead.all(:status => "Contacted")
-            when "Offer Requested"
-              Lead.all(:status => "Offer Requested")
-            when "Infomail Requested"
-              Lead.all(:status => "Infomail Requested")
-            when "Infomail Sent"
-              Lead.all(:status => "Infomail Sent")
-            when "All"
-              Lead.all
-            when "New"
-              Lead.all(:status => "New")
-            when "Unassigned"
-              raise CanCan::AccessDenied unless can? :view_unassigned, Lead, current_user
-              return Lead.status_is("New").unassigned.not_deleted.desc(:created_at)
-            end
-
+      when "Contacted"
+        leads.all(:status => "Contacted")
+      when "Offer Requested"
+        leads.all(:status => "Offer Requested")
+      when "Infomail Requested"
+        leads.all(:status => "Infomail Requested")
+      when "Infomail Sent"
+        leads.all(:status => "Infomail Sent")
+      when "All"
+        leads.all
+      when "New"
+        leads.all(:status => "New")
+      when "Unassigned"
+        raise CanCan::AccessDenied unless can? :view_unassigned, Lead, current_user
+        return leads.status_is("New").unassigned.not_deleted.desc(:created_at)
+      end
     leads.assigned_to(current_user).not_deleted.desc(:created_at)
   end
 
@@ -188,6 +198,24 @@ protected
                              :user => resource.assignee.full_name)
       redirect_to :back
       return false
+    end
+  end
+
+  # When a sales person filters their list of leads by campaign, it should be
+  # a persistent setting, since they'll likely be spending the entire day or
+  # even week working only with that campaign.
+  #
+  # This method handles the relationship between the "lead_campaign_filter"
+  # cookie and the "campaign" parameter set by following links in the UI.
+  #
+  def manage_campaign_filter_cookie
+    case params[:campaign]
+    when nil
+      params[:campaign] = cookies[:lead_campaign_filter]
+    when ""
+      cookies.delete(:lead_campaign_filter)
+    else
+      cookies.permanent[:lead_campaign_filter] = params[:campaign]
     end
   end
 end
