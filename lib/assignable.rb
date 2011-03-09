@@ -2,7 +2,8 @@ module Assignable
   extend ActiveSupport::Concern
 
   included do
-    belongs_to :assignee, :model => 'User', :required => false
+    belongs_to :assignee, :model => 'User', :required => false,
+      :default => lambda { |r,_| r.user }
   end
 
   module ClassMethods
@@ -17,7 +18,7 @@ module Assignable
   end
 
   def assigned_to?( user )
-    assignee_id == user.id
+    assignee == user
   end
 
 end

@@ -185,10 +185,6 @@ class Lead
     fields.map { |field| self.send(field) }.join(deliminator)
   end
 
-  def assigned_to?( user )
-    assignee_id == user.id
-  end
-
   def reassigned?
     @reassigned = assignee && (
       @recently_changed && @recently_changed.include?('assignee_id') ||
