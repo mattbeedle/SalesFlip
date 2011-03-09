@@ -40,11 +40,9 @@ Salesflip::Application.configure do
   # Enable threaded mode
   # config.threadsafe!
 
-  config.i18n.default_locale = :de
+  I18n.default_locale = :de
 
   config.active_support.deprecation = :log
-
-  config.i18n.default_locale = :de
 
   config.middleware.use Rack::GridFS, :hostname => ENV['MONGODB_HOST'],
     :port => ENV['MONGODB_PORT'], :database => 'salesflip',
@@ -52,7 +50,6 @@ Salesflip::Application.configure do
     :password => ENV['MONGODB_PASSWORD']
 
   config.after_initialize do
-    I18n.locale = :de
     require 'sunspot/rails'
     Sunspot.config.solr.url = ENV['WEBSOLR_URL']
   end
