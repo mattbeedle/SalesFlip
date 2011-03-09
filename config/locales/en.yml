@@ -586,3 +586,5 @@ en:
   sent_infomail?: "Infomail Sent?"
   help: "Help"
   return_to_help: "Return to Help"
+  duplicate?: "duplicate?"
+  marked_as_duplicate: "marked as duplicate"

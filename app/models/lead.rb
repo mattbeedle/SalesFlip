@@ -46,6 +46,7 @@ class Lead
   property :referred_by, String
   property :do_not_call, Boolean
   property :industry, String
+  property :duplicate, Boolean
 
   property :homepage, String
   property :identifier, Integer
