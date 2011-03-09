@@ -231,19 +231,6 @@ class TaskTest < ActiveSupport::TestCase
       end
     end
 
-    context 'assigned' do
-      setup do
-        @benny = User.make(:benny)
-        @assigned = Task.make(:call_erich)
-        @assigned.update :assignee_id => @benny.id
-        @unassigned = Task.make
-      end
-
-      should 'return all assigned tasks' do
-        assert_equal [@assigned], Task.assigned.to_a
-      end
-    end
-
     context 'for' do
       should 'return all tasks created by the supplied user' do
         assert_equal [@task], Task.for(@task.user).to_a
@@ -302,21 +289,6 @@ class TaskTest < ActiveSupport::TestCase
         @lead.tasks.create :user => @user, :name => 'test', :due_at => Time.zone.now,
           :category => Task.categories.first
         assert_equal @lead.reload.assignee, @user
-      end
-    end
-    
-    context 'when created against an unassigned opportunity' do
-      setup do
-        @opportunity = Opportunity.make :assignee_id => nil
-        @user = User.make
-      end
-      
-      should 'assign the opportunity to the user who create the task' do
-        @opportunity.tasks.create :user => @user,
-          :name => 'test',
-          :due_at => Time.zone.now,
-          :category => Task.categories.first
-        assert_equal @opportunity.reload.assignee, @user
       end
     end
 

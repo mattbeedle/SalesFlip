@@ -5,6 +5,14 @@ class Ability
     user ||= User.new
 
     alias_action :view_contact_details, :to => :read
+    alias_action :reject, :to => :update
+    alias_action :convert, :to => :update
+    alias_action :promote, :to => :update
+    alias_action :finish, :to => :update
+    alias_action :next, :to => :read
+    alias_action :profile, :to => :update
+
+    can :manage, Invitation
 
     case user.role
       when "Sales Person", "Key Account Manager", "Freelancer"
@@ -40,6 +48,7 @@ class Ability
 
       when nil
         can :create, User
+
     end
   end
 

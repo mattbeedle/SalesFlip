@@ -56,6 +56,7 @@ class Lead
   attr_accessor :do_not_notify, :do_not_index
 
   belongs_to   :user, :required => true
+  belongs_to   :assignee, :model => 'User', :required => false
   belongs_to   :contact, :required => false
   belongs_to   :campaign, :required => false
   has n, :comments, :as => :commentable#, :dependent => :delete_all

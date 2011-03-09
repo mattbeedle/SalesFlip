@@ -2,6 +2,7 @@ require 'test_helper'
 
 class AssignableClass
   include DataMapper::Resource
+  belongs_to :user, :required => false
   property :id, Serial
 end
 

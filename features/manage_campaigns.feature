@@ -4,7 +4,7 @@ Feature: Manage campaigns
   I want to manage campaigns
 
   Scenario: Creating a campaign
-    Given I am registered and logged in as annika
+    Given I am registered and logged in as Matt
     And I am on the campaigns page
     When I follow "+Add Campaign"
     Then I should see "Add Campaign"
@@ -19,7 +19,7 @@ Feature: Manage campaigns
     And I should not see "Objectives"
 
   Scenario: Setting campaign objectives
-    Given I am registered and logged in as annika
+    Given I am registered and logged in as Matt
     And I am on the new campaign page
 
     When I fill in "Name" with "Generate leads"
@@ -44,7 +44,7 @@ Feature: Manage campaigns
     And I should see "Conversions N/A 0"
 
   Scenario: Viewing campaign with objectives
-    Given I am registered and logged in as annika
+    Given I am registered and logged in as Matt
     And a campaign: "generate_leads" exists
     And a lead: "erich" exists with campaign: generate_leads, status: "Converted"
 
@@ -53,7 +53,7 @@ Feature: Manage campaigns
     And I should see "Conversions 5 1"
 
   Scenario: Viewing list of campaigns with objectives
-    Given I am registered and logged in as annika
+    Given I am registered and logged in as Matt
     And a campaign: "generate_leads" exists
     And a lead: "erich" exists with campaign: generate_leads, status: "Converted"
 
@@ -62,7 +62,7 @@ Feature: Manage campaigns
     And I should see "Conversions: 1/5"
 
   Scenario: Viewing list of campaigns
-    Given I am registered and logged in as annika
+    Given I am registered and logged in as Matt
     And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010"
 
     When I follow "Campaigns" within "#navigation"
@@ -70,7 +70,7 @@ Feature: Manage campaigns
     And I should see "1. Dec - 31. Dec"
 
   Scenario: Viewing a campaign
-    Given I am registered and logged in as annika
+    Given I am registered and logged in as Matt
     And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010"
     And I am on the campaigns page
 
@@ -79,7 +79,7 @@ Feature: Manage campaigns
     And I should see "1. Dec - 31. Dec"
 
   Scenario: Viewing a campaign with leads
-    Given I am registered and logged in as annika
+    Given I am registered and logged in as Matt
     And a campaign: "generate_leads" exists
     And a lead: "erich" exists with campaign: generate_leads
 
@@ -88,7 +88,7 @@ Feature: Manage campaigns
     And I should see "Erich Feldmeier"
 
   Scenario: Creating a lead from the campaign
-    Given I am registered and logged in as annika
+    Given I am registered and logged in as Matt
     And a campaign: "generate_leads" exists
     And I am on that campaign's page
 
@@ -120,7 +120,7 @@ Feature: Manage campaigns
     Then I should see "Generate 100 leads this month" within "#main"
 
   Scenario: Editing a campaign
-    Given I am registered and logged in as annika
+    Given I am registered and logged in as Matt
     And the campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010"
     And I am on that campaign's page
 
@@ -138,38 +138,35 @@ Feature: Manage campaigns
     And I should see "8. Dec - 15. Dec"
 
   Scenario: Viewing campaign creation event
-    Given I am registered and logged in as annika
-    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: annika
+    Given I am registered and logged in as Matt
+    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: Matt
 
     When I go to the campaign's page
-    Then I should see "Campaign Created by annika.fleischer"
-
-    When I go to the home page
-    Then I should see "annika.fleischer"
+    Then I should see "Campaign Created by matt"
 
   Scenario: Viewing campaign update event
-    Given I am registered and logged in as annika
-    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: annika
+    Given I am registered and logged in as Matt
+    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: Matt
     And I go to the campaign's edit page
     And I fill in "Start date" with "2/12/2010"
 
     When I press "Save Campaign"
-    Then I should see "Campaign Updated by annika.fleischer"
+    Then I should see "Campaign Updated by matt"
 
     When I go to the home page
-    Then I should see "annika.fleischer@1000jobboersen.de updated campaign Generate 100 leads this month"
+    Then I should see "matt.beedle@1000jobboersen.de updated campaign Generate 100 leads this month"
 
   Scenario: Viewing campaign view events
-    Given I am registered and logged in as annika
-    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: annika
+    Given I am registered and logged in as Matt
+    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: Matt
     And I go to the campaign's page
 
     When I refresh the page
-    Then I should see "Campaign Viewed by annika.fleischer"
+    Then I should see "Campaign Viewed by matt"
 
   Scenario: Creating a comment for a campaign
-    Given I am registered and logged in as annika
-    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: annika
+    Given I am registered and logged in as Matt
+    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: Matt
 
     When I go to the campaign page
     Then I should see "Comments"
@@ -180,8 +177,8 @@ Feature: Manage campaigns
     And I should see "Good progress!"
 
   Scenario: Creating a task for a campaign
-    Given I am registered and logged in as annika
-    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: annika
+    Given I am registered and logged in as Matt
+    And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010", user: Matt
     And I am on the campaign page
 
     When I follow "Add Task"

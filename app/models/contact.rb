@@ -51,7 +51,6 @@ class Contact
 
   belongs_to :account, :required => false
   belongs_to :user, :required => true
-  belongs_to :assignee, :model => 'User', :required => false
   belongs_to :lead, :required => false
 
   has n, :tasks, :as => :asset#, :dependent => :destroy
@@ -74,10 +73,6 @@ class Contact
     text :account do
       account.try(:name)
     end
-  end
-
-  def self.assigned_to( user_id )
-    any_of({ :assignee_id => user_id }, { :user_id => user_id, :assignee_id => nil })
   end
 
   def self.exportable_fields

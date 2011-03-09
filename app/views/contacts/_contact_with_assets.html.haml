@@ -9,15 +9,6 @@
         = info.compact.join(' | ')
         = " (do not call)" if contact.do_not_call
     %ul.actions
-      %li
-        = simple_form_for contact do |form|
-          = hidden_field_tag :return_to, request.fullpath
-          - if contact.tracked_by?(current_user)
-            = hidden_field_tag 'contact[remove_tracker_ids][]', current_user.id
-            = form.button :submit, t(:stop_updating_me), :id => 'stop_updating_me'
-          - else
-            = hidden_field_tag 'contact[tracker_ids][]', current_user.id
-            = form.button :submit, t(:keep_me_updated), :id => 'keep_me_updated'
       - if can? :delete, contact
         %li.delete
           = simple_form_for contact, :html => { :method => :delete } do |form|
