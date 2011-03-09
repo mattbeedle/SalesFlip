@@ -72,7 +72,6 @@
         .50.z= form.input :permission, :collection => Lead.permissions, :include_blank => false
 
         .33.a= form.input :rating, :as => :select, :collection => 1..5
-        .33= form.input :source, :as => :select, :collection => Lead.sources.map(&:to_s)
         .33.z= form.input :referred_by
         .clear
     %span.col.twenty-five.last
