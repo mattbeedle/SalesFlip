@@ -119,7 +119,7 @@ class LeadsController < InheritedResources::Base
 protected
   def leads_index_cache_key
     @index_cache_key ||= Digest::SHA1.hexdigest([
-      'leads', Lead.for_company(current_user.company).desc(:updated_at).
+      'leads', Lead.desc(:updated_at).
       first.try(:updated_at).try(:to_i), params.flatten.join('-')].join('-'))
   end
 
@@ -170,7 +170,7 @@ protected
 
   def resource
     @lead ||= hook(:leads_resource, self).last
-    @lead ||= Lead.for_company(current_user.company).get(params[:id]) if params[:id]
+    @lead ||= Lead.get(params[:id]) if params[:id]
   end
 
   def begin_of_association_chain
