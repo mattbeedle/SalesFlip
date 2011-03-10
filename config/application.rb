@@ -74,6 +74,7 @@ module Salesflip
 
     config.after_initialize do
       I18n.locale = I18n.default_locale
+      DataMapper.auto_upgrade!
     end
 
     # This is set here for dev and test environments.
