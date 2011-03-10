@@ -363,7 +363,6 @@ en:
       - Infomail Sent
       - Offer Requested
       - Rejected
-      - Converted
   lead_statuses:
     - New
     - Contacted
