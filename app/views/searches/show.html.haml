@@ -14,3 +14,65 @@
   = will_paginate @results
 - else
   = raw t(:no_search_results, :link => new_search_path)
+
+:javascript
+  $$("a.duplicate").each('on', 'click', function(e) {
+    e.preventDefault();
+    this.siblings(".duplicate")[0].show();
+    this.remove();
+    new Xhr(this.get('href')).send({
+      evalJS: false,
+      _method: 'put'
+    });
+  });
+:css
+
+  .item {
+    padding: 10px 0;
+  }
+
+  a.duplicate {
+    display: none;
+  }
+
+  .lead:hover a.duplicate {
+    display: inline;
+  }
+
+  .duplicate {
+    font-size: 9px;
+    font-weight: normal;
+    line-height: 0;
+  }
+
+  a.duplicate {
+    color: #aaa;
+    font-style: italic;
+    text-decoration: none;
+  }
+
+  a.duplicate:hover {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  div#main .lead h3 {
+    cursor: auto;
+    line-height: 16px;
+    margin: 0;
+  }
+
+  div#main .lead p {
+    margin: 0;
+  }
+
+  .lead {
+    border-bottom: 1px solid #eee;
+    padding: 0.5em 0;
+  }
+
+  .lead .rating {
+    font-size: inherit;
+    margin-right: 5px;
+    padding: 0;
+  }

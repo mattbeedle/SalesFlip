@@ -112,6 +112,11 @@ class LeadsController < InheritedResources::Base
     end
   end
 
+  def duplicate
+    @lead.update! :duplicate => true
+    render :text => "true"
+  end
+
   def export
     set_filters
   end

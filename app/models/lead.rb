@@ -23,7 +23,7 @@ class Lead
 
   has_constant :titles,         lambda { I18n.t(:titles) }
   has_constant :salutations,    lambda { I18n.t(:salutations) }
-  has_constant :statuses,       lambda { I18n.t(:lead_statuses) }
+  has_constant :statuses,       I18n.t(:lead_statuses, :locale => :en)
   has_constant :sources,        lambda { I18n.t(:lead_sources) }
   has_constant :company_sizes,  lambda { I18n.t(:company_sizes) }
 
@@ -45,6 +45,7 @@ class Lead
   property :referred_by, String
   property :do_not_call, Boolean
   property :industry, String
+  property :duplicate, Boolean
 
   property :homepage, String
   property :identifier, Integer
@@ -53,7 +54,7 @@ class Lead
   property :updated_at, DateTime, :index => true
   property :updated_on, Date
 
-  attr_accessor :do_not_notify, :do_not_index
+  attr_accessor :do_not_notify, :do_not_index, :duplicate_check
 
   belongs_to   :user, :required => true
   belongs_to   :assignee, :model => 'User', :required => false
@@ -62,6 +63,15 @@ class Lead
   has n, :comments, :as => :commentable#, :dependent => :delete_all
   has n, :tasks, :as => :asset#, :dependent => :delete_all
   has n, :emails, :as => :commentable#, :dependent => :delete_all
+
+  validates_with_block do
+    if duplicate_check
+      if similar(0.9).any? || similar_accounts(0.9).any?
+        return [false, 'This lead is a duplicate']
+      end
+    end
+    true
+  end
 
   before :valid?, :set_initial_state
   before :create,     :set_identifier

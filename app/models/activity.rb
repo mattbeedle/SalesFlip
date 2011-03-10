@@ -24,7 +24,7 @@ class Activity
   belongs_to :user, child_key: 'creator_id'
   belongs_to :subject, polymorphic: true, required: true
 
-  has_constant :actions, lambda { I18n.t(:activity_actions) }, :index => true
+  has_constant :actions, I18n.t(:activity_actions, :locale => :en), :index => true
 
   def self.for_subject(subject)
     subject.activities

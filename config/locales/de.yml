@@ -352,7 +352,6 @@ de:
       - Infomail gesendet
       - Angebot angefordert
       - Abgelehnt
-      - Konvertiert
   lead_statuses:
     - Neu
     - Kontaktiert
@@ -573,3 +572,7 @@ de:
   already_contacted?: "Bereits kontaktiert?"
   template: "Vorlage"
   sent_infomail?: "Infomail gesendet?"
+  help: "Hilfe"
+  return_to_help: "Zurück zur Hilfe"
+  duplicate?: "Duplikat?"
+  marked_as_duplicate: "markiert als Duplikat"

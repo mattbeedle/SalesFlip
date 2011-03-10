@@ -20,6 +20,7 @@ Salesflip::Application.routes.draw do
       get :convert
       put :promote
       put :reject
+      put :duplicate
     end
 
     collection do

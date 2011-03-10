@@ -40,20 +40,14 @@ Salesflip::Application.configure do
   # Enable threaded mode
   # config.threadsafe!
 
-  config.i18n.default_locale = :de
+  I18n.default_locale = :de
 
   config.active_support.deprecation = :log
-
-  config.i18n.default_locale = :de
 
   config.middleware.use Rack::GridFS, :hostname => ENV['MONGODB_HOST'],
     :port => ENV['MONGODB_PORT'], :database => 'salesflip_staging',
     :prefix => 'uploads', :user => ENV['MONGODB_USER'],
     :password => ENV['MONGODB_PASSWORD']
-
-  config.after_initialize do
-    I18n.locale = :de
-  end
 
   # require 'heroku/autoscale'
   # config.middleware.use Heroku::Autoscale,
