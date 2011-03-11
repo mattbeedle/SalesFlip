@@ -3,6 +3,8 @@ Salesflip::Application.routes.draw do
 
   root :to => 'pages#index'
 
+  match '/instant', :to => InstantSearchController.action(:search)
+
   match 'profile', :to => 'users#profile'
 
   match 'help(/:action)(/:locale)', :to => "help", :as => "help"

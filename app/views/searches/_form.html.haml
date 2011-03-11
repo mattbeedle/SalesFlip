@@ -1,22 +1,88 @@
 = simple_form_for @search || Search.new do |form|
+  = hidden_field_tag 'search[collections][]', 'Lead'
+  = hidden_field_tag 'search[collections][]', 'Contact'
+  = hidden_field_tag 'search[collections][]', 'Account'
+  = hidden_field_tag 'search[collections][]', 'Opportunity'
   .70.a
-    .string= form.input :terms
+    .string
+      %label= t(:search)
+      = form.text_field :terms, :autocomplete => "off"
   .submit.search.30.z
     .string= form.submit t(:search)
-  .boolean
-    = check_box_tag 'search[collections][]', 'Lead', (params[:search] && params[:search][:collections].try(:include?, 'Lead')) || (!@search && params[:search].blank?) || (@search and @search.collections and @search.collections.include?('Lead')), :id => 'search_collections_lead'
-    %label{ :for => 'search_collections_lead' }= t(:leads)
-
-    = check_box_tag 'search[collections][]', 'Contact', (params[:search] && params[:search][:collections].try(:include?, 'Contact')) || (!@search && params[:search].blank?) || (@search and @search.collections and @search.collections.include?('Contact')), :id => 'search_collections_contact'
-    %label{ :for => 'search_collections_contact' }= t(:contacts)
-
-    = check_box_tag 'search[collections][]', 'Account', (params[:search] && params[:search][:collections].try(:include?, 'Account')) || (!@search && params[:search].blank?) || (@search and @search.collections and @search.collections.include?('Account')), :id => 'search_collections_account'
-    %label{ :for => 'search_collections_account' }= t(:accounts)
-
-    = check_box_tag 'search[collections][]', 'Opportunity', (params[:search] && params[:search][:collections].try(:include?, 'Opportunity')) || (!@search && params[:search].blank?) || (@search && @search.collections && @search.collections.include?('Opportunity')), :id => 'search_collections_opportunity'
-    %label{ :for => 'search_collections_opportunity' }= t(:opportunities)
+  %p#instant-results-hint
+    Searching on company name. Press 'Search' to search everything.
+  #instant-results.box
+    .account
+    .lead
   .clear
-    - if controller_is(:searches)
-      %span
-        or
-        = link_to t(:go_back), :back
+
+:javascript
+  (function() {
+    var lastSearch, searchTimer;
+
+    $("search_terms").on('keyup', function() {
+      var value = this.value();
+
+      if ( value.length > 1 ) {
+        if ( value !== lastSearch ) {
+          clearTimeout(searchTimer);
+          searchTimer = setTimeout(function() {
+            search(lastSearch = value);
+          }, 250);
+        }
+      }
+      else {
+        lastSearch = null;
+        $("instant-results-hint").hide();
+        $("instant-results").clean().hide();
+      }
+    });
+
+    function search(term) {
+      new Xhr("/instant", {
+        method: 'get',
+        params: { q: term },
+        onSuccess: function() {
+          generateResults(term, this.responseJSON);
+        }
+      }).send();
+
+      return false;
+    }
+
+    function generateResults(term, results) {
+      $("instant-results-hint").show();
+      var elem = $("instant-results").clean();
+      var ul = $E("ul").insertTo(elem);
+
+      if ( results.accounts.length > 0 ) {
+        results.accounts.each(function(account) {
+          $E("li").insert(
+            $E("a")
+              .set('href', '/accounts/' + account.id)
+              .update(
+                highlight(term, account.name)
+              ).addClass("account")
+          ).insertTo(ul);
+        })
+      }
+
+      if ( results.leads.length > 0 ) {
+        results.leads.each(function(lead) {
+          $E("li").insert(
+            $E("a")
+              .set('href', '/leads/' + lead.id)
+              .update(
+                lead.name + ' | ' + highlight(term, lead.company)
+              ).addClass("lead")
+          ).insertTo(ul);
+        })
+      }
+
+      elem.show();
+    }
+
+    function highlight(term, text) {
+      return text.replace(new RegExp('^('+term+')', 'i'), "<strong>$1</strong>")
+    }
+  })();
