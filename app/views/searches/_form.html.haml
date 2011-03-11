@@ -9,8 +9,7 @@
       = form.text_field :terms, :autocomplete => "off"
   .submit.search.30.z
     .string= form.submit t(:search)
-  %p#instant-results-hint
-    Searching on company name. Press 'Search' to search everything.
+  %p#instant-results-hint= t(:searching_on_company_name)
   #instant-results.box
     .account
     .lead

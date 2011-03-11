@@ -576,3 +576,4 @@ de:
   return_to_help: "Zurück zur Hilfe"
   duplicate?: "Duplikat?"
   marked_as_duplicate: "markiert als Duplikat"
+  searching_on_company_name: "Suche nach Unternehmen. Klicke „Suche“ um alles zu durchsuchen."
