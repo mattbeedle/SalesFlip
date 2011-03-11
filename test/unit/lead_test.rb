@@ -509,13 +509,13 @@ class LeadTest < ActiveSupport::TestCase
 
       should 'create an opportunity if required' do
         @lead.promote!('A company', :opportunity => { :title => 'An opportunity', :stage =>
-          OpportunityStage.first })
+          OpportunityStage.first, :budget => 2000 })
         assert_equal 1, @lead.contact.opportunities.count
       end
 
       should 'return an account, a contact and an opportunity' do
         result = @lead.promote!('A company', :opportunity => { :title => 'An opportunity',
-          :stage => OpportunityStage.first })
+          :stage => OpportunityStage.first, :budget => 2000 })
         assert_equal [@lead.contact.account, @lead.contact, @lead.contact.opportunities.first],
           result
       end

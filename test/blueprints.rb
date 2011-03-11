@@ -235,6 +235,7 @@ Opportunity.blueprint do
   title { Sham.name }
   user { User.make }
   stage { OpportunityStage.make }
+  budget { 2000 }
 end
 
 Opportunity.blueprint(:closed_today) do

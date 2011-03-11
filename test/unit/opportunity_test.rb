@@ -72,26 +72,26 @@ class OpportunityTest < ActiveSupport::TestCase
 
       should 'create an opportunity from the supplied contact' do
         opportunity = Opportunity.create_for(@contact, :opportunity => { :title => 'An opportunity',
-          :stage => OpportunityStage.first })
+          :stage => OpportunityStage.first, :budget => 2000 })
         assert_equal 1, Opportunity.count
         assert_equal 'An opportunity', Opportunity.first.title
       end
 
       should 'assign the opportunity to the supplied contact' do
         opportunity = Opportunity.create_for(@contact, :opportunity => { :title => 'An opportunity',
-          :stage => OpportunityStage.first })
+          :stage => OpportunityStage.first, :budget => 2000 })
         assert_equal 1, @contact.opportunities.count
       end
 
       should 'not create the opportunity if the supplied contact is invalid' do
         opportunity = Opportunity.create_for(Contact.new, :opportunity => { :title => 'An opportunity',
-          :stage => OpportunityStage.first })
+          :stage => OpportunityStage.first, :budget => 2000 })
         assert_equal 0, Opportunity.count
       end
 
       should 'not create the opportunity if the title is not supplied' do
         opportunity = Opportunity.create_for(@contact, :opportunity => { :stage =>
-          OpportunityStage.first })
+          OpportunityStage.first, :budget => 2000 })
         assert_equal 0, Opportunity.count
         assert opportunity.errors.blank?
       end

@@ -20,10 +20,12 @@ class Opportunity
   property :created_on, Date
   property :updated_at, DateTime
   property :updated_on, Date
+  property :budget, Integer
 
   validates_numericality_of :amount,      :allow_blank => true, :allow_nil => true
   validates_numericality_of :probability, :allow_blank => true, :allow_nil => true
   validates_numericality_of :discount,    :allow_blank => true, :allow_nil => true
+  validates_numericality_of :budget, :allow_blank => false, :allow_nil => false
 
   attr_accessor :do_not_notify
 

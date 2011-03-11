@@ -5,7 +5,8 @@
   .clear
   .25.a= datepicker_for(form, :close_on)
   .25= form.input :amount
-  .25.z= form.input :discount
+  .25= form.input :discount
+  .25.z= form.input :budget
   .clear
   - if !defined?(convert) || (defined?(convert) && convert == false)
     .75.a= form.input :contact_id, :collection => Contact.for_company(current_user.company).permitted_for(current_user).sort_by(&:name).map { |c| [c.name, c.id] }
