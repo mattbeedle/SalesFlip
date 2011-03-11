@@ -17,11 +17,11 @@ a, input
 #header
   color: $header_color
   +v-grad($header_grad_1, $header_grad_2)
+  min-height: 84px
   width: 100%
   +clearfix
   h1
     margin-top: 26px
-    padding-bottom: 12px
     float: left
     a
       color: $header_color
@@ -35,15 +35,18 @@ a, input
     +clearfix
 
 #menus
-  float: right
   p
-    padding-bottom: 10px
+    margin-top: 26px
+    padding-bottom: 0
     text-align: right
     +text-shadow($header_grad_2 - 30, 1px, 1px, 1px)
     a
       color: $amber
       &:hover
         color: white
+  #navigation
+    float: right
+    clear: right
 
 ul#navigation
   +tab_menu
