@@ -14,7 +14,7 @@ class UpdateExternalUserJob
   def self.perform(user_json)
     HTTParty.post(
       Rails.configuration.external_user_update_url,
-      query: { user: Encryptor.encrypt(value: user_json) }
+      query: { data: Encryptor.encrypt(value: user_json) }
     )
   end
 end

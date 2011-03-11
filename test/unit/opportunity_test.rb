@@ -9,6 +9,10 @@ class OpportunityTest < ActiveSupport::TestCase
     should_require_key :title, :user, :stage
     should_act_as_paranoid
 
+    setup do
+      Resque.stubs(:enqueue).with(OfferRequestJob, Integer.any_instance)
+    end
+
     context 'assigned_to' do
       setup do
         @user = User.make :annika

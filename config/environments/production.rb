@@ -72,4 +72,5 @@ Salesflip::Application.configure do
   }
 
   config.external_user_update_url = "http://staging.1000jobboersen.de/external_updates/user"
+  config.external_offer_request_url = "http://staging.1000jobboersen.de/external_updates/offer_request"
 end

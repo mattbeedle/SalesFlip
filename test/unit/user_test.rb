@@ -101,8 +101,8 @@ class UserTest < ActiveSupport::TestCase
       end
 
       should "enqueues the update external job" do
-        Resque.expects(:enqueue)
-        @user.save
+        Resque.expects(:enqueue).with(UpdateExternalUserJob, @user.to_json)
+        @user.update_external_user
       end
     end
 
