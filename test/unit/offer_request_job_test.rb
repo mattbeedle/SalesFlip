@@ -14,11 +14,10 @@ class OfferRequestJobTest < ActiveSupport::TestCase
         Rails.configuration.external_user_update_url,
         query: { data: Encryptor.encrypt(value: @opportunity.to_json) }
       )
-      OfferRequestJob.perform(@opportunity.id)
     end
 
-    should "sets the stage to offer requested" do
-      assert_equal @stage, @opportunity.reload.stage
+    should "send the information to jobboards" do
+      OfferRequestJob.perform(@opportunity.id)
     end
   end
 end

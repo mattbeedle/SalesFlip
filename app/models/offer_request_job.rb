@@ -17,8 +17,6 @@ class OfferRequestJob
         Rails.configuration.external_user_update_url,
         query: { data: Encryptor.encrypt(value: opportunity.to_json) }
       )
-      opportunity.stage = OpportunityStage.where(name: "Offer Requested").first
-      opportunity.save!
     end
   end
 end

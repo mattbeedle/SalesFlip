@@ -80,6 +80,10 @@ class Opportunity
     all(:stage_id => OpportunityStage.all(:name => stages).map(&:id))
   end
 
+  def offer_requested?
+    stage.name == "Offer Requested" || stage.name == "Offer Rework Requested"
+  end
+
   def weighted_amount
     ((amount || 0.0)  - (discount || 0.0)) * (probability || 0) / 100.0
   end
@@ -107,5 +111,11 @@ class Opportunity
     if self.probability == 100 && changed.include?('probability')
       self.close_on = Date.today
     end
+  end
+
+  def create_offer_request
+    Resque.enqueue(OfferRequestJob, id)
+    self.stage = OpportunityStage.where(name: "Offer Requested").first
+    save!
   end
 end

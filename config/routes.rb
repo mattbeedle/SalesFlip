@@ -12,9 +12,13 @@ Salesflip::Application.routes.draw do
   match "external_updates/user", to: "external_updates#update_user", as: "user_external_updates"
 
   resources :users, :comments, :tasks, :deleted_items,
-    :searches, :invitations, :emails, :opportunities, :campaigns
+    :searches, :invitations, :emails, :campaigns
 
   resources :infomail_templates
+
+  resources :opportunities do
+    get :create_offer_request, :on => :member
+  end
 
   resources :leads do
     resources :infomails, :only => [:new, :create]
