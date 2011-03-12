@@ -15,7 +15,7 @@ class OfferRequestJob
     Opportunity.find(opportunity_id).tap do |opportunity|
       HTTParty.post(
         Rails.configuration.external_user_update_url,
-        query: { data: Encryptor.encrypt(value: opportunity.to_json) }
+        query: { data: Encryptor.encrypt(value: opportunity.to_json(include: :stage)) }
       )
     end
   end

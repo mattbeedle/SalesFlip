@@ -81,7 +81,7 @@ class Opportunity
   end
 
   def offer_requested?
-    stage.name == "Offer Requested" || stage.name == "Offer Rework Requested"
+    stage.name == "Offer Requested"
   end
 
   def weighted_amount
