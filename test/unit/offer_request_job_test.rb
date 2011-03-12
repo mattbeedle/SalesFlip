@@ -10,9 +10,10 @@ class OfferRequestJobTest < ActiveSupport::TestCase
   context ".perform" do
 
     setup do
+      Encryptor.expects(:encrypt).returns("testing")
       HTTParty.expects(:post).with(
-        Rails.configuration.external_user_update_url,
-        query: { data: Encryptor.encrypt(value: @opportunity.to_json) }
+        Rails.configuration.external_offer_request_url,
+        query: { data: "testing" }
       )
     end
 
