@@ -34,6 +34,8 @@ en:
   status: Status
   total: Total
   confirm: Confirm
+  send_offer_request: Send Offer Request
+  send_offer_rework: Request Rework
 
   mongoid:
     errors:

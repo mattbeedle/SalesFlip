@@ -38,4 +38,7 @@ Salesflip::Application.configure do
     # :port => 27017, :database => 'salesflip_test', :prefix => 'uploads'
 
   config.logger = Logger.new(Rails.root.join("log",Rails.env + ".log"),3,5*1024*1024)
+
+  config.external_user_update_url = "http://local.test/external_updates/user"
+  config.external_offer_request_url = "http://local.test/external_updates/create_offer_request"
 end

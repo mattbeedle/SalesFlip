@@ -18,6 +18,7 @@ Salesflip::Application.routes.draw do
 
   resources :opportunities do
     get :create_offer_request, :on => :member
+    get :rework_offer_request, :on => :member
   end
 
   resources :leads do

@@ -84,6 +84,10 @@ class Opportunity
     stage.name == "Offer Requested"
   end
 
+  def new_offer?
+    stage.name == "New"
+  end
+
   def weighted_amount
     ((amount || 0.0)  - (discount || 0.0)) * (probability || 0) / 100.0
   end
@@ -93,6 +97,22 @@ class Opportunity
       self.attachments.build attributes.merge(:subject => self)
     end
     self.attachments.first.valid?
+  end
+
+  def serializable_attachments
+    attachments.inject([]) do |attrs, attachment|
+      attrs.tap do |attributes|
+        attributes << attachment.attachment.url
+      end
+    end
+  end
+
+  def serializable_comments
+    comments.inject([]) do |attrs, comment|
+      attrs.tap do |attributes|
+        attributes << comment.text
+      end
+    end
   end
 
   def self.create_for( contact, options = {} )
@@ -116,6 +136,12 @@ class Opportunity
   def create_offer_request
     Resque.enqueue(OfferRequestJob, id)
     self.stage = OpportunityStage.where(name: "Offer Requested").first
+    save!
+  end
+
+  def rework_offer_request
+    Resque.enqueue(OfferReworkJob, id)
+    self.stage = OpportunityStage.where(name: "Offer Rework Requested").first
     save!
   end
 end

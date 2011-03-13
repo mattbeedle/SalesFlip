@@ -77,9 +77,10 @@ module Salesflip
       DataMapper.auto_upgrade!
     end
 
-    # This is set here for dev and test environments.
+    # This is set here for dev environments.
     config.external_user_update_url = "http://localhost:8080/external_updates/user"
     config.external_offer_request_url = "http://localhost:8080/external_updates/create_offer_request"
+    config.external_offer_rework_url = "http://localhost:8080/external_updates/rework_offer_request"
 
     # The access key should be stored in the environment on the servers so the
     # information being sent can be encrypted.

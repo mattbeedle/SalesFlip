@@ -32,6 +32,8 @@ de:
   data_summary: Datenzusammenfassung
   status: Status
   total: Summe
+  send_offer_request: Angebot Anfrage
+  send_offer_rework: Überarbeiten
 
   mongoid:
     errors:

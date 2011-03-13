@@ -1,6 +1,11 @@
 .title
   %h2= @opportunity.title
-  = link_to t(:send_offer_request), create_offer_request_opportunity_path(:return_to => request.fullpath), :id => "new"
+  - if @opportunity.new_offer?
+    = link_to t(:send_offer_request), create_offer_request_opportunity_path(:return_to => request.fullpath), :id => "new"
+  - elsif @opportunity.offer_requested?
+    = link_to t(:send_offer_rework), rework_offer_request_opportunity_path(:return_to => request.fullpath), :id => "new"
+  - else
+    [ #{@opportunity.stage.name} ]
 
 %h3= t(:attachments)
 - if @opportunity.attachments.any?
