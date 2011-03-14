@@ -83,6 +83,12 @@ GIT
       mongo (>= 1.0.8)
       rack
 
+PATH
+  remote: /Users/bernerdschaefer/Projects/domainatrix
+  specs:
+    domainatrix (0.0.7)
+      addressable
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -428,6 +434,7 @@ DEPENDENCIES
   dm-transactions
   dm-types!
   dm-validations!
+  domainatrix!
   encryptor
   exceptional
   faker (= 0.3.1)

@@ -66,7 +66,7 @@ class Lead
 
   validates_with_block do
     if duplicate_check
-      if similar(0.9).any? || similar_accounts(0.9).any?
+      if similar.any? || similar_accounts.any?
         return [false, 'This lead is a duplicate']
       end
     end
@@ -136,20 +136,74 @@ class Lead
     end
   end
 
-  def similar( threshold )
-    leads = Lead.search { keywords self.company }.results
+  # @return [Array<Lead>] all potentially similar leads
+  def similar
+    return [] unless company
 
-    leads.select do |lead|
-      company.levenshtein_similar(lead.company) > threshold rescue false
+    # We start by searching for all companies with the same (lowercased) first
+    # letter, since we need to perform a number of ruby-land operations, but
+    # don't want to deal with every lead. We delegate the lowercasing of our
+    # first letter to the database, because we know that postgres will
+    # correctly turn, e.g., Ü into ü, which ruby will not.
+    sql = <<-SQL
+    select id, lower(company) as company, website, email
+    from leads
+    where
+      lower(substr(company, 1, 1)) = lower(?)
+    SQL
+    leads = repository.adapter.select sql, company[0]
+
+    normalizer = CompanyNormalizer
+
+    leads.select! do |lead|
+      case
+      when website.present? && lead.website.present?
+        uri = Domainatrix.parse(
+          website =~ /http/ ? website : "http://#{website}"
+        )
+        begin
+          other_uri = Domainatrix.parse(
+            lead.website =~ /http/ ? lead.website : "http://#{lead.website}"
+          )
+        rescue
+          require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger
+        end
+
+        uri.domain == other_uri.domain &&
+          uri.public_suffix == other_uri.public_suffix
+      when email.present? && lead.email.present?
+        email[/@.*/] == lead.email[/@.*/]
+      else
+        normalizer.normalize(lead.company) == normalizer.normalize(company)
+      end
     end
+
+    Lead.all(id: leads.map(&:id) - [id])
   end
 
-  def similar_accounts( threshold )
-    accounts = Account.search { keywords self.company }.results
+  def similar_accounts
+    return [] unless company
 
-    accounts.select do |account|
-      company.levenshtein_similar(account.name) > threshold
+    # We start by searching for all companies with the same (lowercased) first
+    # letter, since we need to perform a number of ruby-land operations, but
+    # don't want to deal with every lead. We delegate the lowercasing of our
+    # first letter to the database, because we know that postgres will
+    # correctly turn, e.g., Ü into ü, which ruby will not.
+    sql = <<-SQL
+    select id, lower(name) as company
+    from accounts
+    where
+      lower(substr(name, 1, 1)) = lower(?)
+    SQL
+    accounts = repository.adapter.select sql, company[0]
+
+    normalizer = CompanyNormalizer
+
+    accounts.select! do |account|
+      normalizer.normalize(account.company) == normalizer.normalize(company)
     end
+
+    Account.all(id: accounts.map(&:id))
   end
 
   def full_name

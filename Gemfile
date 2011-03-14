@@ -24,6 +24,8 @@ gem 'dm-transactions'
 gem 'dm-types', :git => 'git://github.com/datamapper/dm-types.git'
 gem 'dm-validations', :git => 'git://github.com/datamapper/dm-validations.git'
 
+gem 'domainatrix', :path => '/Users/bernerdschaefer/Projects/domainatrix'
+
 gem 'httparty'
 gem 'net-ssh'
 gem 'net-scp'

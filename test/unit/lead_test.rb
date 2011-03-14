@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'test_helper.rb'
 
 class LeadTest < ActiveSupport::TestCase
@@ -193,9 +194,7 @@ class LeadTest < ActiveSupport::TestCase
     context 'duplicate checking' do
       context 'when there is a duplicate' do
         setup do
-          results = mock()
-          Lead.stubs(:search).returns(results)
-          results.stubs(:results).returns([@lead])
+          @lead.save
         end
 
         should 'not be valid if duplicate checking is on' do
@@ -225,26 +224,44 @@ class LeadTest < ActiveSupport::TestCase
     end
 
     context 'similar' do
-      setup do
-        FakeWeb.allow_net_connect = true
-        @lead = Lead.make :company => '1000JobBoersen'
-        @lead2 = Lead.new :company => '10000JobBoersen'
-        @lead3 = Lead.make :company => 'JobBoersen'
-        @search = Lead.search { keywords 'JobBoersen' }
-        @search.stubs(:results).returns([@lead, @lead2, @lead3])
-        Lead.stubs(:search).returns(@search)
+      should "return similar leads" do
+        lead = Lead.make(company: "Brücke Rendsburg GmbH & Co. AG")
+        assert_equal [lead], Lead.new(company: "Bruecke Rendsburg AG").similar
       end
 
-      should 'find all leads with similar company name' do
-        assert @lead2.similar(0.9).include?(@lead)
+      context "when leads have different websites" do
+        should "not include similarly named leads" do
+          lead = Lead.make(company: "Körber GmbH", website: "koerber.de")
+          refute_includes Lead.new(company: "Körber AG", website: "koerber-ag.de").similar, lead
+        end
       end
 
-      should 'find only very similar leads with the threshold turned up' do
-        assert !@lead2.similar(0.9).include?(@lead3)
+      context "when leads have differently formatted websites" do
+        should "be similar" do
+          lead = Lead.make(company: "Körber GmbH", website: "koerber.de")
+          assert_includes Lead.new(company: "Körber GmbH", website: "http://www.koerber.de").similar, lead
+        end
       end
 
-      should 'be able to turn the threshold down to get leads which are less similar' do
-        assert @lead2.similar(0.3).include?(@lead3)
+      context "when only one lead has a website" do
+        should "search similarly named leads" do
+          lead = Lead.make(company: "Körber GmbH", website: "koerber.de")
+          assert_includes Lead.new(company: "Körber AG").similar, lead
+        end
+      end
+
+      context "when leads have different email domains" do
+        should "not include similarly named leads" do
+          lead = Lead.make(company: "Körber GmbH", email: "john@koerber.de")
+          refute_includes Lead.new(company: "Körber AG", email: "john@koerber-ag.de").similar, lead
+        end
+      end
+
+      context "when leads have the same email domain" do
+        should "should be similar" do
+          lead = Lead.make(company: "Körber GmbH", email: "john@koerber.de")
+          assert_includes Lead.new(company: "Körber AG", email: "john@koerber.de").similar, lead
+        end
       end
     end
 

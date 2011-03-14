@@ -2,6 +2,16 @@
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
+  i18n:
+    transliterate:
+      rule:
+        ü: "ue"
+        ö: "oe"
+        ä: "ae"
+        Ü: "Ue"
+        Ö: "Oe"
+        Ä: "Ae"
+
   #--------------------------------------------------------------
   # Layout
   #--------------------------------------------------------------
