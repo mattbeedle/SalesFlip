@@ -126,59 +126,62 @@ class LeadTest < ActiveSupport::TestCase
     context 'duplicate checking' do
       context 'when there is a duplicate' do
         setup do
-          results = mock()
-          Lead.stubs(:search).returns(results)
-          results.stubs(:results).returns([@lead])
+          Lead.make(company: "test")
         end
 
         should 'not be valid if duplicate checking is on' do
-          lead = Lead.make_unsaved(company: 'test', duplicate_check: true,
-                                   user: User.make)
-          assert !lead.valid?
+          lead = Lead.new(company: 'test', duplicate_check: true)
+          lead.valid?
+          assert lead.errors.on(:company)
         end
 
         should 'be valid is duplicate checking is off' do
-          lead = Lead.make_unsaved(company: 'test', user: User.make)
-          assert lead.valid?
+          lead = Lead.new(company: 'test')
+          lead.valid?
+          refute lead.errors.on(:company)
         end
       end
 
       context 'when there is no duplicate' do
         should 'be valid when duplicate checking is on' do
-          lead = Lead.make_unsaved(company: 'test', duplicate_check: true,
-                                   user: User.make)
-          assert lead.valid?
+          lead = Lead.new(company: 'test', duplicate_check: true)
+          lead.valid?
+          refute lead.errors.on(:company)
         end
 
         should 'be valid when duplicate checking is off' do
-          lead = lead = Lead.make_unsaved(company: 'test', user: User.make)
-          assert lead.valid?
+          lead = Lead.new(company: 'test')
+          lead.valid?
+          refute lead.errors.on(:company)
         end
       end
     end
 
-    context 'similar' do
-      setup do
-        FakeWeb.allow_net_connect = true
-        @lead = Lead.make :company => '1000JobBoersen'
-        @lead2 = Lead.new :company => '10000JobBoersen'
-        @lead3 = Lead.make :company => 'JobBoersen'
-        @search = Lead.search { keywords 'JobBoersen' }
-        @search.stubs(:results).returns([@lead, @lead2, @lead3])
-        Lead.stubs(:search).returns(@search)
-      end
+    should 'always store permitted user ids as BSON::ObjectIds' do
+      @lead.permitted_user_ids = [@user.id.to_s]
+      assert_equal [@user.id], @lead.permitted_user_ids
+      user = User.make
+      @lead.permitted_user_ids = [user.id]
+      assert_equal [user.id], @lead.permitted_user_ids
+    end
 
-      should 'find all leads with similar company name' do
-        assert @lead2.similar(0.9).include?(@lead)
-      end
+    should 'not be able to assign to another user if the permission is private' do
+      @lead.save
+      @lead.update :permission => 'Private'
+      assert @lead.valid?
+      @lead.assignee = @user
+      refute @lead.valid?
+      assert_includes @lead.errors[:permission], 'Cannot assign a private lead to another user, please change the permissions first'
+    end
 
-      should 'find only very similar leads with the threshold turned up' do
-        assert !@lead2.similar(0.9).include?(@lead3)
-      end
-
-      should 'be able to turn the threshold down to get leads which are less similar' do
-        assert @lead2.similar(0.3).include?(@lead3)
-      end
+    should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
+      @lead.save
+      user = User.make
+      @lead.update :permission => 'Shared', :permitted_user_ids => [user.id]
+      assert @lead.valid?
+      @lead.assignee = @user
+      refute @lead.valid?
+      assert_includes @lead.errors[:permission], 'Cannot assign a shared lead to a user it is not shared with. Please change the permissions first'
     end
 
     should 'be able to get fields in pipe deliminated format' do

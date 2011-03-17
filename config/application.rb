@@ -27,6 +27,7 @@ module Salesflip
     config.autoload_paths += %W( #{config.root}/lib #{config.root}/app/sweepers )
 
     require 'cancan/ext/inherited_resource'
+    require "similar_to"
 
     require 'data_mapper/postgres'
 

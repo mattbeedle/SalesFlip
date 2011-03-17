@@ -63,11 +63,11 @@ Feature: Manage accounts
     And World Dating exists with user: Annika
     And I am on CareerMee's page
     When I follow "add_sub_account"
-    And I fill in "account_name" with "Universe Dating"
+    And I fill in "account_name" with "World Dating GmbH"
     And I press "Create Account"
     And I press "No, Create New Account"
     Then I should be on CareerMee's page
-    And I should see "Universe Dating"
+    And I should see "World Dating GmbH"
 
   Scenario: Assigning a sub account, when it exists, but the name is slightly different
     Given I am registered and logged in as annika
@@ -107,11 +107,35 @@ Feature: Manage accounts
     And CareerMee exists with user: Annika
     And I am on the accounts page
     When I follow "new"
-    And I fill in "account_name" with "CareerWee"
+    And I fill in "account_name" with "CareerMee GmbH & Co. AG"
     And I press "account_submit"
     And I press "No, Create New Account"
-    Then 1 accounts should exist with name: "CareerWee"
-    
+    Then 1 accounts should exist with name: "CareerMee GmbH & Co. AG"
+
+  Scenario: Trying to re-assign a private account
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And an account exists with user: Annika, permission: "Private"
+    And I am on the account's edit page
+    When I select "benjamin.pochhammer@1000jobboersen.de" from "account_assignee_id"
+    And I press "Update Account"
+    Then I should be on the account's page
+    And I should see "Cannot assign a private account to another user, please change the permissions first"
+    And 1 accounts should exist with assignee_id: nil
+
+  Scenario: Trying to re-assign a shared account to a user it is not shared with
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And another user exists
+    And an account exists with user: Annika
+    And the account is shared with the other user
+    And I am on the account's edit page
+    When I select "benjamin.pochhammer@1000jobboersen.de" from "account_assignee_id"
+    And I press "Update Account"
+    Then I should be on the account's page
+    And I should see "Cannot assign a shared account to a user it is not shared with. Please change the permissions first"
+
+>>>>>>> Incorporate improved account/lead duplicate checks
   Scenario: Editing an account
     Given I am registered and logged in as annika
     And account: "careermee" exists with user: annika

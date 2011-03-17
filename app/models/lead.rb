@@ -11,6 +11,8 @@ class Lead
   include ActiveModel::Observing
   include OnlineFields
 
+  extend SimilarTo
+
   is_gravtastic
 
   property :id, Serial
@@ -64,9 +66,9 @@ class Lead
   has n, :tasks, :as => :asset#, :dependent => :delete_all
   has n, :emails, :as => :commentable#, :dependent => :delete_all
 
-  validates_with_block do
+  validates_with_block :company do
     if duplicate_check
-      if similar(0.9).any? || similar_accounts(0.9).any?
+      if similar.any? || similar_accounts.any?
         return [false, 'This lead is a duplicate']
       end
     end
@@ -136,20 +138,14 @@ class Lead
     end
   end
 
-  def similar( threshold )
-    leads = Lead.search { keywords self.company }.results
-
-    leads.select do |lead|
-      company.levenshtein_similar(lead.company) > threshold rescue false
-    end
+  # @return [Array<Lead>] all potentially similar leads
+  def similar
+    Lead.all.similar_to(self)
   end
 
-  def similar_accounts( threshold )
-    accounts = Account.search { keywords self.company }.results
-
-    accounts.select do |account|
-      company.levenshtein_similar(account.name) > threshold
-    end
+  # @return [Array<Account>] all potentially similar accounts
+  def similar_accounts
+    Account.all.similar_to(self)
   end
 
   def full_name

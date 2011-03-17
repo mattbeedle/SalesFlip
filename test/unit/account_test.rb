@@ -16,10 +16,10 @@ class AccountTest < ActiveSupport::TestCase
       account2 = Account.make(:name => 'CareerWee')
       account3 = Account.make(:name => 'careermee')
       account4 = Account.make(:world_dating)
-      assert_equal 3, Account.similar_accounts('CareerMee').count
-      assert !Account.similar_accounts('CareerMee').include?(account4)
-      assert_equal 1, Account.similar_accounts('World dating').count
-      assert Account.similar_accounts('Universe Dating').include?(account4)
+
+      assert_equal 2, Account.similar_to(Account.new(name: 'CareerMee')).count
+      assert !Account.similar_to(Account.new(name: 'CareerMee')).include?(account4)
+      assert_equal 1, Account.similar_to(Account.new(name: 'World dating')).count
     end
 
     should 'be able to have a parent' do

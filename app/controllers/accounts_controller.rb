@@ -99,7 +99,7 @@ protected
   def similarity_check
     unless params[:similarity_off]
       build_resource
-      @similar_accounts ||= Account.for_company(current_user.company).similar_accounts(@account.name)
+      @similar_accounts ||= Account.for_company(current_user.company).similar_to(@account)
       render :action => :did_you_mean if @similar_accounts.any?
     end
   end
