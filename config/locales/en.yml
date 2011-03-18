@@ -36,6 +36,7 @@ en:
   confirm: Confirm
   send_offer_request: Send Offer Request
   send_offer_rework: Request Rework
+  jobboards_status: 1000jobboersen Status
 
   mongoid:
     errors:

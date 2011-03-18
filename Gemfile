@@ -7,6 +7,7 @@ gem 'inherited_resources'
 gem 'decent_exposure'
 gem 'devise'
 gem 'bson_ext'
+gem 'minion'
 gem 'mongo'
 
 gem 'dm-accepts_nested_attributes'

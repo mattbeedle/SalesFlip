@@ -28,16 +28,6 @@ class OpportunitiesController < InheritedResources::Base
     end
   end
 
-  def create_offer_request
-    resource.create_offer_request
-    redirect_to opportunity_path(@opportunity)
-  end
-
-  def rework_offer_request
-    resource.rework_offer_request
-    redirect_to opportunity_path(@opportunity)
-  end
-
   def update
     update! do |success, failure|
       success.html { redirect_to opportunities_path }

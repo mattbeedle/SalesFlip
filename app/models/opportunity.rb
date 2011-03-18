@@ -22,6 +22,10 @@ class Opportunity
   property :updated_on, Date
   property :budget, Integer
 
+  # These 2 provide information on what's going on in Jobboards.
+  property :jobboards_assignee, String
+  property :status, String
+
   validates_numericality_of :amount,      :allow_blank => true, :allow_nil => true
   validates_numericality_of :probability, :allow_blank => true, :allow_nil => true
   validates_numericality_of :discount,    :allow_blank => true, :allow_nil => true
@@ -80,14 +84,6 @@ class Opportunity
     all(:stage_id => OpportunityStage.all(:name => stages).map(&:id))
   end
 
-  def offer_requested?
-    stage.name == "Offer Requested"
-  end
-
-  def new_offer?
-    stage.name == "New"
-  end
-
   def weighted_amount
     ((amount || 0.0)  - (discount || 0.0)) * (probability || 0) / 100.0
   end
@@ -133,15 +129,33 @@ class Opportunity
     end
   end
 
-  def create_offer_request
-    Resque.enqueue(OfferRequestJob, id)
-    self.stage = OpportunityStage.where(name: "Offer Requested").first
-    save!
+  ######################## START OF MQ SPECIFIC UPDATES ########################
+
+  attr_accessor :inbound_update
+  after_update :outbound_update!
+
+  # Notify external systems of an update to this document via AMQP.
+  #
+  # @example Publish the update.
+  #   request.outbound_update!
+  def outbound_update!
+    unless inbound_update
+      Messaging::Opportunities.new.publish(self)
+    else
+      @inbound_update = false
+    end
   end
 
-  def rework_offer_request
-    Resque.enqueue(OfferReworkJob, id)
-    self.stage = OpportunityStage.where(name: "Offer Rework Requested").first
-    save!
+  # Update this document based on changes in an external system.
+  #
+  # @example Apply the update.
+  #   request.inbound_update(data)
+  #
+  # @param [ Hash ] data The attributes to update.
+  def inbound_update!(data)
+    @inbound_update = true
+    update!(data)
   end
+
+  ######################### END OF MQ SPECIFIC UPDATES #########################
 end
