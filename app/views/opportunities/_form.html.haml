@@ -1,16 +1,15 @@
 = hidden_field_tag :return_to, params[:return_to] if params[:return_to]
 %fieldset
-  .75.a= form.input :title
-  .25.z= form.input :stage_id, :collection => current_user.company.opportunity_stages.not_deleted, :include_blank => false
+  .100.z= form.input :title
   .clear
-  .25.a= datepicker_for(form, :close_on)
+  .25.a= form.input :stage_id, :collection => current_user.company.opportunity_stages.not_deleted.ordered, :include_blank => false
+  .25= datepicker_for(form, :close_on)
   .25= form.input :amount
-  .25= form.input :discount
-  .25.z= form.input :budget
+  .25.z= form.input :discount
   .clear
   - if !defined?(convert) || (defined?(convert) && convert == false)
-    .75.a= form.input :contact_id, :collection => Contact.for_company(current_user.company).permitted_for(current_user).sort_by(&:name).map { |c| [c.name, c.id] }
-    .25.z= form.input :assignee_id, :collection => current_user.company.users.sort_by(&:email).map { |u| [u.email, u.id] }, :selected => current_user.id
+    .50.a= form.input :contact_id, :collection => Contact.for_company(current_user.company).permitted_for(current_user).sort_by(&:name).map { |c| [c.name, c.id] }
+    .50.z= form.input :budget
     .clear
   - form.object.attachments.each do |attachment|
     = simple_fields_for 'opportunity[attachments_attributes][]', attachment do |attachment_form|
@@ -22,6 +21,7 @@
     %div.25.z.permitted_user_ids.hide-me
       = form.input :permitted_user_ids, :collection => current_user.company.users.asc(:email).map {|u| [u.email, u.id] }, :include_blank => false, :input_html => { :multiple => true, :size => 5 }
   .clear
+  = form.hidden_field :assignee_id, value: current_user.id
 
 - if !defined?(buttons) || (defined?(buttons) && buttons == true)
   .act.pad
