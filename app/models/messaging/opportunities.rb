@@ -23,6 +23,12 @@ module Messaging #:nodoc:
       end
     end
 
+    # Get the specific attributes needed by the offer request on the jobboards
+    # side.
+    #
+    # @param [ Opportunity ] opportunity The opportunity.
+    #
+    # @return [ Hash ] The attributes to send.
     def attributes(opportunity)
       attrs = opportunity.attributes.except(
         :assignee_id, :updater_id, :contact_id, :status, :created_at, :updated_at

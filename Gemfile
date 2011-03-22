@@ -1,13 +1,14 @@
 source :gemcutter
 
-gem 'rails', '3.0.4'
+gem 'rails', "3.0.4"
 
+gem 'amqp', '0.7.1'
 gem 'haml'
 gem 'inherited_resources'
 gem 'decent_exposure'
 gem 'devise'
 gem 'bson_ext'
-gem 'minion'
+gem 'minion', :git => 'git://github.com/durran/minion.git'
 gem 'mongo'
 
 gem 'dm-accepts_nested_attributes'
