@@ -43,6 +43,7 @@ module SimilarTo
 
     # If the source is saved, make sure not to include it in the results.
     scope = self === source && source.saved? ? all(:id.not => source.id) : all
+    scope = scope.not_deleted
 
     # First we see if there are any leads with exactly the same name, in which
     # case we can skip the more expensive searches.

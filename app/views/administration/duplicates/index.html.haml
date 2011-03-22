@@ -1,0 +1,23 @@
+:css
+  .pagination {
+    text-align: center;
+  }
+  tbody th {
+    background-color: #f4f4f4;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    padding: 2px 5px;
+  }
+  td {
+    max-width: 300px;
+    word-wrap: break-word;
+  }
+
+= will_paginate @leads, :inner_window => 10
+
+- @leads.each do |lead|
+
+  %h3= link_to lead.company, administration_duplicate_path(lead, :return_to => request.fullpath)
+
+= will_paginate @leads, :inner_window => 10

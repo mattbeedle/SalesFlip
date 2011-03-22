@@ -18,7 +18,7 @@
         .user
           = link_to comment.user.email, comment.user
           %small.acted= raw t(:wrote_ago, :time => l(comment.created_at, :format => :short))
-        = raw comment.text
+        = raw comment.text.gsub(/\n/, '<br />')
         .attachments
           - comment.attachments.each do |attachment|
             = link_to attachment.attachment.filename, attachment.attachment.url

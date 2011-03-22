@@ -49,6 +49,12 @@ Salesflip::Application.routes.draw do
 
   namespace :administration do
     root :to => 'pages#index'
+    resources :duplicates do
+      member do
+        put :keep
+        delete :destroy
+      end
+    end
     resources :leads do
       collection do
         put :assignee

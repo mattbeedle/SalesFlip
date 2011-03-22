@@ -1,0 +1,274 @@
+- similar = @lead.similar.to_a
+- accounts = @lead.similar_accounts.to_a
+- width = 100 / (accounts.count + similar.count + 1)
+
+= form_tag administration_duplicate_path, :method => :put do |form|
+  - if params[:return_to]
+    = hidden_field_tag :return_to, params[:return_to]
+  %h1
+    Which lead do you want to keep?
+
+  - accounts.each do |account|
+    .lead(style="width: #{width}%")
+      .converted Account
+      %label
+        %h2
+          %span.company= account.name
+        %dl
+          %dt Created
+          %dd= l account.created_at
+          %dt Updated
+          %dd= l account.updated_at
+          %dt Assignee
+          %dd= account.assignee.try(:name)
+        - if account.tasks.any?
+          .tasks
+            %h3 Tasks
+            - account.tasks.each do |task|
+              .task
+                = task.user.name
+                \-
+                = task.category
+                @
+                = l task.due_at
+
+        - if account.comments.any?
+          .comments
+            %h3 Comments
+            - account.comments.reverse.each do |comment|
+              .comment
+                = comment.user.try(:name)
+                \-
+                %span.date
+                  = l comment.created_at
+                  \:
+                %br
+                = comment.text
+
+  - ([@lead] + similar).each do |lead|
+    .lead(style="width: #{width}%")
+      = link_to image_tag("external-link.png"), lead, :target => :blank, :class => "view"
+      - if lead.duplicate?
+        .duplicate Duplicate
+      - if lead.status == "Converted"
+        .converted Converted
+      %label
+        %h2
+          %input(type="radio" name="keep" value="#{lead.id}")
+          %span.company= lead.company
+        %dl
+          %dt Status
+          %dd= lead.status
+          %dt Source
+          %dd= lead.source
+          %dt Created
+          %dd= l lead.created_at
+          %dt Updated
+          %dd= l lead.updated_at
+          %dt Assignee
+          %dd= lead.assignee.try(:name)
+        - if lead.tasks.any?
+          .tasks
+            %h3 Tasks
+            - lead.tasks.each do |task|
+              .task
+                = task.user.name
+                \-
+                = task.category
+                @
+                = l task.due_at
+
+        - if lead.comments.any?
+          .comments
+            %h3 Comments
+            - lead.comments.reverse.each do |comment|
+              .comment
+                = comment.user.try(:name)
+                \-
+                %span.date
+                  = l comment.created_at
+                  \:
+                %br
+                = comment.text
+      - if @lead == lead
+        .not-a-duplicate
+          = link_to "Not a Duplicate?",
+            lead_path(lead, :return_to => params[:return_to] || administration_duplicates_path, :lead => { :duplicate => false }), :method => :put
+
+  %div#merge
+    %label
+      %input(type="text" placeholder="Company Name" name="lead[company]")
+    %label
+      = check_box_tag :reassign
+      Assign tasks to owner of new lead
+    %input(type="submit" value="Merge" id="lead_submit" class="button green")
+    %p.hint
+      All comments and tasks will be moved.
+
+:javascript
+  ".lead label".on('click', function() {
+    $$("#merge input[type='text']")[0].set("value", this.first(".company").text());
+  });
+
+:css
+
+  .lead {
+    float: left;
+    margin-bottom: 20px;
+    min-width: 20%;
+    position: relative;
+    word-wrap: break-word;
+  }
+
+  .lead label {
+    border: 1px solid #eee;
+    display: block;
+    margin: 5px;
+    overflow: auto;
+    padding: 20px;
+  }
+
+  .lead label:hover {
+    background-color: #ffe;
+  }
+
+  .lead h2 {
+    margin: 0;
+  }
+
+  .button {
+    display: inline-block;
+    outline: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    font: 14px/100% Arial, Helvetica, sans-serif;
+    padding: .5em 2em .55em;
+    text-shadow: 0 1px 1px rgba(0,0,0,.3);
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius: 2em;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  }
+  .button:hover {
+    text-decoration: none;
+  }
+  .button:active {
+    position: relative;
+    top: 1px;
+  }
+  .green {
+    color: #e8f0de;
+      border: solid 1px #538312;
+      background: #64991e;
+      background: -webkit-gradient(linear, left top, left bottom, from(#7db72f), to(#4e7d0e));
+      background: -moz-linear-gradient(top,  #7db72f,  #4e7d0e);
+      filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#7db72f', endColorstr='#4e7d0e');
+  }
+  .green:hover {
+    background: #538018;
+      background: -webkit-gradient(linear, left top, left bottom, from(#6b9d28), to(#436b0c));
+      background: -moz-linear-gradient(top,  #6b9d28,  #436b0c);
+      filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#6b9d28', endColorstr='#436b0c');
+  }
+  .green:active {
+    color: #a9c08c;
+      background: -webkit-gradient(linear, left top, left bottom, from(#4e7d0e), to(#7db72f));
+      background: -moz-linear-gradient(top,  #4e7d0e,  #7db72f);
+      filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#4e7d0e', endColorstr='#7db72f');
+  }
+
+  #lead_submit {
+    clear: both;
+    display: inline-block;
+    margin: 0 auto;
+    font-size: 2em;
+  }
+
+  dt {
+    clear: left;
+    font-weight: bold;
+    float: left;
+    margin: 0 0 5px;
+    width: 60px;
+  }
+
+  dd {
+    margin: 0 0 5px;
+    float: left;
+  }
+
+  .tasks, .comments {
+    clear: both;
+  }
+
+  .task, .comment {
+    margin-bottom: 5px;
+  }
+
+  h3 {
+    margin: 10px 0 0 0;
+  }
+
+  .date {
+    color: #999;
+    font-style: italic;
+  }
+
+  .hint {
+    color: #999;
+    font-size: 1.4em;
+  }
+
+  .lead .view {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+
+  .lead .not-a-duplicate {
+    text-align: center;
+  }
+
+  .not-a-duplicate a {
+    color: #999;
+  }
+
+  .duplicate, .converted {
+    background-color: #900;
+    color: #fff;
+    font-size: 0.8em;
+    font-weight: bold;
+    padding: 0 4px;
+    position: absolute;
+    text-transform: uppercase;
+    top: 10px;
+    right: 34px;
+  }
+
+  .converted {
+    background-color: #090;
+  }
+
+  #merge {
+    clear: both;
+    text-align: center;
+  }
+
+  #merge label {
+    display: block;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+
+  #merge input[type="text"] {
+    font-size: 1.2em;
+    padding: 5px;
+    width: 440px;
+  }
+
+  #merge input[type="checkbox"] {
+    margin-right: 5px;
+  }
