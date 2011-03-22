@@ -170,7 +170,7 @@ class TaskTest < ActiveSupport::TestCase
         assert_equal [@task2], Task.due_later.to_a
       end
     end
-    
+
     context 'completed_today' do
       setup do
         @task2 = Task.make
@@ -291,7 +291,7 @@ class TaskTest < ActiveSupport::TestCase
     setup do
       @task = Task.make_unsaved
     end
-    
+
     should 'not be able to assign a task to someone else when the task has a lead associated, and the lead is private' do
       user = User.make
       @task.save
@@ -304,7 +304,7 @@ class TaskTest < ActiveSupport::TestCase
         'with is private. Please change the lead permission first'
       assert @task.errors[:permission].include?(message)
     end
-    
+
     should 'not be able to assign a task to someone else when the task has an account associated, and the account is private' do
       user = User.make
       @task.save
@@ -317,7 +317,7 @@ class TaskTest < ActiveSupport::TestCase
         'with is private. Please change the account permission first'
       assert @task.errors[:permission].include?(message)
     end
-    
+
     should 'not be able to assign a task to someone else when the task has a contact associated, and the contact is private' do
       user = User.make
       @task.save
@@ -330,7 +330,7 @@ class TaskTest < ActiveSupport::TestCase
         'with is private. Please change the contact permission first'
       assert @task.errors[:permission].include?(message)
     end
-    
+
     should 'not be able to assign a task to someone else when the task has a lead associated, and the lead is shared, but not with that user' do
       user = User.make
       @task.save
@@ -343,7 +343,7 @@ class TaskTest < ActiveSupport::TestCase
         "is not shared with that user"
       assert @task.errors[:permission].include?(message)
     end
-    
+
     should 'not be able to assign a task to someone else when the task has an account associated, and the account is shared, but not with that user' do
       user = User.make
       @task.save
@@ -369,13 +369,14 @@ class TaskTest < ActiveSupport::TestCase
         assert_equal @lead.reload.assignee, @user
       end
     end
-    
+
     context 'when created against an unassigned opportunity' do
       setup do
-        @opportunity = Opportunity.make :assignee_id => nil
+        Minion.expects(:enqueue)
+        @opportunity = Opportunity.make :assignee_id => nil, :contact => Contact.make
         @user = User.make
       end
-      
+
       should 'assign the opportunity to the user who create the task' do
         @opportunity.tasks.create :user => @user,
           :name => 'test',

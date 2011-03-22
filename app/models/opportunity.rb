@@ -31,11 +31,12 @@ class Opportunity
   validates_numericality_of :discount,    :allow_blank => true, :allow_nil => true
   validates_numericality_of :budget, :allow_blank => false, :allow_nil => false
 
+  validates_presence_of :contact
+
   attr_accessor :do_not_notify
 
   belongs_to :contact, required: false
-
-  belongs_to :user, :required => true
+  belongs_to :user, required: true
   belongs_to :stage, model: 'OpportunityStage'
 
   has n, :comments, :as => :commentable#, :dependent => :delete_all

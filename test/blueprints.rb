@@ -234,6 +234,7 @@ end
 Opportunity.blueprint do
   title { Sham.name }
   user { User.make }
+  contact { Contact.make }
   stage { OpportunityStage.make }
   budget { 2000 }
 end

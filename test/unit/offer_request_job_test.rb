@@ -4,7 +4,7 @@ class OfferRequestJobTest < ActiveSupport::TestCase
 
   setup do
     @stage = OpportunityStage.make(name: "Offer Requested")
-    @opportunity = Opportunity.make
+    @opportunity = Opportunity.make(contact: Contact.make)
   end
 
   context ".perform" do

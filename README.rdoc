@@ -4,9 +4,11 @@ Salesflip is a simple lightweight extendable unobtrusive CRM built using Rails 3
 
 
 == System Requirements
-* Ruby 1.8.7 or 1.9.2
+* Ruby 1.9.2
 * Rails 3
 * MongoDB
+* Postgres
+* RabbitMQ
 
 RabbitMQ: http://rabbitmq.com
 
@@ -17,9 +19,30 @@ RabbitMQ: http://rabbitmq.com
   # SETUP
   rabbitmqctl add_user jobboards <password>
   rabbitmqctl add_vhost /jobboards
-  rabbitmqctl set_admin jobboards
   rabbitmqctl set_permissions -p /jobboards jobboards ".*" ".*" ".*"
   AMQP_URL=amqp://jobboards:<password>@<server>:<port>/jobboards
+
+  # PLIST
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+  <plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>org.rabbitmq.rabbitmq-server</string>
+    <key>Program</key>
+    <string>/usr/local/sbin/rabbitmq-server</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>UserName</key>
+    <string>durran</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>PATH</key>
+      <string>/usr/local/sbin:/usr/bin:/bin:/usr/local/bin</string>
+    </dict>
+  </dict>
+  </plist>
+
 
 
 == Downloads

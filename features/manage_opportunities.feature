@@ -5,6 +5,7 @@ Feature: Manage Opportunities
 
   Scenario: Creating an opportunity
     Given I am registered and logged in as annika
+    And a contact: "florian" exists with user: Annika
     And I am on the opportunities page
     When I follow "new"
     And I fill in "Title" with "An opportunity"
@@ -12,8 +13,8 @@ Feature: Manage Opportunities
     And I fill in "Amount" with "1000"
     And I fill in "Discount" with "11"
     And I fill in "Budget" with "2000"
-    And I select "annika.fleischer@1000jobboersen.de" from "Assignee"
     And I attach the file "test/support/AboutStacks.pdf" to "Attachment"
+    And I select "Florian Behn" from "Contact"
     And I press "Create Opportunity"
     Then I should be on the opportunities page
     And 1 opportunities should exist with title: "An opportunity", amount: 1000, discount: 11
@@ -26,11 +27,13 @@ Feature: Manage Opportunities
 
   Scenario: Editing an opportunity
     Given I am registered and logged in as annika
+    And a contact: "florian" exists with user: Annika
     And an opportunity exists with title: "great opportunity", user: Annika, assignee: Annika
     And I am on the opportunities page
     When I follow "Opportunities"
     And I follow "Edit"
     And fill in "Title" with "changed opportunity"
+    And I select "Florian Behn" from "Contact"
     And I press "Update Opportunity"
     Then I should be on the opportunities page
     And I should see "changed opportunity"
@@ -163,14 +166,3 @@ Feature: Manage Opportunities
     When I go to the opportunities page
     Then I should see "Shared Opportunity"
     And I should not see "Private Opportunity"
-
-  Scenario: Adding a contact to an opportunity
-    Given I am registered and logged in as annika
-    And an opportunity exists with user: Annika
-    And a contact exists with user: Annika, first_name: "Hans", last_name: "Schmidt"
-    And I am on the opportunity's page
-    When I follow "Select Contact"
-    And I select "Hans Schmidt" from "opportunity_contact_id"
-    And I press "Update Opportunity"
-    Then I should be on the opportunities page
-    And the contact should have 1 opportunities
