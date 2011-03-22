@@ -7,9 +7,10 @@ class OpportunityTest < ActiveSupport::TestCase
     should_belong_to :assignee, :user, :contact, :stage
     should_have_many :comments, :tasks, :attachments
     should_require_key :title, :user, :stage
-    should_act_as_paranoid
 
     setup do
+      @contact = Contact.make
+      @annika = User.make :annika
       Resque.stubs(:enqueue).with(OfferRequestJob, Integer.any_instance)
     end
 
@@ -17,8 +18,8 @@ class OpportunityTest < ActiveSupport::TestCase
       setup do
         @user = User.make :annika
         @user2 = User.make :benny
-        @opportunity = Opportunity.make :assignee => @user
-        @opportunity2 = Opportunity.make :assignee => @user2
+        @opportunity = Opportunity.make :assignee => @user, :contact => @contact
+        @opportunity2 = Opportunity.make :assignee => @user2, :contact => @contact
       end
 
       should 'only return opportunities assigned to the specified user id' do
@@ -36,9 +37,9 @@ class OpportunityTest < ActiveSupport::TestCase
         @user = User.make :annika
         @user2 = User.make :benny
         @user3 = User.make :company => @user.company
-        @opportunity = Opportunity.make :user => @user
-        @opportunity2 = Opportunity.make :user => @user2
-        @opportunity3 = Opportunity.make :user => @user3
+        @opportunity = Opportunity.make :user => @user, :contact => @contact
+        @opportunity2 = Opportunity.make :user => @user2, :contact => @contact
+        @opportunity3 = Opportunity.make :user => @user3, :contact => @contact
       end
 
       should 'only return occupations belonging to users in the supplied company' do
@@ -51,8 +52,8 @@ class OpportunityTest < ActiveSupport::TestCase
       setup do
         stage = OpportunityStage.make(:name => 'prospecting')
         stage2 = OpportunityStage.make(:name => 'analysis')
-        @opportunity = Opportunity.make :stage_id => stage.id
-        @opportunity2 = Opportunity.make :stage_id => stage2.id
+        @opportunity = Opportunity.make :stage_id => stage.id, :contact => @contact
+        @opportunity2 = Opportunity.make :stage_id => stage2.id, :contact => @contact
       end
 
       should 'only return opportunities with the corresponding stage' do
@@ -99,8 +100,8 @@ class OpportunityTest < ActiveSupport::TestCase
 
     context 'closing_between_dates' do
       setup do
-        @opportunity = Opportunity.make :close_on => Date.today
-        @opportunity2 = Opportunity.make :close_on => Date.today + 1.month
+        @opportunity = Opportunity.make :close_on => Date.today, :contact => @contact
+        @opportunity2 = Opportunity.make :close_on => Date.today + 1.month, :contact => @contact
       end
 
       should 'only return opportunities closing between the supplied dates' do
@@ -111,8 +112,8 @@ class OpportunityTest < ActiveSupport::TestCase
 
     context 'for_date' do
       setup do
-        @opportunity = Opportunity.make
-        @opportunity2 = Opportunity.make :close_on => Date.yesterday
+        @opportunity = Opportunity.make :contact => @contact
+        @opportunity2 = Opportunity.make :close_on => Date.yesterday, :contact => @contact
       end
 
       should 'only return opportunities closing between the supplied dates' do
@@ -122,8 +123,11 @@ class OpportunityTest < ActiveSupport::TestCase
 
     context 'certainty' do
       setup do
-        @opportunity = Opportunity.make
-        @opportunity2 = Opportunity.make :stage => OpportunityStage.make(:percentage => 100)
+        @opportunity = Opportunity.make :contact => @contact
+        @opportunity2 = Opportunity.make(
+          :contact => @contact,
+          :stage => OpportunityStage.make(:percentage => 100)
+        )
       end
 
       should 'only return opportunities with a probability of 100%' do
@@ -133,9 +137,9 @@ class OpportunityTest < ActiveSupport::TestCase
 
     context 'created_on' do
       setup do
-        @opportunity = Opportunity.make
+        @opportunity = Opportunity.make(:contact => @contact)
         Timecop.freeze(Date.yesterday) do
-          @opportunity2 = Opportunity.make
+          @opportunity2 = Opportunity.make(:contact => @contact)
         end
       end
 
@@ -148,6 +152,8 @@ class OpportunityTest < ActiveSupport::TestCase
 
   context 'Instance' do
     setup do
+      Minion.stubs(:enqueue)
+      @contact = Contact.make
       @opportunity = Opportunity.new
     end
 
@@ -179,7 +185,7 @@ class OpportunityTest < ActiveSupport::TestCase
     end
 
     should 'update close date to the current date when the opportunity stage is set to 100%' do
-      opportunity = Opportunity.make
+      opportunity = Opportunity.make(contact: @contact)
       stage = OpportunityStage.make :percentage => 100
       assert opportunity.close_on != Date.today
       opportunity.update :stage => stage
@@ -188,12 +194,12 @@ class OpportunityTest < ActiveSupport::TestCase
 
     should 'not update close date when the opportunity was already closed in the past' do
       opportunity = Opportunity.make :stage => OpportunityStage.make(:percentage => 100),
-        :close_on => Date.yesterday
+        :close_on => Date.yesterday, :contact => @contact
       assert_not_equal Date.today, opportunity.close_on
     end
 
     should 'take probability from associated stage' do
-      opportunity = Opportunity.make
+      opportunity = Opportunity.make :contact => @contact
       stage = OpportunityStage.make :percentage => 57
       opportunity.update :stage => stage
       assert_equal 57, opportunity.probability
@@ -211,13 +217,13 @@ class OpportunityTest < ActiveSupport::TestCase
     end
 
     should 'alias title to name' do
-      @opportunity = Opportunity.make(:title => 'a title')
+      @opportunity = Opportunity.new(:title => 'a title')
       assert_equal 'a title', @opportunity.name
     end
 
     context 'activity logging' do
       setup do
-        @opportunity = Opportunity.make
+        @opportunity = Opportunity.make(:contact => @contact)
       end
 
       should 'log an activity when created' do

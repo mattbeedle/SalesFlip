@@ -170,7 +170,7 @@ class TaskTest < ActiveSupport::TestCase
         assert_equal [@task2], Task.due_later.to_a
       end
     end
-    
+
     context 'completed_today' do
       setup do
         @task2 = Task.make
@@ -278,7 +278,6 @@ class TaskTest < ActiveSupport::TestCase
     setup do
       @task = Task.make_unsaved
     end
-    
     context 'when created against an unassigned lead' do
       setup do
         @lead = Lead.make(:erich, :assignee_id => nil)
@@ -289,6 +288,22 @@ class TaskTest < ActiveSupport::TestCase
         @lead.tasks.create :user => @user, :name => 'test', :due_at => Time.zone.now,
           :category => Task.categories.first
         assert_equal @lead.reload.assignee, @user
+      end
+    end
+
+    context 'when created against an unassigned opportunity' do
+      setup do
+        Minion.expects(:enqueue)
+        @opportunity = Opportunity.make :assignee_id => nil, :contact => Contact.make
+        @user = User.make
+      end
+
+      should 'assign the opportunity to the user who create the task' do
+        @opportunity.tasks.create :user => @user,
+          :name => 'test',
+          :due_at => Time.zone.now,
+          :category => Task.categories.first
+        assert_equal @opportunity.reload.assignee, @user
       end
     end
 
