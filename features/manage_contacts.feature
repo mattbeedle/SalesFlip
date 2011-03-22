@@ -144,6 +144,7 @@ Feature: Manage contacts
     And I am on the contact's page
     When I follow "Add Opportunity"
     And I fill in "Title" with "Offer number 1"
+    And I fill in "Budget" with "2000"
     And I attach the file "test/support/AboutStacks.pdf" to "Attachment"
     And I press "Create Opportunity"
     Then I should be on the contact's page

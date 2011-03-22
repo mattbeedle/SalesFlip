@@ -8,6 +8,19 @@ Salesflip is a simple lightweight extendable unobtrusive CRM built using Rails 3
 * Rails 3
 * MongoDB
 
+RabbitMQ: http://rabbitmq.com
+
+  # INSTALLATION
+  brew install rabbitmq
+  apt-get install rabbitmq-server
+
+  # SETUP
+  rabbitmqctl add_user jobboards <password>
+  rabbitmqctl add_vhost /jobboards
+  rabbitmqctl set_admin jobboards
+  rabbitmqctl set_permissions -p /jobboards jobboards ".*" ".*" ".*"
+  AMQP_URL=amqp://jobboards:<password>@<server>:<port>/jobboards
+
 
 == Downloads
 git://github.com/mattbeedle/SalesFlip.git

@@ -83,6 +83,29 @@ class UserTest < ActiveSupport::TestCase
       @user = User.make_unsaved(:annika, :company => Company.make(:jobboersen))
     end
 
+    context "when communicating with salesflip" do
+
+      setup do
+        @key = Rails.configuration.external_access_key
+      end
+
+      should "has an external access key" do
+        assert_not_nil @key
+      end
+    end
+
+    context "when saving a user" do
+
+      setup do
+        @user = User.make_unsaved
+      end
+
+      should "enqueues the update external job" do
+        Resque.expects(:enqueue).with(UpdateExternalUserJob, @user.to_json)
+        @user.update_external_user
+      end
+    end
+
     context '#redistribute_leads' do
       setup do
         @user.save!

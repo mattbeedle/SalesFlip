@@ -34,6 +34,9 @@ en:
   status: Status
   total: Total
   confirm: Confirm
+  send_offer_request: Send Offer Request
+  send_offer_rework: Request Rework
+  jobboards_status: 1000jobboersen Status
 
   mongoid:
     errors:
@@ -587,3 +590,4 @@ en:
   return_to_help: "Return to Help"
   duplicate?: "duplicate?"
   marked_as_duplicate: "marked as duplicate"
+  searching_on_company_name: "Searching on company name. Press 'Search' to search everything."

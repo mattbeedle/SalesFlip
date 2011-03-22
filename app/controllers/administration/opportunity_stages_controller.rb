@@ -15,6 +15,12 @@ class Administration::OpportunityStagesController < Administration::Administrati
     end
   end
 
+  def update
+    update! do |format|
+      format.html { redirect_to administration_root_path }
+    end
+  end
+
 protected
   def build_resource
     @opportunity_stage ||= current_user.company.opportunity_stages.build params[:opportunity_stage]

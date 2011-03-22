@@ -74,6 +74,18 @@ module Salesflip
 
     config.after_initialize do
       I18n.locale = I18n.default_locale
+      DataMapper.auto_upgrade!
     end
+
+    # This is set here for dev environments.
+    config.external_user_update_url = "http://localhost:8080/external_updates/user"
+    config.external_offer_request_url = "http://localhost:8080/external_updates/create_offer_request"
+    config.external_offer_rework_url = "http://localhost:8080/external_updates/rework_offer_request"
+
+    # The access key should be stored in the environment on the servers so the
+    # information being sent can be encrypted.
+    config.external_access_key = ENV["HR_NEW_MEDIA_ACCESS_KEY"]
+
+    Encryptor.default_options.merge!(key: config.external_access_key)
   end
 end

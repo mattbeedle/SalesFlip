@@ -32,6 +32,9 @@ de:
   data_summary: Datenzusammenfassung
   status: Status
   total: Summe
+  send_offer_request: Angebot Anfrage
+  send_offer_rework: Überarbeiten
+  jobboards_status: 1000jobboersen Status
 
   mongoid:
     errors:
@@ -576,3 +579,4 @@ de:
   return_to_help: "Zurück zur Hilfe"
   duplicate?: "Duplikat?"
   marked_as_duplicate: "markiert als Duplikat"
+  searching_on_company_name: "Suche nach Unternehmen. Klicke „Suche“ um alles zu durchsuchen."

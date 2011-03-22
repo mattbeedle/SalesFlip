@@ -50,7 +50,9 @@
           %td= stage.name
           %td= number_to_percentage stage.percentage, :precision => 0 if stage.percentage
           %td= stage.notes
-          %td= link_to t(:delete), [:confirm_delete, :administration, stage]
+          %td
+            = link_to t(:delete), [:confirm_delete, :administration, stage]
+            = link_to t(:edit), [:edit, :administration, stage]
 .right
   %h3= t(:users)
   %table

@@ -126,6 +126,14 @@ class User
     end
   end
 
+  # Sends updated user data over to salesflip so the user matches on both apps.
+  def update_external_user
+    Resque.enqueue(
+      UpdateExternalUserJob,
+      to_json(except: [ :password, :created_at, :updated_at ])
+    )
+  end
+
 protected
   def set_api_key
     UUID.state_file = false # for heroku

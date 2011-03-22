@@ -1,13 +1,19 @@
 .title
   %h2= @opportunity.title
-  
+
+%h3= t(:jobboards_status)
+
+%ul
+  %li= @opportunity.jobboards_assignee || t(:no_information)
+  %li= @opportunity.status || t(:no_information)
+
 %h3= t(:attachments)
 - if @opportunity.attachments.any?
   - @opportunity.attachments.each do |attachment|
     = link_to attachment.attachment.filename, attachment.attachment.url
 - else
   %p= t(:no_opportunity_attachments)
-    
+
 = render :partial => 'tasks/add_task', :locals => { :object => @opportunity }
 
 = render :partial => 'comments/comments', :locals => { :object => @opportunity, :comments => @opportunity.comments }

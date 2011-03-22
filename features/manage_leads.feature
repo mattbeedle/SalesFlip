@@ -271,6 +271,7 @@ Feature: Manage leads
     When I follow "Convert"
     And I fill in "account_name" with "World Dating"
     And I fill in "opportunity_title" with "A great opportunity"
+    And I fill in "Budget" with "2000"
     And I attach the file "test/support/AboutStacks.pdf" to "Attachment"
     And I press "convert"
     Then I should be on the account page

@@ -19,10 +19,16 @@ class Opportunity
   property :created_on, Date
   property :updated_at, DateTime
   property :updated_on, Date
+  property :budget, Integer
+
+  # These 2 provide information on what's going on in Jobboards.
+  property :jobboards_assignee, String
+  property :status, String
 
   validates_numericality_of :amount,      :allow_blank => true, :allow_nil => true
   validates_numericality_of :probability, :allow_blank => true, :allow_nil => true
   validates_numericality_of :discount,    :allow_blank => true, :allow_nil => true
+  validates_numericality_of :budget, :allow_blank => false, :allow_nil => false
 
   attr_accessor :do_not_notify
 
@@ -88,6 +94,22 @@ class Opportunity
     self.attachments.first.valid?
   end
 
+  def serializable_attachments
+    attachments.inject([]) do |attrs, attachment|
+      attrs.tap do |attributes|
+        attributes << attachment.attachment.url
+      end
+    end
+  end
+
+  def serializable_comments
+    comments.inject([]) do |attrs, comment|
+      attrs.tap do |attributes|
+        attributes << comment.text
+      end
+    end
+  end
+
   def self.create_for( contact, options = {} )
     attributes = options[:opportunity] || {}
     opportunity = contact.opportunities.new attributes.merge(:user => contact.user,
@@ -105,4 +127,34 @@ class Opportunity
       self.close_on = Date.today
     end
   end
+
+  ######################## START OF MQ SPECIFIC UPDATES ########################
+
+  attr_accessor :inbound_update
+  after_update :outbound_update!
+
+  # Notify external systems of an update to this document via AMQP.
+  #
+  # @example Publish the update.
+  #   request.outbound_update!
+  def outbound_update!
+    unless inbound_update
+      Messaging::Opportunities.new.publish(self)
+    else
+      @inbound_update = false
+    end
+  end
+
+  # Update this document based on changes in an external system.
+  #
+  # @example Apply the update.
+  #   request.inbound_update(data)
+  #
+  # @param [ Hash ] data The attributes to update.
+  def inbound_update!(data)
+    @inbound_update = true
+    update!(data)
+  end
+
+  ######################### END OF MQ SPECIFIC UPDATES #########################
 end
