@@ -18,8 +18,11 @@ module Messaging #:nodoc:
     #   Opportunities.new.subscribe
     def subscribe
       job "offers.update" do |data|
-        opportunity = Opportunity.find(data.delete("id"))
-        opportunity.tap { |opp| opp.inbound_update!(data) } if opportunity
+        id = data.delete("id")
+        if id
+          opportunity = Opportunity.find(id)
+          opportunity.tap { |opp| opp.inbound_update!(data) } if opportunity
+        end
       end
     end
 
