@@ -157,33 +157,6 @@ class LeadTest < ActiveSupport::TestCase
       end
     end
 
-    should 'always store permitted user ids as BSON::ObjectIds' do
-      @lead.permitted_user_ids = [@user.id.to_s]
-      assert_equal [@user.id], @lead.permitted_user_ids
-      user = User.make
-      @lead.permitted_user_ids = [user.id]
-      assert_equal [user.id], @lead.permitted_user_ids
-    end
-
-    should 'not be able to assign to another user if the permission is private' do
-      @lead.save
-      @lead.update :permission => 'Private'
-      assert @lead.valid?
-      @lead.assignee = @user
-      refute @lead.valid?
-      assert_includes @lead.errors[:permission], 'Cannot assign a private lead to another user, please change the permissions first'
-    end
-
-    should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
-      @lead.save
-      user = User.make
-      @lead.update :permission => 'Shared', :permitted_user_ids => [user.id]
-      assert @lead.valid?
-      @lead.assignee = @user
-      refute @lead.valid?
-      assert_includes @lead.errors[:permission], 'Cannot assign a shared lead to a user it is not shared with. Please change the permissions first'
-    end
-
     should 'be able to get fields in pipe deliminated format' do
       assert_equal @lead.deliminated('|', ['first_name', 'last_name']), 'Erich|Feldmeier'
     end

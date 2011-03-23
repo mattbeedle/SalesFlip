@@ -112,30 +112,6 @@ Feature: Manage accounts
     And I press "No, Create New Account"
     Then 1 accounts should exist with name: "CareerMee GmbH & Co. AG"
 
-  Scenario: Trying to re-assign a private account
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And an account exists with user: Annika, permission: "Private"
-    And I am on the account's edit page
-    When I select "benjamin.pochhammer@1000jobboersen.de" from "account_assignee_id"
-    And I press "Update Account"
-    Then I should be on the account's page
-    And I should see "Cannot assign a private account to another user, please change the permissions first"
-    And 1 accounts should exist with assignee_id: nil
-
-  Scenario: Trying to re-assign a shared account to a user it is not shared with
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And another user exists
-    And an account exists with user: Annika
-    And the account is shared with the other user
-    And I am on the account's edit page
-    When I select "benjamin.pochhammer@1000jobboersen.de" from "account_assignee_id"
-    And I press "Update Account"
-    Then I should be on the account's page
-    And I should see "Cannot assign a shared account to a user it is not shared with. Please change the permissions first"
-
->>>>>>> Incorporate improved account/lead duplicate checks
   Scenario: Editing an account
     Given I am registered and logged in as annika
     And account: "careermee" exists with user: annika
