@@ -9,7 +9,7 @@ module Messaging #:nodoc:
     #
     # @param [ Opportunity ] opportunity The opportunity.
     def publish(opportunity)
-      Minion.enqueue("opportunities.update", attributes(opportunity))
+      enqueue("opportunities.update", attributes(opportunity))
     end
 
     # Runs the minion subscriber for updating offer requests.
