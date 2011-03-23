@@ -141,14 +141,3 @@ Feature: Manage Opportunities
     And I should see "Call to get offer details"
     And 0 emails should be delivered
     And the opportunity should be assigned to Annika
-
-  Scenario: Adding a contact to an opportunity
-    Given I am registered and logged in as annika
-    And an opportunity exists with user: Annika
-    And a contact exists with user: Annika, first_name: "Hans", last_name: "Schmidt"
-    And I am on the opportunity's page
-    When I follow "Select Contact"
-    And I select "Hans Schmidt" from "opportunity_contact_id"
-    And I press "Update Opportunity"
-    Then I should be on the opportunities page
-    And the contact should have 1 opportunities

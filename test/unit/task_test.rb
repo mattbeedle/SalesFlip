@@ -291,22 +291,6 @@ class TaskTest < ActiveSupport::TestCase
       end
     end
 
-    context 'when created against an unassigned opportunity' do
-      setup do
-        Minion.expects(:enqueue)
-        @opportunity = Opportunity.make :assignee_id => nil, :contact => Contact.make
-        @user = User.make
-      end
-
-      should 'assign the opportunity to the user who create the task' do
-        @opportunity.tasks.create :user => @user,
-          :name => 'test',
-          :due_at => Time.zone.now,
-          :category => Task.categories.first
-        assert_equal @opportunity.reload.assignee, @user
-      end
-    end
-
     context 'activity logging' do
       setup do
         @task.save
