@@ -12,6 +12,11 @@ class AbilityTest < ActiveSupport::TestCase
         @user = User.new(:role => role)
       end
 
+      should "be able to mark a lead as duplicate" do
+        lead = Lead.new
+        assert ability.can?(:duplicate, lead)
+      end
+
       [Lead, Opportunity, Account, Contact].each do |model|
         name = model.name.downcase
         if role == 'Freelancer'

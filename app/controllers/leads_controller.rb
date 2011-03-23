@@ -114,7 +114,10 @@ class LeadsController < InheritedResources::Base
 
   def duplicate
     @lead.update! :duplicate => true
-    render :text => "true"
+    respond_to do |format|
+      format.js { render :text => "true" }
+      format.html { redirect_to :back }
+    end
   end
 
   def export

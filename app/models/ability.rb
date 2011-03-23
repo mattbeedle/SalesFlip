@@ -13,6 +13,7 @@ class Ability
     alias_action :profile, :to => :update
 
     can :manage, Invitation
+    can :duplicate, Lead
 
     case user.role
       when "Sales Person", "Key Account Manager", "Freelancer"
