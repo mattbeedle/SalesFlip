@@ -55,6 +55,8 @@
                       - elsif item.respond_to?(:deleted_at)
                         - if item.is_a?(Lead)
                           - name = "#{item.name} (#{item.company})"
+                        - elsif item.is_a?(Opportunity)
+                          - name = item.name
                         - elsif item.is_a?(Contact)
                           - if item.account
                             - name = "#{item.name} (#{item.account.name})"

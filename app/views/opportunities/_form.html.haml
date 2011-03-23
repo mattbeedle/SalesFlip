@@ -11,6 +11,9 @@
     .50.a= form.input :contact_id, :collection => Contact.for_company(current_user.company).sort_by(&:name).map { |c| [c.name, c.id] }
     .50.z= form.input :budget
     .clear
+  - else
+    .100.z= form.input :budget
+    .clear
   - form.object.attachments.each do |attachment|
     = simple_fields_for 'opportunity[attachments_attributes][]', attachment do |attachment_form|
       = attachment_form.input :attachment, :as => :file

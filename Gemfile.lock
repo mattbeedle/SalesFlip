@@ -55,6 +55,15 @@ GIT
       dm-core (~> 1.0.2)
 
 GIT
+  remote: git://github.com/durran/minion.git
+  revision: 1b9cd7daaa8127d1331e4fd14469b75689a9b164
+  specs:
+    minion (0.2.0)
+      amqp (>= 0.7.1)
+      bunny (>= 0.6.0)
+      json (>= 1.2.0)
+
+GIT
   remote: git://github.com/jnicklas/carrierwave.git
   revision: 7361f97be97e5cd0986ccf41f9e96b47571f8daa
   specs:
@@ -119,7 +128,7 @@ GEM
       capybara (~> 0.4.0)
       jruby-jars
     amatch (0.2.5)
-    amqp (0.7.0)
+    amqp (0.7.1)
       eventmachine (>= 0.12.4)
     archive-tar-minitar (0.5.2)
     arel (2.0.8)
@@ -267,10 +276,6 @@ GEM
       treetop (~> 1.4.8)
     memcached (1.0.2)
     mime-types (1.16)
-    minion (0.1.15)
-      amqp (>= 0.6.7)
-      bunny (>= 0.6.0)
-      json (>= 1.2.0)
     mocha (0.9.12)
     mongo (1.2.0)
       bson (>= 1.2.0)
@@ -409,6 +414,7 @@ DEPENDENCIES
   aaronh-chronic!
   akephalos
   amatch
+  amqp (= 0.7.1)
   autotest-rails
   bson_ext
   cancan
@@ -450,7 +456,7 @@ DEPENDENCIES
   launchy
   machinist
   memcached
-  minion
+  minion!
   mocha
   mongo
   mongo_session_store!
