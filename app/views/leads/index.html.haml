@@ -20,9 +20,6 @@
       %li{:class => "#{'active' if params[:status] == "Contacted"}"}
         = link_to t(:contacted), :status => "Contacted"
         .arrow
-      %li{:class => "#{'active' if params[:status] == "Infomail Requested"}"}
-        = link_to t(:infomail_requested), :status => "Infomail Requested"
-        .arrow
       %li{:class => "#{'active' if params[:status] == "Infomail Sent"}"}
         = link_to t(:infomail_sent), :status => "Infomail Sent"
         .arrow

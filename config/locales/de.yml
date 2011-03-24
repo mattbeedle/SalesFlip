@@ -351,7 +351,6 @@ de:
     statuses:
       - Neu
       - Kontaktiert
-      - Infomail angeforderte
       - Infomail gesendet
       - Angebot angefordert
       - Abgelehnt
@@ -364,7 +363,6 @@ de:
     - Interessiert
     - Infomail gesendet
     - Angebot angefordert
-    - Infomail angeforderte
   lead_sources:
     - Kampagne
     - Kaltakquise
