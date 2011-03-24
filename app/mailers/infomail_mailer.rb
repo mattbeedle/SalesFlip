@@ -13,6 +13,7 @@ class InfomailMailer < ActionMailer::Base
     end
 
     mail(:to => lead.email,
+         :reply_to => lead.assignee.email,
          :subject => template.subject,
          :body => template.body)
   end
