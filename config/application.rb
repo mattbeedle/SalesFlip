@@ -32,6 +32,7 @@ module Salesflip
     require 'data_mapper/postgres'
 
     require 'data_mapper/any_of'
+    require 'data_mapper/attribute_cleaner'
     require 'data_mapper/changes'
     require 'data_mapper/collection_extensions'
     require 'data_mapper/multiparameter_attribute_support'

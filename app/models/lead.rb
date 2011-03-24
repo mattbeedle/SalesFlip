@@ -15,6 +15,9 @@ class Lead
 
   is_gravtastic
 
+  clean_attributes :company, :first_name, :last_name,
+    :email, :phone, :website
+
   property :id, Serial
   property :first_name, String
   property :last_name, String, :required => true

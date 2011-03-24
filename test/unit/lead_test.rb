@@ -459,5 +459,33 @@ class LeadTest < ActiveSupport::TestCase
       @lead.save
       assert_equal 'Rejected', @lead.status
     end
+
+    context "attribute cleaning" do
+
+      should 'clean company' do
+        assert_equal "company", Lead.new(:company => %Q[\t'company\r\n"]).company
+      end
+
+      should 'clean first_name' do
+        assert_equal "first_name", Lead.new(:first_name => %Q[\t'first_name\r\n"]).first_name
+      end
+
+      should 'clean last_name' do
+        assert_equal "last_name", Lead.new(:last_name => %Q[\t'last_name\r\n"]).last_name
+      end
+
+      should 'clean email' do
+        assert_equal "email", Lead.new(:email => %Q[\t'email\r\n"]).email
+      end
+
+      should 'clean phone' do
+        assert_equal "phone", Lead.new(:phone => %Q[\t'phone\r\n"]).phone
+      end
+
+      should 'clean website' do
+        assert_equal "website", Lead.new(:website => %Q[\t'website\r\n"]).website
+      end
+
+    end
   end
 end
