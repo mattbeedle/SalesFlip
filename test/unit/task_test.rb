@@ -372,7 +372,6 @@ class TaskTest < ActiveSupport::TestCase
 
     context 'when created against an unassigned opportunity' do
       setup do
-        Minion.expects(:enqueue)
         @opportunity = Opportunity.make :assignee_id => nil, :contact => Contact.make
         @user = User.make
       end

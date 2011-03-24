@@ -68,6 +68,7 @@ class OpportunityTest < ActiveSupport::TestCase
 
     context 'create_for' do
       setup do
+        Opportunity.destroy
         @contact = Contact.make
       end
 
