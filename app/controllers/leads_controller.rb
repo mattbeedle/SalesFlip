@@ -16,7 +16,7 @@ class LeadsController < InheritedResources::Base
 
   has_scope :campaign do |controller, leads, campaign|
     if campaign == "Self-Generated"
-      leads.all(:source => "Self-Generated")
+      I18n.with_locale(:en) { leads.all(:source => "Self-Generated") }
     else
       leads.all(:campaign_id => campaign)
     end

@@ -2,7 +2,17 @@ class InfomailMailer < ActionMailer::Base
   default :from => 'service@salesflip.com'
 
   def mailer(lead, template)
-    template = template
+    @salutation = case I18n.with_locale(:en) { lead.salutation }
+                  when "Mr"
+                    I18n.translate(:dear_sir)
+                  when "Ms"
+                    I18n.translate(:dear_miss)
+                  when "Mrs"
+                    I18n.translate(:dear_madam)
+                  end
+
+    @infomail_template = template
+    @user = lead.assignee
 
     template.attachments.each do |attachment|
       attachment = attachment.attachment
@@ -13,9 +23,8 @@ class InfomailMailer < ActionMailer::Base
     end
 
     mail(:to => lead.email,
-         :reply_to => lead.assignee.email,
-         :subject => template.subject,
-         :body => template.body)
+         :reply_to => @user.email,
+         :subject => template.subject)
   end
 
 end

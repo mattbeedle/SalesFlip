@@ -36,9 +36,15 @@ Given /^there is a new unassigned lead$/ do
   store_model('lead', 'lead', Lead.make(user: model('user')))
 end
 
-Given /^there is a new lead assigned to me$/ do
-  lead = Lead.make(user: model('user'), assignee: model('user'))
+Given /^there is a new lead assigned to me(?: with #{capture_fields})?$$/ do |fields|
+
+  lead = Lead.make(
+    parse_fields(fields).merge(
+      user: model('user'), assignee: model('user')
+    )
+  )
   store_model('lead', 'lead', lead)
+
 end
 
 Given /^I have a lead with the status "([^"]*)"$/ do |status|

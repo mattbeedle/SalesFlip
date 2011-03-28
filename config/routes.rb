@@ -6,6 +6,7 @@ Salesflip::Application.routes.draw do
   match '/instant', :to => InstantSearchController.action(:search)
 
   match 'profile', :to => 'users#profile'
+  put   'profile', :to => 'users#update'
 
   match 'help(/:action)(/:locale)', :to => "help", :as => "help"
 

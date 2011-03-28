@@ -56,3 +56,7 @@ Given /^I am registered and logged in as Matt$/ do
   click_link_or_button 'user_submit'
   matt.update_attributes :role => 'Administrator'
 end
+
+Given /^my email signature is "([^"]+)"$/ do |signature|
+  model('user').update signature: signature
+end

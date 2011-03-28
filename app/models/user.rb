@@ -15,6 +15,7 @@ class User
   property :api_key, String
   property :first_name, String
   property :last_name, String
+  property :signature, Text
   property :type, String
   property :created_at, DateTime
   property :created_on, Date

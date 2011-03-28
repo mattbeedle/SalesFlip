@@ -12,6 +12,12 @@ class UsersController < InheritedResources::Base
     end
   end
 
+  def update
+    update! do |success, failure|
+      success.html { return_to_or_default user_path(@user) }
+    end
+  end
+
 protected
   def invitation
     if params[:invitation_code]

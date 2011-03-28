@@ -18,18 +18,6 @@ Feature: First call workflow
     Then I should be on the lead's page
 
     @javascript
-  Scenario: Customer requests infomail
-    Given I am signed in as a sales person
-    And there is a new lead assigned to me
-    And I am on the lead's page
-    And I have called the customer
-
-    When I say the customer requested infomail
-    And I schedule an infomail followup task
-    Then the lead should have the status "Infomail Requested"
-    And it should have an infomail followup task
-
-    @javascript
   Scenario: Customer wants to be called back
     Given I am signed in as a sales person
     And there is a new lead assigned to me

@@ -379,6 +379,9 @@ de:
     - Herr
     - Frau
     - Fräulein
+  dear_sir: Sehr geehrter Herr
+  dear_madam: Sehr geehrte Frau
+  dear_miss: Sehr geehrtes Fräulein
   titles:
     - Dr.
     - Dr.

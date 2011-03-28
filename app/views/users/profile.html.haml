@@ -12,3 +12,10 @@
     %span.help
       %span.up-arrow &#11014;
       %em= t('info.dropbox')
+= simple_form_for @user do |form|
+  = hidden_field_tag :return_to, request.url
+  %dl.profile
+    %dt= form.label :signature
+    %dd= form.text_area :signature
+  .act.pad
+    = form.button :submit, t(:save), :id => 'lead_submit'

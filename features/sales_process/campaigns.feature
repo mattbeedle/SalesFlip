@@ -10,10 +10,10 @@ Feature: Campaign workflow
     But I should not see "Email Blast"
 
   Scenario Outline: only see self-generated leads
-    Given my locale is "<locale>"
-    And I am signed in as a sales person
+    Given I am signed in as a sales person
     And a lead exists with first_name: "John", user: me, assignee: me, status: "New", source: "Cold Call"
     And a lead exists with first_name: "Jane", user: me, assignee: me, status: "New", source: "Self-Generated"
+    And my locale is "<locale>"
     When I go to the leads page
     Then I should see "John"
     And I should see "Jane"
