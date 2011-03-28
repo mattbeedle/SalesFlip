@@ -48,7 +48,7 @@
 - content_for :sidebar do
   - if @lead.duplicate?
     #duplicate.box
-      %h4 This lead has been marked as a duplicate.
+      %h4= t(:lead_is_marked_as_duplicate)
 
   - if can? :view_contact_details, @lead
     .box.gold
@@ -90,12 +90,7 @@
     = render :partial => 'shared/activity_for', :collection => @lead.related_activities.desc(:updated_at).limit(6), :as => :activity
 
   - unless @lead.duplicate?
-    #mark_as_duplicate
-      %h4 Is this a duplicate?
-      %p
-        If so, you can
-        = link_to "mark this as a duplicate", duplicate_lead_path, :method => :put
-        and an administrator will take a look.
+    = render "mark_as_duplicate"
 
   :css
     #duplicate {

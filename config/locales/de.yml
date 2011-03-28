@@ -580,3 +580,4 @@ de:
   duplicate?: "Duplikat?"
   marked_as_duplicate: "markiert als Duplikat"
   searching_on_company_name: "Suche nach Unternehmen. Klicke „Suche“ um alles zu durchsuchen."
+  lead_is_marked_as_duplicate: "Dieses Lead ist als Duplikat vermerkt"
