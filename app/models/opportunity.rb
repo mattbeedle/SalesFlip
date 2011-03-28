@@ -143,6 +143,7 @@ class Opportunity
       begin
         Messaging::Opportunities.new.publish(self)
       rescue Exception => e
+        puts e
       end
     else
       @inbound_update = false
