@@ -9,7 +9,7 @@ module Messaging #:nodoc:
     #
     # @param [ Opportunity ] opportunity The opportunity.
     def publish(opportunity)
-      Minion.enqueue("opportunities.update", attributes(opportunity))
+      enqueue("opportunities.update", attributes(opportunity))
     end
 
     # Runs the minion subscriber for updating offer requests.
@@ -18,8 +18,11 @@ module Messaging #:nodoc:
     #   Opportunities.new.subscribe
     def subscribe
       job "offers.update" do |data|
-        opportunity = Opportunity.find(data.delete("id"))
-        opportunity.tap { |opp| opp.inbound_update!(data) } if opportunity
+        id = data.delete("id")
+        if id
+          opportunity = Opportunity.find(id)
+          opportunity.tap { |opp| opp.inbound_update!(data) } if opportunity
+        end
       end
     end
 
@@ -30,6 +33,7 @@ module Messaging #:nodoc:
     #
     # @return [ Hash ] The attributes to send.
     def attributes(opportunity)
+      contact = opportunity.contact
       attrs = opportunity.attributes.except(
         :assignee_id, :updater_id, :contact_id, :status, :created_at, :updated_at
       ).tap do |attr|
@@ -37,6 +41,9 @@ module Messaging #:nodoc:
           opportunity.comments.inject([]) do |comments, comment|
             comments << comment.text
           end
+        attr[:company] = contact.account.name
+        attr[:contact] = contact.name
+        attr[:contact_email] = contact.email
       end
     end
   end

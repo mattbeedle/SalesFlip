@@ -140,7 +140,10 @@ class Opportunity
   #   request.outbound_update!
   def outbound_update!
     unless inbound_update
-      Messaging::Opportunities.new.publish(self)
+      begin
+        Messaging::Opportunities.new.publish(self)
+      rescue Bunny::ServerDownError => e
+      end
     else
       @inbound_update = false
     end
