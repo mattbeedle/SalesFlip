@@ -143,7 +143,7 @@ class Opportunity
     unless inbound_update
       begin
         Messaging::Opportunities.new.publish(self)
-      rescue Bunny::ServerDownError => e
+      rescue Exception => e
       end
     else
       @inbound_update = false
