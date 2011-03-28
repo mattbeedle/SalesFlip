@@ -79,14 +79,6 @@ class Activity
       # of all.to_a.delete_if.
       all.each do |activity|
         next unless activity.subject
-        next if (
-          (activity.subject.permission_is?('Private') && activity.subject.user != user) ||
-          (
-            activity.subject.permission_is?('Shared') &&
-            !activity.subject.permitted_user_ids.include?(user.id) &&
-            activity.subject.user != user
-          )
-        )
 
         activities << activity
       end

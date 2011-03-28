@@ -46,9 +46,13 @@
       = link_to t(:done?), finish_lead_path
 
 - content_for :sidebar do
-  .box.gold
-    %h3= t(:contact_info)
-    - if @lead.assigned_to?(current_user)
+  - if @lead.duplicate?
+    #duplicate.box
+      %h4= t(:lead_is_marked_as_duplicate)
+
+  - if can? :view_contact_details, @lead
+    .box.gold
+      %h3= t(:contact_info)
       %dl.info
         - if campaign = @lead.campaign
           %dt= t('campaign')
@@ -72,20 +76,45 @@
         = show_attribute(@lead, 'facebook', link_to('Facebook', @lead.facebook))
         = show_attribute(@lead, 'xing', link_to('Xing', @lead.xing))
         = show_attribute(@lead, 'referred_by')
-      - if %w(New Contacted).include?(@lead.status)
-        %hr
-        %p
-          = link_to t(:already_contacted?), finish_lead_path, :onclick => "CallBox.show(this.href); return false;"
-      - elsif @lead.status == "Infomail Requested"
-        %hr
-        %p
-          = link_to t(:sent_infomail?), lead_path(:lead => {:status => "Infomail Sent"}), :method => :put
-    - elsif @lead.assignee.blank?
-      = simple_form_for @lead, :html => { :class => 'accept' } do |form|
-        = form.hidden_field :do_not_notify, :value => true
-        = form.hidden_field :assignee_id, :value => current_user.id
-        = hidden_field_tag :return_to, request.fullpath
-        = form.button :submit, t(:accept).capitalize, :id => 'accept'
+      - if can? :update, @lead
+        - if %w(New Contacted).include?(@lead.status)
+          %hr
+          %p
+            = link_to t(:already_contacted?), finish_lead_path, :onclick => "CallBox.show(this.href); return false;"
+        - elsif @lead.status == "Infomail Requested"
+          %hr
+          %p
+            = link_to t(:sent_infomail?), lead_path(:lead => {:status => "Infomail Sent"}), :method => :put
   #recent_activity.box.ice
     %h3= t(:recent_activity_for, :name => @lead.full_name )
     = render :partial => 'shared/activity_for', :collection => @lead.related_activities.desc(:updated_at).limit(6), :as => :activity
+
+  - unless @lead.duplicate?
+    = render "mark_as_duplicate"
+
+  :css
+    #duplicate {
+      background-color: #c55;
+      color: #fff;
+      margin-bottom: 20px;
+      padding: 20px;
+    }
+
+    #duplicate h4 {
+      margin: 0;
+    }
+
+    #mark_as_duplicate {
+      color: #555;
+      margin-top: 20px;
+      padding: 10px;
+    }
+
+    #mark_as_duplicate h4 {
+      margin: 0 0 5px;
+    }
+
+    #mark_as_duplicate p {
+      margin: 0;
+      text-align: left;
+    }

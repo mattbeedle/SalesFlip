@@ -24,8 +24,11 @@ module DataMapper
     class State
       class Dirty
         include DataMapper::Hook
+
         after :set do |state, property, value|
-          resource.changed << property.name.to_s if original_attributes[property] != property.get(resource)
+          if resource.attribute_dirty?(property.name) && resource.dirty_attributes[property] != resource.original_attributes[property]
+            resource.changed << property.name.to_s
+          end
         end
       end
     end

@@ -50,14 +50,6 @@ class Campaign
     objective && objective.number_of_leads.present?
   end
 
-  def permission_is?(permission)
-    permission == 'Public'
-  end
-
-  def permitted_for?(*)
-    true
-  end
-
   def related_activities
     tasks.activities | comments.activities | leads.activities | activities
   end

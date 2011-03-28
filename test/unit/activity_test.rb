@@ -123,44 +123,5 @@ class ActivityTest < ActiveSupport::TestCase
       end
     end
 
-    context 'visible_to' do
-      setup do
-        @annika = User.make(:annika)
-        @benny = User.make(:benny)
-        @contact = Contact.make(:florian, :user => @annika, :permission => 'Private')
-        @activity = @contact.activities.first
-      end
-
-      should 'NOT return activities where subject permission is private and subject user is not owner' do
-        refute_includes Activity.visible_to(@benny), @activity
-      end
-
-      should 'return activities where subject permission is private and subject user is owner' do
-        assert_includes Activity.visible_to(@annika), @activity
-      end
-
-      should 'return activities where subject user is owner' do
-        @contact.update :user_id => @benny.id, :permission => 'Public'
-        assert_includes Activity.visible_to(@benny), @activity
-      end
-
-      should 'return activities where subject permission is public' do
-        @contact.update :permission => 'Public'
-        assert_includes Activity.visible_to(@benny), @activity
-        assert_includes Activity.visible_to(@annika), @activity
-      end
-
-      should 'return activities where subject permission is shared and user is in subjects permitted user list' do
-        @contact.update :permission => 'Shared', :permitted_user_ids => [@benny.id]
-        assert_includes Activity.visible_to(@benny), @activity
-        assert_includes Activity.visible_to(@annika), @activity
-      end
-
-      should 'NOT return activities where subject permission is shared and user is NOT in subjects permitted user list' do
-        @contact.update :permission => 'Shared', :permitted_user_ids => [@annika.id]
-        assert_includes Activity.visible_to(@annika), @activity
-        refute_includes Activity.visible_to(@benny), @activity
-      end
-    end
   end
 end

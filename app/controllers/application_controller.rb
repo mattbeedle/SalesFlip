@@ -16,7 +16,6 @@ class ApplicationController < ActionController::Base
 
   before_filter :store_on_call
   before_filter :authenticate_user!
-  before_filter :fix_array_params
   before_filter "hook(:app_before_filter, self)"
   after_filter  "hook(:app_after_filter, self)"
   after_filter  :log_viewed_item, :only => :show
@@ -24,13 +23,6 @@ class ApplicationController < ActionController::Base
   helper :all
 
 protected
-  def fix_array_params
-    [:lead, :contact, :account, :opportunity].each do |type|
-      if params[type] && params[type][:permitted_user_ids] && params[type][:permitted_user_ids].is_a?(String)
-        params[type][:permitted_user_ids] = params[type][:permitted_user_ids].lines.to_a
-      end
-    end
-  end
 
   def render_optional_error_file(status_code)
     status = interpret_status(status_code)

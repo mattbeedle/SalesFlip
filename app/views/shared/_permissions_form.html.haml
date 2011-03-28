@@ -1,5 +1,0 @@
-%div{ :class => defined?(p1) ? p1 : '33 a' }
-  = form.input :permission, :collection => Lead.permissions, :include_blank => false, :input_html => { :class => 'permission_select' }
-
-%div.hide-me.permitted_user_ids{ :class => defined?(p2) ? p2 : '33' }
-  = form.input :permitted_user_ids, :collection => current_user.company.users.asc(:email).map {|u| [u.email, u.id] }, :include_blank => false, :input_html => { :multiple => true, :size => 5 }

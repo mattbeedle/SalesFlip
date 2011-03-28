@@ -64,10 +64,10 @@ class User
   end
 
   def deleted_items_count
-    count  = Lead.permitted_for(self).deleted.count
-    count += Contact.permitted_for(self).deleted.count
-    count += Account.permitted_for(self).deleted.count
-    count += Comment.permitted_for(self).deleted.count
+    count  = Lead.deleted.count
+    count += Contact.deleted.count
+    count += Account.deleted.count
+    count += Comment.deleted.count
   end
 
   def full_name

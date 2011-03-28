@@ -5,7 +5,6 @@ class Opportunity
   include Assignable
   include ParanoidDelete
   include Activities
-  include Permission
   include Sunspot::DataMapper
 
   property :id, Serial

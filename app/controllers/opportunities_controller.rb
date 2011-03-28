@@ -5,7 +5,7 @@ class OpportunitiesController < InheritedResources::Base
 
   def index
     @opportunity_stages = current_user.company.opportunity_stages.not_deleted
-    @all_opportunities = Opportunity.not_deleted.permitted_for(current_user)
+    @all_opportunities = Opportunity.not_deleted
     index! do |format|
       format.html
     end
@@ -40,7 +40,7 @@ protected
   end
 
   def opportunities
-    @opportunities = apply_scopes(Opportunity).not_deleted.permitted_for(current_user)
+    @opportunities = apply_scopes(Opportunity).not_deleted
   end
 
   def build_resource
@@ -55,7 +55,7 @@ protected
   end
 
   def resource
-    @opportunity ||= Opportunity.for_company(current_user.company).permitted_for(current_user).
+    @opportunity ||= Opportunity.for_company(current_user.company).
       where(:id => params[:id]).first
   end
 end

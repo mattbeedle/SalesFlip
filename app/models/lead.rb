@@ -3,7 +3,6 @@ class Lead
   include DataMapper::Timestamps
   include HasConstant::Orm::DataMapper
   include ParanoidDelete
-  include Permission
   include Trackable
   include Activities
   include Sunspot::DataMapper
@@ -12,7 +11,12 @@ class Lead
   include ActiveModel::Observing
   include OnlineFields
 
+  extend SimilarTo
+
   is_gravtastic
+
+  clean_attributes :company, :first_name, :last_name,
+    :email, :phone, :website
 
   property :id, Serial
   property :first_name, String
@@ -58,15 +62,16 @@ class Lead
   attr_accessor :do_not_notify, :do_not_index, :duplicate_check
 
   belongs_to   :user, :required => true
+  belongs_to   :assignee, :model => 'User', :required => false
   belongs_to   :contact, :required => false
   belongs_to   :campaign, :required => false
   has n, :comments, :as => :commentable#, :dependent => :delete_all
   has n, :tasks, :as => :asset#, :dependent => :delete_all
   has n, :emails, :as => :commentable#, :dependent => :delete_all
 
-  validates_with_block do
+  validates_with_block :company do
     if duplicate_check
-      if similar(0.9).any? || similar_accounts(0.9).any?
+      if similar.any? || similar_accounts.any?
         return [false, 'This lead is a duplicate']
       end
     end
@@ -132,24 +137,18 @@ class Lead
 
   def self.exportable_fields
     properties.map { |p| p.name.to_s }.sort.delete_if do |f|
-      f.match(/access|permission|permitted_user_ids|tracker_ids/)
+      f.match(/access|tracker_ids/)
     end
   end
 
-  def similar( threshold )
-    leads = Lead.search { keywords self.company }.results
-
-    leads.select do |lead|
-      company.levenshtein_similar(lead.company) > threshold rescue false
-    end
+  # @return [Array<Lead>] all potentially similar leads
+  def similar
+    Lead.all.similar_to(self)
   end
 
-  def similar_accounts( threshold )
-    accounts = Account.search { keywords self.company }.results
-
-    accounts.select do |account|
-      company.levenshtein_similar(account.name) > threshold
-    end
+  # @return [Array<Account>] all potentially similar accounts
+  def similar_accounts
+    Account.all.similar_to(self)
   end
 
   def full_name
@@ -194,10 +193,6 @@ class Lead
 
   def deliminated( deliminator, fields )
     fields.map { |field| self.send(field) }.join(deliminator)
-  end
-
-  def assigned_to?( user )
-    assignee_id == user.id
   end
 
   def reassigned?

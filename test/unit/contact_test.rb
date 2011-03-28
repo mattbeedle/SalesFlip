@@ -3,7 +3,7 @@ require 'test_helper.rb'
 class ContactTest < ActiveSupport::TestCase
   context "Class" do
     should_have_key :identifier, :city, :postal_code, :country, :job_title, :department
-    should_have_constant :accesses, :titles, :permissions, :salutations, :sources
+    should_have_constant :accesses, :titles, :salutations, :sources
     should_act_as_paranoid
     should_be_trackable
     should_belong_to :account, :user, :assignee
@@ -11,8 +11,7 @@ class ContactTest < ActiveSupport::TestCase
 
     should 'know which fields can be exported' do
       Contact.properties.map {|p| p.name.to_s}.each do |field|
-        unless field == 'access' || field == 'permission' ||
-          field == 'permitted_user_ids' || field == 'tracker_ids'
+        unless field == 'access' || field == 'tracker_ids'
           assert_includes Contact.exportable_fields, field
         else
           refute Contact.exportable_fields.include?(field)
@@ -123,33 +122,6 @@ class ContactTest < ActiveSupport::TestCase
       @user = User.make
     end
     
-    should 'always store permitted user ids as BSON::ObjectIds' do
-      @contact.permitted_user_ids = [@user.id.to_s]
-      assert_equal [@user.id], @contact.permitted_user_ids
-      user = User.make
-      @contact.permitted_user_ids = [user.id]
-      assert_equal [user.id], @contact.permitted_user_ids
-    end
-    
-    should 'not be able to assign to another user if the permission is private' do
-      @contact.save
-      @contact.update :permission => 'Private'
-      assert_valid @contact
-      @contact.assignee = @user
-      refute_valid @contact
-      assert_includes @contact.errors[:permission], 'Cannot assign a private contact to another user, please change the permissions first'
-    end
-    
-    should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
-      @contact.save
-      user = User.make
-      @contact.update :permission => 'Shared', :permitted_user_ids => [user.id]
-      assert_valid @contact
-      @contact.assignee = @user
-      refute_valid @contact
-      assert_includes @contact.errors[:permission], 'Cannot assign a shared contact to a user it is not shared with. Please change the permissions first'
-    end
-    
     should 'be able to get all comments including those for any associated leads' do
       @contact.save
       lead = Lead.make :contact => @contact
@@ -182,40 +154,6 @@ class ContactTest < ActiveSupport::TestCase
       c = Contact.make_unsaved(:florian, :email => @contact.email)
       refute_valid c
       assert c.errors[:email]
-    end
-
-    context 'permitted_for' do
-      setup do
-        @annika = User.make(:annika)
-        @benny = User.make(:benny)
-        @florian = Contact.make(:florian, :user => @annika, :permission => 'Public')
-        @steven = Contact.make(:steven, :user => @benny, :permission => 'Public')
-      end
-
-      should 'return all public contacts' do
-        assert_includes Contact.permitted_for(@annika), @florian
-        assert_includes Contact.permitted_for(@annika), @steven
-      end
-
-      should 'return all contacts belonging to the user' do
-        @florian.update :permission => 'Private'
-        assert_includes Contact.permitted_for(@annika), @florian
-      end
-
-      should 'NOT return private contacts belonging to another user' do
-        @steven.update :permission => 'Private'
-        refute_includes Contact.permitted_for(@annika), @steven
-      end
-
-      should 'return shared contacts where the user is in the permitted users list' do
-        @steven.update :permission => 'Shared', :permitted_user_ids => [@florian.user_id]
-        assert_includes Contact.permitted_for(@annika), @steven
-      end
-
-      should 'NOT return shared contacts where the user is not in the permitted users list' do
-        @steven.update :permission => 'Shared', :permitted_user_ids => [@steven.user_id]
-        refute_includes Contact.permitted_for(@annika), @steven
-      end
     end
 
     context 'activity logging' do
@@ -273,12 +211,6 @@ class ContactTest < ActiveSupport::TestCase
 
     should 'alias full_name to name' do
       assert_equal @contact.name, @contact.full_name
-    end
-
-    should 'require at least one permitted user if permission is "Shared"' do
-      @contact.permission = 'Shared'
-      refute_valid @contact
-      assert @contact.errors[:permitted_user_ids]
     end
 
     should 'require last name' do

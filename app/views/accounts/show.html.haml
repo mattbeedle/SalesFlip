@@ -3,15 +3,6 @@
   %ul.actions
     %li= link_to t(:edit_account), [:edit, @account], :id => "edit_#{dom_id(@account)}"
     %li= link_to t(:add_sub_account), new_account_path(:account_id => @account.id), :id => 'add_sub_account'
-    %li
-      = simple_form_for @account do |form|
-        = hidden_field_tag :return_to, request.fullpath
-        - if @account.tracked_by?(current_user)
-          = hidden_field_tag 'account[remove_tracker_ids][]', current_user.id
-          = form.button :submit, t(:stop_updating_me), :id => 'stop_updating_me'
-        - else
-          = hidden_field_tag 'account[tracker_ids][]', current_user.id
-          = form.button :submit, t(:keep_me_updated), :id => 'keep_me_updated'
   %small
     = t(:assigned_to, :user => (@account.assignee.nil? ? "Nobody" : @account.assignee.full_name))
 .clear

@@ -75,29 +75,6 @@ Feature: Manage leads
     And a created activity should exist for lead with first_name "Erich"
     And 0 emails should be delivered
 
-  Scenario: Trying to assign a new private lead
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And I am on the new lead page
-    When I fill in "Last Name" with "A test"
-    And I select "benjamin.pochhammer@1000jobboersen.de" from "lead_assignee_id"
-    And I select "Private" from "Permission"
-    And I press "Create Lead"
-    Then 0 leads should exist
-    And I should see "Cannot assign a private lead to another user, please change the permissions first"
-
-  Scenario: Trying to assign a new shared lead to a user it is not shared with
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And I am on the new lead page
-    When I fill in "Last Name" with "test"
-    And I select "Shared" from "Permission"
-    And I select "annika.fleischer@1000jobboersen.de" from "lead_permitted_user_ids"
-    And I select "benjamin.pochhammer@1000jobboersen.de" from "Assignee"
-    And I press "Create Lead"
-    Then 0 leads should exist
-    And I should see "Cannot assign a shared lead to a user it is not shared with. Please change the permissions first"
-
   Scenario: Creating a lead with a campaign
     Given I am registered and logged in as annika
     And a campaign exists with name: "Generate 100 leads this month", start_date: "1/12/2010", end_date: "31/12/2010"
@@ -125,6 +102,7 @@ Feature: Manage leads
     And I should see "This is a good lead"
     And 1 comments should exist
 
+    @wip
   Scenario: Adding an comment with an attachment
     Given I am registered and logged in as annika
     And a lead exists with user: annika
@@ -235,24 +213,6 @@ Feature: Manage leads
     And I should see "Call to get offer details"
     And I should see "Close the deal"
     And 0 emails should be delivered
-
-  Scenario: Adding a task to an unassigned lead
-    Given I am registered and logged in as annika
-    And Annika has invited Benny
-    And a lead exists with user: Benny, assignee_id: nil
-    And I am on the lead's page
-    And all emails have been delivered
-    And I follow "add_task"
-    And I follow "preset_date"
-    And I fill in "task_name" with "Call to get offer details"
-    And I select "As soon as possible" from "task_due_at"
-    And I select "Call" from "task_category"
-    When I press "task_submit"
-    Then I should be on the lead's page
-    And a task should have been created
-    And I should see "Call to get offer details"
-    And 0 emails should be delivered
-    And the lead should be assigned to Annika
 
   Scenario: Marking a lead as completed
     Given I am registered and logged in as annika
@@ -437,18 +397,6 @@ Feature: Manage leads
     Then I should be on the lead's page
     And I should see "Updated"
     And I should see "Lead Updated by annika.fleischer"
-
-  Scenario: Exporting Leads as a normal user
-    Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: Annika
-    When I am on the leads page
-    Then I should not see "Export this list as a CSV"
-
-  Scenario: Leads index with format csv as a normal user
-    Given I am registered and logged in as annika
-    And a lead: "erich" exists with user: Annika
-    When I go to the leads csv page
-    Then I should be on the root page
 
   Scenario: Exporting Leads as an admin
     Given I am registered and logged in as Matt
