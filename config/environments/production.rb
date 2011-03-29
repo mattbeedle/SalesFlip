@@ -71,18 +71,6 @@ Salesflip::Application.configure do
     :api_key => '20015510-959d-012d-a4ae-001c25a0b06f'
   }
 
-  config.action_mailer.smtp_settings = {
-    :address => "smtp.sendgrid.net",
-    :user_name => ENV['SENDGRID_USER_NAME'],
-    :password => ENV['SENDGRID_PASSWORD']
-  }
-
-  # We want to deliver infomail emails through a trusted source (in this case,
-  # SendGrid).
-  config.after_initialize do
-    InfomailMailer.default delivery_method: :smtp
-  end
-
   config.external_user_update_url = "http://1000jobboersen.de/external_updates/user"
   config.external_offer_request_url = "http://1000jobboersen.de/external_updates/create_offer_request"
   config.external_offer_rework_url = "http://1000jobboersen.de/external_updates/rework_offer_request"
