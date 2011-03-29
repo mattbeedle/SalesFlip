@@ -2,8 +2,13 @@ class InfomailsController < ApplicationController
 
   def create
     if infomail_template
-      lead.update :status => "Infomail Sent"
+      current_user.update params[:user]
+      lead.attributes = params[:lead]
+
       InfomailMailer.mailer(lead, infomail_template).deliver
+
+      lead.status = "Infomail Sent"
+      lead.save
 
       respond_to do |format|
         format.js { render :text => "true" }

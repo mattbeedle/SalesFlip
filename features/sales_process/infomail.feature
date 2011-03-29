@@ -19,3 +19,52 @@ Feature: Infomail workflow
     And the email should contain t(dear_sir)
     And the email should contain "Learn More"
     And the email should contain "Cheers, Sales Person"
+
+  @javascript
+  Scenario: no salutation
+    Given I am signed in as a sales person
+    And my email signature is "Cheers, Sales Person"
+    And an infomail template: "default" exists
+    And there is a new lead assigned to me
+    And I am on the lead's page
+    And I have called the customer
+
+    When I say the customer requested infomail
+    And I select "Mrs" from "Salutation"
+    And I press "Send Infomail"
+
+    Then the lead should have the status "Infomail Sent"
+    And 1 email should be delivered
+    And the email should contain t(dear_madam)
+
+  @javascript
+  Scenario: no email
+    Given I am signed in as a sales person
+    And my email signature is "Cheers, Sales Person"
+    And an infomail template: "default" exists
+    And there is a new lead assigned to me with email: nil
+    And I am on the lead's page
+    And I have called the customer
+
+    When I say the customer requested infomail
+    And I fill in "Email" with "user@test.test"
+    And I press "Send Infomail"
+
+    Then the lead should have the status "Infomail Sent"
+    And 1 email should be delivered to "user@test.test"
+
+  @javascript
+  Scenario: no signature
+    Given I am signed in as a sales person
+    And an infomail template: "default" exists
+    And there is a new lead assigned to me
+    And I am on the lead's page
+    And I have called the customer
+
+    When I say the customer requested infomail
+    And I fill in "Signature" with "Cheers, Sales Person"
+    And I press "Send Infomail"
+
+    Then the lead should have the status "Infomail Sent"
+    And 1 email should be delivered
+    And the email should contain "Cheers, Sales Person"

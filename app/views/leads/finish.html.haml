@@ -28,6 +28,18 @@
       = form.select :template,
         infomail_templates.map { |t| [t.name, t.id] },
         :selected => lead.campaign_id ? InfomailTemplate.first(:campaign_id => lead.campaign_id).try(:id) : nil
+
+    = simple_fields_for lead do |f|
+      .clear
+      .a.25= f.input :salutation, :as => :select, :collection => Lead.salutations.map(&:to_s)
+      - if lead.email.blank?
+        .z.75= f.input :email
+
+    - if current_user.signature.blank?
+      .clear
+      = simple_fields_for current_user do |f|
+        = f.input :signature, :as => :text, :input_html => { :rows => 4 }
+
   = form.button :submit, t(:send_infomail)
 
 = simple_form_for lead.tasks.new(:name => t(:follow_up_about_infomail), :due_at => 3.days.from_now),
@@ -94,11 +106,13 @@
 
 :javascript
   function after_load_callback() {
-    RealDateSelector.bind($$(".call_box").first());
+    var call_box = $$(".call_box").first();
+    RealDateSelector.bind(call_box);
 
     function show_next(next) {
       if (next) {
         $(next).show();
+        call_box.setStyle("margin-top", (-call_box.dimensions().height/2)+"px");
       }
       else {
         window.location = "/leads"
