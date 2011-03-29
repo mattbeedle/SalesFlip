@@ -5,9 +5,11 @@ class OpportunityTest < ActiveSupport::TestCase
   context "#attributes" do
 
     setup do
+      @attachment = Attachment.make(:erich_offer_pdf)
       @opportunity = Opportunity.make
       @comment = Comment.make
       @opportunity.comments << @comment
+      @opportunity.attachments << @attachment
       @opportunity.save
       @contact = @opportunity.contact
       @account = @contact.account
@@ -48,6 +50,10 @@ class OpportunityTest < ActiveSupport::TestCase
 
     should "exclude contact id" do
       assert_nil @attributes[:contact_id]
+    end
+
+    should "include attachments" do
+      assert_equal [ @attachment.attachment.url ], @attributes[:attachments]
     end
   end
 end

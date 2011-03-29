@@ -37,6 +37,10 @@ module Messaging #:nodoc:
       attrs = opportunity.attributes.except(
         :assignee_id, :updater_id, :contact_id, :status, :created_at, :updated_at
       ).tap do |attr|
+        attr[:attachments] =
+          opportunity.attachments.inject([]) do |attachments, attachment|
+            attachments << attachment.attachment.url
+          end
         attr[:comments] =
           opportunity.comments.inject([]) do |comments, comment|
             comments << comment.text
