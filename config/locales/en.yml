@@ -388,8 +388,8 @@ en:
   self_generated: "Self-generated"
   salutations:
     - Mr
-    - Ms
     - Mrs
+    - Ms
   dear_sir: "Dear Sir"
   dear_madam: "Dear Madam"
   dear_miss: "Dear Miss"
