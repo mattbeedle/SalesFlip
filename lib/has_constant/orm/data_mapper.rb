@@ -31,11 +31,7 @@ module HasConstant
         #
         def initialize(model, name, options = {})
           # Store the flags as provided by the caller
-          @flags = options.fetch(:flags)
-
-          if @flags.respond_to?(:call)
-            @flags.extend(CallAutomatically)
-          end
+          @flags = options.fetch(:flags).extend(CallAutomatically)
 
           # DM's Enum processes the flags on initialize, so we reset the flags
           # here. It uses #flag_map at run-time to load/dump the property,
@@ -45,8 +41,47 @@ module HasConstant
           super
         end
 
+        # Calls Property#set, but includes the current locale as a part of the
+        # value.
+        def set(resource, value)
+          value, locale = value
+          super resource, [value, locale || I18n.locale]
+        end
+
+        # Loads the value using the current locale
+        def load(value)
+          return flag_map[I18n.locale][value], I18n.locale
+        end
+
+        # Dumps the value using the current locale, or the locale contained in
+        # the value.
+        def dump(value)
+          value, locale = value
+          flag_map[locale || I18n.locale].invert[value]
+        end
+
+        private
+
+        # @example
+        #   property.flag_map
+        #   # => {en: {1 => "Mr", 2 => "Mrs"}, de: {1 => "Herr", 2 => "Frau"}}
+        # @return Hash a hash of locale to translation key mappings
         def flag_map
-          Hash[*flags.map.with_index { |_,i| [_, i+1] }.flatten.reverse]
+          @flag_map = Hash.new do |hash, locale|
+            map = I18n.with_locale(locale) { flags.map.with_index { |_,i| [_, i+1] } }
+            hash[locale] = Hash[*map.flatten.reverse]
+          end
+        end
+
+        # Defines a custom reader method on the model which runs through the
+        # dump / load process to allow values to always be translated.
+        def bind
+          model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
+          def #{name}
+            property = properties[#{name.inspect}]
+            property.load(property.dump(property.get(self))).first
+          end
+          RUBY
         end
 
       end
@@ -57,13 +92,16 @@ module HasConstant
         def has_constant(name, values, options = {})
           singular = (options.delete(:accessor) || name.to_s.singularize).to_sym
 
-          if values.respond_to?(:call)
-            values.extend(CallAutomatically)
-          end
-
           class_eval do
-            property singular, TranslatedEnum,
-              {flags: values, auto_validation: false}.merge(options)
+            if values.respond_to?(:call)
+              values.extend(CallAutomatically)
+
+              property singular, TranslatedEnum,
+                {flags: values, auto_validation: false}.merge(options)
+            else
+              property singular, ::DataMapper::Property::Enum,
+                {flags: values, auto_validation: false}.merge(options)
+            end
 
             validates_within :set => values, :allow_blank => true
           end
