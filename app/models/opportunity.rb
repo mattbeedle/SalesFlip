@@ -129,6 +129,16 @@ class Opportunity
     end
   end
 
+  def update_stage!
+    case stage.name
+    when "New"
+      self.stage = OpportunityStage.first(name: "Offer Requested")
+    when "Offer Requested"
+      self.stage = OpportunityStage.first(name: "Offer Rework Requested")
+    end
+    save!
+  end
+
   ######################## START OF MQ SPECIFIC UPDATES ########################
 
   attr_accessor :inbound_update
@@ -142,6 +152,7 @@ class Opportunity
     unless inbound_update
       begin
         Messaging::Opportunities.new.publish(self)
+        update_stage!
       rescue Exception => e
         puts e
       end
