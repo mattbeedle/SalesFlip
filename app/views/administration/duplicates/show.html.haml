@@ -52,10 +52,11 @@
         .duplicate Duplicate
       - if lead.status == "Converted"
         .converted Converted
-      %label
+      %div.pad
         %h2
-          %input(type="radio" name="keep" value="#{lead.id}")
-          %span.company= lead.company
+          %label
+            %input(type="radio" name="keep" value="#{lead.id}")
+            %span.company= lead.company
         %dl
           %dt Status
           %dd= lead.status
@@ -106,7 +107,8 @@
       All comments and tasks will be moved.
 
 :javascript
-  ".lead label".on('click', function() {
+  ".lead .pad".on('click', function() {
+    this.first("input[name=keep]").set('checked', true);
     $$("#merge input[type='text']")[0].set("value", this.first(".company").text());
   });
 
@@ -120,7 +122,7 @@
     word-wrap: break-word;
   }
 
-  .lead label {
+  .lead .pad {
     border: 1px solid #eee;
     display: block;
     margin: 5px;
@@ -128,7 +130,7 @@
     padding: 20px;
   }
 
-  .lead label:hover {
+  .lead .pad:hover {
     background-color: #ffe;
   }
 
