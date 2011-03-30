@@ -23,6 +23,7 @@ class Opportunity
 
   # These 2 provide information on what's going on in Jobboards.
   property :jobboards_assignee, String
+  property :jobboards_url, String
   property :status, String
 
   validates_numericality_of :amount,      :allow_blank => true, :allow_nil => true
