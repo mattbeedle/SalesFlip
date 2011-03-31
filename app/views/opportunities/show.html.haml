@@ -5,6 +5,7 @@
 
 %ul
   %li= @opportunity.jobboards_assignee || t(:no_information)
+  %li= @opportunity.jobboards_url ? link_to(t(:checklist), @opportunity.jobboards_url, target: "_new") : t(:no_information)
   %li= @opportunity.status || t(:no_information)
 
 %h3= t(:attachments)
