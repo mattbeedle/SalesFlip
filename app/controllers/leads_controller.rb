@@ -4,7 +4,6 @@ class LeadsController < InheritedResources::Base
   before_filter :resource,          :only => [ :convert, :promote, :reject ]
   before_filter :set_filters,       :only => [ :index, :export ]
   before_filter :export_allowed?,   :only => [ :index ]
-  before_filter :already_assigned?, :only => [ :update ]
 
   prepend_before_filter :manage_campaign_filter_cookie, :only => :index
 
@@ -193,15 +192,6 @@ protected
   def export_allowed?
     if request.format.csv?
       raise CanCan::AccessDenied unless can? :export, current_user
-    end
-  end
-
-  def already_assigned?
-    if !resource.assignee.blank? && resource.assignee != current_user
-      flash[:error] = I18n.t(:lead_already_accepted,
-                             :user => resource.assignee.full_name)
-      redirect_to :back
-      return false
     end
   end
 

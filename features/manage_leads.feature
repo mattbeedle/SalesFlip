@@ -44,6 +44,13 @@ Feature: Manage leads
     Then I should be on the lead's page
     And 1 emails should be delivered to "benjamin.pochhammer@1000jobboersen.de"
 
+  Scenario: editing another user's lead
+    Given I am registered and logged in as annika
+    And Annika has invited Benny
+    And a lead exists with assignee: Benny
+    When I go to the lead's edit page
+    Then I should be on the home page
+
   Scenario: Creating a lead
     Given I am registered and logged in as annika
     And I am on the leads page
