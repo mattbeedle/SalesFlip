@@ -32,8 +32,10 @@
     = simple_fields_for lead do |f|
       .clear
       .a.25= f.input :salutation, :as => :select, :collection => Lead.salutations.map(&:to_s)
-      - if lead.email.blank?
-        .z.75= f.input :email
+      .25= f.input :title, :as => :select, :collection => Lead.titles.map(&:to_s)
+      .z.50= f.input :last_name
+      .clear
+      .a.50= f.input :email
 
     - if current_user.signature.blank?
       .clear

@@ -392,9 +392,9 @@ en:
     - Mr
     - Mrs
     - Ms
-  dear_sir: "Dear Sir"
-  dear_madam: "Dear Madam"
-  dear_miss: "Dear Miss"
+  dear_sir: "Dear Mr."
+  dear_madam: "Dear Mrs."
+  dear_miss: "Dear Ms."
   titles:
     - Dr.
     - Sir
