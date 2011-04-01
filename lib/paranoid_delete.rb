@@ -19,6 +19,7 @@ module ParanoidDelete
 
   def destroy_with_paranoid
     update :deleted_at => Time.now
+    Sunspot.remove!(self) rescue nil
     comments.destroy! if self.respond_to?(:comments)
   end
 end
