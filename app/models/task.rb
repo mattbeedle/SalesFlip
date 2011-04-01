@@ -2,7 +2,6 @@ class Task
   include DataMapper::Resource
   include DataMapper::Timestamps
   include HasConstant::Orm::DataMapper
-  include Permission
   include Activities
   include Assignable
   include ActiveModel::Observing

@@ -17,7 +17,9 @@ en:
   objectives: Objectives
   account: Account
   accounts: Accounts
+  checklist: Checklist
   contacts: Contacts
+  no_information: No Information
   opportunities: Opportunities
   profile: Profile
   login: Login
@@ -591,3 +593,4 @@ en:
   duplicate?: "duplicate?"
   marked_as_duplicate: "marked as duplicate"
   searching_on_company_name: "Searching on company name. Press 'Search' to search everything."
+  lead_is_marked_as_duplicate: "This lead has been marked as a duplicate."

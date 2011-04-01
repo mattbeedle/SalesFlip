@@ -37,8 +37,8 @@ class LeadImport
         values = line.split(deliminator)
         lead = Lead.new(build_attributes(values))
         lead.last_name = 'n/a' if lead.last_name.blank?
-        similar = lead.similar(0.9)
-        similar_accounts = lead.similar_accounts(0.9)
+        similar = lead.similar
+        similar_accounts = lead.similar_accounts
         unless similar.any? || similar_accounts.any?
           if lead.save
             Sunspot.index!(lead)

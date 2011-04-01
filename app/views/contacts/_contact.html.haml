@@ -4,7 +4,7 @@
       = contact.source.present? ? contact.source : t(:no_source)
   %dd
     %strong
-      - if contact.permitted_for?(current_user)
+      - if can? :update, contact
         = link_to contact.listing_name, contact, :id => contact.full_name.to_dom_id
       - else
         = contact.listing_name
@@ -23,7 +23,7 @@
           = raw t(:assigned_ago_by, :time => contact_time, :by => contact.user.username, :for => User.find(contact.assignee_id).full_name)
         - else
           = raw t(:added_ago_by, :time => contact_time, :by => contact.user.username)
-    - if contact.permitted_for?(current_user)
+    - if can? :update, contact
       = link_to contact.listing_name, contact, :id => contact.full_name.to_dom_id
     - else
       = contact.listing_name
@@ -42,6 +42,6 @@
         = raw t(:assigned_ago_by, :time => contact_time, :by => contact.user.username, :for => User.find(contact.assignee_id).full_name)
       - else
         = raw t(:added_ago_by, :time => contact_time, :by => contact.user.username)
-  - if contact.permitted_for?(current_user)
+  - if can? :update, contact
     %span.actions
       = link_to t(:edit), [:edit, contact], :id => "edit_#{dom_id(contact)}"

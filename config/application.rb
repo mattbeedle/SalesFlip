@@ -27,10 +27,12 @@ module Salesflip
     config.autoload_paths += %W( #{config.root}/lib #{config.root}/app/sweepers )
 
     require 'cancan/ext/inherited_resource'
+    require "similar_to"
 
     require 'data_mapper/postgres'
 
     require 'data_mapper/any_of'
+    require 'data_mapper/attribute_cleaner'
     require 'data_mapper/changes'
     require 'data_mapper/collection_extensions'
     require 'data_mapper/multiparameter_attribute_support'

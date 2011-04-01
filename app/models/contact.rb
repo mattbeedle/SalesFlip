@@ -3,7 +3,6 @@ class Contact
   include DataMapper::Timestamps
   include HasConstant::Orm::DataMapper
   include ParanoidDelete
-  include Permission
   include Trackable
   include Activities
   include Sunspot::DataMapper
@@ -52,7 +51,6 @@ class Contact
 
   belongs_to :account, :required => false
   belongs_to :user, :required => true
-  belongs_to :assignee, :model => 'User', :required => false
   belongs_to :lead, :required => false
 
   has n, :tasks, :as => :asset#, :dependent => :destroy
@@ -77,13 +75,9 @@ class Contact
     end
   end
 
-  def self.assigned_to( user_id )
-    any_of({ :assignee_id => user_id }, { :user_id => user_id, :assignee_id => nil })
-  end
-
   def self.exportable_fields
     properties.map { |p| p.name.to_s }.sort.delete_if do |f|
-      f.match(/access|permission|permitted_user_ids|tracker_ids/)
+      f.match(/access|tracker_ids/)
     end
   end
 
@@ -101,11 +95,10 @@ class Contact
   end
 
   def self.create_for( lead, account, options = {} )
-    contact = account.contacts.new :user => lead.updater_or_user, :permission => account.permission,
-      :permitted_user_ids => account.permitted_user_ids
+    contact = account.contacts.new :user => lead.updater_or_user
 
     lead.attributes.each do |key, value|
-      next if %w(identifier id user_id permission permitted_user_ids _sphinx_id created_at updated_at deleted_at tracker_ids updater_id).include?(key.to_s)
+      next if %w(identifier id user_id _sphinx_id created_at updated_at deleted_at tracker_ids updater_id).include?(key.to_s)
       if contact.respond_to?("#{key}=")
         contact.send("#{key}=", value)
       end

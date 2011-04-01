@@ -6,10 +6,10 @@ class DeletedItemsController < ApplicationController
   def index
     @items ||= [
       Campaign.where(:deleted_at.not => nil).entries +
-      Lead.permitted_for(current_user).where(:deleted_at.not => nil).entries +
-      Contact.permitted_for(current_user).where(:deleted_at.not => nil).entries +
-      Account.permitted_for(current_user).where(:deleted_at.not => nil).entries +
-      Comment.permitted_for(current_user).where(:deleted_at.not => nil).entries
+      Lead.where(:deleted_at.not => nil).entries +
+      Contact.where(:deleted_at.not => nil).entries +
+      Account.where(:deleted_at.not => nil).entries +
+      Comment.where(:deleted_at.not => nil).entries
     ].flatten.sort_by(&:deleted_at)
   end
 

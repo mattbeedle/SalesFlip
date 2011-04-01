@@ -4,13 +4,14 @@ class Account
   include DataMapper::Timestamps
   include HasConstant::Orm::DataMapper
   include ParanoidDelete
-  include Permission
   include Trackable
   include Activities
   include Sunspot::DataMapper
   include Assignable
   include ActiveModel::Observing
   include OnlineFields
+
+  extend SimilarTo
 
   property :id, Serial
   property :name, String, required: true
@@ -67,15 +68,9 @@ class Account
     all(assignee_id: user_id) | all(user_id: user_id, assignee_id: nil)
   end
 
-  def self.similar_accounts( name )
-    Account.all(:fields => [:id, :name]).select do |account|
-      name.levenshtein_similar(account.name) > 0.5
-    end
-  end
-
   def self.exportable_fields
     properties.map { |p| p.name.to_s }.sort.delete_if do |f|
-      f.match(/access|permission|permitted_user_ids|tracker_ids/)
+      f.match(/access|tracker_ids/)
     end
   end
 
@@ -94,15 +89,7 @@ class Account
   end
 
   def self.create_for( object, name, options = {} )
-    if options[:permission] == 'Object'
-      permission = object.permission
-      permitted = object.permitted_user_ids
-    else
-      permission = options[:permission] || 'Public'
-      permitted = options[:permitted_user_ids]
-    end
-    account = object.updater_or_user.accounts.build :permission => permission,
-      :name => name, :permitted_user_ids => permitted,
+    account = object.updater_or_user.accounts.build :name => name,
       :account_type => Account.account_types[I18n.in_locale(:en) { Account.account_types.index('Prospect') }], :assignee => object.updater_or_user
     account.save unless options[:just_validate] == true
     account

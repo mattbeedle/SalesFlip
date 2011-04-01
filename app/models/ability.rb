@@ -2,75 +2,65 @@ class Ability
   include CanCan::Ability
 
   def initialize( user )
-    user ||= User.new :role => 'Freelancer'
+    user ||= User.new
+
+    alias_action :view_contact_details, :to => :read
+    alias_action :reject, :to => :update
+    alias_action :convert, :to => :update
+    alias_action :promote, :to => :update
+    alias_action :finish, :to => :update
+    alias_action :next, :to => :read
+    alias_action :profile, :to => :update
+
+    can :manage, Invitation
+    can :duplicate, Lead
 
     case user.role
-    when 'Administrator', 'Service Person'
-      can :manage, :all
-    when 'Sales Person', 'Key Account Manager', 'Sales Team Leader'
-      can :create, :all
-      can :profile, User
-      can :read, User
-      can :read, Contact
-      can :read, Campaign
-      can :read, Invitation
-      can :manage, Task
-      can :read, Search
-      can :read, Opportunity do |opportunity|
-        opportunity && opportunity.permitted_for?(user)
-      end
-      can :update, Opportunity do |opportunity|
-        opportunity && opportunity.permitted_for?(user)
-      end
-      can :create, Opportunity
-      can :update, Opportunity
-      can :next, Lead
-      can :finish, Lead
+      when "Sales Person", "Key Account Manager", "Freelancer"
+        can_manage_assigned(user, Task)
+        can_manage_assigned(user, Lead)
+        can_manage_assigned(user, Opportunity)
+        can_manage_assigned(user, Account)
+        can_manage_assigned(user, Contact)
 
-      if user.role_is?('Sales Team Leader')
-        can :view_unassigned, Lead
-        can :update, Lead do |lead|
-          lead && (lead.assigned_to?(user) || !lead.assignee)
+        if user.role == "Freelancer"
+          cannot :view_contact_details, contactable_models do |instance|
+            !instance.assigned_to?(user)
+          end
         end
-      else
-        can :update, Lead do |lead|
-          lead && lead.assigned_to?(user)
-        end
-      end
 
-      can :reject, Lead do |lead|
-        lead && lead.permitted_for?(user)
-      end
-      can :convert, Lead do |lead|
-        lead && lead.permitted_for?(user)
-      end
-      can :promote, Lead do |lead|
-        lead && lead.permitted_for?(user)
-      end
-      can :read, Lead do |lead|
-        lead && lead.permitted_for?(user)
-      end
-      can :read, Account do |account|
-        account && account.permitted_for?(user)
-      end
-      can :read, Contact do |contact| 
-        contact && contact.permitted_for?(user)
-      end
-      can :update, Account do |account|
-        account && account.permitted_for?(user)
-      end
-      can :update, Contact do |contact|
-        contact && contact.permitted_for?(user)
-      end
-    when 'Freelancer'
-      can :create, User
-      can :profile, User
-      can :read, Lead
-      can :create, Lead
-      can :read, Account
-      can :manage, Task
-      can :read, Contact
-      can :read, Opportunity
+        can :read, User
+        can :update, User do |other_user|
+          user == other_user
+        end
+
+      when "Service Person"
+        can_manage_assigned(user, Task)
+
+        can :manage, [Lead, Account, Contact, Opportunity]
+
+        can :read, User
+        can :update, User do |other_user|
+          user == other_user
+        end
+
+      when "Administrator"
+        can :manage, :all
+
+      when nil
+        can :create, User
+
     end
+  end
+
+  def can_manage_assigned(user, model)
+    can [:create, :read], model
+    can [:update, :destroy], model do |instance|
+      instance.assigned_to?(user)
+    end
+  end
+
+  def contactable_models
+    [Lead, Opportunity, Account, Contact]
   end
 end

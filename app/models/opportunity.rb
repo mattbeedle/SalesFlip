@@ -5,7 +5,6 @@ class Opportunity
   include Assignable
   include ParanoidDelete
   include Activities
-  include Permission
   include Sunspot::DataMapper
 
   property :id, Serial
@@ -24,6 +23,7 @@ class Opportunity
 
   # These 2 provide information on what's going on in Jobboards.
   property :jobboards_assignee, String
+  property :jobboards_url, String
   property :status, String
 
   validates_numericality_of :amount,      :allow_blank => true, :allow_nil => true
@@ -130,6 +130,16 @@ class Opportunity
     end
   end
 
+  def update_stage!
+    case stage.name
+    when "New"
+      self.stage = OpportunityStage.first(name: "Offer Requested")
+    when "Offer Requested"
+      self.stage = OpportunityStage.first(name: "Offer Rework Requested")
+    end
+    save!
+  end
+
   ######################## START OF MQ SPECIFIC UPDATES ########################
 
   attr_accessor :inbound_update
@@ -143,7 +153,9 @@ class Opportunity
     unless inbound_update
       begin
         Messaging::Opportunities.new.publish(self)
-      rescue Bunny::ServerDownError => e
+        update_stage!
+      rescue Exception => e
+        puts e
       end
     else
       @inbound_update = false

@@ -14,9 +14,11 @@ de:
   leads: Leads
   campaign: Kampagne
   campaigns: Kampagnen
+  checklist: Checkliste
   account: Kunde
   accounts: Kunden
   contacts: Kontakte
+  no_information: Keine Information
   opportunities: Verkaufschance
   profile: Profil
   login: Anmelden
@@ -580,3 +582,4 @@ de:
   duplicate?: "Duplikat?"
   marked_as_duplicate: "markiert als Duplikat"
   searching_on_company_name: "Suche nach Unternehmen. Klicke „Suche“ um alles zu durchsuchen."
+  lead_is_marked_as_duplicate: "Dieses Lead ist als Duplikat vermerkt"

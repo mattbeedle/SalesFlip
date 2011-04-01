@@ -8,17 +8,17 @@
       - if activity.subject.deleted_at || activity.subject.is_a?(Task)
         = truncate activity.subject.name, :length => 100, :separator => ' '
       - elsif activity.subject.is_a?(Comment)
-        - if activity.subject.commentable.permitted_for?(current_user)
+        - if can? :read, activity.subject.commentable
           = link_to truncate(activity.subject.name, :length => 100, :separator => ' '), activity.subject.commentable
         - else
           = truncate activity.subject.name, :length => 100, :separator => ' '
       - elsif activity.subject.is_a?(Task)
-        - if activity.subject.asset.permitted_for?(current_user)
+        - if can? :read, activity.subject.asset
           = link_to truncate(activity.subject.name, :length => 100, :separator => ' '), activity.subject.asset
         - else
           = truncate activity.subject.name, :length => 100, :separator => ' '
       - else
-        - if activity.subject.permitted_for?(current_user)
+        - if can? :read, activity.subject
           = link_to truncate(activity.subject.name, :length => 100, :separator => ' '), activity.subject
         - else
           = truncate activity.subject.name, :length => 100, :separator => ' '

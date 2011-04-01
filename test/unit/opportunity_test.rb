@@ -158,6 +158,39 @@ class OpportunityTest < ActiveSupport::TestCase
       @opportunity = Opportunity.new
     end
 
+    context "#outbound_update!" do
+
+      setup do
+        @new = OpportunityStage.make(name: "New")
+        @offer_requested = OpportunityStage.make(name: "Offer Requested")
+        @rework = OpportunityStage.make(name: "Offer Rework Requested")
+      end
+
+      context "when the status is new" do
+
+        setup do
+          @opportunity = Opportunity.make(stage: @new)
+          @opportunity.outbound_update!
+        end
+
+        should "change status to offer requested" do
+          assert_equal "Offer Requested", @opportunity.stage.name
+        end
+      end
+
+      context "when the status is offer requested" do
+
+        setup do
+          @opportunity = Opportunity.make(stage: @offer_requested)
+          @opportunity.outbound_update!
+        end
+
+        should "change status to offer rework requested" do
+          assert_equal "Offer Rework Requested", @opportunity.stage.name
+        end
+      end
+    end
+
     should 'only allow numbers for "amount"' do
       @opportunity.amount = 'asdfewf'
       @opportunity.valid?

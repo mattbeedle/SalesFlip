@@ -4,7 +4,6 @@ class LeadsController < InheritedResources::Base
   before_filter :resource,          :only => [ :convert, :promote, :reject ]
   before_filter :set_filters,       :only => [ :index, :export ]
   before_filter :export_allowed?,   :only => [ :index ]
-  before_filter :already_assigned?, :only => [ :update ]
 
   prepend_before_filter :manage_campaign_filter_cookie, :only => :index
 
@@ -114,7 +113,10 @@ class LeadsController < InheritedResources::Base
 
   def duplicate
     @lead.update! :duplicate => true
-    render :text => "true"
+    respond_to do |format|
+      format.js { render :text => "true" }
+      format.html { redirect_to :back }
+    end
   end
 
   def export
@@ -124,7 +126,7 @@ class LeadsController < InheritedResources::Base
 protected
   def leads_index_cache_key
     @index_cache_key ||= Digest::SHA1.hexdigest([
-      'leads', Lead.for_company(current_user.company).desc(:updated_at).
+      'leads', Lead.desc(:updated_at).
       first.try(:updated_at).try(:to_i), params.flatten.join('-')].join('-'))
   end
 
@@ -175,7 +177,7 @@ protected
 
   def resource
     @lead ||= hook(:leads_resource, self).last
-    @lead ||= Lead.for_company(current_user.company).get(params[:id]) if params[:id]
+    @lead ||= Lead.get(params[:id]) if params[:id]
   end
 
   def begin_of_association_chain
@@ -183,10 +185,6 @@ protected
   end
 
   def build_resource
-    if params[:lead] && (ids = params[:lead][:permitted_user_ids]) &&
-      ids.is_a?(String)
-      params[:lead][:permitted_user_ids] = ids.lines.to_a
-    end
     @lead ||= Lead.new({ :updater => current_user, :user => current_user }.
                        merge!(params[:lead] || {}))
   end
@@ -194,15 +192,6 @@ protected
   def export_allowed?
     if request.format.csv?
       raise CanCan::AccessDenied unless can? :export, current_user
-    end
-  end
-
-  def already_assigned?
-    if !resource.assignee.blank? && resource.assignee != current_user
-      flash[:error] = I18n.t(:lead_already_accepted,
-                             :user => resource.assignee.full_name)
-      redirect_to :back
-      return false
     end
   end
 

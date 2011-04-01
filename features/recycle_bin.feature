@@ -22,16 +22,6 @@ Feature: Recycle Bin
     Then I should be on the root page
     And I should see "Access denied"
 
-  Scenario: Private item (in)visibility
-    Given Matt exists
-    And I am logged in as Matt
-    And a user: "benny" exists
-    And a lead: "erich" exists with user: benny, permission: "Private"
-    And erich has been deleted
-    When I go to the recycle bin page
-    Then I should not see "Erich"
-    And I should not see "Recycle Bin (1)"
-
   Scenario: Restoring a lead
     Given Matt exists
     And I am logged in as Matt

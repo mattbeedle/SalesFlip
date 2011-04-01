@@ -16,10 +16,10 @@ class AccountTest < ActiveSupport::TestCase
       account2 = Account.make(:name => 'CareerWee')
       account3 = Account.make(:name => 'careermee')
       account4 = Account.make(:world_dating)
-      assert_equal 3, Account.similar_accounts('CareerMee').count
-      assert !Account.similar_accounts('CareerMee').include?(account4)
-      assert_equal 1, Account.similar_accounts('World dating').count
-      assert Account.similar_accounts('Universe Dating').include?(account4)
+
+      assert_equal 2, Account.similar_to(Account.new(name: 'CareerMee')).count
+      assert !Account.similar_to(Account.new(name: 'CareerMee')).include?(account4)
+      assert_equal 1, Account.similar_to(Account.new(name: 'World dating')).count
     end
 
     should 'be able to have a parent' do
@@ -50,8 +50,7 @@ class AccountTest < ActiveSupport::TestCase
     should 'know which fields can be exported' do
       Account.properties.map(&:name).each do |field|
         field = field.to_s
-        unless field == 'access' || field == 'permission' ||
-          field == 'permitted_user_ids' || field == 'tracker_ids'
+        unless field == 'access' || field == 'tracker_ids'
           assert Account.exportable_fields.include?(field)
         else
           assert !Account.exportable_fields.include?(field)
@@ -145,34 +144,6 @@ class AccountTest < ActiveSupport::TestCase
           assert_equal 1, @benny.accounts.count
         end
       end
-
-      context 'when lead permission is specified' do
-        setup do
-          @lead.update :permission => 'Private'
-          Account.create_for(@lead, 'CareerMee', :permission => 'Object')
-        end
-
-        should 'create account with the same permission as the lead' do
-          assert_equal 1, Account.count
-          assert_equal 'Private', Account.first.permission
-        end
-      end
-
-      context 'when custom permission is specified' do
-        should 'create account with the custom permissions' do
-          Account.create_for(@lead, 'CareerMee', :permission => 'Shared', :permitted_user_ids => [@benny.id])
-          assert_equal 1, Account.count
-          assert_equal 'Shared', Account.first.permission
-          assert_equal [@benny.id], Account.first.permitted_user_ids
-        end
-      end
-
-      context 'when account is invalid' do
-        should 'return an invalid account' do
-          @account = Account.create_for(@lead, 'CareerMee', :permission => 'Shared', :permitted_user_ids => [])
-          assert !@account.valid?
-        end
-      end
     end
     
     context 'for_company' do
@@ -208,33 +179,6 @@ class AccountTest < ActiveSupport::TestCase
       @user = User.make
     end
     
-    should 'always store permitted user ids as BSON::ObjectIds' do
-      @account.permitted_user_ids = [@user.id.to_s]
-      assert_equal [@user.id], @account.permitted_user_ids
-      user = User.make
-      @account.permitted_user_ids = [user.id]
-      assert_equal [user.id], @account.permitted_user_ids
-    end
-    
-    should 'not be able to assign to another user if the permission is private' do
-      @account.save
-      @account.update :permission => 'Private'
-      assert @account.valid?
-      @account.assignee = @user
-      assert !@account.valid?
-      assert @account.errors[:permission].include?('Cannot assign a private account to another user, please change the permissions first')
-    end
-    
-    should 'not be able to assign to another user if the permission is shared and the user is not in the permitted users list' do
-      @account.save
-      user = User.make
-      @account.update :permission => 'Shared', :permitted_user_ids => [user.id]
-      assert @account.valid?
-      @account.assignee = @user
-      assert !@account.valid?
-      assert_includes @account.errors[:permission], 'Cannot assign a shared account to a user it is not shared with. Please change the permissions first'
-    end
-
     should 'be able to get all related leads' do
       contact = Contact.make(:account => @account)
       lead = Lead.make(:contact => contact)
@@ -305,40 +249,6 @@ class AccountTest < ActiveSupport::TestCase
       assert a.errors[:email]
     end
 
-    context 'permitted_for' do
-      setup do
-        @annika = User.make(:annika)
-        @benny = User.make(:benny)
-        @careermee = Account.make(:careermee, :user => @annika, :permission => 'Public')
-        @world_dating = Account.make(:world_dating, :user => @benny, :permission => 'Public')
-      end
-
-      should 'return all public contacts' do
-        assert Account.permitted_for(@annika).include?(@careermee)
-        assert Account.permitted_for(@annika).include?(@world_dating)
-      end
-
-      should 'return all contacts belonging to the user' do
-        @careermee.update :permission => 'Private'
-        assert Account.permitted_for(@annika).include?(@careermee)
-      end
-
-      should 'NOT return private contacts belonging to another user' do
-        @world_dating.update :permission => 'Private'
-        assert !Account.permitted_for(@annika).include?(@world_dating)
-      end
-
-      should 'return shared contacts where the user is in the permitted users list' do
-        @world_dating.update :permission => 'Shared', :permitted_user_ids => [@annika.id]
-        assert Account.permitted_for(@annika).include?(@world_dating)
-      end
-
-      should 'NOT return shared contacts where the user is not in the permitted users list' do
-        @world_dating.update :permission => 'Shared', :permitted_user_ids => [@benny.id]
-        assert !Account.permitted_for(@annika).include?(@world_dating)
-      end
-    end
-
     context 'activity logging' do
       setup do
         @account.save
@@ -373,12 +283,6 @@ class AccountTest < ActiveSupport::TestCase
         activities = @account.activities.map &:action
         assert_includes activities, 'Restored'
       end
-    end
-
-    should 'require at least one permitted user if permission is "Shared"' do
-      @account.permission = 'Shared'
-      assert !@account.valid?
-      assert @account.errors[:permitted_user_ids]
     end
 
     should 'require name' do

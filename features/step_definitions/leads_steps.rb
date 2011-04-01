@@ -47,26 +47,9 @@ Given /^I login as #{capture_model}$/ do |user|
   click_link_or_button 'user_submit'
 end
 
-Given /^erich is shared with annika$/ do
-  lead = Lead.where(:first_name => 'Erich').first
-  user = User.where(:email => 'annika.fleischer@1000jobboersen.de').first
-  lead.update_attributes :permitted_user_ids => [user.id], :permission => 'Shared'
-end
-
-Given /^markus is not shared with annika$/ do
-  lead = Lead.where(:first_name => 'Markus').first
-  lead.update_attributes :permitted_user_ids => [lead.user_id], :permission => 'Shared'
-end
-
 Given /^inspect #{capture_model}$/ do |model|
   m = model!(model)
   puts m.inspect
-end
-
-Given /^the lead is shared with the other user$/ do
-  lead = model!('lead')
-  user = model!('user')
-  lead.update_attributes :permission => 'Shared', :permitted_user_ids => [user.id]
 end
 
 Given /^#{capture_model} accepts the lead$/ do |model|
