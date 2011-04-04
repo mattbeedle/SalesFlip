@@ -17,6 +17,10 @@
     .clear
     .100= form.input :website
 
+%h3.toggler.open= t(:assignee)
+.toggle
+  %fieldset
+    .25.a= form.input :assignee_id, :collection => current_user.company.users.asc(:email).map {|u| [u.email, u.id] }
 
 .clear
 
