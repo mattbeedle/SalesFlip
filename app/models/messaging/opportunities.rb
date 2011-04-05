@@ -34,6 +34,7 @@ module Messaging #:nodoc:
     # @return [ Hash ] The attributes to send.
     def attributes(opportunity)
       contact = opportunity.contact
+      assignee = opportunity.assignee
       attrs = opportunity.attributes.except(
         :assignee_id, :updater_id, :contact_id, :status, :created_at, :updated_at
       ).tap do |attr|
@@ -48,6 +49,7 @@ module Messaging #:nodoc:
         attr[:company] = contact.account.name
         attr[:contact] = contact.name
         attr[:contact_email] = contact.email
+        attr[:salesperson_email] = assignee.email
       end
     end
   end

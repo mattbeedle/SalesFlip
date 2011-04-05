@@ -55,5 +55,9 @@ class OpportunityTest < ActiveSupport::TestCase
     should "include attachments" do
       assert_equal [ @attachment.attachment.url ], @attributes[:attachments]
     end
+
+    should "include salesperson email" do
+      assert_equal @opportunity.assignee.email, @attributes[:salesperson_email]
+    end
   end
 end
