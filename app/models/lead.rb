@@ -114,7 +114,8 @@ class Lead
         where
           assignee_id is null and
           status = #{status.flag_map.invert["New"]} and
-          deleted_at is null
+          deleted_at is null and
+          (source is null OR source <> #{source.flag_map.invert["Website"]})
         order by created_at desc
         limit 1
       )
