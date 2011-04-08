@@ -242,6 +242,19 @@ Feature: Manage leads
     And a task should not exist
     And I should not see "Call to get offer details" within "#main"
 
+  Scenario: Adding a task assigned to another user
+    Given I am registered and logged in as annika
+    And a lead exists with user: annika
+    And a user: "benny" exists with email: "benny@test.local"
+    And I am on the lead's page
+    And I follow "add_task"
+    And I fill in "task_name" with "Call to get offer details"
+    And I select "benny@test.local" from "Assignee"
+    And I select "Call" from "task_category"
+    When I press "task_submit"
+    Then I should be on the lead's page
+    Then there should be 1 task assigned to user: "benny"
+
   Scenario: Rejecting a lead
     Given I am registered and logged in as annika
     And Annika has invited Benny

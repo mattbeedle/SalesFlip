@@ -2,8 +2,13 @@ module Assignable
   extend ActiveSupport::Concern
 
   included do
-    belongs_to :assignee, :model => 'User', :required => false,
-      :default => lambda { |r,_| r.user }
+    belongs_to :assignee, :model => 'User', :required => false
+
+    # We need to default on the property, not on the association, since when
+    # setting the assignee_id via a form the assignee association will be
+    # blank, and thus over-ride the id specified.
+    property :assignee_id, Integer,
+      :default => ->(r,_) { r.user_id }
   end
 
   module ClassMethods

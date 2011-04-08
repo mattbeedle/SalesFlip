@@ -35,3 +35,8 @@ end
 Then /^(\d+) tasks should have been created$/ do |count|
   assert_equal count.to_i, Task.count
 end
+
+Then /^there should be (\d+) tasks? assigned to #{capture_model}$/ do |count, user|
+  user = model!(user)
+  Task.for(user).count.should == count.to_i
+end
