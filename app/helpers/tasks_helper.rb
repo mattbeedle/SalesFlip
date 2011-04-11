@@ -19,4 +19,18 @@ module TasksHelper
     print << "</small>"
     print.html_safe
   end
+
+  def task_cache_key(task)
+    keys = [
+      task.id,
+      task.updated_at,
+      task.asset_id,
+      task.asset_updated_at,
+      action_is('show'),
+      can?(:update, task),
+      task.assigned_to?(current_user)
+    ]
+
+    "task-#{keys.join("-")}"
+  end
 end
