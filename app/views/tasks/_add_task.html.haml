@@ -1,7 +1,7 @@
 %h3.grad= t(:tasks)
 .tasks
-  - if object.tasks.for(current_user).incomplete.any?
-    = render :partial => 'tasks/task', :collection => object.tasks.for(current_user).incomplete
+  - if object.tasks.incomplete.any?
+    = render :partial => 'tasks/task', :collection => object.tasks.incomplete
 
   #new_task_form(style="display: none")
     = simple_form_for object.tasks.new(:assignee => current_user) do |form|
