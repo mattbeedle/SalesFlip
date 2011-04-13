@@ -32,7 +32,7 @@ module Administration
 
     def assignee
       Lead.all(:id => params[:leads]).update!(:assignee_id => params[:assignee_id])
-      Task.all(:lead_id => params[:leads]).update!(:assignee_id => params[:assignee_id])
+      Task.incomplete.all(:lead_id => params[:leads]).update!(:assignee_id => params[:assignee_id])
       redirect_to request.referrer
     end
 
