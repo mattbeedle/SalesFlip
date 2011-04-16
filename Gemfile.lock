@@ -56,11 +56,11 @@ GIT
 
 GIT
   remote: git://github.com/durran/minion.git
-  revision: 33f68f64ffdb655f4f2ac6df6f16463161ccaf07
+  revision: f14de75fa4bedcf7a6c82b47d3403eec9d25724d
   specs:
     minion (0.2.0)
-      amqp (>= 0.7.1)
-      bunny (>= 0.6.0)
+      amqp (~> 0.7.1)
+      bunny (~> 0.6)
       json (>= 1.2.0)
 
 GIT

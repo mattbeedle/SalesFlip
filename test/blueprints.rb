@@ -96,6 +96,10 @@ Lead.blueprint(:erich) do
   first_name { 'Erich' }
   last_name { 'Feldmeier' }
   user { User.make(:annika) }
+  salutation { 'Mr' }
+  phone { '049898390' }
+  email { 'e.feldermeier@yahoo.de' }
+  job_title { 'asldkfj' }
 end
 
 Lead.blueprint(:kerstin) do

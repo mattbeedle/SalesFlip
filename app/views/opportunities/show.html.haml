@@ -3,10 +3,19 @@
 
 %h3= t(:jobboards_status)
 
-%ul
-  %li= @opportunity.jobboards_assignee || t(:no_information)
-  %li= @opportunity.jobboards_url ? link_to(t(:checklist), @opportunity.jobboards_url, target: "_new") : t(:no_information)
-  %li= @opportunity.status || t(:no_information)
+%table
+  %tr
+    %td= t(:assignee)
+    %td= @opportunity.jobboards_assignee || t(:no_information)
+  %tr
+    %td= t(:checklist)
+    %td= @opportunity.jobboards_url ? link_to(t(:checklist), @opportunity.jobboards_url, target: '_new') : t(:no_information)
+  %tr
+    %td= t(:status)
+    %td= @opportunity.status || t(:no_information)
+  %tr
+    %td= t(:due_at)
+    %td= @opportunity.due_at ? l(@opportunity.due_at, format: :long) : ''
 
 %h3= t(:attachments)
 - if @opportunity.attachments.any?

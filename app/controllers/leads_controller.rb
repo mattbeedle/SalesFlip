@@ -4,6 +4,7 @@ class LeadsController < InheritedResources::Base
   before_filter :resource,          :only => [ :convert, :promote, :reject ]
   before_filter :set_filters,       :only => [ :index, :export ]
   before_filter :export_allowed?,   :only => [ :index ]
+  before_filter :can_be_converted?, :only => [ :convert, :promote ]
 
   prepend_before_filter :manage_campaign_filter_cookie, :only => :index
 
@@ -93,9 +94,9 @@ class LeadsController < InheritedResources::Base
     @lead.updater_id = current_user.id
     @account, @contact, @opportunity = @lead.promote!(
       params[:account_id].blank? ? params[:account_name] : params[:account_id], params)
-    if @account.nil? && @contact.valid? && !@contact.new_record?
+    if @account.nil? && @contact.valid? && @opportunity.valid? && !@contact.new_record?
       redirect_to contact_path(@contact)
-    elsif @account.valid? && @contact.valid? & !@contact.new_record?
+    elsif @account.valid? && @contact.valid? && @opportunity.valid? && !@contact.new_record?
       redirect_to account_path(@account)
     else
       @opportunity.attachments.build if @opportunity.attachments.blank?
@@ -210,6 +211,15 @@ protected
       cookies.delete(:lead_campaign_filter)
     else
       cookies.permanent[:lead_campaign_filter] = params[:campaign]
+    end
+  end
+
+  def can_be_converted?
+    @lead.status = 'Converted'
+    unless @lead.valid?
+      redirect_to edit_lead_path(@lead, return_to: convert_lead_path(@lead),
+                                 convert_fields: true)
+      return false
     end
   end
 end

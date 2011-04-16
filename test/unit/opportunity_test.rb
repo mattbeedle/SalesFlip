@@ -95,7 +95,6 @@ class OpportunityTest < ActiveSupport::TestCase
         opportunity = Opportunity.create_for(@contact, :opportunity => { :stage =>
           OpportunityStage.first, :budget => 2000 })
         assert_equal 0, Opportunity.count
-        assert opportunity.errors.blank?
       end
     end
 
@@ -169,8 +168,8 @@ class OpportunityTest < ActiveSupport::TestCase
       context "when the status is new" do
 
         setup do
-          @opportunity = Opportunity.make(stage: @new)
-          @opportunity.outbound_update!
+          @opportunity = Opportunity.make_unsaved(stage: @new, contact: @contact)
+          @opportunity.save
         end
 
         should "change status to offer requested" do
@@ -181,8 +180,9 @@ class OpportunityTest < ActiveSupport::TestCase
       context "when the status is offer requested" do
 
         setup do
-          @opportunity = Opportunity.make(stage: @offer_requested)
-          @opportunity.outbound_update!
+          @opportunity = Opportunity.make_unsaved(stage: @offer_requested,
+                                                  contact: @contact)
+          @opportunity.save
         end
 
         should "change status to offer rework requested" do

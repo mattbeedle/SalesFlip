@@ -331,6 +331,7 @@ en:
   #--------------------------------------------------------------
   # Leads
   #--------------------------------------------------------------
+  convert_lead_required_fields: The following lead information must be filled in before you can convert
   lead_already_accepted: This lead was just accepted by %{user}, you can no longer accept it
   add_lead: Add Lead
   update_lead: Update Lead

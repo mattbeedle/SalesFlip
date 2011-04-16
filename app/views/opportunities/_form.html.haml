@@ -4,8 +4,6 @@
   .clear
   .25.a= form.input :stage_id, :collection => current_user.company.opportunity_stages.not_deleted.ordered, :include_blank => false
   .25= datepicker_for(form, :close_on)
-  .25= form.input :amount
-  .25.z= form.input :discount
   .clear
   - if !defined?(convert) || (defined?(convert) && convert == false)
     .50.a= form.input :contact_id, :collection => Contact.for_company(current_user.company).sort_by(&:name).map { |c| [c.name, c.id] }

@@ -46,10 +46,17 @@ module Messaging #:nodoc:
           opportunity.comments.inject([]) do |comments, comment|
             comments << comment.text
           end
-        attr[:company] = contact.account.name
-        attr[:contact] = contact.name
-        attr[:contact_email] = contact.email
-        attr[:salesperson_email] = assignee.email
+
+        attr[:contact] = { 'first_name' => contact.first_name,
+                           'last_name' => contact.last_name,
+                           'phone' => contact.phone || contact.mobile,
+                           'salutation' => contact.salutation,
+                           'job_title' => contact.job_title,
+                           'email' => contact.email,
+                           'id' => contact.id }
+
+        attr[:company] = contact.account.name if contact.account
+        attr[:salesperson_email] = assignee.email if assignee
       end
     end
   end

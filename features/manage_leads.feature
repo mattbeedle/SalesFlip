@@ -272,6 +272,8 @@ Feature: Manage leads
     And I am on the lead's page
     When I follow "Convert"
     And I fill in "account_name" with "World Dating"
+    And I fill in "Title" with "an opportunity"
+    And I fill in "Budget" with "1000"
     And I press "convert"
     Then I should be on the account page
     And I should see "World Dating"
@@ -289,8 +291,8 @@ Feature: Manage leads
     And a lead: "erich" exists with user: benny, assignee: Annika, status: "Contacted"
     And I am on the lead's page
     When I follow "Convert"
-    And I fill in "account_name" with "World Dating"
-    And I fill in "opportunity_title" with "A great opportunity"
+    And I fill in "Account Name" with "World Dating"
+    And I fill in "Title" with "A great opportunity"
     And I fill in "Budget" with "2000"
     And I attach the file "test/support/AboutStacks.pdf" to "Attachment"
     And I press "convert"
@@ -303,9 +305,9 @@ Feature: Manage leads
     And a lead: "erich" exists with user: Annika, assignee: Annika, status: "Contacted"
     And I am on the lead's page
     When I follow "Convert"
-    And I fill in "account_name" with "World Dating"
-    And I fill in "opportunity_title" with "A great opportunity"
-    And I fill in "opportunity_amount" with "asdfdsafs"
+    And I fill in "Account Name" with "World Dating"
+    And I fill in "Title" with "A great opportunity"
+    And I fill in "Budget" with "asdfdsafs"
     And I press "convert"
     Then I should be on the lead's promote page
     And 0 accounts should exist
@@ -319,6 +321,8 @@ Feature: Manage leads
     And I am on the lead's page
     When I follow "Convert"
     And I select "CareerMee" from "account_id"
+    And I fill in "Title" with "A great opportunity"
+    And I fill in "Budget" with "1000"
     And I press "convert"
     Then I should be on the account page
     And I should see "CareerMee"
@@ -333,6 +337,8 @@ Feature: Manage leads
     And contact: "florian" exists with email: "erich.feldmeier@gmail.com", account: careermee
     And I am on the lead's page
     When I follow "Convert"
+    And I fill in "Title" with "a great opportunity"
+    And I fill in "Budget" with "1000"
     And I press "convert"
     Then I should be on the account page
     And I should see "CareerMee"
@@ -347,17 +353,6 @@ Feature: Manage leads
     And I press "convert"
     Then I should be on the contact's page
     And 1 contacts should exist
-
-  Scenario: Converting a lead with a blank email when a contact already exists with a blank email
-    Given I am registered and logged in as annika
-    And a lead exists with user: annika, email: "", assignee: Annika, status: "Contacted"
-    And account: "careermee" exists with user: annika
-    And contact: "florian" exists with email: "", account: careermee
-    And I am on the lead's page
-    When I follow "Convert"
-    Then I should be on the lead's convert page
-    And I should not see "already exists. Press convert to add this lead to that contact"
-    And I should see "Account Name"
 
   Scenario: Convert page when converting to an existing account
     Given I am registered and logged in as annika
@@ -386,6 +381,8 @@ Feature: Manage leads
     And contact: "florian" exists with email: "erich.feldmeier@gmail.com", account: careermee
     And I am on the lead's page
     When I follow "Convert"
+    And I fill in "Title" with "A great opportunity"
+    And I fill in "Budget" with "1000"
     And I press "Convert Lead"
     And I go to the lead's page
     Then I should see "This lead was converted by annika.fleischer"

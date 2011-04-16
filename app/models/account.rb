@@ -43,6 +43,11 @@ class Account
 
   before :create,     :set_identifier
 
+  def all_comments
+    Comment.where(account_id: self.id, :contact_id => contacts.map(&:id),
+                  lead_id: contacts.map(&:leads).flatten.map(&:id))
+  end
+
   def self.for_company(company)
     all(:user_id => company.users.map(&:id))
   end

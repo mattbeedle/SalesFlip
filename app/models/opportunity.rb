@@ -25,13 +25,14 @@ class Opportunity
   property :jobboards_assignee, String
   property :jobboards_url, String
   property :status, String
+  property :due_at, DateTime
 
   validates_numericality_of :amount,      :allow_blank => true, :allow_nil => true
   validates_numericality_of :probability, :allow_blank => true, :allow_nil => true
   validates_numericality_of :discount,    :allow_blank => true, :allow_nil => true
-  validates_numericality_of :budget, :allow_blank => false, :allow_nil => false
+  validates_numericality_of :budget,      :allow_blank => false, :allow_nil => false
 
-  validates_presence_of :contact
+  validates_presence_of :contact, :title
 
   attr_accessor :do_not_notify
 
@@ -42,6 +43,8 @@ class Opportunity
   has n, :comments, :as => :commentable#, :dependent => :delete_all
   has n, :tasks, :as => :asset#, :dependent => :delete_all
   has n, :attachments, :as => :subject
+
+  after :save, :outbound_update!
 
   def self.for_company(company)
     all(:user_id => company.users.map(&:id))
@@ -116,7 +119,7 @@ class Opportunity
     attributes = options[:opportunity] || {}
     opportunity = contact.opportunities.new attributes.merge(:user => contact.user,
       :assignee => contact.assignee)
-    opportunity.save if opportunity.title.present? && opportunity.valid? && contact.valid?
+    opportunity.save
     opportunity
   end
 
@@ -151,12 +154,8 @@ class Opportunity
   #   request.outbound_update!
   def outbound_update!
     unless inbound_update
-      begin
         Messaging::Opportunities.new.publish(self)
         update_stage!
-      rescue Exception => e
-        puts e
-      end
     else
       @inbound_update = false
     end

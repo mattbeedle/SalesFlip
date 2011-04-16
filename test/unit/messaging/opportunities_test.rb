@@ -24,12 +24,32 @@ class OpportunityTest < ActiveSupport::TestCase
       assert_equal @account.name, @attributes[:company]
     end
 
-    should "include contact name" do
-      assert_equal @contact.full_name, @attributes[:contact]
+    should "include contact first name" do
+      assert_equal @contact.first_name, @attributes[:contact]['first_name']
+    end
+
+    should 'include contact last name' do
+      assert_equal @contact.last_name, @attributes[:contact]['last_name']
+    end
+
+    should 'include contact phone' do
+      assert_equal @contact.phone, @attributes[:contact]['phone']
+    end
+
+    should 'include contact salutation' do
+      assert_equal @contact.salutation, @attributes[:contact]['salutation']
+    end
+
+    should 'include contact job title' do
+      assert_equal @contact.job_title, @attributes[:contact]['job_title']
+    end
+
+    should 'include contact id' do
+      assert_equal @contact.id, @attributes[:contact]['id']
     end
 
     should "include contact email" do
-      assert_equal @contact.email, @attributes[:contact_email]
+      assert_equal @contact.email, @attributes[:contact]['email']
     end
 
     should "exclude created timestamps" do

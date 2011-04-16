@@ -13,6 +13,7 @@ class EmailReader
     imap.disconnect
   end
 
+  # TODO why the fuck do I have to call comment.reload ?!
   def self.parse_email( email )
     if user = find_user_from(email)
       unless target = find_target(email)

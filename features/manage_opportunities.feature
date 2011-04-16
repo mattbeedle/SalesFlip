@@ -10,18 +10,15 @@ Feature: Manage Opportunities
     When I follow "new"
     And I fill in "Title" with "An opportunity"
     And I select "prospecting" from "Stage"
-    And I fill in "Amount" with "1000"
-    And I fill in "Discount" with "11"
     And I fill in "Budget" with "2000"
     And I attach the file "test/support/AboutStacks.pdf" to "Attachment"
     And I select "Florian Behn" from "Contact"
     And I press "Create Opportunity"
     Then I should be on the opportunities page
-    And 1 opportunities should exist with title: "An opportunity", amount: 1000, discount: 11
+    And 1 opportunities should exist with title: "An opportunity", budget: 2000
     And Annika should have 1 opportunities
     And Annika should have 1 assigned opportunities
     And I should see "An opportunity"
-    And I should see "11"
     # FIXME: attachments not working in features
     # And I should see "aboutstacks.pdf"
     And I should see "Prospecting"
@@ -126,8 +123,9 @@ Feature: Manage Opportunities
 
   Scenario: Adding a task to an unassigned opportunity
     Given I am registered and logged in as annika
+    And a contact exists
     And Annika has invited Benny
-    And an opportunity exists with user: Benny, assignee: nil
+    And an opportunity exists with user: Benny, assignee: nil, contact: contact
     And I am on the opportunity's page
     And all emails have been delivered
     And I follow "add_task"

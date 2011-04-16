@@ -1,4 +1,5 @@
 = error_messages_for @account
+= error_messages_for @opportunity
 
 = form_tag promote_lead_path(@lead), :method => :put, :multipart => true do
   - if @contact && !@contact.new_record?
@@ -14,9 +15,9 @@
         .string
           %label{ :for => 'account_id' }= t('simple_form.labels.account_id')
           = select_tag :account_id, options_for_select(Account.all.asc(:name).map {|a| [a.name, a.id] }, params[:account_id]), :include_blank => true
-    %h3= t(:opportunity)
-    = simple_fields_for @opportunity do |opportunity_form|
-      = render :partial => 'opportunities/form', :locals => { :form => opportunity_form, :convert => true, :buttons => false }
+  %h3= t(:opportunity)
+  = simple_fields_for @opportunity do |opportunity_form|
+    = render :partial => 'opportunities/form', :locals => { :form => opportunity_form, :convert => true, :buttons => false }
   = submit_tag t(:convert_lead), :id => 'convert'
   = t(:or)
   = link_to t(:cancel), :back

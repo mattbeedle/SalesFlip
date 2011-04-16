@@ -69,6 +69,9 @@ class Lead
   has n, :tasks, :as => :asset#, :dependent => :delete_all
   has n, :emails, :as => :commentable#, :dependent => :delete_all
 
+  validates_presence_of :salutation, :phone, :job_title, :email,
+    :if => lambda { |l| l.status_is?('Converted') }
+
   validates_with_block :company do
     if duplicate_check
       if similar.any? || similar_accounts.any?
@@ -160,31 +163,39 @@ class Lead
   def promote!( account_name, options = {} )
     @recently_converted = true
     if email.present? && (contact = Contact.first(:email => email))
-      self.attributes = {:status => 'Converted', :contact_id => contact.id}
-      save
-      if contact.account.blank? && !account_name.blank?
-        account = Account.find_or_create_for(self, account_name, options)
-        contact.update :account => account if account.valid?
+      self.attributes = { :status => 'Converted', :contact_id => contact.id }
+      opportunity = Opportunity.create_for(contact, options)
+      if opportunity.valid?
+        contact.update_attributes salutation: salutation, last_name: last_name,
+          email: email, job_title: job_title, phone: phone
+        save
+        if contact.account.blank? && !account_name.blank?
+          account = Account.find_or_create_for(self, account_name, options)
+          contact.update :account => account if account.valid?
+        end
+      else
+        return contact.account, contact, opportunity.reload
       end
     else
-      opportunity_provided = options[:opportunity].present? &&
-        options[:opportunity][:title].present?
-
-      if opportunity_provided
-        options.merge!(:just_validate => true)
+      opportunity = Opportunity.new(
+        options[:opportunity].merge(contact: Contact.new, user: user))
+      if opportunity.valid?
+        account = Account.find_or_create_for(self, account_name, options)
+        contact = Contact.create_for(self, account, options)
+        opportunity = Opportunity.create_for(contact, options)
+      else
+        account = Account.new(name: account_name)
+        contact = account.contacts.build
       end
 
-      account = Account.find_or_create_for(self, account_name, options)
-      contact = Contact.create_for(self, account, options)
-      opportunity = Opportunity.create_for(contact, options)
+      [account, contact, opportunity].each(&:valid?)
 
-      if [account, contact].all?(&:valid?) && (!opportunity_provided || opportunity.valid?)
+      if [account, contact, opportunity].all?(&:valid?)
         self.attributes = { status: 'Converted', contact_id: contact.id }
         save
       end
-      opportunity.errors.clear unless opportunity_provided
     end
-    return account || contact.account, contact, opportunity
+    return contact.account || account, contact, opportunity.reload
   end
 
   def reject!(attributes = {})

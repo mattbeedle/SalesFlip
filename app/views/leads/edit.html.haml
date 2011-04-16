@@ -1,2 +1,17 @@
 = simple_form_for @lead do |form|
-  = render :partial => 'form', :locals => { :form => form }
+  - unless params[:convert_fields]
+    = render :partial => 'form', :locals => { :form => form }
+  - else
+    = t(:convert_lead_required_fields)
+    %fieldset
+      = hidden_field_tag :return_to, params[:return_to] if params[:return_to]
+      - if @lead.errors[:salutation]
+        .25= form.input :salutation, collection: Lead.salutations, :required => true
+      - if @lead.errors[:email]
+        .25= form.input :email, :required => true
+      - if @lead.errors[:phone]
+        .25= form.input :phone, :required => true
+      - if @lead.errors[:job_title]
+        .25= form.input :job_title, :required => true
+    .act.pad
+      = form.button :submit
