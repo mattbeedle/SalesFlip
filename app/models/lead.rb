@@ -165,7 +165,7 @@ class Lead
     if email.present? && (contact = Contact.first(:email => email))
       self.attributes = { :status => 'Converted', :contact_id => contact.id }
       opportunity = Opportunity.create_for(contact, options)
-      if opportunity.valid?
+      if !opportunity.new_record? && opportunity.reload.valid?
         contact.update_attributes salutation: salutation, last_name: last_name,
           email: email, job_title: job_title, phone: phone
         save

@@ -143,6 +143,10 @@ class Opportunity
     save!
   end
 
+  def complete=(complete)
+    self.stage = OpportunityStage.first(name: 'Offer Sent')
+  end
+
   ######################## START OF MQ SPECIFIC UPDATES ########################
 
   attr_accessor :inbound_update
