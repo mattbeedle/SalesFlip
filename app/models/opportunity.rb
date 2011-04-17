@@ -158,8 +158,12 @@ class Opportunity
   #   request.outbound_update!
   def outbound_update!
     unless inbound_update
+      begin
         Messaging::Opportunities.new.publish(self)
         update_stage!
+      rescue StandardError => e
+        puts e
+      end
     else
       @inbound_update = false
     end
