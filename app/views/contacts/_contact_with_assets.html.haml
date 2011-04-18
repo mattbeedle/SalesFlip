@@ -1,6 +1,6 @@
 .contact_with_assets
   %h3.toggler.open
-    = contact.full_name
+    = link_to contact.full_name, contact
     - if contact.phone.present? || contact.department.present?
       %small
         - info = []
@@ -72,15 +72,9 @@
     -#----------------------------------------------------------------------
     -# Comments for Contact
     -#----------------------------------------------------------------------
-    - if contact.comments.any?
-      - contact.comments.sorted.each do |comment|
+    - if contact.comments_including_leads.any?
+      - contact.comments_including_leads.desc(:created_at).sorted.each do |comment|
         = render :partial => 'comments/inline_comment', :locals => { :comment => comment }
-      - if !contact.lead_id.blank?
-        - contact.lead.comments.sorted.each do |comment|
-          = render :partial => 'comments/inline_comment', :locals => { :comment => comment }
-        - if !contact.lead_id.blank?
-          - contact.lead.comments.sorted.each do |comment|
-            = render :partial => 'comments/inline_comment', :locals => { :comment => comment }
       .add-comment
         = simple_form_for @comment || Comment.new, :html => { :multipart => true } do |form|
           = hidden_field_tag :return_to, request.fullpath
