@@ -155,6 +155,8 @@ Feature: Manage accounts
     Given I am registered and logged in as annika
     And account: "careermee" exists with user: annika, name: "CareerMee"
     And a contact exists with account: CareerMee, first_name: "Joe", last_name: "Marley"
+    And a lead exists with contact: contact
+    And a comment exists with text: "a lead comment", commentable: lead
     And I am on the dashboard page
     And I follow "accounts"
     When I follow "careermee"
@@ -162,6 +164,7 @@ Feature: Manage accounts
     And I should be on the account page
     And a new "Viewed" activity should have been created for "Account" with "name" "CareerMee"
     And I should see "Joe Marley"
+    And I should see "a lead comment"
 
   Scenario: Viewing an account with a deleted contact
     Given I am registered and logged in as annika
