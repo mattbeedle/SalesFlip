@@ -296,10 +296,9 @@ class LeadTest < ActiveSupport::TestCase
         @lead = Lead.get(@lead.id)
         @lead.update_attributes salutation: 'Mr', job_title: 'a', phone: 'b',
           email: 'test@test.com'
-        stage = OpportunityStage.make
         @lead.promote!('A new company',
                        opportunity: { title: 'test', budget: 1000,
-                                      stage_id: stage.id })
+                                      stage: 'New' })
 
 
         actions = @lead.activities.map &:action
@@ -309,7 +308,7 @@ class LeadTest < ActiveSupport::TestCase
       should 'not log an update activity when converted' do
         @lead = Lead.get(@lead.id)
         @lead.promote!('A company',
-                       opportunity: { title: 'test', stage: @stage, budget: 1000 })
+                       opportunity: { title: 'test', stage: 'New', budget: 1000 })
 
         actions = @lead.activities.map &:action
         refute_includes actions, 'Updated'
@@ -349,7 +348,6 @@ class LeadTest < ActiveSupport::TestCase
     context 'promote!' do
       setup do
         @lead.save
-        @stage = OpportunityStage.make
       end
 
       should 'update the contact attributes if the contact already exists' do
@@ -357,7 +355,7 @@ class LeadTest < ActiveSupport::TestCase
         @lead.update_attributes last_name: 'test', email: 'test@test.com',
           job_title: 'a job title', phone: '999',  salutation: 'Ms'
         @lead.promote!('', opportunity: { title: 'test', budget: 1000,
-                                          stage: @stage })
+                                          stage: 'New' })
         assert_equal 'test', contact.reload.last_name
         assert_equal 'a job title', contact.reload.job_title
         assert_equal '999', contact.reload.phone
@@ -367,7 +365,7 @@ class LeadTest < ActiveSupport::TestCase
       should 'create a new account (account_type: "Prospect") and contact when a new account is specified' do
         @lead.promote!('Super duper company',
                        opportunity: { title: 'test', budget: 1000,
-                                      stage: @stage })
+                                      stage: 'New' })
 
         account = Account.first(
           :name => 'Super duper company',
@@ -382,7 +380,7 @@ class LeadTest < ActiveSupport::TestCase
 
       should 'change the lead status to "converted"' do
         @lead.promote!('A company',
-                       opportunity: { stage: @stage, title: 'title',
+                       opportunity: { stage: 'New', title: 'title',
                                       budget: 1000 })
         assert @lead.status_is?('Converted')
       end
@@ -391,32 +389,32 @@ class LeadTest < ActiveSupport::TestCase
         @lead.update_attributes salutation: 'Mr', phone: 'a', job_title: 'b',
           email: 'test@test.com'
         @lead.promote!('company name', opportunity: {
-          title: 'test', budget: 1000, stage_id: @stage.id })
+          title: 'test', budget: 1000, stage: 'New' })
         assert_includes Account.first(:conditions => { :name => 'company name' }).contacts.first.leads, @lead
         assert_equal @lead.reload.contact, Account.first(:conditions => { :name => 'company name' }).contacts.first
       end
 
       should 'assign account to user' do
         @lead.promote!('A company', opportunity: { title: 'test', budget: 1000,
-                                                   stage: @stage })
+                                                   stage: 'New' })
         assert_equal @lead.user, Account.first.assignee
       end
 
       should 'return an invalid account without an account name' do
         account, contact, opportunity = @lead.promote!('', opportunity: {
-          title: 'test', stage: @stage, amount: 1000 })
+          title: 'test', stage: 'New', amount: 1000 })
         refute account.errors.blank?
       end
 
       should 'not create a contact when account is invalid' do
         @lead.promote!('', opportunity: { title: 'test', budget: 1000,
-                                          stage: @stage })
+                                          stage: 'New' })
         assert_equal 0, Contact.count
       end
 
       should 'not convert lead when account is invalid' do
         @lead.promote!('', opportunity: { title: 'test', budget: 1000,
-                                          stage: @stage })
+                                          stage: 'New' })
         assert_equal 'New', @lead.reload.status
       end
 
@@ -426,20 +424,20 @@ class LeadTest < ActiveSupport::TestCase
 
         @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com')
         @lead.promote!('', opportunity: { title: 'title', budget: 1000,
-                                          stage: @stage })
+                                          stage: 'New' })
         assert_equal 1, Contact.count
         assert_equal 'Converted', @lead.reload.status
       end
 
       should 'create an opportunity if required' do
         @lead.promote!('A company', :opportunity => { :title => 'An opportunity', :stage =>
-          OpportunityStage.first, :budget => 2000 })
+          'New', :budget => 2000 })
         assert_equal 1, @lead.contact.opportunities.count
       end
 
       should 'return an account, a contact and an opportunity' do
         result = @lead.promote!('A company', :opportunity => { :title => 'An opportunity',
-          :stage => OpportunityStage.first, :budget => 2000 })
+          :stage => 'New', :budget => 2000 })
         assert_equal [@lead.contact.account, @lead.contact, @lead.contact.opportunities.first],
           result
       end
@@ -447,7 +445,7 @@ class LeadTest < ActiveSupport::TestCase
       should 'not create an account or contact if an opportunity is supplied, and the opportunity is invalid' do
         account, contact, opportunity = @lead.promote!(
           'A company',
-          :opportunity => { :title => 'An opportunity', :amount => 'asf', stage: @stage }
+          :opportunity => { :title => 'An opportunity', :amount => 'asf', stage: 'New' }
         )
         assert_equal 0, Account.count
         assert_equal 0, Contact.count
@@ -459,7 +457,7 @@ class LeadTest < ActiveSupport::TestCase
         @contact = Contact.make(:florian, :email => 'florian.behn@careermee.com', :account => nil)
         assert_blank @contact.account
         result = @lead.promote!('New Account',
-                                opportunity: { title: 'test', stage: @stage,
+                                opportunity: { title: 'test', stage: 'New',
                                                budget: 1000 })
         assert_equal 1, Account.count
         refute @contact.reload.account.blank?
@@ -485,7 +483,7 @@ class LeadTest < ActiveSupport::TestCase
         @lead.update :email => ''
         @contact = Contact.make(:florian, :email => '')
         @lead.promote!('an account',
-                       opportunity: { title: 'test', budget: 1000, stage: @stage })
+                       opportunity: { title: 'test', budget: 1000, stage: 'New' })
         assert_equal 2, Contact.count
         refute_includes @contact.leads, @lead
       end

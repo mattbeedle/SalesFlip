@@ -2,7 +2,7 @@
 %fieldset
   .100.z= form.input :title
   .clear
-  .25.a= form.input :stage_id, :collection => current_user.company.opportunity_stages.not_deleted.ordered, :include_blank => false
+  .25.a= form.input :stage, :collection => Opportunity.stages, :include_blank => false
   .25= datepicker_for(form, :close_on)
   .clear
   - if !defined?(convert) || (defined?(convert) && convert == false)

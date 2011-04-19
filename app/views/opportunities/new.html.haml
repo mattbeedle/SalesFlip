@@ -1,3 +1,5 @@
+= error_messages_for @opportunity
+
 %h2.title= t(:add_opportunity)
 = simple_form_for @opportunity, :html => { :multipart => true } do |form|
   = render :partial => 'form', :locals => { :form => form }

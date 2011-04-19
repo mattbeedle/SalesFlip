@@ -239,33 +239,15 @@ Opportunity.blueprint do
   title { Sham.name }
   user { User.make }
   contact { Contact.make }
-  stage { OpportunityStage.make }
+  stage { 'New' }
   budget { 2000 }
 end
 
 Opportunity.blueprint(:closed_today) do
   title { Sham.name }
   user { User.make }
-  stage { OpportunityStage.make(:closed_won) }
+  stage { 'Closed / Won' }
   close_on { Date.today }
-end
-
-OpportunityStage.blueprint do
-  name { 'prospecting' }
-  percentage { 10 }
-end
-
-OpportunityStage.blueprint(:prospecting) do
-  name { 'prospecting' }
-end
-
-OpportunityStage.blueprint(:negotiation) do
-  name { 'negotiation' }
-end
-
-OpportunityStage.blueprint(:closed_won) do
-  name { 'closed/won' }
-  percentage { 100 }
 end
 
 InfomailTemplate.blueprint do

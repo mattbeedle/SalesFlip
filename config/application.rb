@@ -89,5 +89,7 @@ module Salesflip
     config.external_access_key = ENV["HR_NEW_MEDIA_ACCESS_KEY"]
 
     Encryptor.default_options.merge!(key: config.external_access_key)
+
+    config.stage_probabilities = [0, 0, 50, 50, 65, 100, 0]
   end
 end

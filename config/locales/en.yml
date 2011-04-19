@@ -261,18 +261,18 @@ en:
     - Commented
     - Deleted
     - Restored
-    
+
   #--------------------------------------------------------------
   # Opportunities
   #--------------------------------------------------------------
   opportunity_stages:
-    - prospecting
-    - analysis
-    - presentation
-    - negotiation
-    - final review
-    - closed/won
-    - closed/lost
+    - New
+    - Offer Requested
+    - Offer Sent
+    - Offer Rework Requested
+    - Offer Rework Sent
+    - Closed / Won
+    - Closed / Lost
   opportunity_outline: "%{amount} with %{discount} discount and %{probability} probability | expected to close %{close_on}"
   add_opportunity: Add Opportunity
   select_contact: Select Contact
@@ -595,3 +595,4 @@ en:
   marked_as_duplicate: "marked as duplicate"
   searching_on_company_name: "Searching on company name. Press 'Search' to search everything."
   lead_is_marked_as_duplicate: "This lead has been marked as a duplicate."
+  no_comments_posted_yet: No comments have been posted yet.

@@ -9,12 +9,12 @@
     %h3= t(:filter)
     = form_tag '', :method => :get do
       %ul.checks.stacked
-        - @opportunity_stages.map(&:name).each do |stage|
+        - Opportunity.stages.each do |stage|
           %li
             = check_box_tag 'stage_is[]', stage, params[:stage_is] && params[:stage_is].include?(stage), :id => "stage_is_#{stage}"
             %label{ :for => "stage_is_#{stage}" }
-              = stage.capitalize
-              %span.count= "(#{@all_opportunities.stage_is(stage).size})"
+              = stage
+              %span.count= "(#{Opportunity.stage_is(stage).size})"
       %ul.checks.stacked
         %li
           = check_box_tag 'assigned_to', current_user.id, params[:assigned_to]

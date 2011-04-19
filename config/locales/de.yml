@@ -167,6 +167,10 @@ de:
     labels:
       task:
         name: Betreff
+      opportunity:
+        close_on: Abschlussdahem
+        contact: Kontact
+      attachment: Anhang
       identifier: Kennung
       address: Adresse
       account_name: Kundenname
@@ -263,13 +267,13 @@ de:
   # Opportunities
   #--------------------------------------------------------------
   opportunity_stages:
-    - Kundensuche
-    - Auswertung
-    - Präsentation
-    - Verhandlung
-    - Endbewertung
-    - abgeschlossen/gewonnen
-    - abgeschlossen/verloren
+    - New
+    - Offer Requested
+    - Offer Sent
+    - Offer Rework Requested
+    - Offer Rework Sent
+    - Closed / Won
+    - Closed / Lost
   opportunity_outline: "Bewertet: %{amount} mit %{discount} Ermäßigung und %{probability} Wahrscheinlichkeit | Abschluss wird erwartet am %{close_on}"
   add_opportunity: Verkaufschance hinzufügen
   select_contact: Kontakt auswählen
@@ -321,6 +325,7 @@ de:
   #--------------------------------------------------------------
   # Leads
   #--------------------------------------------------------------
+  convert_lead_required_fields: Folgende Felder müssen ausgefüllt sein um einen Lead zu konvertieren
   add_lead: Lead hinzufügen
   update_lead: Lead aktualisieren
   company: Firma
@@ -583,3 +588,6 @@ de:
   marked_as_duplicate: "markiert als Duplikat"
   searching_on_company_name: "Suche nach Unternehmen. Klicke „Suche“ um alles zu durchsuchen."
   lead_is_marked_as_duplicate: "Dieses Lead ist als Duplikat vermerkt"
+  infomail_templates: Infomail Vorlagen
+  no_comments_have_been_posted_yet: Keine Kommentare vorhanden.
+  due_at: Fertig gestellt

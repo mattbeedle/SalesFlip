@@ -9,7 +9,7 @@ Feature: Manage Opportunities
     And I am on the opportunities page
     When I follow "new"
     And I fill in "Title" with "An opportunity"
-    And I select "prospecting" from "Stage"
+    And I select "New" from "Stage"
     And I fill in "Budget" with "2000"
     And I attach the file "test/support/AboutStacks.pdf" to "Attachment"
     And I select "Florian Behn" from "Contact"
@@ -21,7 +21,7 @@ Feature: Manage Opportunities
     And I should see "An opportunity"
     # FIXME: attachments not working in features
     # And I should see "aboutstacks.pdf"
-    And I should see "Prospecting"
+    And I should see "New"
 
   Scenario: Editing an opportunity
     Given I am registered and logged in as annika
@@ -64,17 +64,15 @@ Feature: Manage Opportunities
 
   Scenario: Filtering Opportunities by stage
     Given I am registered and logged in as annika
-    And Prospecting stage exists
-    And an opportunity exists with user: Annika, stage: Prospecting stage, title: "Prospecting Opportunity", assignee: Annika
-    And Negotiation stage exists
-    And an opportunity exists with user: Annika, stage: Negotiation stage, title: "Opportunity in Negotiation", assignee: Annika
+    And an opportunity exists with user: Annika, stage: "New", title: "New Opportunity", assignee: Annika
+    And an opportunity exists with user: Annika, stage: "Offer Requested", title: "Requested Opportunity", assignee: Annika
     And I am on the dashboard page
     When I follow "Opportunities"
-    And I check "Prospecting"
+    And I check "Offer Requested"
     And I press "Filter"
     Then I should be on the opportunities page
-    And I should see "Prospecting Opportunity"
-    And I should not see "Opportunity in Negotiation"
+    And I should not see "New Opportunity"
+    And I should see "Requested Opportunity"
 
   Scenario: Filtering opportunities assigned to me
     Given I am registered and logged in as annika

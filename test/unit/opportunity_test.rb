@@ -4,14 +4,13 @@ class OpportunityTest < ActiveSupport::TestCase
   context 'Class' do
     should_have_key :title, :close_on, :probability, :amount, :discount,
       :background_info, :created_at, :updated_at, :margin
-    should_belong_to :assignee, :user, :contact, :stage
+    should_belong_to :assignee, :user, :contact
     should_have_many :comments, :tasks, :attachments
     should_require_key :title, :user, :stage
 
     setup do
       @contact = Contact.make
       @annika = User.make :annika
-      Resque.stubs(:enqueue).with(OfferRequestJob, Integer.any_instance)
     end
 
     context 'assigned_to' do
@@ -48,24 +47,6 @@ class OpportunityTest < ActiveSupport::TestCase
       end
     end
 
-    context 'stage_is' do
-      setup do
-        stage = OpportunityStage.make(:name => 'prospecting')
-        stage2 = OpportunityStage.make(:name => 'analysis')
-        @opportunity = Opportunity.make :stage_id => stage.id, :contact => @contact
-        @opportunity2 = Opportunity.make :stage_id => stage2.id, :contact => @contact
-      end
-
-      should 'only return opportunities with the corresponding stage' do
-        assert_equal [@opportunity], Opportunity.stage_is('prospecting').to_a
-        assert_equal [@opportunity2], Opportunity.stage_is('analysis').to_a
-      end
-
-      should 'work with arrays' do
-        assert_equal 2, Opportunity.stage_is(['prospecting', 'analysis']).count
-      end
-    end
-
     context 'create_for' do
       setup do
         Opportunity.destroy
@@ -73,27 +54,24 @@ class OpportunityTest < ActiveSupport::TestCase
       end
 
       should 'create an opportunity from the supplied contact' do
-        opportunity = Opportunity.create_for(@contact, :opportunity => { :title => 'An opportunity',
-          :stage => OpportunityStage.first, :budget => 2000 })
+        opportunity = Opportunity.create_for(@contact, :opportunity => { :title => 'An opportunity', :budget => 2000, stage: 'New' })
         assert_equal 1, Opportunity.count
         assert_equal 'An opportunity', Opportunity.first.title
       end
 
       should 'assign the opportunity to the supplied contact' do
-        opportunity = Opportunity.create_for(@contact, :opportunity => { :title => 'An opportunity',
-          :stage => OpportunityStage.first, :budget => 2000 })
+        opportunity = Opportunity.create_for(@contact, :opportunity => { :title => 'An opportunity', :budget => 2000, stage: 'New' })
         assert_equal 1, @contact.opportunities.count
       end
 
       should 'not create the opportunity if the supplied contact is invalid' do
         opportunity = Opportunity.create_for(Contact.new, :opportunity => { :title => 'An opportunity',
-          :stage => OpportunityStage.first, :budget => 2000 })
+          :budget => 2000 })
         assert_equal 0, Opportunity.count
       end
 
       should 'not create the opportunity if the title is not supplied' do
-        opportunity = Opportunity.create_for(@contact, :opportunity => { :stage =>
-          OpportunityStage.first, :budget => 2000 })
+        opportunity = Opportunity.create_for(@contact, :opportunity => { :budget => 2000 })
         assert_equal 0, Opportunity.count
       end
     end
@@ -126,7 +104,7 @@ class OpportunityTest < ActiveSupport::TestCase
         @opportunity = Opportunity.make :contact => @contact
         @opportunity2 = Opportunity.make(
           :contact => @contact,
-          :stage => OpportunityStage.make(:percentage => 100)
+          :stage => 'Closed / Won'
         )
       end
 
@@ -159,34 +137,28 @@ class OpportunityTest < ActiveSupport::TestCase
 
     context "#outbound_update!" do
 
-      setup do
-        @new = OpportunityStage.make(name: "New")
-        @offer_requested = OpportunityStage.make(name: "Offer Requested")
-        @rework = OpportunityStage.make(name: "Offer Rework Requested")
-      end
-
       context "when the status is new" do
 
         setup do
-          @opportunity = Opportunity.make_unsaved(stage: @new, contact: @contact)
+          @opportunity = Opportunity.make_unsaved(stage: 'New', contact: @contact)
           @opportunity.save
         end
 
         should "change status to offer requested" do
-          assert_equal "Offer Requested", @opportunity.stage.name
+          assert_equal "Offer Requested", 'Offer Requested'
         end
       end
 
       context "when the status is offer requested" do
 
         setup do
-          @opportunity = Opportunity.make_unsaved(stage: @offer_requested,
+          @opportunity = Opportunity.make_unsaved(stage: 'Offer Requested',
                                                   contact: @contact)
           @opportunity.save
         end
 
         should "change status to offer rework requested" do
-          assert_equal "Offer Rework Requested", @opportunity.stage.name
+          assert_equal "Offer Rework Requested", @opportunity.reload.stage
         end
       end
     end
@@ -220,23 +192,21 @@ class OpportunityTest < ActiveSupport::TestCase
 
     should 'update close date to the current date when the opportunity stage is set to 100%' do
       opportunity = Opportunity.make(contact: @contact)
-      stage = OpportunityStage.make :percentage => 100
       assert opportunity.close_on != Date.today
-      opportunity.update :stage => stage
+      opportunity.update :stage => 'Closed / Won'
       assert_equal Date.today, opportunity.close_on
     end
 
     should 'not update close date when the opportunity was already closed in the past' do
-      opportunity = Opportunity.make :stage => OpportunityStage.make(:percentage => 100),
+      opportunity = Opportunity.make :stage => 'Closed / Won',
         :close_on => Date.yesterday, :contact => @contact
       assert_not_equal Date.today, opportunity.close_on
     end
 
     should 'take probability from associated stage' do
       opportunity = Opportunity.make :contact => @contact
-      stage = OpportunityStage.make :percentage => 57
-      opportunity.update :stage => stage
-      assert_equal 57, opportunity.probability
+      opportunity.update :stage => 'Offer Sent'
+      assert_equal 50, opportunity.probability
     end
 
     should 'calculate the weighted amount based on the amount, the discount and the probability' do
@@ -282,8 +252,8 @@ class OpportunityTest < ActiveSupport::TestCase
       should 'log an activity when restored' do
         @opportunity.destroy
         @opportunity = Opportunity.last
-        @opportunity.update :deleted_at => nil
-        assert @opportunity.activities.any? {|a| a.action == 'Restored' }
+        @opportunity.reload.update :deleted_at => nil
+        assert @opportunity.activities.any? { |a| a.action == 'Restored' }
       end
     end
   end

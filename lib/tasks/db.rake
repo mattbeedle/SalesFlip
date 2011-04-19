@@ -112,4 +112,12 @@ namespace :db do
     puts 'Fixing attachments'
     FixAttachments.up
   end
+
+  desc 'Migrate opportunity stages to has_constant'
+  task :migrate_opportunity_stages => :environment do
+    Opportunity.all.each do |o|
+      o.stage = 'New'
+      o.save!
+    end
+  end
 end

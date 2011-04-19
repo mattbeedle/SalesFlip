@@ -3,14 +3,6 @@ class OpportunitiesController < InheritedResources::Base
   has_scope :stage_is, :type => :array
   has_scope :assigned_to
 
-  def index
-    @opportunity_stages = current_user.company.opportunity_stages.not_deleted
-    @all_opportunities = Opportunity.not_deleted
-    index! do |format|
-      format.html
-    end
-  end
-
   def new
     build_resource
     3.times { @opportunity.attachments.build }
@@ -49,7 +41,7 @@ protected
   end
 
   def collection
-    @opportunities ||= opportunities.desc(:stage_id).
+    @opportunities ||= opportunities.
       desc(:created_at).paginate(:per_page => params[:per_page] || 10,
                                  :page => params[:page] || 1)
   end

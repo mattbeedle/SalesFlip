@@ -27,24 +27,23 @@ class Opportunity
   property :status, String
   property :due_at, DateTime
 
+  has_constant :stages, ->{ I18n.t(:opportunity_stages) }
+
   validates_numericality_of :amount,      :allow_blank => true, :allow_nil => true
   validates_numericality_of :probability, :allow_blank => true, :allow_nil => true
   validates_numericality_of :discount,    :allow_blank => true, :allow_nil => true
   validates_numericality_of :budget,      :allow_blank => false, :allow_nil => false
 
-  validates_presence_of :contact, :title
+  validates_presence_of :contact, :title, :stage
 
   attr_accessor :do_not_notify
 
   belongs_to :contact, required: false
   belongs_to :user, required: true
-  belongs_to :stage, model: 'OpportunityStage'
 
   has n, :comments, :as => :commentable#, :dependent => :delete_all
   has n, :tasks, :as => :asset#, :dependent => :delete_all
   has n, :attachments, :as => :subject
-
-  after :save, :outbound_update!
 
   def self.for_company(company)
     all(:user_id => company.users.map(&:id))
@@ -59,7 +58,7 @@ class Opportunity
   end
 
   def self.certainty
-    all(:probability => 100)
+    stage_is('Closed / Won')
   end
 
   def self.created_on(date)
@@ -72,6 +71,7 @@ class Opportunity
   after :save do
     tasks.update! :asset_updated_at => updated_at
   end
+  before :save, :update_stage!
 
   alias :name  :title
   alias :name= :title=
@@ -81,11 +81,6 @@ class Opportunity
     text :contact do
       contact.name
     end
-  end
-
-  def self.stage_is( stages )
-    stages = stages.lines.to_a if stages.respond_to?(:lines)
-    all(:stage_id => OpportunityStage.all(:name => stages).map(&:id))
   end
 
   def weighted_amount
@@ -124,7 +119,9 @@ class Opportunity
   end
 
   def set_probability
-    self.probability = self.stage.percentage
+    self.probability = Rails.application.config.stage_probabilities[
+      self.class.stages.index(self.stage)
+    ]
   end
 
   def update_close_date
@@ -134,23 +131,20 @@ class Opportunity
   end
 
   def update_stage!
-    case stage.name
-    when "New"
-      self.stage = OpportunityStage.first(name: "Offer Requested")
-    when "Offer Requested"
-      self.stage = OpportunityStage.first(name: "Offer Rework Requested")
+    case self.stage
+    when 'New' then self.stage = 'Offer Requested'
+    when 'Offer Requested' then self.stage = 'Offer Rework Requested'
     end
-    save!
   end
 
   def complete=(complete)
-    self.stage = OpportunityStage.first(name: 'Offer Sent')
+    self.stage = 'Offer Sent'
   end
 
   ######################## START OF MQ SPECIFIC UPDATES ########################
 
   attr_accessor :inbound_update
-  after_update :outbound_update!
+  after_save :outbound_update!
 
   # Notify external systems of an update to this document via AMQP.
   #
@@ -158,15 +152,12 @@ class Opportunity
   #   request.outbound_update!
   def outbound_update!
     unless inbound_update
-      begin
-        Messaging::Opportunities.new.publish(self)
-        update_stage!
-      rescue StandardError => e
-        puts e
-      end
+      Messaging::Opportunities.new.publish(self)
     else
       @inbound_update = false
     end
+  rescue StandardError => e
+    logger.info "OUTBOUND ERROR: #{e}"
   end
 
   # Update this document based on changes in an external system.
