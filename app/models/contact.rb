@@ -81,8 +81,16 @@ class Contact
     end
   end
 
+  # @return all comments for this contact, including comments on this contact's
+  # leads.
   def comments_including_leads
-    comments | leads.comments
+    if leads.any?
+      # It's important that we only run this line if the contact has leads,
+      # otherwise the scope gets corrupted, returning ALL comments.
+      comments | leads.comments
+    else
+      comments
+    end
   end
 
   def full_name
