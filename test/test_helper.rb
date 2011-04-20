@@ -11,6 +11,13 @@ DatabaseCleaner.strategy = :transaction
 
 FakeWeb.allow_net_connect = false
 FakeWeb.register_uri(:post, 'http://localhost:8981/solr/update?wt=ruby', :body => '')
+
+class Sunspot::Rails::StubSessionProxy::Search
+  def results
+    [].paginate
+  end
+end
+
 Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
 Minion.logger {}
 
