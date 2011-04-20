@@ -14,7 +14,8 @@ class SearchesController < InheritedResources::Base
     @results ||= resource.results(params[:per_page] || 30, params[:page] || 1)
   end
 
-protected
+  protected
+
   def begin_of_association_chain
     current_user
   end

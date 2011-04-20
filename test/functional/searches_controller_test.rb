@@ -7,6 +7,20 @@ class SearchesControllerTest < ActionController::TestCase
     sign_in @user = User.make(:matt)
   end
 
+  context 'update' do
+    setup do
+      @search = Search.make(user: @user)
+    end
+
+    context 'when the search is invalid' do
+      should 'render the edit page' do
+        put :update, id: @search.id, search: { terms: "" }
+
+        assert_template :edit
+      end
+    end
+  end
+
   context 'show' do
     context 'when search does not exist' do
       should 'return a 404' do
