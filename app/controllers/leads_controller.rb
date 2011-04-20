@@ -1,5 +1,5 @@
 class LeadsController < InheritedResources::Base
-  load_and_authorize_resource
+  load_and_authorize_resource :collection => [:next, :export]
 
   before_filter :resource,          :only => [ :convert, :promote, :reject ]
   before_filter :set_filters,       :only => [ :index, :export ]
@@ -162,8 +162,6 @@ protected
   def collection
     @page = params[:page] || 1
     @per_page = 30
-    @leads ||= hook(:leads_collection, self, :pages => { :page => @page, :per_page => @per_page }).
-      last
     @leads ||= leads.paginate(:per_page => @per_page, :page => @page)
   end
 
@@ -176,18 +174,12 @@ protected
     @filters
   end
 
-  def resource
-    @lead ||= hook(:leads_resource, self).last
-    @lead ||= Lead.get(params[:id]) if params[:id]
-  end
-
-  def begin_of_association_chain
-    current_user
-  end
-
   def build_resource
-    @lead ||= Lead.new({ :updater => current_user, :user => current_user }.
-                       merge!(params[:lead] || {}))
+    return @lead if defined?(@lead)
+
+    attributes = {:updater => current_user, :user => current_user}
+    attributes.merge!(params[:lead] || {})
+    @lead = Lead.new(attributes)
   end
 
   def export_allowed?
