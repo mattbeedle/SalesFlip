@@ -1,5 +1,5 @@
 class AccountsController < InheritedResources::Base
-  load_and_authorize_resource
+  load_and_authorize_resource :collection => [:export]
 
   before_filter :merge_updater_id, :only => [ :update ]
   before_filter :parent_account, :only => [ :new ]
@@ -74,22 +74,17 @@ protected
     end
   end
 
-  def resource
-    @account ||= hook(:accounts_resource, self).last
-    @account ||= Account.for_company(current_user.company).where(:id => params[:id]).first
-  end
-
-  def begin_of_association_chain
-    current_user
-  end
-
   def merge_updater_id
     params[:account].merge!(:updater_id => current_user.id) if params[:account]
   end
 
   def build_resource
-    @account ||= begin_of_association_chain.accounts.new({ :assignee_id => current_user.id }.
-                                                           merge(params[:account] || {}))
+    return @account if defined?(@account)
+
+    attributes = { :assignee_id => current_user.id }
+    attributes.merge!(params[:account] || {})
+
+    @account = current_user.accounts.new(attributes)
   end
 
   def parent_account
