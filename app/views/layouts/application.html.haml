@@ -15,7 +15,7 @@
         %p
           You're currently on the phone with #{lead.full_name}.
           = link_to "Done?", finish_lead_path(lead)
-    - if session[:_user_id]
+    - if masquerading?
       .bottom-bar
         %p
           You are logged in as #{current_user.name}.

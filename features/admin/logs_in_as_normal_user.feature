@@ -18,3 +18,15 @@ Feature: Admin logs in as normal user
 
     When I follow "Return to your account"
     Then I should see "Welcome matt"
+
+  Scenario: signs out instead of returning to account
+    Given I am registered and logged in as Matt
+    And Matt has invited Annika
+    When I go to the users page
+    And I follow "Annika"
+    And I follow "Log in as Annika"
+    Then I should see "Welcome Annika"
+    And I should see "You are logged in as Annika"
+
+    When I follow "Logout"
+    Then I should see "Welcome matt"

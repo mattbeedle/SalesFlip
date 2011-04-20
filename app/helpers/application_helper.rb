@@ -1,6 +1,10 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
 
+  def masquerading?
+    !!session[:_user_id]
+  end
+
   def add_new( text, path )
     "<a href='#{path}' id='new'><b>+</b>#{text}</a>".html_safe
   end
