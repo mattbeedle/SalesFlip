@@ -157,7 +157,7 @@ class Opportunity
       @inbound_update = false
     end
   rescue StandardError => e
-    logger.info "OUTBOUND ERROR: #{e}"
+    Rails.logger.info "OUTBOUND ERROR: #{e}"
   end
 
   # Update this document based on changes in an external system.
