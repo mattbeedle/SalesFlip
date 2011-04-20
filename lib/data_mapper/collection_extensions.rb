@@ -23,7 +23,7 @@ module ActiveRecordCompatibility
       when :all
         collection
       else
-        raise ArgumentError, "Unsupported call to find, with scope #{scope}.inspect and options #{options.inspect}"
+        raise ArgumentError, "Unsupported call to find, with scope #{scope.inspect} and options #{options.inspect}"
       end
     end
 
