@@ -1,5 +1,5 @@
 class ContactsController < InheritedResources::Base
-  load_and_authorize_resource
+  load_and_authorize_resource :collection => [:export]
 
   before_filter :merge_updater_id, :only => [ :update ]
   before_filter :can_export?, :only => [ :index ]
@@ -65,23 +65,18 @@ protected
     end
   end
 
-  def resource
-    @contact ||= hook(:contacts_resource, self).last
-    @contact ||= Contact.for_company(current_user.company).where(:id => params[:id]).first
-  end
-
-  def begin_of_association_chain
-    current_user
-  end
-
   def merge_updater_id
     params[:contact].merge!(:updater_id => current_user.id) if params[:contact]
   end
 
   def build_resource
-    attributes = { :assignee_id => current_user.id }.merge(params[:contact] || {})
+    return @contact if defined?(@contact)
+
+    attributes = { :assignee_id => current_user.id }
+    attributes.merge!(params[:contact] || {})
     attributes.merge!(:account => account) if account
-    @contact ||= begin_of_association_chain.contacts.build attributes
+
+    @contact = current_user.contacts.build attributes
   end
 
   def account
