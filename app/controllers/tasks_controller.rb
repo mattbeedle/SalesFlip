@@ -70,8 +70,13 @@ protected
   end
 
   def build_resource
-    @task ||= begin_of_association_chain.tasks.new({ :assignee_id => current_user.id }.
-                                                     merge(params[:task] || {}))
+    unless defined?(@task)
+      attributes = { assignee_id: current_user.id }
+      attributes.merge! params[:task] || {}
+
+      @task = current_user.tasks.new(attributes)
+    end
+
     @task.asset_id = params[:asset_id] if params[:asset_id]
     @task.asset_type = params[:asset_type] if params[:asset_type]
     @task
@@ -96,13 +101,5 @@ protected
         @due_later ||= apply_scopes(Task).due_later.asc(:due_at)
       end
     end
-  end
-
-  def resource
-    @task ||= Task.for(current_user).where(:id => params[:id]).first
-  end
-
-  def begin_of_association_chain
-    current_user
   end
 end
