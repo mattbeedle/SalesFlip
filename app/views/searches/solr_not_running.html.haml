@@ -1,0 +1,27 @@
+%html
+  %head
+    %title Service Temporarily Unavailable (503)
+    :css
+      body { background-color: #fff; color: #666; text-align: center; font-family: arial, sans-serif; }
+      div.dialog {
+        width: 25em;
+        padding: 0 4em;
+        margin: 4em auto 0 auto;
+        border: 1px solid #ccc;
+        border-right-color: #999;
+        border-bottom-color: #999;
+      }
+      h1 { font-size: 100%; color: #f00; line-height: 1.5em; }
+
+  %body
+    .dialog
+      %h1 Sorry, search is temporarily unavailable.
+
+      %p
+        It should be back up soon, but in the mean time the instant
+        search will continue to work. If you still see this page in
+        a few minutes, please contact an administrator.
+
+      - if request.referer
+        %p
+          = link_to "<< Go Back", :back

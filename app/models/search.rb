@@ -14,10 +14,16 @@ class Search
 
   validates_presence_of :terms
 
-  def results( per_page = 30, page = 1 )
-    @results ||= Sunspot.search(collections.map(&:constantize) || [Account, Contact, Lead, Opportunity]) do
+  def results(per_page = 30, page = 1)
+    @results ||= search(per_page, page).results
+  end
+
+  private
+
+  def search(per_page, page)
+    Sunspot.search(collections.map(&:constantize)) do
       keywords terms
       paginate(:per_page => per_page, :page => page)
-    end.results
+    end
   end
 end

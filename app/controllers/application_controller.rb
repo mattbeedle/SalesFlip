@@ -14,6 +14,10 @@ class ApplicationController < ActionController::Base
     redirect_to root_url
   end
 
+  rescue_from DataMapper::ObjectNotFoundError do
+    render :file => "public/404.html", :status => 404, :layout => false
+  end
+
   before_filter :store_on_call
   before_filter :authenticate_user!
   before_filter "hook(:app_before_filter, self)"

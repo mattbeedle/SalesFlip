@@ -17,7 +17,7 @@ module ActiveRecordCompatibility
       collection = all(options)
       case scope
       when Integer, String
-        collection.get(scope)
+        collection.get!(scope)
       when :first
         collection.first
       when :all

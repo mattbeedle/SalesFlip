@@ -1,5 +1,11 @@
 class SearchesController < InheritedResources::Base
 
+  rescue_from Errno::ECONNREFUSED do
+    render "solr_not_running",
+      status: :service_unavailable,
+      layout: nil
+  end
+
   def index
     redirect_to :action => :new
   end
