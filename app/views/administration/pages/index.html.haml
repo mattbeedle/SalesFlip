@@ -36,24 +36,6 @@
   %h3= t(:contacts)
   %p= Contact.for_company(current_user.company).count
 
-  %h2= t(:opportunity_stages_heading)
-  = link_to t(:add_opportunity_stage), new_administration_opportunity_stage_path
-  %table
-    %thead
-      %tr
-        %th= t(:name)
-        %th= t(:percentage)
-        %th= t(:notes)
-        %th= t(:actions)
-    %tbody
-      - @opportunity_stages.each do |stage|
-        %tr
-          %td= stage.name
-          %td= number_to_percentage stage.percentage, :precision => 0 if stage.percentage
-          %td= stage.notes
-          %td
-            = link_to t(:delete), [:confirm_delete, :administration, stage]
-            = link_to t(:edit), [:edit, :administration, stage]
 .right
   %h3= t(:users)
   %table
