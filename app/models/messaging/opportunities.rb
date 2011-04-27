@@ -9,6 +9,7 @@ module Messaging #:nodoc:
     #
     # @param [ Opportunity ] opportunity The opportunity.
     def publish(opportunity)
+      puts attributes(opportunity).inspect
       enqueue("opportunities.update", attributes(opportunity))
     end
 
