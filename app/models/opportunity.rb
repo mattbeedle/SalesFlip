@@ -144,7 +144,11 @@ class Opportunity
   ######################## START OF MQ SPECIFIC UPDATES ########################
 
   attr_accessor :inbound_update
-  after_save :outbound_update!
+
+  def save
+    super
+    outbound_update!
+  end
 
   # Notify external systems of an update to this document via AMQP.
   #
