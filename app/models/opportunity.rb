@@ -152,6 +152,7 @@ class Opportunity
   #   request.outbound_update!
   def outbound_update!
     unless inbound_update
+      puts 'outbound_update!'
       Messaging::Opportunities.new.publish(self)
     else
       @inbound_update = false
