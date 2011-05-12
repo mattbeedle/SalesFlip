@@ -7,7 +7,7 @@ class CommentsController < InheritedResources::Base
 
   def create
     create! do |success, failure|
-      @comment.commentable.outbound_update! if @comment.commentable.is_a?(Opportunity)
+      #@comment.commentable.outbound_update! if @comment.commentable.is_a?(Opportunity)
       success.html do
         return_to_or_default commentable_path
       end
