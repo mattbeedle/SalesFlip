@@ -21,7 +21,7 @@ module Messaging #:nodoc:
       job "offers.update" do |data|
         id = data.delete("id")
         if id
-          opportunity = Opportunity.find(id)
+          opportunity = Opportunity.find(id) rescue nil
           opportunity.tap { |opp| opp.inbound_update!(data) } if opportunity
         end
       end
