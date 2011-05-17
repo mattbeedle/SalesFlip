@@ -131,10 +131,7 @@ class Opportunity
   end
 
   def update_stage!
-    case self.stage
-    when 'New' then self.stage = 'Offer Requested'
-    when 'Offer Requested' then self.stage = 'Offer Rework Requested'
-    end
+    self.stage = 'Offer Requested' if self.stage == 'New'
   end
 
   def complete=(complete)
