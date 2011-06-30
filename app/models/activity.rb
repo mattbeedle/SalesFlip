@@ -100,4 +100,48 @@ class Activity
       activities
     end
   end
+
+  class Report
+    class << self
+
+      # Returns a report of the given user's weekly activity, grouped by the
+      # hour the activities were made.
+      #
+      #   Activity::Report.weekly(user)
+      #   # => { "27/06" => { 0 => 10, 2 => 3 } }
+      #
+      def weekly(user)
+        activities = repository.adapter.select(<<-SQL.compress_lines, user.id)
+          select
+            date_trunc('week', updated_at) as _week,
+            to_char(date_trunc('week', updated_at), 'DD/MM') as week,
+            date_part('hour', updated_at)::integer as hour,
+            count(*) as count
+          from activities
+          where
+            creator_id = ? and
+            updated_at >= date_trunc('week', now()) - interval '7 weeks'
+          group by _week, week, hour
+          order by _week, hour
+        SQL
+
+        # This will allow us to generate a hash like this:
+        #
+        #   weeks["27/06"][0] = 234
+        #   weeks # => { "27/06" => { 0 => 234 } }
+        #   weeks["26/06"][1]
+        #   weeks # => { "27/06" => { 0 => 234, 1 => 0 } }
+        weeks = Hash.new do |h,k|
+          h[k] = Hash.new { |h,k| h[k] = 0 }
+        end
+
+        activities.each do |activity|
+          weeks[activity.week][activity.hour] = activity.count
+        end
+
+        weeks
+      end
+
+    end
+  end
 end
