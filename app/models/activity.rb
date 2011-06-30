@@ -14,9 +14,7 @@ class Activity
   property :id, Serial
   property :info, String
   property :created_at, DateTime, :index => true
-  property :created_on, Date
   property :updated_at, DateTime, :index => true
-  property :updated_on, Date
 
   has n, :activity_users
   has n, :notified_users, User, through: Resource
@@ -39,28 +37,13 @@ class Activity
   end
 
   def self.log( user, subject, action )
-    if %w(Created Deleted).include?(action)
-      create_activity(user, subject, action)
-    else
-      update_activity(user, subject, action)
-    end
+    create_activity(user, subject, action)
   end
 
   def self.create_activity( user, subject, action )
     unless subject.is_a?(Task) and action == 'Viewed'
       Activity.create user: user, action: action, subject: subject
     end
-  end
-
-  def self.update_activity( user, subject, action )
-    activity = subject.activities.first(:user => user, :action => action)
-
-    if activity
-      activity.update(:updated_at => Time.zone.now, :user => user)
-    else
-      activity = create_activity(user, subject, action)
-    end
-    activity
   end
 
   def notified_user_ids=(notified_user_ids)
