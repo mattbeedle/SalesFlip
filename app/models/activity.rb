@@ -96,16 +96,21 @@ class Activity
       def weekly(user)
         activities = repository.adapter.select(<<-SQL.compress_lines, user.id)
           select
-            date_trunc('week', updated_at) as _week,
-            to_char(date_trunc('week', updated_at), 'DD/MM') as week,
-            date_part('hour', updated_at)::integer as hour,
+            date_trunc('week', activity_date) as _week,
+            to_char(date_trunc('week', activity_date), 'DD/MM') as week,
+            date_part('hour', activity_date)::integer as hour,
             count(*) as count
-          from activities
+          from
+            (
+              select id, creator_id, created_at as activity_date from activities
+              union
+              select id, creator_id, updated_at as activity_date from activities
+            ) as activity_dates
           where
             creator_id = ? and
-            updated_at >= date_trunc('week', now()) - interval '7 weeks'
+            activity_date >= date_trunc('week', now()) - interval '7 weeks'
           group by _week, week, hour
-          order by _week, hour
+          order by _week, hour;
         SQL
 
         # This will allow us to generate a hash like this:
