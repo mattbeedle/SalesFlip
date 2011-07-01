@@ -51,6 +51,8 @@ class Ability
         can :create, User
 
     end
+
+    cannot :track_activity_for, User
   end
 
   def can_manage_assigned(user, model)
