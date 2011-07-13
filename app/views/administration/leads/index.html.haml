@@ -248,7 +248,7 @@
           %td(align="center")= lead.company_size
           %td(align="center")= lead.comments.count
           %td
-            - if task = lead.tasks.first(:due_at.gt => Time.now, :order => :due_at.asc)
+            - if task = lead.tasks.first(:completed_at => nil, :order => :due_at.asc)
               = l task.due_at.to_date
           %td
             = link_to image_tag("external-link.png"), lead_path(lead), :target => :blank
