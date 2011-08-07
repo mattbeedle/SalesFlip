@@ -9,7 +9,7 @@
     %td= @opportunity.jobboards_assignee || t(:no_information)
   %tr
     %td= t(:checklist)
-    %td= @opportunity.jobboards_url ? link_to(t(:checklist), @opportunity.jobboards_url, target: '_blank') : t(:no_information)
+    %td= @opportunity.jobboards_url ? link_to(t(:checklist), @opportunity.jobboards_url.gsub(/1000jobboersen.de/, '46.4.64.212'), target: '_blank') : t(:no_information)
   %tr
     %td= t(:status)
     %td= @opportunity.status || t(:no_information)
