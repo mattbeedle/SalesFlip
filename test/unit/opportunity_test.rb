@@ -148,19 +148,6 @@ class OpportunityTest < ActiveSupport::TestCase
           assert_equal "Offer Requested", 'Offer Requested'
         end
       end
-
-      context "when the status is offer requested" do
-
-        setup do
-          @opportunity = Opportunity.make_unsaved(stage: 'Offer Requested',
-                                                  contact: @contact)
-          @opportunity.save
-        end
-
-        should "change status to offer rework requested" do
-          assert_equal "Offer Rework Requested", @opportunity.reload.stage
-        end
-      end
     end
 
     should 'only allow numbers for "amount"' do

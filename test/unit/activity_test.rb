@@ -31,36 +31,6 @@ class ActivityTest < ActiveSupport::TestCase
                               :action => 'Viewed').first
       end
 
-      should 'find and update the last activity if action is "Viewed"' do
-        Activity.log(@lead.user, @lead, 'Viewed')
-        activity = Activity.last
-        updated_at = activity.updated_at
-        sleep 1
-        activity2 = Activity.log(@lead.user, @lead, 'Viewed')
-        assert_equal 1, Activity.count
-        assert updated_at != activity2.updated_at
-      end
-
-      should 'find and update the last activity if action is "Commented"' do
-        Activity.log(@lead.user, @lead, 'Commented')
-        activity = Activity.last
-        updated_at = activity.updated_at
-        sleep 1
-        activity2 = Activity.log(@lead.user, @lead, 'Commented')
-        assert_equal 1, Activity.count
-        assert updated_at != activity2.updated_at
-      end
-
-      should 'find and update the last activity if action is "Updated"' do
-        Activity.log(@lead.user, @lead, 'Updated')
-        activity = Activity.last
-        updated_at = activity.updated_at
-        sleep 1
-        activity2 = Activity.log(@lead.user, @lead, 'Updated')
-        assert_equal 1, Activity.count
-        assert updated_at != activity2.updated_at
-      end
-
       should 'NOT create "Viewed" activity for tasks' do
         task = Task.make(:call_erich)
         Activity.all.destroy

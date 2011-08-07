@@ -14,9 +14,7 @@ class Activity
   property :id, Serial
   property :info, String
   property :created_at, DateTime, :index => true
-  property :created_on, Date
   property :updated_at, DateTime, :index => true
-  property :updated_on, Date
 
   has n, :activity_users
   has n, :notified_users, User, through: Resource
@@ -39,28 +37,13 @@ class Activity
   end
 
   def self.log( user, subject, action )
-    if %w(Created Deleted).include?(action)
-      create_activity(user, subject, action)
-    else
-      update_activity(user, subject, action)
-    end
+    create_activity(user, subject, action)
   end
 
   def self.create_activity( user, subject, action )
     unless subject.is_a?(Task) and action == 'Viewed'
       Activity.create user: user, action: action, subject: subject
     end
-  end
-
-  def self.update_activity( user, subject, action )
-    activity = subject.activities.first(:user => user, :action => action)
-
-    if activity
-      activity.update(:updated_at => Time.zone.now, :user => user)
-    else
-      activity = create_activity(user, subject, action)
-    end
-    activity
   end
 
   def notified_user_ids=(notified_user_ids)
@@ -98,6 +81,55 @@ class Activity
       end
 
       activities
+    end
+  end
+
+  class Report
+    class << self
+
+      # Returns a report of the given user's weekly activity, grouped by the
+      # hour the activities were made.
+      #
+      #   Activity::Report.weekly(user)
+      #   # => { "27/06" => { 0 => 10, 2 => 3 } }
+      #
+      def weekly(user)
+        activities = repository.adapter.select(<<-SQL.compress_lines, user.id)
+          select
+            date_trunc('week', activity_date) as _week,
+            to_char(date_trunc('week', activity_date), 'DD/MM') as week,
+            date_part('hour', activity_date)::integer as hour,
+            count(*) as count
+          from
+            (
+              select id, creator_id, created_at as activity_date from activities
+              union
+              select id, creator_id, updated_at as activity_date from activities
+            ) as activity_dates
+          where
+            creator_id = ? and
+            activity_date >= date_trunc('week', now()) - interval '7 weeks'
+          group by _week, week, hour
+          order by _week, hour;
+        SQL
+
+        # This will allow us to generate a hash like this:
+        #
+        #   weeks["27/06"][0] = 234
+        #   weeks # => { "27/06" => { 0 => 234 } }
+        #   weeks["26/06"][1]
+        #   weeks # => { "27/06" => { 0 => 234, 1 => 0 } }
+        weeks = Hash.new do |h,k|
+          h[k] = Hash.new { |h,k| h[k] = 0 }
+        end
+
+        activities.each do |activity|
+          weeks[activity.week][activity.hour] = activity.count
+        end
+
+        weeks
+      end
+
     end
   end
 end

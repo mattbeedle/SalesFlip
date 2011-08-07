@@ -22,7 +22,7 @@ class Lead
       when "tasks"
         sql = <<-SQL.compress_lines
         ( select due_at::date from tasks
-          where lead_id = leads.id and tasks.due_at > now()
+          where lead_id = leads.id and tasks.completed_at is null
           order by due_at asc limit 1 )
         SQL
         collection.all(:order => Direction.new(sql, direction))
