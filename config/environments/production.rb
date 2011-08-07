@@ -71,7 +71,7 @@ Salesflip::Application.configure do
     :api_key => '20015510-959d-012d-a4ae-001c25a0b06f'
   }
 
-  config.external_user_update_url = "http://46.4.64.212/external_updates/user"
-  config.external_offer_request_url = "http://46.4.64.212/external_updates/create_offer_request"
-  config.external_offer_rework_url = "http://46.4.64.212/external_updates/rework_offer_request"
+  config.external_user_update_url = "http://app.1000jobboersen.de/external_updates/user"
+  config.external_offer_request_url = "http://app.1000jobboersen.de/external_updates/create_offer_request"
+  config.external_offer_rework_url = "http://app.1000jobboersen.de/external_updates/rework_offer_request"
 end
