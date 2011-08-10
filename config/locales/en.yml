@@ -369,6 +369,7 @@ en:
       - Infomail Sent
       - Offer Requested
       - Rejected
+      - Not Interested
   lead_statuses:
     - New
     - Contacted
