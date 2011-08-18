@@ -136,6 +136,10 @@ protected
       return Lead.all(:status => "Offer Requested")
     end
 
+    if current_user.role_is?('Administrator') && request.format.csv?
+      return Lead.all
+    end
+
     params[:status] ||= "New"
 
     leads = apply_scopes(Lead)

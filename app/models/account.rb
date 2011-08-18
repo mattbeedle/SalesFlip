@@ -96,7 +96,7 @@ class Account
   end
 
   def deliminated( deliminator, fields )
-    fields.map { |field| self.send(field) }.join(deliminator)
+    fields.map { |field| "\"#{self.send(field)}\"" }.join(deliminator)
   end
 
   def set_identifier

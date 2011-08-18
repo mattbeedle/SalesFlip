@@ -130,7 +130,8 @@ class ContactTest < ActiveSupport::TestCase
     end
 
     should 'be able to get fields in pipe deliminated format' do
-      assert_equal @contact.deliminated('|', ['first_name', 'last_name']), "Florian|Behn"
+      assert_equal @contact.deliminated('|', ['first_name', 'last_name']),
+        "\"Florian\"|\"Behn\""
     end
 
     should 'be assigned an identifier on creation' do

@@ -4,6 +4,64 @@ namespace :db do
     end
   end
 
+  task test_export: :environment do
+    leads = Lead.status_is('Converted').limit(3)
+    contacts = leads.map(&:contact)
+    accounts = contacts.map(&:account)
+    lead_comments = leads.map(&:comments)
+    contact_comments = contacts.map(&:comments)
+    account_comments = accounts.map(&:comments)
+    lead_tasks = leads.map(&:tasks)
+    contact_tasks = contacts.map(&:tasks)
+    account_tasks = accounts.map(&:tasks)
+
+    File.open('users.csv', 'w+') do |file|
+      fields = [
+        'email'
+      ]
+
+      file.write fields.join(',') + "\n"
+
+      users = User.where(email: 'mattbeedle@googlemail.com')
+
+      file.write users.map { |u| u.deliminated(',', fields) }.join("\n")
+    end
+
+    File.open('leads.csv', 'w+') do |file|
+      fields = [
+        'phone', 'job_title', 'fax', 'address', 'postal_code', 'salutation',
+        'country', 'company', 'title', 'last_name', 'city', 'first_name',
+        'contact_id'
+      ]
+
+      file.write fields.join(',') + "\n"
+
+      file.write leads.map { |l| l.deliminated(',', fields) }.join("\n")
+    end
+
+    File.open('contacts.csv', 'w+') do |file|
+      fields = [
+        'salutation', 'title', 'first_name', 'last_name', 'account_id',
+        'email', 'mobile', 'phone', 'address', 'city', 'postal_code', 'fax',
+        'job_title'
+      ]
+
+      file.write fields.join(',') + "\n"
+
+      file.write contacts.map { |c| c.deliminated(',', fields) }.join("\n")
+    end
+
+    File.open('accounts.csv', 'w+') do |file|
+      fields = [
+        'name', 'billing_address', 'phone', 'website', 'email', 'fax'
+      ]
+
+      file.write fields.join(',') + "\n"
+
+      file.write accounts.map { |c| c.deliminated(',', fields) }.join("\n")
+    end
+  end
+
   desc 'Import leads csv'
   task :import_leads_csv => :environment do
     user = User.first(:email => /beedle/i)

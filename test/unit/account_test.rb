@@ -223,7 +223,7 @@ class AccountTest < ActiveSupport::TestCase
     end
 
     should 'be able to get fields in pipe deliminated format' do
-      assert_equal @account.deliminated('|', ['name', 'user_id']), "CareerMee|#{@account.user_id}"
+      assert_equal @account.deliminated('|', ['name', 'user_id']), "\"CareerMee\"|\"#{@account.user_id}\""
     end
 
     should 'ensure http:// is prepended to uris' do

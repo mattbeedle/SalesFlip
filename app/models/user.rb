@@ -134,6 +134,10 @@ class User
     )
   end
 
+  def deliminated( deliminator, fields )
+    fields.map { |field| "\"#{self.send(field)}\"" }.join(deliminator)
+  end
+
 protected
   def set_api_key
     UUID.state_file = false # for heroku

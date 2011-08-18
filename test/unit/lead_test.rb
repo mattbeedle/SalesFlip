@@ -195,7 +195,8 @@ class LeadTest < ActiveSupport::TestCase
     end
 
     should 'be able to get fields in pipe deliminated format' do
-      assert_equal @lead.deliminated('|', ['first_name', 'last_name']), 'Erich|Feldmeier'
+      assert_equal @lead.deliminated('|', ['first_name', 'last_name']),
+        '"Erich"|"Feldmeier"'
     end
 
     should 'be assigned an identifier on creation' do
