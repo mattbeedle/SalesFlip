@@ -137,7 +137,9 @@ protected
     end
 
     if current_user.role_is?('Administrator') && request.format.csv?
-      return apply_scopes(Lead)
+      leads = Lead.all
+      leads = leads.assigned_to(params[:assignee_id]) if params[:assignee_id]
+      return leads
     end
 
     params[:status] ||= "New"
