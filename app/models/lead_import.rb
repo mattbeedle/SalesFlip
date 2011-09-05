@@ -41,7 +41,6 @@ class LeadImport
         similar_accounts = lead.similar_accounts
         unless similar.any? || similar_accounts.any?
           if lead.save
-            Sunspot.index!(lead)
             self.imported << lead
           end
         else
@@ -50,14 +49,15 @@ class LeadImport
         save
       end
     end
+    Sunspot.commit
     self.state = 'completed'
     save
     ImportMailer.import_summary(self).deliver
   end
 
   def lines
-    #file.read.force_encoding('iso-8859-1').encode('utf-8').split("\r")
-    file.read.lines
+    file.read.force_encoding('iso-8859-1').encode('utf-8').split("\r")
+    #file.read.lines
   end
 
   def progress
