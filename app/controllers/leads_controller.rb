@@ -137,7 +137,7 @@ protected
     end
 
     if current_user.role_is?('Administrator') && request.format.csv?
-      return Lead.all
+      return apply_scopes(Lead)
     end
 
     params[:status] ||= "New"
