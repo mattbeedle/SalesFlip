@@ -109,7 +109,7 @@ class Lead
     values.each_with_index do |value, index|
       send(
         "#{headings[index].downcase.gsub(/\s/, '_')}=",
-        value.force_encoding('iso-8895-1').encode('utf-8')
+        value.force_encoding('iso-8859-1').encode('utf-8')
       )
     end
     save
