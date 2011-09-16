@@ -109,6 +109,7 @@ class Lead
     values.each_with_index do |value, index|
       send("#{headings[index].downcase.gsub(/\s/, '_')}=", value)
     end
+    save
   end
 
   def self.unassigned
