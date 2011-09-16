@@ -107,10 +107,8 @@ class Lead
 
   def update_from_csv(values, headings)
     values.each_with_index do |value, index|
-      send(
-        "#{headings[index].downcase.gsub(/\s/, '_')}=",
-        value.force_encoding('iso-8859-1').encode('utf-8')
-      )
+      value = value.force_encoding('iso-8859-1').encode('utf-8') if value
+      send("#{headings[index].downcase.gsub(/\s/, '_')}=", value)
     end
     save
   end
