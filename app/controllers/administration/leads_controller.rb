@@ -20,6 +20,8 @@ module Administration
 
     has_scope :status_is
 
+    has_scope :company_size_is
+
     def index
       @users = User.all(:order => DataMapper::Query::Direction.new('lower(email)'))
 

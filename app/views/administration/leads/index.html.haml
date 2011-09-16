@@ -177,6 +177,29 @@
                 %li
                   = select_tag "in_campaign",
                     options_for_select([["All", "All"], ["None", ""]], current_scopes[:in_campaign]) + grouped_options_for_select( [['---', Campaign.all.asc(:name).map { |c| [c.name, c.id] }]], current_scopes[:in_campaign].to_i )
+        %th(width="70")
+          .filter.left
+            Company Size
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["status", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["status", "desc"] )
+              %ul
+                %li
+                  = select_tag "company_size_is", options_for_select(t(:company_sizes, :locale => :en), current_scopes[:company_size_is]), :include_blank => 'All'
+        %th(width="70")
+          .filter.left
+            Industry
+            .arrow.arrow-border
+            .arrow
+            .menu
+              .sort
+                Sort:
+                = link_to "ASC", params.merge( :sort => ["industry", "asc"] )
+                = link_to "DESC", params.merge( :sort => ["industry", "desc"] )
         %th
           .filter
             City
@@ -243,6 +266,8 @@
           %td= lead.source
           %td= lead.assignee.try(:name)
           %td= lead.campaign.try(:name)
+          %td= lead.company_size
+          %td= lead.industry
           %td= lead.city
           %td(align="center")= lead.postal_code
           %td(align="center")= lead.company_size
