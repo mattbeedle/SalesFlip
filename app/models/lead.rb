@@ -110,6 +110,7 @@ class Lead
       value = value.force_encoding('iso-8859-1').encode('utf-8') if value
       send("#{headings[index].downcase.gsub(/\s/, '_')}=", value)
     end
+    self.campaign_id = 10
     save
   end
 
