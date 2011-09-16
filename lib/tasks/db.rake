@@ -4,6 +4,36 @@ namespace :db do
     end
   end
 
+  task neglected_contacts_export: :environment do
+    File.open('neglected_contacts.csv', 'w+') do |file|
+      headings = [
+        'id', 'link', 'created by', 'assigned to', 'number of comments',
+        'last comment at', 'number of opportunities', 'last opportunity at',
+        'number of tasks', 'last task at'
+      ]
+
+      file.write headings.join(',') << "\n"
+
+      Contact.all.select do |contact|
+        contact.tasks.where(:due_at.gt => Date.today).count == 0 &&
+          contact.comments.where(:created_at.gt => 3.weeks.ago).count == 0
+      end.each do |contact|
+        data = [
+          contact.id, "http://salesflip.com/contacts/#{contact.id}",
+          contact.user.try(:email), contact.assignee.try(:email),
+          contact.comments.count,
+          contact.comments.last.try(:created_at),
+          contact.opportunities.count,
+          contact.opportunities.last.try(:created_at),
+          contact.tasks.count,
+          contact.tasks.last.try(:created_at)
+        ]
+
+        file.write data.join(',') << "\n"
+      end
+    end
+  end
+
   task update_leads: :environment do
     Lead.update_from_csv(ENV['LEAD_CSV'])
   end
