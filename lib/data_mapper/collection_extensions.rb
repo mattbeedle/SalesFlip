@@ -69,7 +69,7 @@ module DataMapper
     end
 
     def limit(limit)
-      all(limit: limit)
+      all(limit: limit.to_i)
     end
 
     alias where all

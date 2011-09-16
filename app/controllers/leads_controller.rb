@@ -139,6 +139,7 @@ protected
     if current_user.role_is?('Administrator') && request.format.csv?
       leads = Lead.all
       leads = leads.assigned_to(params[:assignee_id]) if params[:assignee_id]
+      leads = leads.limit(params[:limit]) if params[:limit]
       return leads
     end
 

@@ -92,12 +92,31 @@ class Lead
     tasks.update! :asset_updated_at => updated_at
   end
 
+  def self.update_from_csv_line(csv, deliminator)
+    headings = nil
+    CSV.read(csv).each_with_index do |values, index|
+      if index == 0
+        headings = values
+      else
+        puts values.join(',')
+        lead = Lead.find(values.first) rescue nil
+        lead.update_from_csv(values, headings) if lead
+      end
+    end
+  end
+
+  def update_from_csv(values, headings)
+    values.each_with_index do |value, index|
+      send("#{headings[index].downcase.gsub(/\s/, '_')}=", value)
+    end
+  end
+
   def self.unassigned
-    all(:assignee_id => nil)
+    all(assignee_id: nil)
   end
 
   def self.for_company(company)
-    all(:user_id => company.users.map(&:id))
+    all(user_id: company.users.map(&:id))
   end
 
   def self.converted
@@ -105,7 +124,7 @@ class Lead
   end
 
   def self.in_campaign(id)
-    all(:campaign_id => id)
+    all(campaign_id: id)
   end
 
   def self.reserve_for(user)

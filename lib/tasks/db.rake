@@ -4,6 +4,10 @@ namespace :db do
     end
   end
 
+  task update_leads: :environment do
+    Lead.update_from_csv(ENV['LEAD_CSV'])
+  end
+
   task test_export: :environment do
     leads = Lead.status_is('Converted').limit(3)
     contacts = leads.map(&:contact)
