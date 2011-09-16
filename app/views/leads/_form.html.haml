@@ -28,7 +28,8 @@
 %h3.toggler.open= t(:company_info)
 .toggle
   %fieldset
-    .75.a= form.input :company
+    .50.a= form.input :company
+    .25= form.input :industry
     .25.z= form.input :company_size, :collection => Lead.company_sizes
     .clear
     .60.a= form.input :address
