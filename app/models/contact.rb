@@ -59,6 +59,10 @@ class Contact
   has n, :emails, :as => :commentable#, :dependent => :delete_all
   has n, :opportunities#, :dependent => :destroy
 
+  def company_name
+    account.name if account
+  end
+
   def self.for_company(company)
     all(:user_id => company.users.map(&:id))
   end
