@@ -416,15 +416,17 @@ en:
     - Reseller
     - Other
   company_sizes:
-    - '1-5'
-    - '6-10'
-    - '11-20'
-    - '21-50'
+    - '<10'
+    - '11-50'
     - '51-100'
     - '101-200'
-    - '201-500'
-    - '501-5000'
-    - 'over 5000'
+    - '301-500'
+    - '501-1000'
+    - '1001-2000'
+    - '2001-3000'
+    - '4001-5000'
+    - '5001-10000'
+    - 'more than 10000'
   comments_closed: Comments are closed. To comment please
   view_contact_for_lead: view the contact for this lead
   lead_converted_by: This lead was converted by %{link} on %{time}
