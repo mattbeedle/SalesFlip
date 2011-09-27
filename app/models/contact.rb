@@ -72,11 +72,11 @@ class Contact
   end
 
   def self.for_company(company)
-    all(:user_id => company.users.map(&:id))
+    all(user_id: company.users.map(&:id))
   end
 
   def self.name_like(name)
-    all(:full_name => /#{name}/i)
+    all(full_name: /#{name}/i)
   end
 
   searchable do
