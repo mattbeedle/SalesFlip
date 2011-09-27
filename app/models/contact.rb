@@ -63,6 +63,14 @@ class Contact
     account.name if account
   end
 
+  def next_task_date
+    tasks.desc(:due_at).first.try(:due_at)
+  end
+
+  def last_comment_date
+    comments.desc(:created_at).first.try(:created_at)
+  end
+
   def self.for_company(company)
     all(:user_id => company.users.map(&:id))
   end
