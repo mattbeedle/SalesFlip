@@ -11,6 +11,7 @@ class UsersController < InheritedResources::Base
   end
 
   def create
+    redirect_to root_url and return if user.invitation.blank?
     create! do |success, failure|
       success.html { redirect_to root_path }
     end
