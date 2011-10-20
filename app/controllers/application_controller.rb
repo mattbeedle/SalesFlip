@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   include ActionController::Caching::Sweeping
 
   # internal application, doesn't really need forgery protection
-  protect_from_forgery
+  # protect_from_forgery
 
   layout 'application'
 
