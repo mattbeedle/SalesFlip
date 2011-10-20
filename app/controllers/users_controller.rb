@@ -6,8 +6,11 @@ class UsersController < InheritedResources::Base
 
   load_and_authorize_resource
 
+  def new
+    redirect_to root_url and return
+  end
+
   def create
-    redirect_to root_url
     create! do |success, failure|
       success.html { redirect_to root_path }
     end
