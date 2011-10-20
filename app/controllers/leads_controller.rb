@@ -8,6 +8,8 @@ class LeadsController < InheritedResources::Base
 
   prepend_before_filter :manage_campaign_filter_cookie, :only => :index
 
+  skip_before_filter :verify_authenticity_token, only: [ :create ]
+
   cache_sweeper :lead_sweeper
 
   respond_to :html

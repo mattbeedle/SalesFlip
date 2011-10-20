@@ -6,8 +6,7 @@ class PagesController < ApplicationController
 protected
   def find_activities
     @activities ||= I18n.in_locale(:en) { Activity.action_is_not('Viewed') }.
-      desc(:created_at).limit(20).visible_to(current_user).
-      where(creator_id: current_user.company.users.map(&:id))
+      desc(:created_at).limit(20).visible_to(current_user)
   end
 
   def find_tasks
