@@ -10,6 +10,7 @@ class Activity
   include DataMapper::Timestamps
   include HasConstant::Orm::DataMapper
   include ActiveModel::Observing
+  include Exportable
 
   property :id, Serial
   property :info, String

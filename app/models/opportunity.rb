@@ -6,6 +6,7 @@ class Opportunity
   include ParanoidDelete
   include Activities
   include Sunspot::DataMapper
+  include Exportable
 
   property :id, Serial
   property :title, String, :required => true

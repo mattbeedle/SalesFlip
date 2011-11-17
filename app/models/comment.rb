@@ -5,6 +5,7 @@ class Comment
   include Activities
   include ParanoidDelete
   include ActiveModel::Observing
+  include Exportable
 
   property :id, Serial
   property :type, Discriminator, index: true

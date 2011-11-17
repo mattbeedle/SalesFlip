@@ -4,10 +4,18 @@ namespace :db do
     end
   end
 
+  task salesforce_export: :environment do
+    # [
+      # Account, Activity, Attachment, Comment, Contact, Lead, Task, User, Opportunity
+    # ].each do |klass|
+      # klass.export
+    # end
+  end
+
   task neglected_contacts_export: :environment do
     File.open('neglected_contacts.csv', 'w+') do |file|
       headings = [
-        'id', 'link', 'created by', 'assigned to', 'number of comments',
+        'name', 'id', 'link', 'created by', 'assigned to', 'number of comments',
         'last comment at', 'number of opportunities', 'last opportunity at',
         'number of tasks', 'last task at'
       ]
@@ -19,6 +27,7 @@ namespace :db do
           contact.comments.where(:created_at.gt => 3.weeks.ago).count == 0
       end.each do |contact|
         data = [
+          contact.company_name,
           contact.id, "http://salesflip.com/contacts/#{contact.id}",
           contact.user.try(:email), contact.assignee.try(:email),
           contact.comments.count,

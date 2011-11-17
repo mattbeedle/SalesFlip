@@ -3,6 +3,8 @@ class User
   include DataMapper::Timestamps
   include HasConstant::Orm::DataMapper
   include Gravtastic
+  include Exportable
+
   is_gravtastic
 
   # Include default devise modules. Others available are:

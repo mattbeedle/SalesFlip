@@ -1,6 +1,7 @@
 class Attachment
   include DataMapper::Resource
   include DataMapper::Timestamps
+  include Exportable
 
   property :id, Serial
   property :attachment, String, auto_validation: false
@@ -16,4 +17,18 @@ class Attachment
   validates_presence_of :attachment
 
   mount_uploader :attachment, AttachmentUploader
+
+  def self.export
+    all.each do |attachment|
+      attachment.export
+    end
+  end
+
+  def export
+    data = self.attachment.read
+    vals = [self.subject_id, self.subject_type, self.attachment.url.split('/').last]
+    File.open("tmp/files/#{vals.join('-')}", 'w+b') do |file|
+      file.write data
+    end if data
+  end
 end

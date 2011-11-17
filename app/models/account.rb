@@ -10,6 +10,7 @@ class Account
   include Assignable
   include ActiveModel::Observing
   include OnlineFields
+  include Exportable
 
   extend SimilarTo
 

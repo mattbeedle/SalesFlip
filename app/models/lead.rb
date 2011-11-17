@@ -10,6 +10,7 @@ class Lead
   include Gravtastic
   include ActiveModel::Observing
   include OnlineFields
+  include Exportable
 
   extend SimilarTo
 

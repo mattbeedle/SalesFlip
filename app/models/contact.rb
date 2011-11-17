@@ -10,6 +10,7 @@ class Contact
   include Gravtastic
   include ActiveModel::Observing
   include OnlineFields
+  include Exportable
 
   is_gravtastic
 

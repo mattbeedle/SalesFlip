@@ -5,6 +5,7 @@ class Task
   include Activities
   include Assignable
   include ActiveModel::Observing
+  include Exportable
 
   property :id, Serial
   property :name, Text, :required => true, :lazy => false
