@@ -20,7 +20,10 @@ class Attachment
 
   def self.export
     all.each do |attachment|
-      attachment.export
+      begin
+        attachment.export
+      rescue
+      end
     end
   end
 
