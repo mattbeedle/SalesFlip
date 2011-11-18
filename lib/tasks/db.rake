@@ -33,7 +33,7 @@ namespace :db do
 
     ended_at = Time.now
     p "ended at #{ended_at.to_s :db}"
-    length = (started_at - ended_at) / 60
+    length = (ended_at - started_at) / 60
     p "Took #{length} minutes"
   end
 
