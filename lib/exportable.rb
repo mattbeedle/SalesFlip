@@ -6,10 +6,11 @@ module Exportable
 
     def export
       column_names = properties.map(&:name).map(&:to_s)
-      File.open("#{self.to_s.pluralize.underscore}.csv", 'w+') do |file|
-        file.write "#{column_names.join(',')}\n"
+      File.open("#{self.to_s.pluralize.underscore}.csv", 'w+', encoding: 'UTF-16LE') do |file|
+        file.write "#{column_names.join("\t")}\n"
         all.each do |item|
-          file.write item.deliminated('•', column_names) + "\n"
+          line = item.deliminated("\t", column_names) + "\n"
+          file.write line
         end
       end
     end

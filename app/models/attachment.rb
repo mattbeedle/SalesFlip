@@ -44,7 +44,12 @@ class Attachment
   end
 
   def self.db
-    @db ||= connection.db("salesflip_#{Rails.env}".gsub(/_$/, ''))
+    case
+    when Rails.env.production? then database = 'salesflip'
+    when Rails.env.staging? then database = 'salesflip_staging'
+    when Rails.env.development? then database = 'salesflip_development'
+    end
+    @db ||= connection.db(database)
     if ENV['MONGODB_USER'] && ENV['MONGODB_PASSWORD']
       @db.authenticate(ENV['MONGODB_USER'], ENV['MONGODB_PASSWORD'])
     end
