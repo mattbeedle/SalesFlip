@@ -18,20 +18,36 @@ class Attachment
 
   mount_uploader :attachment, AttachmentUploader
 
-  def self.export
+  def self.export_files
     all.each do |attachment|
       begin
-        attachment.export
+        attachment.export_file(self.grid)
       rescue
       end
     end
   end
 
-  def export
-    data = self.attachment.read
-    vals = [self.subject_id, self.subject_type, self.attachment.url.split('/').last]
-    File.open("tmp/files/#{vals.join('-')}", 'w+b') do |file|
-      file.write data
-    end if data
+  def export_file(grid)
+    file = grid.open(attachment.url.gsub(/^\/uploads\//, ''), 'r')
+    vals = [
+      self.subject_id, self.subject_type, self.attachment.url.split('/').last
+    ]
+    File.open("tmp/files/#{vals.join('-')}", 'w+b') do |f|
+      f.write file.read
+    end
+  rescue Mongo::GridFileNotFound => e
+    puts e.message
+  end
+
+  def self.connection
+    Mongo::Connection.new('localhost', 27017)
+  end
+
+  def self.db
+    @db ||= connection.db('salesflip_development')
+  end
+
+  def self.grid
+    @grid ||= Mongo::GridFileSystem.new(db)
   end
 end

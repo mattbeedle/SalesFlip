@@ -5,11 +5,36 @@ namespace :db do
   end
 
   task salesforce_export: :environment do
-    # [
-      # Account, Activity, Attachment, Comment, Contact, Lead, Task, User, Opportunity
-    # ].each do |klass|
-      # klass.export
-    # end
+    started_at = Time.now
+    p "started at #{started_at.to_s :db}"
+    p 'exporting data'
+    [
+      Account, Attachment, Comment, Contact, Lead, Task, User, Opportunity
+    ].each do |klass|
+      p "exporting: #{klass.to_s.downcase.pluralize}"
+      klass.export
+    end
+
+    p 'exporting files'
+    Attachment.export_files
+
+    p 'zipping files'
+    system 'zip -r files.zip tmp/files > tmp/files_zip.log'
+
+    p 'zipping data'
+    system 'zip -r data.zip *.csv > tmp/data_zip.log'
+
+    p 'combining zips'
+    system 'zip export.zip *.zip > tmp/final_zip.log'
+
+    p 'cleaning up'
+    system 'rm -r tmp/files'
+    system 'rm files.zip data.zip'
+
+    ended_at = Time.now
+    p "ended at #{ended_at.to_s :db}"
+    length = (started_at - ended_at) / 60
+    p "Took #{length} minutes"
   end
 
   task neglected_contacts_export: :environment do
