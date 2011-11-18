@@ -40,11 +40,15 @@ class Attachment
   end
 
   def self.connection
-    Mongo::Connection.new('localhost', 27017)
+    Mongo::Connection.new(ENV['MONGODB_HOST'] || 'localhost', 27017)
   end
 
   def self.db
-    @db ||= connection.db('salesflip_development')
+    @db ||= connection.db("salesflip_#{Rails.env}".gsub(/_$/, ''))
+    if ENV['MONGODB_USER'] && ENV['MONGODB_PASSWORD']
+      @db.authenticate(ENV['MONGODB_USER'], ENV['MONGODB_PASSWORD'])
+    end
+    @db
   end
 
   def self.grid
