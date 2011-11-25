@@ -14,7 +14,7 @@ module Exportable
       ) do |file|
 
         file.write(
-          "\"#{column_names.map { |c| "\"#{c}\"" }.join(deliminator)}\"" + "\n"
+          "#{column_names.map { |c| "\"#{c}\"" }.join(deliminator)}" + "\n"
         )
 
         all.each do |item|
