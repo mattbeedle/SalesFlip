@@ -24,8 +24,8 @@ class ContactsController < InheritedResources::Base
         fields = params[:fields] || Contact.exportable_fields
 
         Contact.export(
-          params[:fields] || Contact.exportable_fields,
-          params[:deliminator]
+          column_names: params[:fields] || Contact.exportable_fields,
+          deliminator: params[:deliminator]
         )
 
         send_file "#{Rails.root}/tmp/contacts.csv",
