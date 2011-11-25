@@ -64,6 +64,10 @@ class Contact
     account.name if account
   end
 
+  def assignee_name
+    assignee.try(:name)
+  end
+
   def next_task_date
     tasks.desc(:due_at).first.try(:due_at)
   end
