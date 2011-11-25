@@ -22,9 +22,14 @@ class ContactsController < InheritedResources::Base
       format.xml
       format.csv do
         fields = params[:fields] || Contact.exportable_fields
-        data = "#{fields.join(params[:deliminator] || '|')}\n"
-        data = contacts.map { |c| c.deliminated(params[:deliminator] || '|', fields) }.join("\n")
-        send_data data, :type => 'text/csv'
+
+        Contact.export(
+          params[:fields] || Contact.exportable_fields,
+          params[:deliminator]
+        )
+
+        send_file "#{Rails.root}/tmp/contacts.csv",
+          type: 'text/csv'
       end
     end
   end
