@@ -13,7 +13,10 @@ module Exportable
         encoding: 'UTF-16LE'
       ) do |file|
 
-        file.write "#{column_names.join(deliminator)}\n"
+        file.write(
+          "\"#{column_names.map { |c| "\"#{c}\"" }.join(deliminator)}\"" + "\n"
+        )
+
         all.each do |item|
           line = item.deliminated(deliminator, column_names) + "\n"
           file.write line
